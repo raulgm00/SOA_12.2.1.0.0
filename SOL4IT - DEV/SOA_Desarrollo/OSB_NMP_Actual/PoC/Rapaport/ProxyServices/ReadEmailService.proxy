@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ser:proxyServiceEntry xmlns:ser="http://www.bea.com/wli/sb/services">
+    <ser:coreEntry isAutoPublish="false">
+        <ser:binding type="abstract XML"/>
+        <oper:operations enabled="false" xmlns:oper="http://xmlns.oracle.com/servicebus/proxy/operations">
+            <oper:messageTracing enabled="true">
+                <oper1:detailsLevel xmlns:oper1="http://xmlns.oracle.com/servicebus/operations">terse</oper1:detailsLevel>
+                <oper1:maxSize xmlns:oper1="http://xmlns.oracle.com/servicebus/operations">8192</oper1:maxSize>
+            </oper:messageTracing>
+        </oper:operations>
+        <ser:invoke ref="PoC/Rapaport/Pipelines/ReadEmailService-pipeline" xsi:type="con:PipelineRef" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        <ser:xqConfiguration>
+            <ser:snippetVersion>1.0</ser:snippetVersion>
+        </ser:xqConfiguration>
+    </ser:coreEntry>
+    <ser:endpointConfig>
+        <tran:provider-id xmlns:tran="http://www.bea.com/wli/sb/transports">email</tran:provider-id>
+        <tran:inbound xmlns:tran="http://www.bea.com/wli/sb/transports">true</tran:inbound>
+        <tran:URI xmlns:tran="http://www.bea.com/wli/sb/transports">
+            <env:value xmlns:env="http://www.bea.com/wli/config/env">mailfrom:outlook.office365.com:995</env:value>
+        </tran:URI>
+        <tran:inbound-properties xmlns:tran="http://www.bea.com/wli/sb/transports"/>
+        <tran:provider-specific xsi:type="ema:EmailEndPointConfiguration" xmlns:ema="http://www.bea.com/wli/sb/transports/email" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <ema:use-ssl>true</ema:use-ssl>
+            <ema:inbound-properties>
+                <ema:protocol>pop3</ema:protocol>
+                <ema:connection-timeout>0</ema:connection-timeout>
+                <ema:read-timeout>0</ema:read-timeout>
+                <ema:attachment-action>ignore</ema:attachment-action>
+                <ema:polling-interval>10</ema:polling-interval>
+                <ema:read-limit>5</ema:read-limit>
+                <ema:post-read>archive</ema:post-read>
+                <ema:passByReference>false</ema:passByReference>
+                <ema:passAttachmentsByReference>true</ema:passAttachmentsByReference>
+                <ema:download-directory>
+                    <env:value xmlns:env="http://www.bea.com/wli/config/env">/u01/email/tmp/stage</env:value>
+                </ema:download-directory>
+                <ema:archive-directory>
+                    <env:value xmlns:env="http://www.bea.com/wli/config/env">/u01/email/tmp/archive</env:value>
+                </ema:archive-directory>
+                <ema:error-directory>
+                    <env:value xmlns:env="http://www.bea.com/wli/config/env">/u01/email/tmp/error</env:value>
+                </ema:error-directory>
+                <ema:service-account ref="PoC/Rapaport/Resources/ServiceAccount/EmailOpPrendario"/>
+            </ema:inbound-properties>
+            <ema:request-encoding>iso-8859-1</ema:request-encoding>
+        </tran:provider-specific>
+    </ser:endpointConfig>
+</ser:proxyServiceEntry>

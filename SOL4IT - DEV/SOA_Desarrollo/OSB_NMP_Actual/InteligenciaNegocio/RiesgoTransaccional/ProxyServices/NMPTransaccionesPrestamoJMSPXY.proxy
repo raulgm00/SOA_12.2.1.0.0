@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ser:proxyServiceEntry xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ser:coreEntry isAutoPublish="false">
+        <ser:description>Servicio de tipo JMS el cual recibe los eventos de MIDAS correspondientes a las transacciones diaras y las enruta al proxy NMPOrquestadorAnalisisPXY.</ser:description>
+        <ser:binding type="Mixed" xsi:type="con:MixedBindingType" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config">
+            <con:request type="XML">
+                <con1:schema ref="OperacionPrendaria/Prestamo/Resources/Schemas/PrestamoSvcXSD" element="updatePrestamoRequest" xmlns:con1="http://www.bea.com/wli/sb/typesystem/config"/>
+            </con:request>
+        </ser:binding>
+        <oper:operations enabled="false" xmlns:oper="http://xmlns.oracle.com/servicebus/proxy/operations">
+            <oper:messageTracing enabled="true">
+                <oper1:detailsLevel xmlns:oper1="http://xmlns.oracle.com/servicebus/operations">terse</oper1:detailsLevel>
+                <oper1:maxSize xmlns:oper1="http://xmlns.oracle.com/servicebus/operations">8192</oper1:maxSize>
+            </oper:messageTracing>
+            <oper:monitoring enabled="false" aggregationInterval="5"/>
+        </oper:operations>
+        <ser:invoke ref="InteligenciaNegocio/RiesgoTransaccional/Pipelines/NMPTransaccionesPrestamoJMSPL" xsi:type="con:PipelineRef" xmlns:con="http://www.bea.com/wli/sb/pipeline/config"/>
+        <ser:xqConfiguration>
+            <ser:snippetVersion>1.0</ser:snippetVersion>
+        </ser:xqConfiguration>
+    </ser:coreEntry>
+    <ser:endpointConfig>
+        <tran:provider-id>jms</tran:provider-id>
+        <tran:inbound>true</tran:inbound>
+        <tran:URI>
+            <env:value>jms://10.30.3.15:8011/PrestamoCF/LoanStatusRTQ</env:value>
+        </tran:URI>
+        <tran:inbound-properties/>
+        <tran:provider-specific xsi:type="jms:JmsEndPointConfiguration" xmlns:jms="http://www.bea.com/wli/sb/transports/jms">
+            <jms:is-queue>true</jms:is-queue>
+            <jms:is-secure>false</jms:is-secure>
+            <jms:inbound-properties>
+                <jms:response-required>false</jms:response-required>
+                <jms:XA-required>false</jms:XA-required>
+                <jms:transaction-timeout>600</jms:transaction-timeout>
+            </jms:inbound-properties>
+            <jms:request-encoding>UTF-8</jms:request-encoding>
+            <jms:jndi-timeout>0</jms:jndi-timeout>
+        </tran:provider-specific>
+    </ser:endpointConfig>
+    <aler:alertRules xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert">
+        <aler:alertRule enabled="true" name="timeout_warning">
+            <aler:frequency>every-time</aler:frequency>
+            <aler:severity>warning</aler:severity>
+            <aler:stopProcessing>false</aler:stopProcessing>
+            <aler:condition aggregation-interval="10">
+                <con:monCondExpr xmlns:con="http://xmlns.oracle.com/servicebus/monitoring/alert/condition">
+                    <con:function>max</con:function>
+                    <con:lhs>Transport.response-time</con:lhs>
+                    <con:operator>></con:operator>
+                    <con:rhs>30000</con:rhs>
+                </con:monCondExpr>
+            </aler:condition>
+            <aler:alertDestination ref="InteligenciaNegocio/RiesgoTransaccional/Resources/Alerts/OSBRiesgoTransaccionalAlert"/>
+        </aler:alertRule>
+    </aler:alertRules>
+</ser:proxyServiceEntry>

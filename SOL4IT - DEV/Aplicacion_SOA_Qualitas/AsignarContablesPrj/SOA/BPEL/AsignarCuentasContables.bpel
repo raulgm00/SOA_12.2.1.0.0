@@ -1,0 +1,89 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Sun Jan 08 23:31:19 CST 2017
+  Author:  jeabril
+  Type: BPEL 2.0 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="AsignarCuentasContables" targetNamespace="http://qualitas.com.mx/Pagos/CuentasContables/AsignarCuentasContables/" xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:client="http://qualitas.com.mx/Pagos/CuentasContables/AsignarCuentasContables/" xmlns:ora="http://schemas.oracle.com/xpath/extension" xmlns:ui="http://xmlns.oracle.com/soa/designer" xmlns:bpelx="http://schemas.oracle.com/bpel/extension" xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xml:id="id_1"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/AsignarCuentasContablesApp/AsignarContablesPrj/SPGuardarCcDB"
+         xmlns:ns2="http://qualitas.com.mx/Pagos/CuentasContables/AsignarCuentasContables/v1/"
+         xmlns:ns3="http://qualitas.com.mx/comunes/objetosComunes/v1/"
+         xmlns:ns4="http://xmlns.oracle.com/pcbpel/adapter/db/sp/SPGuardarCcDB"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <import ui:processWSDL="true" namespace="http://qualitas.com.mx/Pagos/CuentasContables/AsignarCuentasContables/" location="../WSDLs/AsignarCuentasContables.wsdl" importType="http://schemas.xmlsoap.org/wsdl/" xml:id="id_2"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks xml:id="id_3">
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="asignarcuentascontables_client" partnerLinkType="client:AsignarCuentasContables" myRole="AsignarCuentasContablesProvider" xml:id="id_4"/>
+    <partnerLink name="SPGuardarCcPL" partnerLinkType="ns1:SPGuardarCcDB_plt" partnerRole="SPGuardarCcDB_role"
+                 xml:id="id_11"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables xml:id="id_5">
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:AsignarCuentasContablesRequestMessage" xml:id="id_6"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:AsignarCuentasContablesResponseMessage" xml:id="id_7"/>
+    <variable name="SPGuardarImpCcInvoke_InputVariable" messageType="ns1:args_in_msg" xml:id="id_13"/>
+    <variable name="SPGuardarImpCcInvoke_OutputVariable" messageType="ns1:args_out_msg" xml:id="id_14"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main" xml:id="id_8">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in AsignarCuentasContables.wsdl) -->
+    <receive name="receiveInput" partnerLink="asignarcuentascontables_client" portType="client:AsignarCuentasContables" operation="process" variable="inputVariable" createInstance="yes" xml:id="id_9"/>
+    <assign name="TransGuardarImpCC" xml:id="id_50">
+      <bpelx:annotation xml:id="id_51">
+        <bpelx:pattern patternName="bpelx:transformation" xml:id="id_52"></bpelx:pattern>
+      </bpelx:annotation>
+      <copy xml:id="id_53">
+        <from xml:id="id_54">ora:doXSLTransformForDoc("../Transformations/TransGuardarImpCC.xsl", $inputVariable.payload)</from>
+        <to xml:id="id_55" variable="SPGuardarImpCcInvoke_InputVariable" part="InputParameters"/>
+      </copy>
+    </assign>
+    <invoke name="SPGuardarImpCcInvoke" xml:id="id_12" partnerLink="SPGuardarCcPL"
+            portType="ns1:SPGuardarCcDB_ptt" operation="SPGuardarCcDB"
+            inputVariable="SPGuardarImpCcInvoke_InputVariable" outputVariable="SPGuardarImpCcInvoke_OutputVariable"
+            bpelx:invokeAsDetail="no"/>
+    <assign name="OutputDataCContable" xml:id="id_17">
+      <bpelx:annotation xml:id="id_18">
+        <bpelx:pattern patternName="bpelx:transformation" xml:id="id_19"></bpelx:pattern>
+      </bpelx:annotation>
+      <copy xml:id="id_20">
+        <from xml:id="id_21">ora:doXSLTransformForDoc("../Transformations/OutCCTransf.xsl", $SPGuardarImpCcInvoke_OutputVariable.OutputParameters)</from>
+        <to xml:id="id_22" variable="outputVariable" part="payload"/>
+      </copy>
+    </assign>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="asignarcuentascontables_client" portType="client:AsignarCuentasContables" operation="process" variable="outputVariable" xml:id="id_10"/>
+  </sequence>
+</process>

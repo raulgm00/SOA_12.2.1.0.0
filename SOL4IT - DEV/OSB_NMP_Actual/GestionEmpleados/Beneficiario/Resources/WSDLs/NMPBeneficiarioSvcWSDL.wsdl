@@ -1,0 +1,52 @@
+<definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Services/NMPBeneficiario" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Services/NMPBeneficiario" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:nsb="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPBeneficiario">
+  <types>
+    <xsd:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Services/Beneficiario/types" elementFormDefault="qualified"/>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPBeneficiario" schemaLocation="../Schemas/DBBeneficiarioElementosXSD.xsd"/>
+    </xsd:schema>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+    </xsd:schema>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+    </xsd:schema>
+  </types>
+  <message name="NMPHeaderRequest">
+    <part name="requestHeader" element="NMPsh:headerMessage"/>
+  </message>
+  <message name="consultaBeneficiarioRequestMessage">
+    <part name="consultaBeneficiarioRequest" element="nsb:consultaBeneficiarioRequest"/>
+  </message>
+  <message name="consultaBeneficiarioResponseMessage">
+    <part name="consultaBeneficiarioResponse" element="nsb:consultaBeneficiarioResponse"/>
+  </message>
+  <message name="beneficiarioFaultMessage">
+    <part name="beneficiariobFault" element="NMPsm:messageError"/>
+  </message>
+  <portType name="Beneficiario_ptt">
+    <operation name="consultaBeneficiario">
+      <input message="tns:consultaBeneficiarioRequestMessage"/>
+      <output message="tns:consultaBeneficiarioResponseMessage"/>
+      <fault message="tns:beneficiarioFaultMessage" name="Fault"/>
+    </operation>
+  </portType>
+  <binding name="BeneficiarioBinding" type="tns:Beneficiario_ptt">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="consultaBeneficiario">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/NMPBeneficiario/consultaBeneficiario"/>
+      <input>
+        <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+        <soap:body use="literal" parts="consultaBeneficiarioRequest"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="consultaBeneficiarioResponse"/>
+      </output>
+      <fault name="Fault">
+        <soap:fault name="Fault" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+  <service name="beneficiario">
+    <port name="BeneficiarioPort" binding="tns:BeneficiarioBinding"/>
+  </service>
+</definitions>

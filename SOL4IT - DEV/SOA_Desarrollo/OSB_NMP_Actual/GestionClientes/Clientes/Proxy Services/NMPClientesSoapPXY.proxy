@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ser:proxyServiceEntry xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:oper="http://xmlns.oracle.com/servicebus/proxy/operations" xmlns:oper1="http://xmlns.oracle.com/servicebus/operations" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert" xmlns:con="http://xmlns.oracle.com/servicebus/monitoring/alert/condition">
+    <ser:coreEntry isAutoPublish="false">
+        <ser:description/>
+        <ser:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config" xmlns:con2="http://www.bea.com/wli/sb/pipeline/config" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+            <con:wsdl ref="GestionClientes/Clientes/Resources/WSDL/NMPClientesWSDL"/>
+            <con:port>
+                <con:name>ClientesPort</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Services/Clientes</con:namespace>
+            </con:port>
+            <con:selector type="SOAP body"/>
+            <con:WSI-compliant>false</con:WSI-compliant>
+        </ser:binding>
+        <oper:operations enabled="true">
+            <oper:monitoring enabled="false" aggregationInterval="1440"/>
+            <oper:sla-alerting enabled="false" level="normal"/>
+        </oper:operations>
+        <ser:ws-policy xmlns:con="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/pipeline/config" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+            <ser:binding-mode>wsdl-policy-attachments</ser:binding-mode>
+        </ser:ws-policy>
+        <ser:invoke ref="GestionClientes/Clientes/Pipelines/NMPClientesPL" xsi:type="con:PipelineRef" xmlns:con="http://www.bea.com/wli/sb/pipeline/config"/>
+    </ser:coreEntry>
+    <ser:endpointConfig xmlns:con="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/pipeline/config" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+        <tran:provider-id>http</tran:provider-id>
+        <tran:inbound>true</tran:inbound>
+        <tran:URI>
+            <env:value xmlns:env="http://www.bea.com/wli/config/env">/NMP/CRM/Clientes</env:value>
+        </tran:URI>
+        <tran:inbound-properties/>
+        <tran:all-headers>false</tran:all-headers>
+        <tran:provider-specific xsi:type="http:HttpEndPointConfiguration" xmlns:http="http://www.bea.com/wli/sb/transports/http">
+            <http:inbound-properties/>
+            <http:request-encoding>utf-8</http:request-encoding>
+            <http:response-encoding>utf-8</http:response-encoding>
+            <http:compression>
+                <http:compression-support>false</http:compression-support>
+            </http:compression>
+        </tran:provider-specific>
+    </ser:endpointConfig>
+    <aler:alertRules>
+        <aler:alertRule name="ClientesPXY_Test_Alert_RT" enabled="false">
+            <aler:description/>
+            <aler:startTime>08:30:00.000-06:00</aler:startTime>
+            <aler:endTime>20:30:00.000-06:00</aler:endTime>
+            <aler:frequency>every-time</aler:frequency>
+            <aler:severity>major</aler:severity>
+            <aler:stopProcessing>false</aler:stopProcessing>
+            <aler:condition aggregation-interval="5">
+                <con:monCondExpr>
+                    <con:function>average</con:function>
+                    <con:lhs>Transport.response-time</con:lhs>
+                    <con:operator>></con:operator>
+                    <con:rhs>5</con:rhs>
+                </con:monCondExpr>
+            </aler:condition>
+            <aler1:alertDestination ref="CRMFaseI/Alertas/AD_Clientes_RT" xmlns:aler="http://www.bea.com/wli/monitoring/alert" xmlns:con="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/pipeline/config" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:aler1="http://xmlns.oracle.com/servicebus/monitoring/alert"/>
+            <aler:summary xsi:nil="true"/>
+        </aler:alertRule>
+    </aler:alertRules>
+</ser:proxyServiceEntry>

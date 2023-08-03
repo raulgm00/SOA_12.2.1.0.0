@@ -1,0 +1,2614 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+    <con:coreEntry>
+        <con:description/>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="CRMFaseI/Bancario/Resources/WSDL/BancarioWSDL"/>
+            <con:binding>
+                <con:name>BancarioBinding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Services/NMPBancario</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations>
+            <oper:tracingEnabled>true</oper:tracingEnabled>
+            <oper:logging enabled="false" level="debug"/>
+            <oper:monitoring enabled="false" level="pipeline" aggregationInterval="10"/>
+            <oper:pipeline-alerting enabled="false" level="normal"/>
+        </oper:operations>
+    </con:coreEntry>
+    <con2:router errorHandler="_onErrorHandler-7480183515276572082--74c1a856.14c287ba2bb.-7ff0" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con="http://www.bea.com/wli/sb/stages/config" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/pipeline/config">
+        <con:pipeline name="_onErrorHandler-5046400095430035851-750fc967.14c0fa0c341.-7ff1" type="error" xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+            <con:stage name="stageErroresConsultarDatos">
+                <con:context>
+                    <con1:userNsDecl prefix="ctx1" namespace="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="urn" namespace="urn:mx.com.nmp.midas" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="mex" namespace="http://exception.midas.nmp.com.mx" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPBancario" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="header" contents-only="false">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-4856839353788737941--3df00721.14d24fe0969.-7ea7</con2:id>
+                        <con1:location>
+                            <con2:xpathText xmlns:con2="http://www.bea.com/wli/sb/stages/config">.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML('&lt;soapenv:Header xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">&lt;/soapenv:Header>')</con2:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:assign varName="dvmHorario">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-7b9f</con2:id>
+                        <con1:expr>
+                            <con2:xqueryTransform xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                                <con2:resource ref="CRMFaseI/Bancario/Resources/XQ/DVMOperacionMidasXQ"/>
+                            </con2:xqueryTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="horaInicio">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-4856839353788737941--3df00721.14d24fe0969.-7fa8</con2:id>
+                        <con1:expr>
+                            <con2:xqueryTransform xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                                <con2:resource ref="CRMFaseI/Bancario/Resources/XQ/GetHorarioMidasXQ"/>
+                                <con2:param name="dvm">
+                                    <con2:path>$dvmHorario</con2:path>
+                                </con2:param>
+                                <con2:param name="hora">
+                                    <con2:path>'inicio'</con2:path>
+                                </con2:param>
+                            </con2:xqueryTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="horaFin">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-4856839353788737941--3df00721.14d24fe0969.-7f8b</con2:id>
+                        <con1:expr>
+                            <con2:xqueryTransform xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                                <con2:resource ref="CRMFaseI/Bancario/Resources/XQ/GetHorarioMidasXQ"/>
+                                <con2:param name="dvm">
+                                    <con2:path>$dvmHorario</con2:path>
+                                </con2:param>
+                                <con2:param name="hora">
+                                    <con2:path>'fin'</con2:path>
+                                </con2:param>
+                            </con2:xqueryTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:ifThenElse>
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-5046400095430035851-750fc967.14c0fa0c341.-7feb</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/ctx:errorCode='OSB-382505'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-5046400095430035851-750fc967.14c0fa0c341.-7fea</con2:id>
+                                    <con1:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-008</faultcode>
+		<faultstring>Error en los parámetro del mensaje</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-008</codigoError>
+				<descripcionError>Error en los parámetro del mensaje</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>2</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/ctx:errorCode='OSB-382500'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:ifThenElse>
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7fda</con2:id>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:detail/urn:ServiceException/mex:codigoError='WS001'</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace varName="body" contents-only="true">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7fd8</con2:id>
+                                                <con1:location>
+                                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-040</faultcode>
+		<faultstring>La partida especificada no tiene operaciones disponibles</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-040</codigoError>
+				<descripcionError>La partida especificada no tiene operaciones disponibles</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:detail/urn:ServiceException/mex:codigoError = 'WS002'</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace varName="body" contents-only="true">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7fd7</con2:id>
+                                                <con1:location>
+                                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-041</faultcode>
+		<faultstring>El identificador de la transacción especificado no es válido</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-041</codigoError>
+				<descripcionError>El identificador de la transacción especificado no es válido</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:detail/urn:ServiceException/mex:codigoError = 'WS003'</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace varName="body" contents-only="true">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7fd6</con2:id>
+                                                <con1:location>
+                                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-042</faultcode>
+		<faultstring>El importe especificado no es válido o no corresponde al esperado para la operación solicitada</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-042</codigoError>
+				<descripcionError>El importe especificado no es válido o no corresponde al esperado para la operación solicitada</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:detail/urn:ServiceException/mex:codigoError = 'WS004'</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace varName="body" contents-only="true">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7fd4</con2:id>
+                                                <con1:location>
+                                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-043</faultcode>
+		<faultstring>La operación solicitada no es válida para la partida</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-043</codigoError>
+				<descripcionError>La operación solicitada no es válida para la partida</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config">$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:detail/urn:ServiceException/mex:codigoError = 'WS005'</con2:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace contents-only="true" varName="body">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-7aa1</con2:id>
+                                                <con1:location>
+                                                    <con2:xpathText xmlns:con2="http://www.bea.com/wli/sb/stages/config">.</con2:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-044</faultcode>
+		<faultstring>Servicio fuera de horario operativo</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-044</codigoError>
+				<descripcionError>Servicio fuera de horario operativo</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con2:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:detail/urn:ServiceException/mex:codigoError = 'WS006'</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace varName="body" contents-only="true">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-3708010327031629053-b5d49be.14dbb932212.-7ef7</con2:id>
+                                                <con1:location>
+                                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-045</faultcode>
+		<faultstring>No se encontró partida relacionada para el folio</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-045</codigoError>
+				<descripcionError>No se encontró partida relacionada para el folio</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:detail/urn:ServiceException/mex:codigoError = 'WS007'</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace varName="body" contents-only="true">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-3708010327031629053-b5d49be.14dbb932212.-7ef6</con2:id>
+                                                <con1:location>
+                                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-046</faultcode>
+		<faultstring>Parámetro no válido</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-046</codigoError>
+				<descripcionError>Parámetro no válido</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:default>
+                                        <con1:replace varName="body" contents-only="true">
+                                            <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7fd9</con2:id>
+                                            <con1:location>
+                                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                            </con1:location>
+                                            <con1:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-005</faultcode>
+		<faultstring>SOAP Fault Response. Ha ocurrido un error inesperado: ",$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text(),"</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-005</codigoError>
+				<descripcionError>SOAP Fault Response. Ha ocurrido un error inesperado: ",$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text(),"</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>2</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                            </con1:expr>
+                                        </con1:replace>
+                                    </con1:default>
+                                </con1:ifThenElse>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/ctx:errorCode='OSB-380000'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:ifThenElse>
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-7dcf</con2:id>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config">((xs:time(fn-bea:remove-timezone-from-time(fn:current-time())) &lt; xs:time($horaInicio))
+or
+(xs:time(fn-bea:remove-timezone-from-time(fn:current-time())) > xs:time($horaFin)))</con2:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace contents-only="true" varName="body">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-7a69</con2:id>
+                                                <con1:location>
+                                                    <con2:xpathText xmlns:con2="http://www.bea.com/wli/sb/stages/config">.</con2:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-044</faultcode>
+		<faultstring>Servicio fuera de horario operativo</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-044</codigoError>
+				<descripcionError>Servicio fuera de horario operativo</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con2:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:default>
+                                        <con1:replace varName="body" contents-only="true">
+                                            <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-7c66</con2:id>
+                                            <con1:location>
+                                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                            </con1:location>
+                                            <con1:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-003</faultcode>
+		<faultstring>Se ha excedido el tiempo de espera</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-003</codigoError>
+				<descripcionError>Se ha excedido el tiempo de espera</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>2</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                            </con1:expr>
+                                        </con1:replace>
+                                    </con1:default>
+                                </con1:ifThenElse>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/ctx:errorCode='OSB-380002'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:ifThenElse>
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-7e6d</con2:id>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config">((xs:time(fn-bea:remove-timezone-from-time(fn:current-time())) &lt; xs:time($horaInicio))
+or
+(xs:time(fn-bea:remove-timezone-from-time(fn:current-time())) > xs:time($horaFin)))</con2:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace contents-only="true" varName="body">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-79fb</con2:id>
+                                                <con1:location>
+                                                    <con2:xpathText xmlns:con2="http://www.bea.com/wli/sb/stages/config">.</con2:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-044</faultcode>
+		<faultstring>Servicio fuera de horario operativo</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-044</codigoError>
+				<descripcionError>Servicio fuera de horario operativo</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con2:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:default>
+                                        <con1:replace varName="body" contents-only="true">
+                                            <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-7c13</con2:id>
+                                            <con1:location>
+                                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                            </con1:location>
+                                            <con1:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-001</faultcode>
+		<faultstring>Error conectividad 1 - destination unreachable</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-001</codigoError>
+				<descripcionError>Error conectividad 1 - destination unreachable</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                            </con1:expr>
+                                        </con1:replace>
+                                    </con1:default>
+                                </con1:ifThenElse>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/ctx:errorCode='OSB-382502'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:ifThenElse>
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-7e2d</con2:id>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config">((xs:time(fn-bea:remove-timezone-from-time(fn:current-time())) &lt; xs:time($horaInicio))
+or
+(xs:time(fn-bea:remove-timezone-from-time(fn:current-time())) > xs:time($horaFin)))</con2:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace contents-only="true" varName="body">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-79c3</con2:id>
+                                                <con1:location>
+                                                    <con2:xpathText xmlns:con2="http://www.bea.com/wli/sb/stages/config">.</con2:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-044</faultcode>
+		<faultstring>Servicio fuera de horario operativo</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-044</codigoError>
+				<descripcionError>Servicio fuera de horario operativo</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con2:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:default>
+                                        <con1:replace varName="body" contents-only="true">
+                                            <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-7c11</con2:id>
+                                            <con1:location>
+                                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                            </con1:location>
+                                            <con1:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-002</faultcode>
+		<faultstring>Error conectividad 2 - not found (404)</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-002</codigoError>
+				<descripcionError>Error conectividad 2 - not found (404)</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>2</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                            </con1:expr>
+                                        </con1:replace>
+                                    </con1:default>
+                                </con1:ifThenElse>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/ctx:errorCode='OSB-380001'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:ifThenElse>
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-7e05</con2:id>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config">((xs:time(fn-bea:remove-timezone-from-time(fn:current-time())) &lt; xs:time($horaInicio))
+or
+(xs:time(fn-bea:remove-timezone-from-time(fn:current-time())) > xs:time($horaFin)))</con2:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace contents-only="true" varName="body">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-798b</con2:id>
+                                                <con1:location>
+                                                    <con2:xpathText xmlns:con2="http://www.bea.com/wli/sb/stages/config">.</con2:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-044</faultcode>
+		<faultstring>Servicio fuera de horario operativo</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-044</codigoError>
+				<descripcionError>Servicio fuera de horario operativo</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con2:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:default>
+                                        <con1:replace varName="body" contents-only="true">
+                                            <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-7c0f</con2:id>
+                                            <con1:location>
+                                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                            </con1:location>
+                                            <con1:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-005</faultcode>
+		<faultstring>Internal Server Error (500)</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-005</codigoError>
+				<descripcionError>Internal Server Error (500)</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>2</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                            </con1:expr>
+                                        </con1:replace>
+                                    </con1:default>
+                                </con1:ifThenElse>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:default>
+                            <con1:ifThenElse>
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-7dec</con2:id>
+                                <con1:case>
+                                    <con1:condition>
+                                        <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config">((xs:time(fn-bea:remove-timezone-from-time(fn:current-time())) &lt; xs:time($horaInicio))
+or
+(xs:time(fn-bea:remove-timezone-from-time(fn:current-time())) > xs:time($horaFin)))</con2:xqueryText>
+                                    </con1:condition>
+                                    <con1:actions>
+                                        <con1:replace contents-only="true" varName="body">
+                                            <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-791b</con2:id>
+                                            <con1:location>
+                                                <con2:xpathText xmlns:con2="http://www.bea.com/wli/sb/stages/config">.</con2:xpathText>
+                                            </con1:location>
+                                            <con1:expr>
+                                                <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-044</faultcode>
+		<faultstring>Servicio fuera de horario operativo</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-044</codigoError>
+				<descripcionError>Servicio fuera de horario operativo</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con2:xqueryText>
+                                            </con1:expr>
+                                        </con1:replace>
+                                    </con1:actions>
+                                </con1:case>
+                                <con1:default>
+                                    <con1:replace varName="body" contents-only="true">
+                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-7c0d</con2:id>
+                                        <con1:location>
+                                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                        </con1:location>
+                                        <con1:expr>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-006</faultcode>
+		<faultstring>",$fault/ctx:errorCode/text(),": ", $fault/ctx:reason/text(),"</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-006</codigoError>
+				<descripcionError>",$fault/ctx:errorCode/text(),": ",$fault/ctx:reason/text(),"</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>2</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                        </con1:expr>
+                                    </con1:replace>
+                                </con1:default>
+                            </con1:ifThenElse>
+                        </con1:default>
+                    </con1:ifThenElse>
+                    <con1:reply isError="true" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+                        <con1:id>_ActionId-5046400095430035851-750fc967.14c0fa0c341.-7ff0</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairAplicarMovimientoMidas_request" type="request" errorHandler="_onErrorHandler-5046400095430035851-750fc967.14c0fa0c341.-7fef" xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+            <con:stage name="stageValidacion">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPBanco" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="nmp2" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPBancario" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con:validate xmlns:con="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-1931505025210085916-567c8270.14a590e88a8.-7f7b</con1:id>
+                        <con:schema ref="CRMFaseI/Bancario/Resources/XSD/BancarioSvcXSD"/>
+                        <con:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPBanco" xmlns:nmp1="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPBancario">nmp1:aplicarMovimientoRequest</con:schemaElement>
+                        <con:varName>body</con:varName>
+                        <con:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./nmp2:aplicarMovimientoRequest</con:xpathText>
+                        </con:location>
+                        <con:resultVarName/>
+                    </con:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage name="stagePeticionAplicarMov">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPBanco" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="dto" namespace="http://dto.model.midas.nmp.com.mx" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="urn" namespace="urn:mx.com.nmp.midas" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="nmp2" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPBancario" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:wsCallout>
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-1931505025210085916-567c8270.14a590e88a8.-7f73</con2:id>
+                        <con1:service ref="CRMFaseI/Bancario/Business Services/ServicioBancarioSvcBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>registrarOperacion</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">aplicarMovReq</con1:body>
+                            <con1:header/>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">aplicarMovRes</con1:body>
+                            <con1:header/>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:assign varName="dvmOperacion">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-2877853885374550735--47b9a201.14ce73880cb.-7fcf</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryTransform xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                                        <con2:resource ref="CRMFaseI/Bancario/Resources/XQ/DVMOperacionMidasXQ"/>
+                                    </con2:xqueryTransform>
+                                </con1:expr>
+                            </con1:assign>
+                            <con1:assign varName="idOperacion">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-4856839353788737941--3df00721.14d24fe0969.-7fc6</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryTransform xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                                        <con2:resource ref="CRMFaseI/Bancario/Resources/XQ/GetOperacionMidasXQ"/>
+                                        <con2:param name="dvm">
+                                            <con2:path>$dvmOperacion</con2:path>
+                                        </con2:param>
+                                        <con2:param name="search">
+                                            <con2:path>fn:substring-after($header/nmp1:headerMessage/nmp1:idConsumidor,'-')</con2:path>
+                                        </con2:param>
+                                    </con2:xqueryTransform>
+                                </con1:expr>
+                            </con1:assign>
+                            <con1:assign varName="aplicarMovReq">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-1931505025210085916-567c8270.14a590e88a8.-7f72</con2:id>
+                                <con1:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat('<urn:registrarOperacion xmlns:urn="urn:mx.com.nmp.midas">',
+						    '<urn:folio>',$body/nmp2:aplicarMovimientoRequest/nmp2:referencia/text(),'</urn:folio>',
+						    '<urn:idOperacion>',$idOperacion,'</urn:idOperacion>',
+						    '<urn:importe>',$body/nmp2:aplicarMovimientoRequest/nmp2:importe/text(),'</urn:importe>',
+						    '<urn:origen>',fn:substring-before($header/nmp1:headerMessage/nmp1:idConsumidor/text(),'-'),'</urn:origen>',
+						    '<urn:transaccion>',$body/nmp2:aplicarMovimientoRequest/nmp2:transaccion/text(),'</urn:transaccion>',
+							'<urn:autorizacion>',$body/nmp2:aplicarMovimientoRequest/nmp2:autorizacion/text(),'</urn:autorizacion>',
+						    '</urn:registrarOperacion>'))]]></con:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:requestTransform>
+                        <con1:responseTransform>
+                            <con1:replace varName="body" contents-only="true">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-1931505025210085916-567c8270.14a590e88a8.-7f6e</con2:id>
+                                <con1:location>
+                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                </con1:location>
+                                <con1:expr>
+                                    <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(fn:concat('&lt;ns1:aplicarMovimientoResponse xmlns:ns1="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPBancario">',
+							'&lt;ns1:respuesta>',fn:replace(xs:string($aplicarMovRes/urn:return),'true', '0'),'&lt;/ns1:respuesta>',
+							'&lt;/ns1:aplicarMovimientoResponse>'))</con2:xqueryText>
+                                </con1:expr>
+                            </con1:replace>
+                            <con2:report xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7fc8</con3:id>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$aplicarMovRes</con:xqueryText>
+                                </con2:expr>
+                            </con2:report>
+                        </con1:responseTransform>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairMidasDefault_request" type="request" xmlns:con="http://www.bea.com/wli/sb/pipeline/config"/>
+        <con:pipeline name="_onErrorHandler-7480183515276572082--74c1a856.14c287ba2bb.-7ff0" type="error" xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+            <con2:stage name="Error Handler General" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+                <con2:context>
+                    <con1:userNsDecl prefix="con" namespace="http://www.bea.com/wli/sb/context"/>
+                    <con1:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                    <con1:userNsDecl prefix="ns1" namespace="urn:mx.com.nmp.clientes"/>
+                    <con1:userNsDecl prefix="NMPConsultaC" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente"/>
+                    <con1:userNsDecl prefix="crm" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal"/>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal"/>
+                    <con1:varNsDecl prefix="nmp2" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente"/>
+                    <con1:varNsDecl prefix="nmp3" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPBancario"/>
+                </con2:context>
+                <con2:actions>
+                    <con1:replace varName="header" contents-only="false" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7fee</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML('&lt;soapenv:Header xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">&lt;/soapenv:Header>')</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con3:report xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con1:id>_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7fed</con1:id>
+                        <con3:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault</con:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>errorBancario</con3:key>
+                            <con3:varName>fault</con3:varName>
+                            <con3:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./con:errorCode</con:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                    <con1:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7fec</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/con:errorCode = 'OSB-380000'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7feb</con2:id>
+                                    <con1:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-003</faultcode>
+		<faultstring>Se ha excedido el tiempo de espera</faultstring>
+		<faultactor/>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+										xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-003</codigoError>
+				<descripcionError>Se ha excedido el tiempo de espera</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>2</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                                <con2:reply isError="true" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                                    <con2:id>_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7fea</con2:id>
+                                </con2:reply>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/con:errorCode = 'OSB-382500'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:ifThenElse>
+                                    <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7f89</con3:id>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/con:details/con1:ReceivedFaultDetail/con1:faultstring/text() = "ExRefInvalida"</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace varName="body" contents-only="true">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7f87</con2:id>
+                                                <con1:location>
+                                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-020</faultcode>
+		<faultstring>La referencia es inválida</faultstring>
+		<faultactor/>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+										xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-020</codigoError>
+				<descripcionError>La referencia es inválida</descripcionError>
+				<tipoError>Negocio</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                            <con3:reply isError="true" xmlns:con3="http://www.bea.com/wli/sb/stages/config">
+                                                <con3:id>_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7f88</con3:id>
+                                            </con3:reply>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/con:details/con1:ReceivedFaultDetail/con1:faultstring/text() = "ExEstatus"</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace varName="body" contents-only="true">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7f85</con2:id>
+                                                <con1:location>
+                                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-021</faultcode>
+		<faultstring>El contrato no se encuentra en estatus 60</faultstring>
+		<faultactor/>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+										xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-020</codigoError>
+				<descripcionError>El contrato no se encuentra en estatus 60</descripcionError>
+				<tipoError>Negocio</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                            <con3:reply isError="true" xmlns:con3="http://www.bea.com/wli/sb/stages/config">
+                                                <con3:id>_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7f86</con3:id>
+                                            </con3:reply>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/con:details/con1:ReceivedFaultDetail/con1:faultstring/text() = "ExBanco"</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace varName="body" contents-only="true">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7f83</con2:id>
+                                                <con1:location>
+                                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-022</faultcode>
+		<faultstring>El banco fuente es inválido</faultstring>
+		<faultactor/>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+										xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-022</codigoError>
+				<descripcionError>El banco fuente es inválido</descripcionError>
+				<tipoError>Negocio</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                            <con3:reply isError="true" xmlns:con3="http://www.bea.com/wli/sb/stages/config">
+                                                <con3:id>_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7f84</con3:id>
+                                            </con3:reply>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/con:details/con1:ReceivedFaultDetail/con1:faultstring/text() = "ExBancoInhab"</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace varName="body" contents-only="true">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7f81</con2:id>
+                                                <con1:location>
+                                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-023</faultcode>
+		<faultstring>No existe un banco habilitado</faultstring>
+		<faultactor/>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+										xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-023</codigoError>
+				<descripcionError>No existe un banco habilitado</descripcionError>
+				<tipoError>Negocio</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                            <con3:reply isError="true" xmlns:con3="http://www.bea.com/wli/sb/stages/config">
+                                                <con3:id>_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7f82</con3:id>
+                                            </con3:reply>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/con:details/con1:ReceivedFaultDetail/con1:faultstring/text() = "ExBp"</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace varName="body" contents-only="true">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7f7f</con2:id>
+                                                <con1:location>
+                                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-024</faultcode>
+		<faultstring>No se encuentra información del cliente</faultstring>
+		<faultactor/>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+										xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-024</codigoError>
+				<descripcionError>No se encuentra información del cliente</descripcionError>
+				<tipoError>Negocio</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                            <con3:reply isError="true" xmlns:con3="http://www.bea.com/wli/sb/stages/config">
+                                                <con3:id>_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7f80</con3:id>
+                                            </con3:reply>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/con:details/con1:ReceivedFaultDetail/con1:faultstring/text() = "ExClavesMov"</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:ifThenElse>
+                                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7f72</con3:id>
+                                                <con1:case>
+                                                    <con1:condition>
+                                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$operation = "consultarDatos"</con:xqueryText>
+                                                    </con1:condition>
+                                                    <con1:actions>
+                                                        <con1:replace varName="body" contents-only="true">
+                                                            <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7f70</con2:id>
+                                                            <con1:location>
+                                                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                                            </con1:location>
+                                                            <con1:expr>
+                                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-025</faultcode>
+		<faultstring>Error al cargar las claves de movimiento</faultstring>
+		<faultactor/>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+										xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-025</codigoError>
+				<descripcionError>Error al cargar las claves de movimiento</descripcionError>
+				<tipoError>Negocio</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                                            </con1:expr>
+                                                        </con1:replace>
+                                                        <con3:reply isError="true" xmlns:con3="http://www.bea.com/wli/sb/stages/config">
+                                                            <con3:id>_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7f71</con3:id>
+                                                        </con3:reply>
+                                                    </con1:actions>
+                                                </con1:case>
+                                                <con1:default>
+                                                    <con1:replace varName="body" contents-only="true">
+                                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7f6e</con2:id>
+                                                        <con1:location>
+                                                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                                        </con1:location>
+                                                        <con1:expr>
+                                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-030</faultcode>
+		<faultstring>No existen claves de movimiento para los vencimientos</faultstring>
+		<faultactor/>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+										xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-030</codigoError>
+				<descripcionError>No existen claves de movimiento para los vencimientos</descripcionError>
+				<tipoError>Negocio</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                                        </con1:expr>
+                                                    </con1:replace>
+                                                    <con3:reply isError="true" xmlns:con3="http://www.bea.com/wli/sb/stages/config">
+                                                        <con3:id>_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7f6f</con3:id>
+                                                    </con3:reply>
+                                                </con1:default>
+                                            </con1:ifThenElse>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/con:details/con1:ReceivedFaultDetail/con1:faultstring/text() = "ExContratoNe"</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace varName="body" contents-only="true">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7f79</con2:id>
+                                                <con1:location>
+                                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-026</faultcode>
+		<faultstring>El contrato no existe</faultstring>
+		<faultactor/>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+										xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-026</codigoError>
+				<descripcionError>El contrato no existe</descripcionError>
+				<tipoError>Negocio</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                            <con3:reply isError="true" xmlns:con3="http://www.bea.com/wli/sb/stages/config">
+                                                <con3:id>_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7f7a</con3:id>
+                                            </con3:reply>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/con:details/con1:ReceivedFaultDetail/con1:faultstring/text() = "ExLog"</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace varName="body" contents-only="true">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7f77</con2:id>
+                                                <con1:location>
+                                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-027</faultcode>
+		<faultstring>Error al almacenar información en el log</faultstring>
+		<faultactor/>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+										xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-027</codigoError>
+				<descripcionError>Error al almacenar información en el log</descripcionError>
+				<tipoError>Negocio</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                            <con3:reply isError="true" xmlns:con3="http://www.bea.com/wli/sb/stages/config">
+                                                <con3:id>_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7f78</con3:id>
+                                            </con3:reply>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/con:details/con1:ReceivedFaultDetail/con1:faultstring/text() = "ExPago"</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace varName="body" contents-only="true">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7f75</con2:id>
+                                                <con1:location>
+                                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-028</faultcode>
+		<faultstring>Ocurrió un error al aplicar el pago</faultstring>
+		<faultactor/>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+										xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-028</codigoError>
+				<descripcionError>Ocurrió un error al aplicar el pago</descripcionError>
+				<tipoError>Negocio</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                            <con3:reply isError="true" xmlns:con3="http://www.bea.com/wli/sb/stages/config">
+                                                <con3:id>_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7f76</con3:id>
+                                            </con3:reply>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/con:details/con1:ReceivedFaultDetail/con1:faultstring/text() = "ExLayout"</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace varName="body" contents-only="true">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7f73</con2:id>
+                                                <con1:location>
+                                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-029</faultcode>
+		<faultstring>No existe información de configuración activa para el pago en línea</faultstring>
+		<faultactor/>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+										xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-029</codigoError>
+				<descripcionError>No existe información de configuración activa para el pago en línea</descripcionError>
+				<tipoError>Negocio</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                            <con3:reply isError="true" xmlns:con3="http://www.bea.com/wli/sb/stages/config">
+                                                <con3:id>_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7f74</con3:id>
+                                            </con3:reply>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:default>
+                                        <con1:replace varName="body" contents-only="true">
+                                            <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7f6a</con2:id>
+                                            <con1:location>
+                                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                            </con1:location>
+                                            <con1:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-005</faultcode>
+		<faultstring>SOAP Fault Response: Ha ocurrido un error inesperado (", $fault/con:details/con1:ReceivedFaultDetail/con1:faultstring/text(),")</faultstring>
+		<faultactor/>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+										xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-005</codigoError>
+				<descripcionError>SOAP Fault Response: Ha ocurrido un error inesperado (", $fault/con:details/con1:ReceivedFaultDetail/con1:faultstring/text(),")</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>2</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                            </con1:expr>
+                                        </con1:replace>
+                                        <con3:reply isError="true" xmlns:con3="http://www.bea.com/wli/sb/stages/config">
+                                            <con3:id>_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7f6b</con3:id>
+                                        </con3:reply>
+                                    </con1:default>
+                                </con1:ifThenElse>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/con:errorCode = 'OSB-380002'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7f7d</con2:id>
+                                    <con1:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-001</faultcode>
+		<faultstring>Error conectividad 1 - destination unreachable</faultstring>
+		<faultactor/>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+										xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-001</codigoError>
+				<descripcionError>Error conectividad 1 - destination unreachable</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                                <con3:reply isError="true" xmlns:con3="http://www.bea.com/wli/sb/stages/config">
+                                    <con3:id>_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7f7e</con3:id>
+                                </con3:reply>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/con:errorCode = 'OSB-382502'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7fe5</con2:id>
+                                    <con1:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+   <soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+	<faultcode>NMP-002</faultcode>
+	<faultstring>Error conectividad 2 - not found (404)</faultstring>
+	<faultactor/>
+	<detail>
+                <messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+                                      xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+		        <codigoError>NMP-002</codigoError>
+		        <descripcionError>Error conectividad 2 - not found (404)</descripcionError>
+		        <tipoError>Técnico</tipoError>
+		        <severidad>2</severidad>
+                </messageError>
+	</detail>
+   </soap-env:Fault>
+"))]]></con:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                                <con2:reply isError="true" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                                    <con2:id>_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7fe4</con2:id>
+                                </con2:reply>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/con:errorCode = 'OSB-380001'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7fe3</con2:id>
+                                    <con1:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+   <soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+	<faultcode>NMP-005</faultcode>
+	<faultstring>Internal Server Error (500)</faultstring>
+	<faultactor/>
+	<detail>
+                <messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+                                      xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+		        <codigoError>NMP-005</codigoError>
+		        <descripcionError>Internal Server Error (500)</descripcionError>
+		        <tipoError>Técnico</tipoError>
+		        <severidad>2</severidad>
+                </messageError>
+	</detail>
+   </soap-env:Fault>
+"))]]></con:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                                <con2:reply isError="false" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                                    <con2:id>_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7fe2</con2:id>
+                                </con2:reply>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                </con2:actions>
+            </con2:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairMidasDefault_response" type="response" xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+            <con:stage name="stageRespuestaDefaultMidas">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPBancario" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="header" contents-only="false">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7fdd</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML('&lt;soapenv:Header xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">&lt;/soapenv:Header>')</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7fdc</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-008</faultcode>
+		<faultstring>Error aplicación - Error en los parámetros del mensaje. Los únicos valores esperados para idDestino en el encabezado, son 'MIDAS', o 'SAP'</faultstring>
+		<faultactor/>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+										xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-008</codigoError>
+				<descripcionError>Error aplicación - Error en los parámetros del mensaje. Los únicos valores esperados para idDestino en el encabezado, son 'MIDAS', o 'SAP'</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>2</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:reply isError="true" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+                        <con1:id>_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7fdb</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNodeAplicarMovimientoSAP_request" type="request" xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+            <con:stage name="Request Stage">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPBancario" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="RecievePaymentDataReq">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7fca</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("<urn:ZlmReceivePaymentdata xmlns:urn='urn:sap-com:document:sap:soap:functions:mc-style'>
+        <Banco>", $header/nmp:headerMessage/nmp:idConsumidor/text(),"</Banco>
+	<Moneda>", $body/nmp1:aplicarMovimientoRequest/nmp1:tipoMoneda/text(),"</Moneda>
+        <Monto>", $body/nmp1:aplicarMovimientoRequest/nmp1:importe/text(),"</Monto>
+        <NumAut>", $body/nmp1:aplicarMovimientoRequest/nmp1:autorizacion/text(),"</NumAut>
+        <Referencia>", $body/nmp1:aplicarMovimientoRequest/nmp1:referencia/text(),"</Referencia>
+    </urn:ZlmReceivePaymentdata>"))]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:wsCallout>
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7fc9</con2:id>
+                        <con1:service ref="CRMFaseI/Bancario/Business Services/RfcRecievePaymentDataBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>ZlmReceivePaymentdata</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">RecievePaymentDataReq</con1:body>
+                            <con1:header/>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">RecievePaymentDataRes</con1:body>
+                            <con1:header/>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:routing-options>
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.24c85e56.b.157686b43c4.N7ffb</con3:id>
+                                <con1:uriExpr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$targetEndpoint</con:xqueryText>
+                                </con1:uriExpr>
+                            </con1:routing-options>
+                        </con1:requestTransform>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNodeHeaderValidation_response" type="response" xmlns:con="http://www.bea.com/wli/sb/pipeline/config"/>
+        <con:pipeline name="PipelinePairNodeConsultarDatosSAP_request" type="request" xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+            <con:stage name="Request Stage">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPBancario" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="PaymentInquiryReq">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7ff5</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("<urn:ZlmPaymentInquiry xmlns:urn='urn:sap-com:document:sap:soap:functions:mc-style'>
+        <Banco>", $header/nmp:headerMessage/nmp:idConsumidor/text(),"</Banco>
+        <Referencia>", $body/nmp1:consultarDatosRequest/nmp1:referencia/text(),"</Referencia>
+    </urn:ZlmPaymentInquiry>"))]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="referenciaLength">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7ff4</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:string-length($body/nmp1:consultarDatosRequest/nmp1:referencia/text())</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:wsCallout>
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7ff3</con2:id>
+                        <con1:service ref="CRMFaseI/Bancario/Business Services/RfcPaymentInquiryBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>ZlmPaymentInquiry</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">PaymentInquiryReq</con1:body>
+                            <con1:header/>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">PaymentInquiryRes</con1:body>
+                            <con1:header/>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:routing-options>
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.24c85e56.2.157499eced4.N7ffd</con3:id>
+                                <con1:uriExpr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$targetEndpoint</con:xqueryText>
+                                </con1:uriExpr>
+                            </con1:routing-options>
+                        </con1:requestTransform>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNodeConsultarDatosSAP_response" type="response" xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+            <con:stage name="Response Stage">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPBancario" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7ff2</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="CRMFaseI/Bancario/Resources/XSLT/TrPaymentInquiryToBancario"/>
+                                <con:input>$PaymentInquiryRes</con:input>
+                            </con:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:assign varName="stringLength">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7ff1</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:string-length($PaymentInquiryRes/DatosRecibo/Desc1/text())</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairAplicarMovimientoMidas_response" type="response" xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+            <con:stage name="stageRespuestaAplicarMov">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPBanco" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="header" contents-only="true">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-1931505025210085916-567c8270.14a590e88a8.-7f6d</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML('&lt;soapenv:Header xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">&lt;/soapenv:Header>')</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:reply isError="false" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+                        <con1:id>_ActionId-1931505025210085916-567c8270.14a590e88a8.-7f6c</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairConsultarDatosMidas_request" type="request" errorHandler="_onErrorHandler-5046400095430035851-750fc967.14c0fa0c341.-7ff1" xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+            <con:stage name="stageValidacion">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPBanco" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="nmp2" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPBancario" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con:validate xmlns:con="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-1931505025210085916-567c8270.14a590e88a8.-7f7a</con1:id>
+                        <con:schema ref="CRMFaseI/Bancario/Resources/XSD/BancarioSvcXSD"/>
+                        <con:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPBanco" xmlns:nmp1="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPBancario">nmp1:consultarDatosRequest</con:schemaElement>
+                        <con:varName>body</con:varName>
+                        <con:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./nmp2:consultarDatosRequest</con:xpathText>
+                        </con:location>
+                        <con:resultVarName/>
+                    </con:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage name="stagePeticionConsultarDatos">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPBanco" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="nmp2" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPBancario" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con:wsCallout xmlns:con="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-1931505025210085916-567c8270.14a590e88a8.-7f79</con1:id>
+                        <con:service ref="CRMFaseI/Bancario/Business Services/ServicioBancarioSvcBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con:operation>obtenerInformacionPartida</con:operation>
+                        <con:request>
+                            <con:body wrapped="false">getConsultaSaldosReq</con:body>
+                            <con:header/>
+                        </con:request>
+                        <con:response>
+                            <con:body wrapped="false">getConsultaSaldosRes</con:body>
+                            <con:header/>
+                        </con:response>
+                        <con:requestTransform>
+                            <con:assign varName="dvmOperacion">
+                                <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-2778845797799802359-7f51c59a.14ce701e5bc.-7fd2</con1:id>
+                                <con:expr>
+                                    <con1:xqueryTransform xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+                                        <con1:resource ref="CRMFaseI/Bancario/Resources/XQ/DVMOperacionMidasXQ"/>
+                                    </con1:xqueryTransform>
+                                </con:expr>
+                            </con:assign>
+                            <con:assign varName="idOperacion">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-4856839353788737941--3df00721.14d24fe0969.-7fe4</con2:id>
+                                <con:expr>
+                                    <con2:xqueryTransform xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                                        <con2:resource ref="CRMFaseI/Bancario/Resources/XQ/GetOperacionMidasXQ"/>
+                                        <con2:param name="dvm">
+                                            <con2:path>$dvmOperacion</con2:path>
+                                        </con2:param>
+                                        <con2:param name="search">
+                                            <con2:path>fn:substring-after($header/nmp1:headerMessage/nmp1:idConsumidor,'-')</con2:path>
+                                        </con2:param>
+                                    </con2:xqueryTransform>
+                                </con:expr>
+                            </con:assign>
+                            <con:assign varName="getConsultaSaldosReq">
+                                <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-1931505025210085916-567c8270.14a590e88a8.-7f78</con1:id>
+                                <con:expr>
+                                    <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat('<urn:obtenerInformacionPartida xmlns:urn="urn:mx.com.nmp.midas">',
+							'<urn:folio>',$body/nmp2:consultarDatosRequest/nmp2:referencia/text(),'</urn:folio>',
+						    '<urn:idOperacion>',$idOperacion,'</urn:idOperacion>',
+						    '<urn:origen>',fn:substring-before($header/nmp1:headerMessage/nmp1:idConsumidor/text(),'-'),'</urn:origen>',
+							'</urn:obtenerInformacionPartida>'))]]></con2:xqueryText>
+                                </con:expr>
+                            </con:assign>
+                        </con:requestTransform>
+                        <con:responseTransform>
+                            <con:replace varName="body" contents-only="true">
+                                <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-1931505025210085916-567c8270.14a590e88a8.-7f76</con1:id>
+                                <con:location>
+                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                </con:location>
+                                <con:expr>
+                                    <con:xqueryTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                        <con:resource ref="CRMFaseI/Bancario/Resources/XQ/consultaDatosMidasRespTransformXQ"/>
+                                        <con:param name="obtenerInformacionPartidaResponse">
+                                            <con:path>$getConsultaSaldosRes</con:path>
+                                        </con:param>
+                                    </con:xqueryTransform>
+                                </con:expr>
+                            </con:replace>
+                        </con:responseTransform>
+                    </con:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairConsultarDatosMidas_response" type="response" xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+            <con:stage name="stageRespuestaConsultarDatos">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPBanco" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="nmp2" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPBancario" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="header" contents-only="false">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-1931505025210085916-567c8270.14a590e88a8.-7f75</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML('&lt;soapenv:Header xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">&lt;/soapenv:Header>')</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:reply isError="false" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+                        <con1:id>_ActionId-1931505025210085916-567c8270.14a590e88a8.-7f74</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNodeAplicarMovimientoSAP_response" type="response" xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+            <con:stage name="Response Stage">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="n0" namespace="urn:sap-com:document:sap:soap:functions:mc-style" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPBancario" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con:replace varName="body" contents-only="true" xmlns:con="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7f6d</con1:id>
+                        <con:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con:location>
+                        <con:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(fn:concat("&lt;aplicarMovimientoResponse xmlns:NMPBancario='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPBancario'>
+   &lt;NMPBancario:respuesta>", $RecievePaymentDataRes/Confirmacion, "&lt;/NMPBancario:respuesta>
+&lt;/aplicarMovimientoResponse>"))</con:xqueryText>
+                        </con:expr>
+                    </con:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="_onErrorHandler-5046400095430035851-750fc967.14c0fa0c341.-7fef" type="error" xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+            <con:stage name="stageErroresAplicarMov">
+                <con:context>
+                    <con1:userNsDecl prefix="ctx1" namespace="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="urn" namespace="urn:mx.com.nmp.midas" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="mex" namespace="http://exception.midas.nmp.com.mx" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPBancario" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="header" contents-only="false">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-4856839353788737941--3df00721.14d24fe0969.-7ec6</con2:id>
+                        <con1:location>
+                            <con2:xpathText xmlns:con2="http://www.bea.com/wli/sb/stages/config">.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML('&lt;soapenv:Header xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">&lt;/soapenv:Header>')</con2:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:assign varName="dvmHorario">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-78e3</con2:id>
+                        <con1:expr>
+                            <con2:xqueryTransform xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                                <con2:resource ref="CRMFaseI/Bancario/Resources/XQ/DVMOperacionMidasXQ"/>
+                            </con2:xqueryTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="horaInicio">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-4856839353788737941--3df00721.14d24fe0969.-7f02</con2:id>
+                        <con1:expr>
+                            <con2:xqueryTransform xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                                <con2:resource ref="CRMFaseI/Bancario/Resources/XQ/GetHorarioMidasXQ"/>
+                                <con2:param name="dvm">
+                                    <con2:path>$dvmHorario</con2:path>
+                                </con2:param>
+                                <con2:param name="hora">
+                                    <con2:path>'inicio'</con2:path>
+                                </con2:param>
+                            </con2:xqueryTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="horaFin">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-4856839353788737941--3df00721.14d24fe0969.-7ee5</con2:id>
+                        <con1:expr>
+                            <con2:xqueryTransform xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                                <con2:resource ref="CRMFaseI/Bancario/Resources/XQ/GetHorarioMidasXQ"/>
+                                <con2:param name="dvm">
+                                    <con2:path>$dvmHorario</con2:path>
+                                </con2:param>
+                                <con2:param name="hora">
+                                    <con2:path>'fin'</con2:path>
+                                </con2:param>
+                            </con2:xqueryTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:ifThenElse>
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-5046400095430035851-750fc967.14c0fa0c341.-7fe2</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/ctx:errorCode='OSB-382505'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-5046400095430035851-750fc967.14c0fa0c341.-7fe1</con2:id>
+                                    <con1:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-008</faultcode>
+		<faultstring>Error en los parámetros del mensaje</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-008</codigoError>
+				<descripcionError>Error en los parámetros del mensaje</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>2</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/ctx:errorCode='OSB-382500'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:ifThenElse>
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7fd3</con2:id>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:detail/urn:ServiceException/mex:codigoError = 'WS001'</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace varName="body" contents-only="true">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7fd1</con2:id>
+                                                <con1:location>
+                                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-040</faultcode>
+		<faultstring>La partida especificada no tiene operaciones disponibles</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-040</codigoError>
+				<descripcionError>La partida especificada no tiene operaciones disponibles</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:detail/urn:ServiceException/mex:codigoError = 'WS002'</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace varName="body" contents-only="true">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7fd0</con2:id>
+                                                <con1:location>
+                                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-041</faultcode>
+		<faultstring>El identificador de la transacción especificado no es válido</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-041</codigoError>
+				<descripcionError>El identificador de la transacción especificado no es válido</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:detail/urn:ServiceException/mex:codigoError = 'WS003'</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace contents-only="true" varName="body">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7fcf</con2:id>
+                                                <con1:location>
+                                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-042</faultcode>
+		<faultstring>El importe especificado no es válido o no corresponde al esperado para la operación solicitada</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-042</codigoError>
+				<descripcionError>El importe especificado no es válido o no corresponde al esperado para la operación solicitada</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:detail/urn:ServiceException/mex:codigoError = 'WS004'</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace varName="body" contents-only="true">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7fcc</con2:id>
+                                                <con1:location>
+                                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-043</faultcode>
+		<faultstring>La operación solicitada no es válida para la partida</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-043</codigoError>
+				<descripcionError>La operación solicitada no es válida para la partida</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config">$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:detail/urn:ServiceException/mex:codigoError = 'WS005'</con2:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace varName="body" contents-only="true">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-7f65</con2:id>
+                                                <con1:location>
+                                                    <con2:xpathText xmlns:con2="http://www.bea.com/wli/sb/stages/config">.</con2:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-044</faultcode>
+		<faultstring>Servicio fuera de horario operativo</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-044</codigoError>
+				<descripcionError>Servicio fuera de horario operativo</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con2:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:detail/urn:ServiceException/mex:codigoError = 'WS006'</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace varName="body" contents-only="true">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-3708010327031629053-b5d49be.14dbb932212.-7ef9</con2:id>
+                                                <con1:location>
+                                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-045</faultcode>
+		<faultstring>No se encontró partida relacionada para el folio</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-045</codigoError>
+				<descripcionError>No se encontró partida relacionada para el folio</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:detail/urn:ServiceException/mex:codigoError = 'WS007'</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace varName="body" contents-only="true">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-3708010327031629053-b5d49be.14dbb932212.-7ef8</con2:id>
+                                                <con1:location>
+                                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-046</faultcode>
+		<faultstring>Parámetro no válido</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-046</codigoError>
+				<descripcionError>Parámetro no válido</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:default>
+                                        <con1:replace varName="body" contents-only="true">
+                                            <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7fd2</con2:id>
+                                            <con1:location>
+                                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                            </con1:location>
+                                            <con1:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-005</faultcode>
+		<faultstring>SOAP Fault Response. Ha ocurrido un error inesperado: ",$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text(),"</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-005</codigoError>
+				<descripcionError>SOAP Fault Response. Ha ocurrido un error inesperado: ",$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text(),"</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>2</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                            </con1:expr>
+                                        </con1:replace>
+                                    </con1:default>
+                                </con1:ifThenElse>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/ctx:errorCode='OSB-380000'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:ifThenElse>
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-783d</con2:id>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config">((xs:time(fn-bea:remove-timezone-from-time(fn:current-time())) &lt; xs:time($horaInicio))
+or
+(xs:time(fn-bea:remove-timezone-from-time(fn:current-time())) > xs:time($horaFin)))</con2:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace contents-only="true" varName="body">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-771b</con2:id>
+                                                <con1:location>
+                                                    <con2:xpathText xmlns:con2="http://www.bea.com/wli/sb/stages/config">.</con2:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-044</faultcode>
+		<faultstring>Servicio fuera de horario operativo</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-044</codigoError>
+				<descripcionError>Servicio fuera de horario operativo</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con2:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:default>
+                                        <con1:replace varName="body" contents-only="true">
+                                            <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-783b</con2:id>
+                                            <con1:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-003</faultcode>
+		<faultstring>Se ha excedido el tiempo de espera</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-003</codigoError>
+				<descripcionError>Se ha excedido el tiempo de espera</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>2</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                            </con1:expr>
+                                        </con1:replace>
+                                    </con1:default>
+                                </con1:ifThenElse>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/ctx:errorCode='OSB-380002'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:ifThenElse>
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-7803</con2:id>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config">((xs:time(fn-bea:remove-timezone-from-time(fn:current-time())) &lt; xs:time($horaInicio))
+or
+(xs:time(fn-bea:remove-timezone-from-time(fn:current-time())) > xs:time($horaFin)))</con2:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace contents-only="true" varName="body">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-76e3</con2:id>
+                                                <con1:location>
+                                                    <con2:xpathText xmlns:con2="http://www.bea.com/wli/sb/stages/config">.</con2:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-044</faultcode>
+		<faultstring>Servicio fuera de horario operativo</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-044</codigoError>
+				<descripcionError>Servicio fuera de horario operativo</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con2:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:default>
+                                        <con1:replace varName="body" contents-only="true">
+                                            <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-7801</con2:id>
+                                            <con1:location>
+                                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                            </con1:location>
+                                            <con1:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-001</faultcode>
+		<faultstring>Error conectividad 1 - destination unreachable</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-001</codigoError>
+				<descripcionError>Error conectividad 1 - destination unreachable</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                            </con1:expr>
+                                        </con1:replace>
+                                    </con1:default>
+                                </con1:ifThenElse>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/ctx:errorCode='OSB-382502'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:ifThenElse>
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-77c9</con2:id>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config">((xs:time(fn-bea:remove-timezone-from-time(fn:current-time())) &lt; xs:time($horaInicio))
+or
+(xs:time(fn-bea:remove-timezone-from-time(fn:current-time())) > xs:time($horaFin)))</con2:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace contents-only="true" varName="body">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-76ab</con2:id>
+                                                <con1:location>
+                                                    <con2:xpathText xmlns:con2="http://www.bea.com/wli/sb/stages/config">.</con2:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-044</faultcode>
+		<faultstring>Servicio fuera de horario operativo</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-044</codigoError>
+				<descripcionError>Servicio fuera de horario operativo</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con2:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:default>
+                                        <con1:replace varName="body" contents-only="true">
+                                            <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-77c7</con2:id>
+                                            <con1:location>
+                                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                            </con1:location>
+                                            <con1:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-002</faultcode>
+		<faultstring>Error conectividad 2 - not found (404)</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-002</codigoError>
+				<descripcionError>Error conectividad 2 - not found (404)</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>2</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                            </con1:expr>
+                                        </con1:replace>
+                                    </con1:default>
+                                </con1:ifThenElse>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/ctx:errorCode='OSB-380001'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:ifThenElse>
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-778f</con2:id>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config">((xs:time(fn-bea:remove-timezone-from-time(fn:current-time())) &lt; xs:time($horaInicio))
+or
+(xs:time(fn-bea:remove-timezone-from-time(fn:current-time())) > xs:time($horaFin)))</con2:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace contents-only="true" varName="body">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-7673</con2:id>
+                                                <con1:location>
+                                                    <con2:xpathText xmlns:con2="http://www.bea.com/wli/sb/stages/config">.</con2:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-044</faultcode>
+		<faultstring>Servicio fuera de horario operativo</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-044</codigoError>
+				<descripcionError>Servicio fuera de horario operativo</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con2:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:default>
+                                        <con1:replace varName="body" contents-only="true">
+                                            <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-778d</con2:id>
+                                            <con1:location>
+                                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                            </con1:location>
+                                            <con1:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-005</faultcode>
+		<faultstring>Internal Server Error (500)</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-005</codigoError>
+				<descripcionError>Internal Server Error (500)</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>2</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                            </con1:expr>
+                                        </con1:replace>
+                                    </con1:default>
+                                </con1:ifThenElse>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:default>
+                            <con1:ifThenElse>
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-7755</con2:id>
+                                <con1:case>
+                                    <con1:condition>
+                                        <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config">((xs:time(fn-bea:remove-timezone-from-time(fn:current-time())) &lt; xs:time($horaInicio))
+or
+(xs:time(fn-bea:remove-timezone-from-time(fn:current-time())) > xs:time($horaFin)))</con2:xqueryText>
+                                    </con1:condition>
+                                    <con1:actions>
+                                        <con1:replace contents-only="true" varName="body">
+                                            <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-763b</con2:id>
+                                            <con1:location>
+                                                <con2:xpathText xmlns:con2="http://www.bea.com/wli/sb/stages/config">.</con2:xpathText>
+                                            </con1:location>
+                                            <con1:expr>
+                                                <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-044</faultcode>
+		<faultstring>Servicio fuera de horario operativo</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-044</codigoError>
+				<descripcionError>Servicio fuera de horario operativo</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con2:xqueryText>
+                                            </con1:expr>
+                                        </con1:replace>
+                                    </con1:actions>
+                                </con1:case>
+                                <con1:default>
+                                    <con1:replace varName="body" contents-only="true">
+                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8116092155364317726-331f7aa3.14d05dc3227.-7753</con2:id>
+                                        <con1:location>
+                                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                        </con1:location>
+                                        <con1:expr>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-006</faultcode>
+		<faultstring>",$fault/ctx:errorCode/text(),": ",$fault/ctx:reason/text(),"</faultstring>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-006</codigoError>
+				<descripcionError>",$fault/ctx:errorCode/text(),": ",$fault/ctx:reason/text(),"</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>2</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                        </con1:expr>
+                                    </con1:replace>
+                                </con1:default>
+                            </con1:ifThenElse>
+                        </con1:default>
+                    </con1:ifThenElse>
+                    <con1:reply isError="true" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+                        <con1:id>_ActionId-5046400095430035851-750fc967.14c0fa0c341.-7fee</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNodeHeaderValidation_request" type="request" xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+            <con:stage name="SetTargetEndpointStage">
+                <con:comment/>
+                <con:context>
+                    <con3:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPBancario" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="endpoints">
+                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.24c85e56.1a.1579c54b0f2.N7ffe</con3:id>
+                        <con1:expr>
+                            <con:xqueryTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="CRMFaseI/Bancario/Resources/XQ/RoutingEndpoints"/>
+                            </con:xqueryTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="targetEndpoint">
+                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.24c85e56.1a.1579c54b0f2.N7ffd</con3:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$endpoints//route[@establishment=$header/*:headerMessage/*:idDestino/text()]/operations/operation[@name=fn:data($operation)]/endpointURL/text()</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:ifThenElse>
+                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.24c85e56.12.15772fa3783.N7ffd</con3:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:string-length($targetEndpoint) = 0</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:assign varName="targetEndpoint">
+                                    <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.24c85e56.19.1579c41ee10.N7ffe</con3:id>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$endpoints//route[1]/operations/operation[@name=fn:data($operation)]/endpointURL/text()</con:xqueryText>
+                                    </con1:expr>
+                                </con1:assign>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                    <con3:report xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con4:id xmlns:con4="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.24c85e56.2.157499eced4.N7ff9</con4:id>
+                        <con3:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$targetEndpoint</con:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>Establecimiento</con3:key>
+                            <con3:varName>header</con3:varName>
+                            <con3:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./*:headerMessage/*:idDestino</con:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                </con:actions>
+            </con:stage>
+            <con:stage name="Set Header Values">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPBancario" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:ifThenElse>
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7fc7</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$operation = "consultarDatos"</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:ifThenElse>
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7fc5</con2:id>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:string-length($body/nmp1:consultarDatosRequest/nmp1:referencia/text()) &lt; 10</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace varName="header" contents-only="false">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7fc4</con2:id>
+                                                <con1:location>
+                                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("<soap:Header xmlns:soap='http://schemas.xmlsoap.org/soap/envelope/' xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader'>
+	<nmp:headerMessage>
+		<nmp:usuario>", $header/nmp:headerMessage/nmp:usuario/text(),"</nmp:usuario>
+		<nmp:idConsumidor>", $header/nmp:headerMessage/nmp:idConsumidor/text(), "-", $header/nmp:headerMessage/nmp:idDestino/text(), "</nmp:idConsumidor>
+		<nmp:idDestino>MIDAS</nmp:idDestino>
+	</nmp:headerMessage>
+</soap:Header>"))]]></con2:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:default>
+                                        <con1:replace varName="header" contents-only="false">
+                                            <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7fb9</con2:id>
+                                            <con1:location>
+                                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                            </con1:location>
+                                            <con1:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("<soap:Header xmlns:soap='http://schemas.xmlsoap.org/soap/envelope/' xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader'>
+	<nmp:headerMessage>
+		<nmp:usuario>", $header/nmp:headerMessage/nmp:usuario/text(),"</nmp:usuario>
+		<nmp:idConsumidor>", $header/nmp:headerMessage/nmp:idConsumidor/text(),"</nmp:idConsumidor>
+		<nmp:idDestino>SAP</nmp:idDestino>
+	</nmp:headerMessage>
+</soap:Header>"))]]></con:xqueryText>
+                                            </con1:expr>
+                                        </con1:replace>
+                                    </con1:default>
+                                </con1:ifThenElse>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$operation = "aplicarMovimiento"</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:ifThenElse>
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7fc1</con2:id>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:string-length($body/nmp1:aplicarMovimientoRequest/nmp1:referencia/text()) &lt; 10</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace varName="header" contents-only="false">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7fbb</con2:id>
+                                                <con1:location>
+                                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("<soap:Header xmlns:soap='http://schemas.xmlsoap.org/soap/envelope/' xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader'>
+	<nmp:headerMessage>
+		<nmp:usuario>", $header/nmp:headerMessage/nmp:usuario/text(),"</nmp:usuario>
+		<nmp:idConsumidor>", $header/nmp:headerMessage/nmp:idConsumidor/text(), "-", $header/nmp:headerMessage/nmp:idDestino/text(), "</nmp:idConsumidor>
+		<nmp:idDestino>MIDAS</nmp:idDestino>
+	</nmp:headerMessage>
+</soap:Header>"))]]></con2:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:default>
+                                        <con1:replace varName="header" contents-only="false">
+                                            <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7480183515276572082--74c1a856.14c287ba2bb.-7fb7</con2:id>
+                                            <con1:location>
+                                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                            </con1:location>
+                                            <con1:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("<soap:Header xmlns:soap='http://schemas.xmlsoap.org/soap/envelope/' xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader'>
+	<nmp:headerMessage>
+		<nmp:usuario>", $header/nmp:headerMessage/nmp:usuario/text(),"</nmp:usuario>
+		<nmp:idConsumidor>", $header/nmp:headerMessage/nmp:idConsumidor/text(),"</nmp:idConsumidor>
+		<nmp:idDestino>SAP</nmp:idDestino>
+	</nmp:headerMessage>
+</soap:Header>"))]]></con:xqueryText>
+                                            </con1:expr>
+                                        </con1:replace>
+                                    </con1:default>
+                                </con1:ifThenElse>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+            <con:pipeline-node name="PipelinePairNodeHeaderValidation">
+                <con:comment/>
+                <con:request>PipelinePairNodeHeaderValidation_request</con:request>
+                <con:response>PipelinePairNodeHeaderValidation_response</con:response>
+            </con:pipeline-node>
+            <con:branch-node type="condition" name="BranchNodePlataforma">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:branch-table variable="header">
+                    <con:xpath>
+                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./nmp:headerMessage/nmp:idDestino/text()</con:xpathText>
+                    </con:xpath>
+                    <con:branch name="Midas">
+                        <con:operator>equals</con:operator>
+                        <con:value>'MIDAS'</con:value>
+                        <con:flow>
+                            <con:branch-node type="operation" name="BranchMidas">
+                                <con:comment/>
+                                <con:branch-table>
+                                    <con:branch name="aplicarMovimiento">
+                                        <con:operator>equals</con:operator>
+                                        <con:value>aplicarMovimiento</con:value>
+                                        <con:flow>
+                                            <con:pipeline-node name="PipelinePairAplicarMovimientoMidas">
+                                                <con:comment/>
+                                                <con:request>PipelinePairAplicarMovimientoMidas_request</con:request>
+                                                <con:response>PipelinePairAplicarMovimientoMidas_response</con:response>
+                                            </con:pipeline-node>
+                                        </con:flow>
+                                    </con:branch>
+                                    <con:branch name="consultarDatos">
+                                        <con:operator>equals</con:operator>
+                                        <con:value/>
+                                        <con:flow>
+                                            <con:pipeline-node name="PipelinePairConsultarDatosMidas">
+                                                <con:comment/>
+                                                <con:request>PipelinePairConsultarDatosMidas_request</con:request>
+                                                <con:response>PipelinePairConsultarDatosMidas_response</con:response>
+                                            </con:pipeline-node>
+                                        </con:flow>
+                                    </con:branch>
+                                    <con:default-branch>
+                                        <con:flow>
+                                            <con:pipeline-node name="PipelinePairMidasDefault">
+                                                <con:comment/>
+                                                <con:request>PipelinePairMidasDefault_request</con:request>
+                                                <con:response>PipelinePairMidasDefault_response</con:response>
+                                            </con:pipeline-node>
+                                        </con:flow>
+                                    </con:default-branch>
+                                </con:branch-table>
+                            </con:branch-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="SAP">
+                        <con:operator>equals</con:operator>
+                        <con:value>'SAP'</con:value>
+                        <con:flow>
+                            <con:branch-node type="operation" name="BranchNode1">
+                                <con:branch-table>
+                                    <con:branch name="aplicarMovimiento">
+                                        <con:operator>equals</con:operator>
+                                        <con:value>aplicarMovimiento</con:value>
+                                        <con:flow>
+                                            <con:pipeline-node name="PipelinePairNodeAplicarMovimientoSAP">
+                                                <con:comment/>
+                                                <con:request>PipelinePairNodeAplicarMovimientoSAP_request</con:request>
+                                                <con:response>PipelinePairNodeAplicarMovimientoSAP_response</con:response>
+                                            </con:pipeline-node>
+                                        </con:flow>
+                                    </con:branch>
+                                    <con:branch name="consultarDatos">
+                                        <con:operator>equals</con:operator>
+                                        <con:value>consultarDatos</con:value>
+                                        <con:flow>
+                                            <con:pipeline-node name="PipelinePairNodeConsultarDatosSAP">
+                                                <con:comment/>
+                                                <con:request>PipelinePairNodeConsultarDatosSAP_request</con:request>
+                                                <con:response>PipelinePairNodeConsultarDatosSAP_response</con:response>
+                                            </con:pipeline-node>
+                                        </con:flow>
+                                    </con:branch>
+                                    <con:default-branch>
+                                        <con:flow/>
+                                    </con:default-branch>
+                                </con:branch-table>
+                            </con:branch-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con2:router>
+</con:pipelineEntry>

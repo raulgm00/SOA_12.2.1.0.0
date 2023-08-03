@@ -1,0 +1,105 @@
+<definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Services/CampaniasPrendario" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Services/CampaniasPrendario" xmlns:cam="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCampaniasPrendario" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:NPMsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <types>
+    <xsd:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Services/CampaniasPrendario/types" elementFormDefault="qualified"/>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCampaniasPrendario" schemaLocation="../Schemas/NMPCampaniasPrendarioSvcElementosXSD.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../../Common/XSD/NMPStandardHeader.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../../Common/XSD/NMPStandardMessage.xsd"/>
+    </xsd:schema>
+  </types>
+  <message name="getCampaniaOperacionRequest">
+    <part name="getCampaniaOperacionRequest" element="cam:getCampaniaOperacionRequest"/>
+  </message>
+  <message name="getCampaniaOperacionResponse">
+    <part name="getCampaniaOperacionResponse" element="cam:getCampaniaOperacionResponse"/>
+  </message>
+  <message name="getCanalesOrigenRequest">
+    <part name="getCanalesOrigenRequest" element="cam:getCanalesOrigenRequest"/>
+  </message>
+  <message name="getCanalesOrigenResponse">
+    <part name="getCanalesOrigenResponse" element="cam:getCanalesOrigenResponse"/>
+  </message>
+     <message name="getCampaniasClienteRequest">
+    <part name="getCampaniasClienteRequest" element="cam:getCampaniasClienteRequest"/>
+  </message>
+     <message name="getCampaniasClienteResponse">
+    <part name="getCampaniasClienteResponse" element="cam:getCampaniasClienteResponse"/>
+  </message>
+  <message name="campaniasPrendarioFaultMessage">
+    <part name="part" element="NPMsm:messageError"/>
+  </message>
+  <message name="campaniasPrendarioHeaderMessage">
+    <part name="headerMessage" element="NMPsh:headerMessage"/>
+  </message>
+  <message name="campaniasPrendarioHeaderMessageResponse">
+    <part name="headerMessageResponse" element="NMPsh:headerMessageResponse"/>
+  </message>
+  <portType name="campaniasPrendarioServicePortType">
+    <operation name="getCampaniaOperacion">
+      <input message="tns:getCampaniaOperacionRequest"/>
+      <output message="tns:getCampaniaOperacionResponse"/>
+      <fault message="tns:campaniasPrendarioFaultMessage" name="fault"/>
+    </operation>
+    <operation name="getCanalesOrigen">
+      <input message="tns:getCanalesOrigenRequest"/>
+      <output message="tns:getCanalesOrigenResponse"/>
+      <fault message="tns:campaniasPrendarioFaultMessage" name="fault"/>
+    </operation>
+    <operation name="getCampaniasCliente">
+      <input message="tns:getCampaniasClienteRequest"/>
+      <output message="tns:getCampaniasClienteResponse"/>
+      <fault message="tns:campaniasPrendarioFaultMessage" name="fault"/>
+    </operation>
+  </portType>
+   <binding name="campaniasPrendarioBinding" type="tns:campaniasPrendarioServicePortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="getCampaniaOperacion">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/CampaniasPrendario/getCampaniaOperacion"/>
+      <input>
+        <soap:body use="literal" parts="getCampaniaOperacionRequest"/>
+        <soap:header message="tns:campaniasPrendarioHeaderMessage" part="headerMessage" use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="getCampaniaOperacionResponse"/>
+        <soap:header message="tns:campaniasPrendarioHeaderMessageResponse" part="headerMessageResponse" use="literal"/>
+      </output>
+      <fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getCanalesOrigen">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/CampaniasPrendario/getCanalesOrigen"/>
+      <input>
+        <soap:body use="literal" parts="getCanalesOrigenRequest"/>
+        <soap:header message="tns:campaniasPrendarioHeaderMessage" part="headerMessage" use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="getCanalesOrigenResponse"/>
+        <soap:header message="tns:campaniasPrendarioHeaderMessageResponse" part="headerMessageResponse" use="literal"/>
+      </output>
+      <fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getCampaniasCliente">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/CampaniasPrendario/getCampaniasCliente"/>
+      <input>
+      <soap:header message="tns:campaniasPrendarioHeaderMessage" part="headerMessage" use="literal"/>
+        <soap:body use="literal" parts="getCampaniasClienteRequest"/>
+      </input>
+      <output>
+        <soap:header message="tns:campaniasPrendarioHeaderMessageResponse" part="headerMessageResponse" use="literal"/>
+        <soap:body use="literal" parts="getCampaniasClienteResponse"/>
+      </output>
+      <fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+  <service name="campaniasPrendario">
+    <port name="campaniasPrendarioPort" binding="tns:campaniasPrendarioBinding">
+      <soap:address location=""/>
+      <!--soap:address location="http://dcpimsdcrmfe01.nmp.com.mx:90/Nmp.Crm.Servicios.Portal.svc?wsdl"/-->
+    </port>
+  </service>
+</definitions>

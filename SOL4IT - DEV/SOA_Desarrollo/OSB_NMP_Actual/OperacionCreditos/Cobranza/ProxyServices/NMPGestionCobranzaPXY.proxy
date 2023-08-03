@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ser:proxyServiceEntry xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:con="http://www.bea.com/wli/sb/services/security/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oper="http://xmlns.oracle.com/servicebus/proxy/operations" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env">
+    <ser:coreEntry isAutoPublish="false">
+        <ser:description>recepcionGestion: Envia las campañas de cobranza que seran gestionadas a formiik (Movil) y a CRM
+notificaResultado: En esta operación se recibe el resultado de la gestion movil, subiendo las fotos tomadas desde el movil a Open Text y notificando el resultado a MC y CRM.
+actualizarGestion: Actualiza información financiera en el Movil (formiik)
+revocarGestion: se revoca la gestión del movil cuando el cliente ya pago, esto con la finalidad de que el gestor no visite al cliente para el cobro.</ser:description>
+        <ser:binding type="SOAP" xsi:type="con:SoapBindingType" isSoap12="false" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config">
+            <con:wsdl ref="OperacionCreditos/Cobranza/Resources/WSDLs/NMPGestionCobranzaWSDL"/>
+            <con:binding>
+                <con:name>GestionCobranzaSOAP11Binding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Service/GestionCobranza</con:namespace>
+            </con:binding>
+            <con:selector type="SOAP body"/>
+        </ser:binding>
+        <oper:operations enabled="true">
+            <oper:messageTracing enabled="true">
+                <oper1:detailsLevel xmlns:oper1="http://xmlns.oracle.com/servicebus/operations">terse</oper1:detailsLevel>
+                <oper1:maxSize xmlns:oper1="http://xmlns.oracle.com/servicebus/operations">8192</oper1:maxSize>
+            </oper:messageTracing>
+        </oper:operations>
+        <ser:ws-policy>
+            <ser:binding-mode>no-policies</ser:binding-mode>
+        </ser:ws-policy>
+        <ser:invoke ref="OperacionCreditos/Cobranza/Pipelines/NMPGestionCobranzaPXY" xsi:type="con1:PipelineRef" xmlns:con1="http://www.bea.com/wli/sb/pipeline/config"/>
+        <ser:xqConfiguration>
+            <ser:snippetVersion>1.0</ser:snippetVersion>
+        </ser:xqConfiguration>
+    </ser:coreEntry>
+    <ser:endpointConfig>
+        <tran:provider-id>http</tran:provider-id>
+        <tran:inbound>true</tran:inbound>
+        <tran:URI>
+            <env:value>/NMP/Cobranza/Gestion</env:value>
+        </tran:URI>
+        <tran:inbound-properties/>
+        <tran:provider-specific xsi:type="http:HttpEndPointConfiguration" xmlns:http="http://www.bea.com/wli/sb/transports/http">
+            <http:inbound-properties/>
+            <http:compression>
+                <http:compression-support>false</http:compression-support>
+            </http:compression>
+        </tran:provider-specific>
+    </ser:endpointConfig>
+</ser:proxyServiceEntry>

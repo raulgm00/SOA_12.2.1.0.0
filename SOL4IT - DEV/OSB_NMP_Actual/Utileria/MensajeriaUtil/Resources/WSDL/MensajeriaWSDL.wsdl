@@ -1,0 +1,47 @@
+<wsdl:definitions name="Mensajeria" targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Services/Mensajeria" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:inp1="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSMS" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Services/Mensajeria" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSMS" schemaLocation="../XSD/EnvioSMSXSD.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="NMPHeaderRequest">
+    <wsdl:part name="requestHeader" element="NMPsh:headerMessage"/>
+  </wsdl:message>
+  <wsdl:message name="enviaMensajeSMSrequestMessage">
+    <wsdl:part name="enviaMensajeSMSrequest" element="inp1:enviaMensajeSMSrequest"/>
+  </wsdl:message>
+  <wsdl:message name="enviaMensajeSMSresponseMessage">
+    <wsdl:part name="enviaMensajeSMSresponse" element="inp1:enviaMensajeSMSresponse"/>
+  </wsdl:message>
+  <wsdl:message name="mensajeriaFaultMessage">
+    <wsdl:part name="mensajeriaFault" element="NMPsm:messageError"/>
+  </wsdl:message>
+  <wsdl:portType name="mensajeria_ptt">
+    <wsdl:operation name="enviaMensajeSMS">
+      <wsdl:input message="tns:enviaMensajeSMSrequestMessage"/>
+      <wsdl:output message="tns:enviaMensajeSMSresponseMessage"/>
+      <wsdl:fault message="tns:mensajeriaFaultMessage" name="MensajeriaFault"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="MensajeriaBinding" type="tns:mensajeria_ptt">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="enviaMensajeSMS">
+      <soap:operation style="document" soapAction="enviaMensajeSMSD"/>
+      <wsdl:input>
+        <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="MensajeriaFault"/>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Mensajeria">
+    <wsdl:port binding="tns:MensajeriaBinding" name="MensajeriaBindingPort">
+      <soap:address location="http://10.30.2.47:8011/NMP/CRM/Mensajeria"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

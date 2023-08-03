@@ -1,0 +1,2621 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+    <con:coreEntry>
+        <con:description>Proxy creado para creacionde articulos y actualizacion de precios</con:description>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:wsdl ref="OperacionPrendaria/Inventario/Resources/WSDLs/OSBArticulosAgilirionConcrete2"/>
+            <con:binding>
+                <con:name>Dequeue_pttSOAP11Binding</con:name>
+                <con:namespace>http://xmlns.oracle.com/PlataformaComercial_3/OperacionPrendaria/OSBArticulosAgilirionConcrete2</con:namespace>
+            </con:binding>
+        </con:binding>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:pipeline name="PipelinePairNode1_response" type="response">
+            <con:stage name="stage_Response">
+                <con:comment/>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="_onErrorHandler-a1e030f.830c5ee.40.15e4f023cf2.N8000" type="error">
+            <con:stage name="Stage_FaultCrear_Articulo">
+                <con:context>
+                    <con1:userNsDecl prefix="cmp" namespace="http://xmlns.oracle.com/xdb/CMPLATAFORMACOMERCIAL" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="gat" namespace="http://xmlns.oracle.com/xdb/GATEWAYS" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="tmp" namespace="http://tempuri.org/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="ns1" namespace="http://schemas.datacontract.org/2004/07/Nmp.Crm.BusinessEntity.DataContract" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/publish/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.3f.15e4f01cd9e.N7ffd</con2:id>
+                        <con1:service ref="OperacionPrendaria/Inventario/ProxyServices/NMPIndexarArticuloErrorQueueCloundPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                        <con1:operation>publicarArticulosErrorQueue</con1:operation>
+                        <con1:outboundTransform>
+                            <con5:replace varName="body" contents-only="false" xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/alert/config" xmlns:con4="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con5="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con6="http://www.bea.com/wli/sb/stages/publish/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                <con2:id>_ActionId-a1e030f.830c5ee.3f.15e4f01cd9e.N7ffc</con2:id>
+                                <con5:location>
+                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./*</con:xpathText>
+                                </con5:location>
+                                <con5:expr>
+                                    <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                        <con:resource ref="OperacionPrendaria/Inventario/Resources/Transformations/TrIndexarArticuloToQueue"/>
+                                        <con:input>$body/*</con:input>
+                                    </con:xsltTransform>
+                                </con5:expr>
+                            </con5:replace>
+                        </con1:outboundTransform>
+                    </con1:route>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="_onErrorHandler-a1e030f.830c5ee.41.15e4f039157.N8000" type="error">
+            <con:stage name="Stage_FaultIndexar_Queue">
+                <con:actions>
+                    <con1:reply isError="true" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+                        <con1:id>_ActionId-a1e030f.830c5ee.42.15e4f03b14e.N8000</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode1_request" type="request">
+            <con:stage name="stage_CreacionArticulo" errorHandler="_onErrorHandler-a1e030f.830c5ee.40.15e4f023cf2.N8000">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="cmp" namespace="http://xmlns.oracle.com/xdb/CMPLATAFORMACOMERCIAL" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.49.15e0b2f881d.N8000</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/cmp:NMP_AJUSTE_PRECIOS_TYPE/TIPO_OPERACION = 'N'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:ifThenElse>
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.3.15e35351952.N8000</con2:id>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/cmp:NMP_AJUSTE_PRECIOS_TYPE/RAMO = 'AL'</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:assign varName="body_tmp_AL">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.17.15e3944671b.N8000</con2:id>
+                                                <con1:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<Product>
+   <ProductName>{$body//DESCRIPCION/text()}</ProductName> 
+   <ProductCode>{$body//FOLIO/text()}</ProductCode> 
+   <ProductCategory>{$body//RAMO/text()}</ProductCategory> 
+   <PreferredVendor>NMP</PreferredVendor> 
+   <Manufacturer>NMP</Manufacturer>
+   <ProductStockManager>admin</ProductStockManager>
+   <IncomeAccount>Uncategorized Income</IncomeAccount>
+   <CogsAccount>Cost of Goods Sold</CogsAccount>
+   <AssetAccount>Inventory Asset</AssetAccount>
+   <Barcode>{$body//FOLIO/text()}</Barcode>
+   <ProductImages/>
+   <SeoTitle> </SeoTitle>
+   <SeoDescription>{$body//DESCRIPCION/text()}</SeoDescription>
+   <SeoKeywords> </SeoKeywords>
+   <Description>{$body//DESCRIPCION/text()}</Description>
+   <Discontinued></Discontinued>
+   <Website> </Website>
+   <SendStockNotification> </SendStockNotification>
+   <AutoCreatePOAtReorderLevel> </AutoCreatePOAtReorderLevel>
+   <Volume> </Volume>
+   <Length> </Length>
+   <Width> </Width>
+   <Height> </Height>
+   <WeightMajor></WeightMajor>
+   <WeightMinor></WeightMinor>
+   <Irregular> </Irregular>
+   <ShippingCost> </ShippingCost>
+   <TaxCategory>Taxable</TaxCategory>
+   <ProductCustomFields>
+        <CustomField>
+            <Name>NumerodePartida</Name> 
+            <Value>{$body//FOLIO/text()}</Value> 
+        </CustomField>
+        <CustomField>
+            <Name>Ramo</Name>
+            <Value>{$body//RAMO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Subramo</Name>
+            <Value>{$body//SUBRAMO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Descripcion</Name>
+            <Value>{$body//DESCRIPCION/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Avaluo_Tecnico</Name>
+            <Value>{$body//AVALUO_TECNICO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Avaluo_Comercial</Name>
+            <Value>{$body//AVALUO_COMERCIAL/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Prestamo</Name>
+            <Value>{$body//PRESTAMO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Fechaingresoodeposito</Name>
+            <Value>{$body//fecha_ingreso_deposito/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Fechaingresooinstitucion</Name>
+            <Value>{$body//fecha_ingreso_institucion/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Fechadecomercializacion</Name>
+            <Value>{$body//FECHA_COMERCIALIZACION/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>PreciodeVenta_Inicial</Name>
+            <Value>PRECIO_VENTA_INICIAL</Value>
+        </CustomField>
+		<CustomField>
+            <Name>PreciodeVenta_Actual</Name>
+            <Value>PRECIO_VENTA_ACTUAL</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Incremento</Name>
+            <Value>{$body//INCREMENTO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Desplazamiento</Name>
+            <Value>{$body//DESPLAZAMIENTO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Refrendos</Name>
+            <Value>{$body//REFRENDOS/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Valoranda</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>Valuador</Name>
+            <Value>{$body//VALUADOR/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>CanaldeIngreso</Name>
+            <Value>{$body//CANAL_INGRESO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Sucursal</Name>
+            <Value>{$body//SUCURSAL/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Region</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>Subdireccion</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>EntidadFederativa</Name>
+            <Value>{$body//ESTADO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Delegacion_municipio</Name>
+            <Value>{$body//DELEGACION_MUNICIPIO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Colonia</Name>
+            <Value>{$body//COLONIA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>CalleyNo</Name>
+            <Value>{$body//DIRECCION/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>CP</Name>
+            <Value>{$body//CODIGO_POSTAL/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Telefono</Name>
+            <Value>{$body//TELEFONO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Expendio</Name>
+            <Value>{$body//EXPENDIO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>EstadodeCaja</Name>
+            <Value>{$body//ESTADO_CAJA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>EstadodePrenda</Name>
+            <Value>{$body//ESTADO_PRENDA/text()}</Value>
+        </CustomField>
+
+
+
+
+		<CustomField>
+            <Name>Alhajas_Metal</Name>
+            <Value>{$body//METAL/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Alhajas_Calidad</Name>
+            <Value>{$body//CALIDAD/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Alhajas_Tipohechura</Name>
+            <Value>{$body//FACTOR_HECHURA/text()}</Value>
+        </CustomField>
+
+		<CustomField>
+            <Name>Alhajas_Rangoincrement</Name>
+            <Value>{$body//INCREMENTO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Alhajas_Despalzamientocommercial</Name>
+            <Value>{$body//DESPLAZAMIENTO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Alhajas_Preciooro</Name>
+            <Value>{$body//RECIO_ORO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Alhajas_Gramaje</Name>
+            <Value>{$body//GRAMAJE/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Alhajas_Costometal</Name>
+            <Value>{$body//COSTO_METAL/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Alhajas_Valorcommercial</Name>
+            <Value>{$body//AVALUO_COMERCIAL/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Alhajas_Valormonte</Name>
+            <Value>{$body//VALOR_MONTE/text()}</Value>
+        </CustomField>
+		
+		<CustomField>
+            <Name>AlhajasOtros_Metal</Name>
+            <Value>{$body//METAL/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>AlhajasOtros_Rango</Name>
+            <Value>{$body//RANGOINCREMENTO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>AlhajasOtros_Gramaje</Name>
+            <Value>{$body//GRAMAJE/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Alhajasdiamantes_Metal</Name>
+            <Value>{$body//METAL/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Alhajasdiamantes_Calidad</Name>
+            <Value>{$body//CALIDAD/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Alhajasdiamantes_Tipohechura</Name>
+            <Value>{$body//HECHURA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Alhajasdiamantes_Gramaje</Name>
+            <Value>{$body//GRAMAJE/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Alhajasdiamantes_Preciomental</Name>
+            <Value>{$body//COSTO_METAL/text()}</Value>
+        </CustomField>
+		
+    </ProductCustomFields>
+</Product>]]></con:xqueryText>
+                                                </con1:expr>
+                                            </con1:assign>
+                                            <con1:wsCallout>
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.4.15e35359781.N8000</con2:id>
+                                                <con1:service ref="OperacionPrendaria/Articulo/BusinessServices/NMPProductosAgilironRestPxyBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                                <con1:request>
+                                                    <con1:payload wrapped="false">body_tmp_AL</con1:payload>
+                                                </con1:request>
+                                                <con1:response>
+                                                    <con1:payload wrapped="false">bodyRes</con1:payload>
+                                                </con1:response>
+                                                <con1:requestTransform>
+                                                    <con1:routing-options>
+                                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.4.15e35359781.N7fff</con2:id>
+                                                        <con1:restOptions>
+                                                            <con1:verb>POST</con1:verb>
+                                                            <con1:relPath>
+                                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'Productos'</con:xqueryText>
+                                                            </con1:relPath>
+                                                        </con1:restOptions>
+                                                    </con1:routing-options>
+                                                </con1:requestTransform>
+                                                <con1:responseTransform/>
+                                            </con1:wsCallout>
+                                        </con1:actions>
+                                    </con1:case>
+                                </con1:ifThenElse>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                    <con1:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.b.15e3677e52d.N7ffc</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/cmp:NMP_AJUSTE_PRECIOS_TYPE/TIPO_OPERACION = 'N'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:ifThenElse>
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.11.15e369ecf57.N8000</con2:id>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/cmp:NMP_AJUSTE_PRECIOS_TYPE/RAMO = 'RJ'</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:assign varName="body_tmp_RJ">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.b.15e3677e52d.N7ffb</con2:id>
+                                                <con1:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<Product>
+   <ProductName>{$body//DESCRIPCION/text()}</ProductName> 
+   <ProductCode>{$body//FOLIO/text()}</ProductCode> 
+   <ProductCategory>{$body//RAMO/text()}</ProductCategory> 
+   <PreferredVendor>NMP</PreferredVendor> 
+   <Manufacturer>NMP</Manufacturer>
+   <ProductStockManager>admin</ProductStockManager>
+   <IncomeAccount>Uncategorized Income</IncomeAccount>
+   <CogsAccount>Cost of Goods Sold</CogsAccount>
+   <AssetAccount>Inventory Asset</AssetAccount>
+   <Barcode>{$body//FOLIO/text()}</Barcode>
+   <ProductImages/>
+   <SeoTitle> </SeoTitle>
+   <SeoDescription>{$body//DESCRIPCION/text()}</SeoDescription>
+   <SeoKeywords> </SeoKeywords>
+   <Description>{$body//DESCRIPCION/text()}</Description>
+   <Discontinued></Discontinued>
+   <Website> </Website>
+   <SendStockNotification> </SendStockNotification>
+   <AutoCreatePOAtReorderLevel> </AutoCreatePOAtReorderLevel>
+   <Volume> </Volume>
+   <Length> </Length>
+   <Width> </Width>
+   <Height> </Height>
+   <WeightMajor></WeightMajor>
+   <WeightMinor></WeightMinor>
+   <Irregular> </Irregular>
+   <ShippingCost> </ShippingCost>
+   <TaxCategory>Taxable</TaxCategory>
+   <ProductCustomFields>
+        <CustomField>
+            <Name>NumerodePartida</Name> 
+            <Value>{$body//FOLIO/text()}</Value> 
+        </CustomField>
+        <CustomField>
+            <Name>Ramo</Name>
+            <Value>{$body//RAMO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Subramo</Name>
+            <Value>{$body//SUBRAMO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Descripcion</Name>
+            <Value>{$body//DESCRIPCION/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Avaluo_Tecnico</Name>
+            <Value>{$body//AVALUO_TECNICO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Avaluo_Comercial</Name>
+            <Value>{$body//AVALUO_COMERCIAL/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Prestamo</Name>
+            <Value>{$body//PRESTAMO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Fechaingresoodeposito</Name>
+            <Value>{$body//fecha_ingreso_deposito/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Fechaingresooinstitucion</Name>
+            <Value>{$body//fecha_ingreso_institucion/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Fechadecomercializacion</Name>
+            <Value>{$body//FECHA_COMERCIALIZACION/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>PreciodeVenta_Inicial</Name>
+            <Value>PRECIO_VENTA_INICIAL</Value>
+        </CustomField>
+		<CustomField>
+            <Name>PreciodeVenta_Actual</Name>
+            <Value>PRECIO_VENTA_ACTUAL</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Incremento</Name>
+            <Value>{$body//INCREMENTO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Desplazamiento</Name>
+            <Value>{$body//DESPLAZAMIENTO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Refrendos</Name>
+            <Value>{$body//REFRENDOS/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Valoranda</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>Valuador</Name>
+            <Value>{$body//VALUADOR/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>CanaldeIngreso</Name>
+            <Value>{$body//CANAL_INGRESO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Sucursal</Name>
+            <Value>{$body//SUCURSAL/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Region</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>Subdireccion</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>EntidadFederativa</Name>
+            <Value>{$body//ESTADO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Delegacion_municipio</Name>
+            <Value>{$body//DELEGACION_MUNICIPIO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Colonia</Name>
+            <Value>{$body//COLONIA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>CalleyNo</Name>
+            <Value>{$body//DIRECCION/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>CP</Name>
+            <Value>{$body//CODIGO_POSTAL/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Telefono</Name>
+            <Value>{$body//TELEFONO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Expendio</Name>
+            <Value>{$body//EXPENDIO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>EstadodeCaja</Name>
+            <Value>{$body//ESTADO_CAJA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>EstadodePrenda</Name>
+            <Value>{$body//ESTADO_PRENDA/text()}</Value>
+        </CustomField>
+
+
+
+
+
+		
+		<CustomField>
+            <Name>Relojes_Numerodeserie</Name>
+            <Value>{$body//NUMERO_SERIE/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Relojes_Numerodereferencia</Name>
+            <Value>{$body//NUMERO_REFERENCIA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Relojes_Tipo</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>Relojes_Estado</Name>
+            <Value>{$body//ESTADO_RELOJ/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Relojes_Marca</Name>
+            <Value>{$body//MARCA_RELOJ/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Relojes_Modelo</Name>
+            <Value>{$body//MODELO_RELOJ/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Relojes_Materialcaja</Name>
+            <Value>{$body//MATERIAL_CAJA_RELOJ/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Relojes_Materialcorrea</Name>
+            <Value>{$body//MATERIAL_CORREA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Relojes_Materialcristal</Name>
+            <Value>{$body//MATERIAL_CRISTAL/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Relojes_Ano</Name>
+            <Value>{$body//ANIO_RELOJ/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Relojes_Calidadoro</Name>
+            <Value>{$body//CALIDAD/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Relojes_Gramaje</Name>
+            <Value>{$body//GRAMAJE/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Relojes_Preciooro</Name>
+            <Value>{$body//PRECIO_ORO/text()}</Value>
+        </CustomField>	
+    </ProductCustomFields>
+</Product>]]></con:xqueryText>
+                                                </con1:expr>
+                                            </con1:assign>
+                                            <con1:wsCallout>
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.15.15e36a897fe.N8000</con2:id>
+                                                <con1:service ref="OperacionPrendaria/Articulo/BusinessServices/NMPProductosAgilironRestPxyBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                                <con1:request>
+                                                    <con1:payload wrapped="false">body_tmp_RJ</con1:payload>
+                                                </con1:request>
+                                                <con1:response>
+                                                    <con1:payload wrapped="false">bodyRes</con1:payload>
+                                                </con1:response>
+                                                <con1:requestTransform>
+                                                    <con1:routing-options>
+                                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.15.15e36a897fe.N7fff</con2:id>
+                                                        <con1:restOptions>
+                                                            <con1:verb>POST</con1:verb>
+                                                            <con1:relPath>
+                                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'Productos'</con:xqueryText>
+                                                            </con1:relPath>
+                                                        </con1:restOptions>
+                                                    </con1:routing-options>
+                                                </con1:requestTransform>
+                                                <con1:responseTransform/>
+                                            </con1:wsCallout>
+                                        </con1:actions>
+                                    </con1:case>
+                                </con1:ifThenElse>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                    <con:ifThenElse xmlns:con="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.13.15e369f3c77.N8000</con1:id>
+                        <con:case>
+                            <con:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/cmp:NMP_AJUSTE_PRECIOS_TYPE/TIPO_OPERACION = 'N'</con:xqueryText>
+                            </con:condition>
+                            <con:actions>
+                                <con:ifThenElse>
+                                    <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.13.15e369f3c77.N7fff</con1:id>
+                                    <con:case>
+                                        <con:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/cmp:NMP_AJUSTE_PRECIOS_TYPE/SUBRAMO = 'MN'</con:xqueryText>
+                                        </con:condition>
+                                        <con:actions>
+                                            <con1:assign varName="body_tmp_MN" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.18.15e39466f36.N8000</con2:id>
+                                                <con1:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<Product>
+   <ProductName>{$body//DESCRIPCION/text()}</ProductName> 
+   <ProductCode>{$body//FOLIO/text()}</ProductCode> 
+   <ProductCategory>{$body//RAMO/text()}</ProductCategory> 
+   <PreferredVendor>NMP</PreferredVendor> 
+   <Manufacturer>NMP</Manufacturer>
+   <ProductStockManager>admin</ProductStockManager>
+   <IncomeAccount>Uncategorized Income</IncomeAccount>
+   <CogsAccount>Cost of Goods Sold</CogsAccount>
+   <AssetAccount>Inventory Asset</AssetAccount>
+   <Barcode>{$body//FOLIO/text()}</Barcode>
+   <ProductImages/>
+   <SeoTitle> </SeoTitle>
+   <SeoDescription>{$body//DESCRIPCION/text()}</SeoDescription>
+   <SeoKeywords> </SeoKeywords>
+   <Description>{$body//DESCRIPCION/text()}</Description>
+   <Discontinued></Discontinued>
+   <Website> </Website>
+   <SendStockNotification> </SendStockNotification>
+   <AutoCreatePOAtReorderLevel> </AutoCreatePOAtReorderLevel>
+   <Volume> </Volume>
+   <Length> </Length>
+   <Width> </Width>
+   <Height> </Height>
+   <WeightMajor></WeightMajor>
+   <WeightMinor></WeightMinor>
+   <Irregular> </Irregular>
+   <ShippingCost> </ShippingCost>
+   <TaxCategory>Taxable</TaxCategory>
+   <ProductCustomFields>
+        <CustomField>
+            <Name>NumerodePartida</Name> 
+            <Value>{$body//FOLIO/text()}</Value> 
+        </CustomField>
+        <CustomField>
+            <Name>Ramo</Name>
+            <Value>{$body//RAMO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Subramo</Name>
+            <Value>{$body//SUBRAMO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Descripcion</Name>
+            <Value>{$body//DESCRIPCION/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Avaluo_Tecnico</Name>
+            <Value>{$body//AVALUO_TECNICO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Avaluo_Comercial</Name>
+            <Value>{$body//AVALUO_COMERCIAL/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Prestamo</Name>
+            <Value>{$body//PRESTAMO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Fechaingresoodeposito</Name>
+            <Value>{$body//fecha_ingreso_deposito/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Fechaingresooinstitucion</Name>
+            <Value>{$body//fecha_ingreso_institucion/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Fechadecomercializacion</Name>
+            <Value>{$body//FECHA_COMERCIALIZACION/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>PreciodeVenta_Inicial</Name>
+            <Value>PRECIO_VENTA_INICIAL</Value>
+        </CustomField>
+		<CustomField>
+            <Name>PreciodeVenta_Actual</Name>
+            <Value>PRECIO_VENTA_ACTUAL</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Incremento</Name>
+            <Value>{$body//INCREMENTO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Desplazamiento</Name>
+            <Value>{$body//DESPLAZAMIENTO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Refrendos</Name>
+            <Value>{$body//REFRENDOS/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Valoranda</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>Valuador</Name>
+            <Value>{$body//VALUADOR/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>CanaldeIngreso</Name>
+            <Value>{$body//CANAL_INGRESO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Sucursal</Name>
+            <Value>{$body//SUCURSAL/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Region</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>Subdireccion</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>EntidadFederativa</Name>
+            <Value>{$body//ESTADO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Delegacion_municipio</Name>
+            <Value>{$body//DELEGACION_MUNICIPIO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Colonia</Name>
+            <Value>{$body//COLONIA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>CalleyNo</Name>
+            <Value>{$body//DIRECCION/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>CP</Name>
+            <Value>{$body//CODIGO_POSTAL/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Telefono</Name>
+            <Value>{$body//TELEFONO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Expendio</Name>
+            <Value>{$body//EXPENDIO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>EstadodeCaja</Name>
+            <Value>{$body//ESTADO_CAJA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>EstadodePrenda</Name>
+            <Value>{$body//ESTADO_PRENDA/text()}</Value>
+        </CustomField>
+
+
+
+		
+		<CustomField>
+            <Name>Monedas_Tipohechura</Name>
+            <Value>{$body//FACTOR_HECHURA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Monedas_Calidadoro</Name>
+            <Value>{$body//CALIDAD/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Monedas_Familia</Name>
+            <Value>{$body//FAMILIA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Monedas_Tipomoneda</Name>
+            <Value>{$body//TIPO_MONEDA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Monedas_Cantidad</Name>
+            <Value>{$body//CANTIDAD/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Monedas_Gramaje</Name>
+            <Value>{$body//GRAMAJE/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Monedas_Preciooro</Name>
+            <Value>{$body//PRECIO_ORO/text()}</Value>
+        </CustomField>
+		
+    </ProductCustomFields>
+</Product>]]></con:xqueryText>
+                                                </con1:expr>
+                                            </con1:assign>
+                                            <con1:wsCallout xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.13.15e369f3c77.N7ffe</con2:id>
+                                                <con1:service ref="OperacionPrendaria/Articulo/BusinessServices/NMPProductosAgilironRestPxyBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                                <con1:request>
+                                                    <con1:payload wrapped="false">body_tmp_MN</con1:payload>
+                                                </con1:request>
+                                                <con1:response>
+                                                    <con1:payload wrapped="false">bodyRes</con1:payload>
+                                                </con1:response>
+                                                <con1:requestTransform>
+                                                    <con1:routing-options>
+                                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.13.15e369f3c77.N7ffd</con2:id>
+                                                        <con1:restOptions>
+                                                            <con2:verb>POST</con2:verb>
+                                                            <con2:relPath>
+                                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'Productos'</con:xqueryText>
+                                                            </con2:relPath>
+                                                        </con1:restOptions>
+                                                    </con1:routing-options>
+                                                </con1:requestTransform>
+                                                <con1:responseTransform/>
+                                            </con1:wsCallout>
+                                        </con:actions>
+                                    </con:case>
+                                </con:ifThenElse>
+                            </con:actions>
+                        </con:case>
+                    </con:ifThenElse>
+                    <con:ifThenElse xmlns:con="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.7.15e35555a11.N7ffa</con1:id>
+                        <con:case>
+                            <con:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/cmp:NMP_AJUSTE_PRECIOS_TYPE/TIPO_OPERACION = 'N'</con:xqueryText>
+                            </con:condition>
+                            <con:actions>
+                                <con:ifThenElse>
+                                    <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.7.15e35555a11.N7ff9</con1:id>
+                                    <con:case>
+                                        <con:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/cmp:NMP_AJUSTE_PRECIOS_TYPE/RAMO = 'VE'</con:xqueryText>
+                                        </con:condition>
+                                        <con:actions>
+                                            <con1:assign varName="body_request_VE" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.11.15e369ecf57.N7ffe</con2:id>
+                                                <con1:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<Product>
+   <ProductName>{$body//DESCRIPCION/text()}</ProductName> 
+   <ProductCode>{$body//FOLIO/text()}</ProductCode> 
+   <ProductCategory>{$body//RAMO/text()}</ProductCategory> 
+   <PreferredVendor>NMP</PreferredVendor> 
+   <Manufacturer>NMP</Manufacturer>
+   <ProductStockManager>admin</ProductStockManager>
+   <IncomeAccount>Uncategorized Income</IncomeAccount>
+   <CogsAccount>Cost of Goods Sold</CogsAccount>
+   <AssetAccount>Inventory Asset</AssetAccount>
+   <Barcode>{$body//FOLIO/text()}</Barcode>
+   <ProductImages/>
+   <SeoTitle> </SeoTitle>
+   <SeoDescription>{$body//DESCRIPCION/text()}</SeoDescription>
+   <SeoKeywords> </SeoKeywords>
+   <Description>{$body//DESCRIPCION/text()}</Description>
+   <Discontinued></Discontinued>
+   <Website> </Website>
+   <SendStockNotification> </SendStockNotification>
+   <AutoCreatePOAtReorderLevel> </AutoCreatePOAtReorderLevel>
+   <Volume> </Volume>
+   <Length> </Length>
+   <Width> </Width>
+   <Height> </Height>
+   <WeightMajor></WeightMajor>
+   <WeightMinor></WeightMinor>
+   <Irregular> </Irregular>
+   <ShippingCost> </ShippingCost>
+   <TaxCategory>Taxable</TaxCategory>
+   <ProductCustomFields>
+        <CustomField>
+            <Name>NumerodePartida</Name> 
+            <Value>{$body//FOLIO/text()}</Value> 
+        </CustomField>
+        <CustomField>
+            <Name>Ramo</Name>
+            <Value>{$body//RAMO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Subramo</Name>
+            <Value>{$body//SUBRAMO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Descripcion</Name>
+            <Value>{$body//DESCRIPCION/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Avaluo_Tecnico</Name>
+            <Value>{$body//AVALUO_TECNICO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Avaluo_Comercial</Name>
+            <Value>{$body//AVALUO_COMERCIAL/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Prestamo</Name>
+            <Value>{$body//PRESTAMO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Fechaingresoodeposito</Name>
+            <Value>{$body//fecha_ingreso_deposito/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Fechaingresooinstitucion</Name>
+            <Value>{$body//fecha_ingreso_institucion/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Fechadecomercializacion</Name>
+            <Value>{$body//FECHA_COMERCIALIZACION/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>PreciodeVenta_Inicial</Name>
+            <Value>PRECIO_VENTA_INICIAL</Value>
+        </CustomField>
+		<CustomField>
+            <Name>PreciodeVenta_Actual</Name>
+            <Value>PRECIO_VENTA_ACTUAL</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Incremento</Name>
+            <Value>{$body//INCREMENTO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Desplazamiento</Name>
+            <Value>{$body//DESPLAZAMIENTO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Refrendos</Name>
+            <Value>{$body//REFRENDOS/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Valoranda</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>Valuador</Name>
+            <Value>{$body//VALUADOR/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>CanaldeIngreso</Name>
+            <Value>{$body//CANAL_INGRESO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Sucursal</Name>
+            <Value>{$body//SUCURSAL/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Region</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>Subdireccion</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>EntidadFederativa</Name>
+            <Value>{$body//ESTADO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Delegacion_municipio</Name>
+            <Value>{$body//DELEGACION_MUNICIPIO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Colonia</Name>
+            <Value>{$body//COLONIA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>CalleyNo</Name>
+            <Value>{$body//DIRECCION/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>CP</Name>
+            <Value>{$body//CODIGO_POSTAL/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Telefono</Name>
+            <Value>{$body//TELEFONO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Expendio</Name>
+            <Value>{$body//EXPENDIO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>EstadodeCaja</Name>
+            <Value>{$body//ESTADO_CAJA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>EstadodePrenda</Name>
+            <Value>{$body//ESTADO_PRENDA/text()}</Value>
+        </CustomField>
+
+
+
+		
+		<CustomField>
+            <Name>Autos_Marca</Name>
+            <Value>{$body//MARCA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Autos_Modelo</Name>
+            <Value>{$body//MODELO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Autos_SubMarca</Name>
+            <Value>{$body//SUBMARCA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Autos_Version</Name>
+            <Value>{$body//VERSION/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Autos_Complementos</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>Autos_Kilometraje</Name>
+            <Value>{$body//KILOMETRAJE/text()}</Value>
+        </CustomField>
+		
+    </ProductCustomFields>
+</Product>]]></con:xqueryText>
+                                                </con1:expr>
+                                            </con1:assign>
+                                            <con1:wsCallout xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.e.15e3691451f.N7ffb</con2:id>
+                                                <con1:service ref="OperacionPrendaria/Articulo/BusinessServices/NMPProductosAgilironRestPxyBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                                <con1:request>
+                                                    <con1:payload wrapped="false">body_request_VE</con1:payload>
+                                                </con1:request>
+                                                <con1:response>
+                                                    <con1:payload wrapped="false">body_res</con1:payload>
+                                                </con1:response>
+                                                <con1:requestTransform>
+                                                    <con1:routing-options>
+                                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.e.15e3691451f.N7ffa</con2:id>
+                                                        <con1:restOptions>
+                                                            <con2:verb>POST</con2:verb>
+                                                            <con2:relPath>
+                                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'Productos'</con:xqueryText>
+                                                            </con2:relPath>
+                                                        </con1:restOptions>
+                                                    </con1:routing-options>
+                                                </con1:requestTransform>
+                                                <con1:responseTransform/>
+                                            </con1:wsCallout>
+                                        </con:actions>
+                                    </con:case>
+                                </con:ifThenElse>
+                            </con:actions>
+                        </con:case>
+                    </con:ifThenElse>
+                    <con:ifThenElse xmlns:con="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.12.15e369f04d8.N8000</con1:id>
+                        <con:case>
+                            <con:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/cmp:NMP_AJUSTE_PRECIOS_TYPE/TIPO_OPERACION = 'N'</con:xqueryText>
+                            </con:condition>
+                            <con:actions>
+                                <con:ifThenElse>
+                                    <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.12.15e369f04d8.N7fff</con1:id>
+                                    <con:case>
+                                        <con:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/cmp:NMP_AJUSTE_PRECIOS_TYPE/SUBRAMO = 'DI'</con:xqueryText>
+                                        </con:condition>
+                                        <con:actions>
+                                            <con1:assign varName="body_request_DI" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.19.15e3949c80c.N8000</con2:id>
+                                                <con1:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<Product>
+   <ProductName>{$body//DESCRIPCION/text()}</ProductName> 
+   <ProductCode>{$body//FOLIO/text()}</ProductCode> 
+   <ProductCategory>{$body//RAMO/text()}</ProductCategory> 
+   <PreferredVendor>NMP</PreferredVendor> 
+   <Manufacturer>NMP</Manufacturer>
+   <ProductStockManager>admin</ProductStockManager>
+   <IncomeAccount>Uncategorized Income</IncomeAccount>
+   <CogsAccount>Cost of Goods Sold</CogsAccount>
+   <AssetAccount>Inventory Asset</AssetAccount>
+   <Barcode>{$body//FOLIO/text()}</Barcode>
+   <ProductImages/>
+   <SeoTitle> </SeoTitle>
+   <SeoDescription>{$body//DESCRIPCION/text()}</SeoDescription>
+   <SeoKeywords> </SeoKeywords>
+   <Description>{$body//DESCRIPCION/text()}</Description>
+   <Discontinued></Discontinued>
+   <Website> </Website>
+   <SendStockNotification> </SendStockNotification>
+   <AutoCreatePOAtReorderLevel> </AutoCreatePOAtReorderLevel>
+   <Volume> </Volume>
+   <Length> </Length>
+   <Width> </Width>
+   <Height> </Height>
+   <WeightMajor></WeightMajor>
+   <WeightMinor></WeightMinor>
+   <Irregular> </Irregular>
+   <ShippingCost> </ShippingCost>
+   <TaxCategory>Taxable</TaxCategory>
+   <ProductCustomFields>
+        <CustomField>
+            <Name>NumerodePartida</Name> 
+            <Value>{$body//FOLIO/text()}</Value> 
+        </CustomField>
+        <CustomField>
+            <Name>Ramo</Name>
+            <Value>{$body//RAMO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Subramo</Name>
+            <Value>{$body//SUBRAMO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Descripcion</Name>
+            <Value>{$body//DESCRIPCION/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Avaluo_Tecnico</Name>
+            <Value>{$body//AVALUO_TECNICO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Avaluo_Comercial</Name>
+            <Value>{$body//AVALUO_COMERCIAL/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Prestamo</Name>
+            <Value>{$body//PRESTAMO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Fechaingresoodeposito</Name>
+            <Value>{$body//fecha_ingreso_deposito/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Fechaingresooinstitucion</Name>
+            <Value>{$body//fecha_ingreso_institucion/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Fechadecomercializacion</Name>
+            <Value>{$body//FECHA_COMERCIALIZACION/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>PreciodeVenta_Inicial</Name>
+            <Value>PRECIO_VENTA_INICIAL</Value>
+        </CustomField>
+		<CustomField>
+            <Name>PreciodeVenta_Actual</Name>
+            <Value>PRECIO_VENTA_ACTUAL</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Incremento</Name>
+            <Value>{$body//INCREMENTO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Desplazamiento</Name>
+            <Value>{$body//DESPLAZAMIENTO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Refrendos</Name>
+            <Value>{$body//REFRENDOS/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Valoranda</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>Valuador</Name>
+            <Value>{$body//VALUADOR/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>CanaldeIngreso</Name>
+            <Value>{$body//CANAL_INGRESO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Sucursal</Name>
+            <Value>{$body//SUCURSAL/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Region</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>Subdireccion</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>EntidadFederativa</Name>
+            <Value>{$body//ESTADO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Delegacion_municipio</Name>
+            <Value>{$body//DELEGACION_MUNICIPIO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Colonia</Name>
+            <Value>{$body//COLONIA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>CalleyNo</Name>
+            <Value>{$body//DIRECCION/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>CP</Name>
+            <Value>{$body//CODIGO_POSTAL/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Telefono</Name>
+            <Value>{$body//TELEFONO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Expendio</Name>
+            <Value>{$body//EXPENDIO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>EstadodeCaja</Name>
+            <Value>{$body//ESTADO_CAJA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>EstadodePrenda</Name>
+            <Value>{$body//ESTADO_PRENDA/text()}</Value>
+        </CustomField>
+		
+		<CustomField>
+            <Name>Diamantes_Corte</Name>
+            <Value>{$body//CORTE/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Diamantes_Color</Name>
+            <Value>{$body//COLOR/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Diamantes_Claridad</Name>
+            <Value>{$body//CLARIDAD/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Diamantes_Kilataje</Name>
+            <Value>{$body//KILATAJE/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Diamantes_certificado</Name>
+            <Value>{$body//CERTIFICADO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Diamantes_numerodecertificado</Name>
+            <Value>{$body//NUMERO_CERTIFICADO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Diamantes_tipodecorte</Name>
+            <Value>{$body//TIPO_CORTE/text()}</Value>
+        </CustomField>
+		
+    </ProductCustomFields>
+</Product>]]></con:xqueryText>
+                                                </con1:expr>
+                                            </con1:assign>
+                                            <con1:wsCallout xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.7.15e35555a11.N7ff8</con2:id>
+                                                <con1:service ref="OperacionPrendaria/Articulo/BusinessServices/NMPProductosAgilironRestPxyBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                                <con1:request>
+                                                    <con1:payload wrapped="false">body_request_DI</con1:payload>
+                                                </con1:request>
+                                                <con1:response>
+                                                    <con1:payload wrapped="false">bodyres</con1:payload>
+                                                </con1:response>
+                                                <con1:requestTransform>
+                                                    <con1:routing-options>
+                                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.7.15e35555a11.N7ff7</con2:id>
+                                                        <con1:restOptions>
+                                                            <con2:verb>POST</con2:verb>
+                                                            <con2:relPath>
+                                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'Productos'</con:xqueryText>
+                                                            </con2:relPath>
+                                                        </con1:restOptions>
+                                                    </con1:routing-options>
+                                                </con1:requestTransform>
+                                                <con1:responseTransform/>
+                                            </con1:wsCallout>
+                                        </con:actions>
+                                    </con:case>
+                                </con:ifThenElse>
+                            </con:actions>
+                        </con:case>
+                    </con:ifThenElse>
+                </con:actions>
+            </con:stage>
+            <con:stage name="stage_MejoraDescripcion" errorHandler="_onErrorHandler-a1e030f.830c5ee.33.15e4dd612db.N7ffa">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="cmp" namespace="http://xmlns.oracle.com/xdb/CMPLATAFORMACOMERCIAL" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.4c.15e0b4f341b.N8000</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/cmp:NMP_AJUSTE_PRECIOS_TYPE/TIPO_OPERACION = 'N'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:ifThenElse>
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.6.15e35531186.N7fec</con2:id>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/cmp:NMP_AJUSTE_PRECIOS_TYPE/RAMO = 'AL'</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:assign varName="body_tmp_descripcion_AL">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.b.15e3677e52d.N7ffa</con2:id>
+                                                <con1:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<Product>
+   <ProductName>{$body//DESCRIPCION/text()}</ProductName> 
+   <ProductCode>{$body//FOLIO/text()}</ProductCode> 
+   <ProductCategory>{$body//RAMO/text()}</ProductCategory>
+   <PreferredVendor>NMP</PreferredVendor> 
+   <Manufacturer>NMP</Manufacturer> 
+   <ProductStockManager>admin</ProductStockManager>
+   <IncomeAccount>Uncategorized Income</IncomeAccount>
+   <CogsAccount>Cost of Goods Sold</CogsAccount>
+   <AssetAccount>Inventory Asset</AssetAccount>
+<ProductCustomFields>
+        <CustomField>
+            <Name>NumerodePartida</Name> 
+            <Value>{$body//FOLIO/text()}</Value> 
+        </CustomField>
+        <CustomField>
+            <Name>Ramo</Name>
+            <Value>{$body//RAMO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Subramo</Name>
+            <Value>{$body//SUBRAMO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Descripcion</Name>
+            <Value>{$body//DESCRIPCION/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Avaluo_Tecnico</Name>
+            <Value>{$body//AVALUO_TECNICO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Avaluo_Comercial</Name>
+            <Value>{$body//AVALUO_COMERCIAL/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Prestamo</Name>
+            <Value>{$body//PRESTAMO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Fechaingresoodeposito</Name>
+            <Value>{$body//fecha_ingreso_deposito/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Fechaingresooinstitucion</Name>
+            <Value>{$body//fecha_ingreso_institucion/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Fechadecomercializacion</Name>
+            <Value>{$body//FECHA_COMERCIALIZACION/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>PreciodeVenta_Inicial</Name>
+            <Value>PRECIO_VENTA_INICIAL</Value>
+        </CustomField>
+		<CustomField>
+            <Name>PreciodeVenta_Actual</Name>
+            <Value>PRECIO_VENTA_ACTUAL</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Incremento</Name>
+            <Value>{$body//INCREMENTO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Desplazamiento</Name>
+            <Value>{$body//DESPLAZAMIENTO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Refrendos</Name>
+            <Value>{$body//REFRENDOS/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Valoranda</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>Valuador</Name>
+            <Value>{$body//VALUADOR/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>CanaldeIngreso</Name>
+            <Value>{$body//CANAL_INGRESO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Sucursal</Name>
+            <Value>{$body//SUCURSAL/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Region</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>Subdireccion</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>EntidadFederativa</Name>
+            <Value>{$body//ESTADO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Delegacion_municipio</Name>
+            <Value>{$body//DELEGACION_MUNICIPIO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Colonia</Name>
+            <Value>{$body//COLONIA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>CalleyNo</Name>
+            <Value>{$body//DIRECCION/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>CP</Name>
+            <Value>{$body//CODIGO_POSTAL/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Telefono</Name>
+            <Value>{$body//TELEFONO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Expendio</Name>
+            <Value>{$body//EXPENDIO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>EstadodeCaja</Name>
+            <Value>{$body//ESTADO_CAJA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>EstadodePrenda</Name>
+            <Value>{$body//ESTADO_PRENDA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Alhajas_Metal</Name>
+            <Value>{$body//METAL/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Alhajas_Calidad</Name>
+            <Value>{$body//CALIDAD/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Alhajas_Tipohechura</Name>
+            <Value>{$body//FACTOR_HECHURA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Alhajas_Rangoincrement</Name>
+            <Value>{$body//INCREMENTO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Alhajas_Despalzamientocommercial</Name>
+            <Value>{$body//DESPLAZAMIENTO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Alhajas_Preciooro</Name>
+            <Value>{$body//RECIO_ORO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Alhajas_Gramaje</Name>
+            <Value>{$body//GRAMAJE/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Alhajas_Costometal</Name>
+            <Value>{$body//COSTO_METAL/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Alhajas_Valorcommercial</Name>
+            <Value>{$body//AVALUO_COMERCIAL/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Alhajas_Valormonte</Name>
+            <Value>{$body//VALOR_MONTE/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>AlhajasOtros_Metal</Name>
+            <Value>{$body//METAL/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>AlhajasOtros_Rango</Name>
+            <Value>{$body//RANGOINCREMENTO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>AlhajasOtros_Gramaje</Name>
+            <Value>{$body//GRAMAJE/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Alhajasdiamantes_Metal</Name>
+            <Value>{$body//METAL/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Alhajasdiamantes_Calidad</Name>
+            <Value>{$body//CALIDAD/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Alhajasdiamantes_Tipohechura</Name>
+            <Value>{$body//HECHURA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Alhajasdiamantes_Gramaje</Name>
+            <Value>{$body//GRAMAJE/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Alhajasdiamantes_Preciomental</Name>
+            <Value>{$body//COSTO_METAL/text()}</Value>
+        </CustomField>	
+    </ProductCustomFields>
+</Product>]]></con:xqueryText>
+                                                </con1:expr>
+                                            </con1:assign>
+                                            <con1:wsCallout>
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.1a.15e39f94403.N8000</con2:id>
+                                                <con1:service ref="OperacionPrendaria/Articulo/BusinessServices/NMPProductosAgilironRestPxyBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                                <con1:request>
+                                                    <con1:payload wrapped="false">body_tmp_descripcion_AL</con1:payload>
+                                                </con1:request>
+                                                <con1:response>
+                                                    <con1:payload wrapped="false">bodyRes</con1:payload>
+                                                </con1:response>
+                                                <con1:requestTransform>
+                                                    <con1:routing-options>
+                                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.1a.15e39f94403.N7fff</con2:id>
+                                                        <con1:restOptions>
+                                                            <con1:verb>PUT</con1:verb>
+                                                            <con1:relPath>
+                                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'Productos'</con:xqueryText>
+                                                            </con1:relPath>
+                                                        </con1:restOptions>
+                                                    </con1:routing-options>
+                                                </con1:requestTransform>
+                                                <con1:responseTransform/>
+                                            </con1:wsCallout>
+                                        </con1:actions>
+                                    </con1:case>
+                                </con1:ifThenElse>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                    <con1:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.f.15e369681ca.N7ffe</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/cmp:NMP_AJUSTE_PRECIOS_TYPE/TIPO_OPERACION = 'N'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:ifThenElse>
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.f.15e369681ca.N7ffd</con2:id>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/cmp:NMP_AJUSTE_PRECIOS_TYPE/RAMO = 'RJ'</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:assign varName="body_tmp_descripcion_RJ">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.f.15e369681ca.N7ffc</con2:id>
+                                                <con1:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<Product>
+   <ProductName>{$body//DESCRIPCION/text()}</ProductName> 
+   <ProductCode>{$body//FOLIO/text()}</ProductCode> 
+   <ProductCategory>{$body//RAMO/text()}</ProductCategory>
+   <PreferredVendor>NMP</PreferredVendor> 
+   <Manufacturer>NMP</Manufacturer> 
+   <ProductStockManager>admin</ProductStockManager>
+   <IncomeAccount>Uncategorized Income</IncomeAccount>
+   <CogsAccount>Cost of Goods Sold</CogsAccount>
+   <AssetAccount>Inventory Asset</AssetAccount>
+<ProductCustomFields>
+        <CustomField>
+            <Name>NumerodePartida</Name> 
+            <Value>{$body//FOLIO/text()}</Value> 
+        </CustomField>
+        <CustomField>
+            <Name>Ramo</Name>
+            <Value>{$body//RAMO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Subramo</Name>
+            <Value>{$body//SUBRAMO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Descripcion</Name>
+            <Value>{$body//DESCRIPCION/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Avaluo_Tecnico</Name>
+            <Value>{$body//AVALUO_TECNICO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Avaluo_Comercial</Name>
+            <Value>{$body//AVALUO_COMERCIAL/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Prestamo</Name>
+            <Value>{$body//PRESTAMO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Fechaingresoodeposito</Name>
+            <Value>{$body//fecha_ingreso_deposito/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Fechaingresooinstitucion</Name>
+            <Value>{$body//fecha_ingreso_institucion/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Fechadecomercializacion</Name>
+            <Value>{$body//FECHA_COMERCIALIZACION/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>PreciodeVenta_Inicial</Name>
+            <Value>PRECIO_VENTA_INICIAL</Value>
+        </CustomField>
+		<CustomField>
+            <Name>PreciodeVenta_Actual</Name>
+            <Value>PRECIO_VENTA_ACTUAL</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Incremento</Name>
+            <Value>{$body//INCREMENTO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Desplazamiento</Name>
+            <Value>{$body//DESPLAZAMIENTO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Refrendos</Name>
+            <Value>{$body//REFRENDOS/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Valoranda</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>Valuador</Name>
+            <Value>{$body//VALUADOR/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>CanaldeIngreso</Name>
+            <Value>{$body//CANAL_INGRESO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Sucursal</Name>
+            <Value>{$body//SUCURSAL/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Region</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>Subdireccion</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>EntidadFederativa</Name>
+            <Value>{$body//ESTADO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Delegacion_municipio</Name>
+            <Value>{$body//DELEGACION_MUNICIPIO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Colonia</Name>
+            <Value>{$body//COLONIA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>CalleyNo</Name>
+            <Value>{$body//DIRECCION/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>CP</Name>
+            <Value>{$body//CODIGO_POSTAL/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Telefono</Name>
+            <Value>{$body//TELEFONO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Expendio</Name>
+            <Value>{$body//EXPENDIO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>EstadodeCaja</Name>
+            <Value>{$body//ESTADO_CAJA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>EstadodePrenda</Name>
+            <Value>{$body//ESTADO_PRENDA/text()}</Value>
+        </CustomField>
+		
+		
+		<CustomField>
+            <Name>Relojes_Numerodeserie</Name>
+            <Value>{$body//NUMERO_SERIE/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Relojes_Numerodereferencia</Name>
+            <Value>{$body//NUMERO_REFERENCIA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Relojes_Tipo</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>Relojes_Estado</Name>
+            <Value>{$body//ESTADO_RELOJ/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Relojes_Marca</Name>
+            <Value>{$body//MARCA_RELOJ/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Relojes_Modelo</Name>
+            <Value>{$body//MODELO_RELOJ/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Relojes_Materialcaja</Name>
+            <Value>{$body//MATERIAL_CAJA_RELOJ/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Relojes_Materialcorrea</Name>
+            <Value>{$body//MATERIAL_CORREA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Relojes_Materialcristal</Name>
+            <Value>{$body//MATERIAL_CRISTAL/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Relojes_Ano</Name>
+            <Value>{$body//ANIO_RELOJ/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Relojes_Calidadoro</Name>
+            <Value>{$body//CALIDAD/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Relojes_Gramaje</Name>
+            <Value>{$body//GRAMAJE/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Relojes_Preciooro</Name>
+            <Value>{$body//PRECIO_ORO/text()}</Value>
+        </CustomField>	
+    </ProductCustomFields>
+</Product>]]></con:xqueryText>
+                                                </con1:expr>
+                                            </con1:assign>
+                                            <con1:wsCallout>
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.f.15e369681ca.N7ffb</con2:id>
+                                                <con1:service ref="OperacionPrendaria/Articulo/BusinessServices/NMPProductosAgilironRestPxyBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                                <con1:request>
+                                                    <con1:payload wrapped="false">body_tmp_descripcion_RJ</con1:payload>
+                                                </con1:request>
+                                                <con1:response>
+                                                    <con1:payload wrapped="false">bodyRes</con1:payload>
+                                                </con1:response>
+                                                <con1:requestTransform>
+                                                    <con1:routing-options>
+                                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.f.15e369681ca.N7ffa</con2:id>
+                                                        <con1:restOptions>
+                                                            <con1:verb>PUT</con1:verb>
+                                                            <con1:relPath>
+                                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'Productos'</con:xqueryText>
+                                                            </con1:relPath>
+                                                        </con1:restOptions>
+                                                    </con1:routing-options>
+                                                </con1:requestTransform>
+                                                <con1:responseTransform/>
+                                            </con1:wsCallout>
+                                        </con1:actions>
+                                    </con1:case>
+                                </con1:ifThenElse>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                    <con1:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.1c.15e3a320734.N8000</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/cmp:NMP_AJUSTE_PRECIOS_TYPE/TIPO_OPERACION = 'N'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:ifThenElse>
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.1c.15e3a320734.N7fff</con2:id>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/cmp:NMP_AJUSTE_PRECIOS_TYPE/SUBRAMO = 'MN'</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:assign varName="body_tmp_descripcion_MN">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.1c.15e3a320734.N7ffe</con2:id>
+                                                <con1:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<Product>
+   <ProductName>{$body//DESCRIPCION/text()}</ProductName> 
+   <ProductCode>{$body//FOLIO/text()}</ProductCode> 
+   <ProductCategory>{$body//RAMO/text()}</ProductCategory>
+   <PreferredVendor>NMP</PreferredVendor> 
+   <Manufacturer>NMP</Manufacturer> 
+   <ProductStockManager>admin</ProductStockManager>
+   <IncomeAccount>Uncategorized Income</IncomeAccount>
+   <CogsAccount>Cost of Goods Sold</CogsAccount>
+   <AssetAccount>Inventory Asset</AssetAccount>
+<ProductCustomFields>
+        <CustomField>
+            <Name>NumerodePartida</Name> 
+            <Value>{$body//FOLIO/text()}</Value> 
+        </CustomField>
+        <CustomField>
+            <Name>Ramo</Name>
+            <Value>{$body//RAMO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Subramo</Name>
+            <Value>{$body//SUBRAMO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Descripcion</Name>
+            <Value>{$body//DESCRIPCION/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Avaluo_Tecnico</Name>
+            <Value>{$body//AVALUO_TECNICO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Avaluo_Comercial</Name>
+            <Value>{$body//AVALUO_COMERCIAL/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Prestamo</Name>
+            <Value>{$body//PRESTAMO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Fechaingresoodeposito</Name>
+            <Value>{$body//fecha_ingreso_deposito/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Fechaingresooinstitucion</Name>
+            <Value>{$body//fecha_ingreso_institucion/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Fechadecomercializacion</Name>
+            <Value>{$body//FECHA_COMERCIALIZACION/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>PreciodeVenta_Inicial</Name>
+            <Value>PRECIO_VENTA_INICIAL</Value>
+        </CustomField>
+		<CustomField>
+            <Name>PreciodeVenta_Actual</Name>
+            <Value>PRECIO_VENTA_ACTUAL</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Incremento</Name>
+            <Value>{$body//INCREMENTO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Desplazamiento</Name>
+            <Value>{$body//DESPLAZAMIENTO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Refrendos</Name>
+            <Value>{$body//REFRENDOS/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Valoranda</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>Valuador</Name>
+            <Value>{$body//VALUADOR/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>CanaldeIngreso</Name>
+            <Value>{$body//CANAL_INGRESO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Sucursal</Name>
+            <Value>{$body//SUCURSAL/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Region</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>Subdireccion</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>EntidadFederativa</Name>
+            <Value>{$body//ESTADO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Delegacion_municipio</Name>
+            <Value>{$body//DELEGACION_MUNICIPIO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Colonia</Name>
+            <Value>{$body//COLONIA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>CalleyNo</Name>
+            <Value>{$body//DIRECCION/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>CP</Name>
+            <Value>{$body//CODIGO_POSTAL/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Telefono</Name>
+            <Value>{$body//TELEFONO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Expendio</Name>
+            <Value>{$body//EXPENDIO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>EstadodeCaja</Name>
+            <Value>{$body//ESTADO_CAJA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>EstadodePrenda</Name>
+            <Value>{$body//ESTADO_PRENDA/text()}</Value>
+        </CustomField>
+		
+	
+		
+		<CustomField>
+            <Name>Monedas_Tipohechura</Name>
+            <Value>{$body//FACTOR_HECHURA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Monedas_Calidadoro</Name>
+            <Value>{$body//CALIDAD/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Monedas_Familia</Name>
+            <Value>{$body//FAMILIA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Monedas_Tipomoneda</Name>
+            <Value>{$body//TIPO_MONEDA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Monedas_Cantidad</Name>
+            <Value>{$body//CANTIDAD/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Monedas_Gramaje</Name>
+            <Value>{$body//GRAMAJE/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Monedas_Preciooro</Name>
+            <Value>{$body//PRECIO_ORO/text()}</Value>
+        </CustomField>
+		
+    </ProductCustomFields>
+</Product>]]></con:xqueryText>
+                                                </con1:expr>
+                                            </con1:assign>
+                                            <con1:wsCallout>
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.1c.15e3a320734.N7ffd</con2:id>
+                                                <con1:service ref="OperacionPrendaria/Articulo/BusinessServices/NMPProductosAgilironRestPxyBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                                <con1:request>
+                                                    <con1:payload wrapped="false">body_tmp_descripcion_MN</con1:payload>
+                                                </con1:request>
+                                                <con1:response>
+                                                    <con1:payload wrapped="false">bodyRes</con1:payload>
+                                                </con1:response>
+                                                <con1:requestTransform>
+                                                    <con1:routing-options>
+                                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.1c.15e3a320734.N7ffc</con2:id>
+                                                        <con1:restOptions>
+                                                            <con1:verb>PUT</con1:verb>
+                                                            <con1:relPath>
+                                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'Productos'</con:xqueryText>
+                                                            </con1:relPath>
+                                                        </con1:restOptions>
+                                                    </con1:routing-options>
+                                                </con1:requestTransform>
+                                                <con1:responseTransform/>
+                                            </con1:wsCallout>
+                                        </con1:actions>
+                                    </con1:case>
+                                </con1:ifThenElse>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                    <con1:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.f.15e369681ca.N7ff4</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/cmp:NMP_AJUSTE_PRECIOS_TYPE/TIPO_OPERACION = 'N'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:ifThenElse>
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.f.15e369681ca.N7ff3</con2:id>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/cmp:NMP_AJUSTE_PRECIOS_TYPE/RAMO = 'VE'</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:assign varName="body_tmp_descripcion_VE">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.f.15e369681ca.N7ff2</con2:id>
+                                                <con1:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<Product>
+   <ProductName>{$body//DESCRIPCION/text()}</ProductName> 
+   <ProductCode>{$body//FOLIO/text()}</ProductCode> 
+   <ProductCategory>{$body//RAMO/text()}</ProductCategory>
+   <PreferredVendor>NMP</PreferredVendor> 
+   <Manufacturer>NMP</Manufacturer> 
+   <ProductStockManager>admin</ProductStockManager>
+   <IncomeAccount>Uncategorized Income</IncomeAccount>
+   <CogsAccount>Cost of Goods Sold</CogsAccount>
+   <AssetAccount>Inventory Asset</AssetAccount>
+<ProductCustomFields>
+        <CustomField>
+            <Name>NumerodePartida</Name> 
+            <Value>{$body//FOLIO/text()}</Value> 
+        </CustomField>
+        <CustomField>
+            <Name>Ramo</Name>
+            <Value>{$body//RAMO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Subramo</Name>
+            <Value>{$body//SUBRAMO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Descripcion</Name>
+            <Value>{$body//DESCRIPCION/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Avaluo_Tecnico</Name>
+            <Value>{$body//AVALUO_TECNICO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Avaluo_Comercial</Name>
+            <Value>{$body//AVALUO_COMERCIAL/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Prestamo</Name>
+            <Value>{$body//PRESTAMO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Fechaingresoodeposito</Name>
+            <Value>{$body//fecha_ingreso_deposito/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Fechaingresooinstitucion</Name>
+            <Value>{$body//fecha_ingreso_institucion/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Fechadecomercializacion</Name>
+            <Value>{$body//FECHA_COMERCIALIZACION/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>PreciodeVenta_Inicial</Name>
+            <Value>PRECIO_VENTA_INICIAL</Value>
+        </CustomField>
+		<CustomField>
+            <Name>PreciodeVenta_Actual</Name>
+            <Value>PRECIO_VENTA_ACTUAL</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Incremento</Name>
+            <Value>{$body//INCREMENTO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Desplazamiento</Name>
+            <Value>{$body//DESPLAZAMIENTO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Refrendos</Name>
+            <Value>{$body//REFRENDOS/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Valoranda</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>Valuador</Name>
+            <Value>{$body//VALUADOR/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>CanaldeIngreso</Name>
+            <Value>{$body//CANAL_INGRESO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Sucursal</Name>
+            <Value>{$body//SUCURSAL/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Region</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>Subdireccion</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>EntidadFederativa</Name>
+            <Value>{$body//ESTADO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Delegacion_municipio</Name>
+            <Value>{$body//DELEGACION_MUNICIPIO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Colonia</Name>
+            <Value>{$body//COLONIA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>CalleyNo</Name>
+            <Value>{$body//DIRECCION/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>CP</Name>
+            <Value>{$body//CODIGO_POSTAL/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Telefono</Name>
+            <Value>{$body//TELEFONO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Expendio</Name>
+            <Value>{$body//EXPENDIO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>EstadodeCaja</Name>
+            <Value>{$body//ESTADO_CAJA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>EstadodePrenda</Name>
+            <Value>{$body//ESTADO_PRENDA/text()}</Value>
+        </CustomField>
+		
+	
+	
+		
+		<CustomField>
+            <Name>Autos_Marca</Name>
+            <Value>{$body//MARCA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Autos_Modelo</Name>
+            <Value>{$body//MODELO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Autos_SubMarca</Name>
+            <Value>{$body//SUBMARCA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Autos_Version</Name>
+            <Value>{$body//VERSION/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Autos_Complementos</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>Autos_Kilometraje</Name>
+            <Value>{$body//KILOMETRAJE/text()}</Value>
+        </CustomField>
+		
+    </ProductCustomFields>
+</Product>]]></con:xqueryText>
+                                                </con1:expr>
+                                            </con1:assign>
+                                            <con1:wsCallout>
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.f.15e369681ca.N7ff1</con2:id>
+                                                <con1:service ref="OperacionPrendaria/Articulo/BusinessServices/NMPProductosAgilironRestPxyBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                                <con1:request>
+                                                    <con1:payload wrapped="false">body_tmp_descripcion_VE</con1:payload>
+                                                </con1:request>
+                                                <con1:response>
+                                                    <con1:payload wrapped="false">body_res</con1:payload>
+                                                </con1:response>
+                                                <con1:requestTransform>
+                                                    <con1:routing-options>
+                                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.f.15e369681ca.N7ff0</con2:id>
+                                                        <con1:restOptions>
+                                                            <con1:verb>PUT</con1:verb>
+                                                            <con1:relPath>
+                                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'Productos'</con:xqueryText>
+                                                            </con1:relPath>
+                                                        </con1:restOptions>
+                                                    </con1:routing-options>
+                                                </con1:requestTransform>
+                                                <con1:responseTransform/>
+                                            </con1:wsCallout>
+                                        </con1:actions>
+                                    </con1:case>
+                                </con1:ifThenElse>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                    <con1:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.1b.15e3a2f30d1.N7ffb</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/cmp:NMP_AJUSTE_PRECIOS_TYPE/TIPO_OPERACION = 'N'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:ifThenElse>
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.1b.15e3a2f30d1.N7ffa</con2:id>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/cmp:NMP_AJUSTE_PRECIOS_TYPE/SUBRAMO = 'DI'</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:assign varName="body_tmp_descripcion_DI">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.1b.15e3a2f30d1.N7ff9</con2:id>
+                                                <con1:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<Product>
+   <ProductName>{$body//DESCRIPCION/text()}</ProductName> 
+   <ProductCode>{$body//FOLIO/text()}</ProductCode> 
+   <ProductCategory>{$body//RAMO/text()}</ProductCategory>
+   <PreferredVendor>NMP</PreferredVendor> 
+   <Manufacturer>NMP</Manufacturer> 
+   <ProductStockManager>admin</ProductStockManager>
+   <IncomeAccount>Uncategorized Income</IncomeAccount>
+   <CogsAccount>Cost of Goods Sold</CogsAccount>
+   <AssetAccount>Inventory Asset</AssetAccount>
+<ProductCustomFields>
+        <CustomField>
+            <Name>NumerodePartida</Name> 
+            <Value>{$body//FOLIO/text()}</Value> 
+        </CustomField>
+        <CustomField>
+            <Name>Ramo</Name>
+            <Value>{$body//RAMO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Subramo</Name>
+            <Value>{$body//SUBRAMO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Descripcion</Name>
+            <Value>{$body//DESCRIPCION/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Avaluo_Tecnico</Name>
+            <Value>{$body//AVALUO_TECNICO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Avaluo_Comercial</Name>
+            <Value>{$body//AVALUO_COMERCIAL/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Prestamo</Name>
+            <Value>{$body//PRESTAMO/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Fechaingresoodeposito</Name>
+            <Value>{$body//fecha_ingreso_deposito/text()}</Value>
+        </CustomField>
+		 <CustomField>
+            <Name>Fechaingresooinstitucion</Name>
+            <Value>{$body//fecha_ingreso_institucion/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Fechadecomercializacion</Name>
+            <Value>{$body//FECHA_COMERCIALIZACION/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>PreciodeVenta_Inicial</Name>
+            <Value>PRECIO_VENTA_INICIAL</Value>
+        </CustomField>
+		<CustomField>
+            <Name>PreciodeVenta_Actual</Name>
+            <Value>PRECIO_VENTA_ACTUAL</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Incremento</Name>
+            <Value>{$body//INCREMENTO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Desplazamiento</Name>
+            <Value>{$body//DESPLAZAMIENTO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Refrendos</Name>
+            <Value>{$body//REFRENDOS/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Valoranda</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>Valuador</Name>
+            <Value>{$body//VALUADOR/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>CanaldeIngreso</Name>
+            <Value>{$body//CANAL_INGRESO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Sucursal</Name>
+            <Value>{$body//SUCURSAL/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Region</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>Subdireccion</Name>
+            <Value></Value>
+        </CustomField>
+		<CustomField>
+            <Name>EntidadFederativa</Name>
+            <Value>{$body//ESTADO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Delegacion_municipio</Name>
+            <Value>{$body//DELEGACION_MUNICIPIO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Colonia</Name>
+            <Value>{$body//COLONIA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>CalleyNo</Name>
+            <Value>{$body//DIRECCION/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>CP</Name>
+            <Value>{$body//CODIGO_POSTAL/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Telefono</Name>
+            <Value>{$body//TELEFONO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Expendio</Name>
+            <Value>{$body//EXPENDIO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>EstadodeCaja</Name>
+            <Value>{$body//ESTADO_CAJA/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>EstadodePrenda</Name>
+            <Value>{$body//ESTADO_PRENDA/text()}</Value>
+        </CustomField>
+		
+		
+		<CustomField>
+            <Name>Diamantes_Corte</Name>
+            <Value>{$body//CORTE/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Diamantes_Color</Name>
+            <Value>{$body//COLOR/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Diamantes_Claridad</Name>
+            <Value>{$body//CLARIDAD/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Diamantes_Kilataje</Name>
+            <Value>{$body//KILATAJE/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Diamantes_certificado</Name>
+            <Value>{$body//CERTIFICADO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Diamantes_numerodecertificado</Name>
+            <Value>{$body//NUMERO_CERTIFICADO/text()}</Value>
+        </CustomField>
+		<CustomField>
+            <Name>Diamantes_tipodecorte</Name>
+            <Value>{$body//TIPO_CORTE/text()}</Value>
+        </CustomField>
+		
+    </ProductCustomFields>
+</Product>]]></con:xqueryText>
+                                                </con1:expr>
+                                            </con1:assign>
+                                            <con1:wsCallout>
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.1b.15e3a2f30d1.N7ff8</con2:id>
+                                                <con1:service ref="OperacionPrendaria/Articulo/BusinessServices/NMPProductosAgilironRestPxyBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                                <con1:request>
+                                                    <con1:payload wrapped="false">body_tmp_descripcion_DI</con1:payload>
+                                                </con1:request>
+                                                <con1:response>
+                                                    <con1:payload wrapped="false">body_res</con1:payload>
+                                                </con1:response>
+                                                <con1:requestTransform>
+                                                    <con1:routing-options>
+                                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.1b.15e3a2f30d1.N7ff7</con2:id>
+                                                        <con1:restOptions>
+                                                            <con1:verb>PUT</con1:verb>
+                                                            <con1:relPath>
+                                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'Productos'</con:xqueryText>
+                                                            </con1:relPath>
+                                                        </con1:restOptions>
+                                                    </con1:routing-options>
+                                                </con1:requestTransform>
+                                                <con1:responseTransform/>
+                                            </con1:wsCallout>
+                                        </con1:actions>
+                                    </con1:case>
+                                </con1:ifThenElse>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+            <con:stage name="stage_IndexarArticulosQueue" errorHandler="_onErrorHandler-a1e030f.830c5ee.41.15e4f039157.N8000">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="gat" namespace="http://xmlns.oracle.com/xdb/GATEWAYS" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="tmp" namespace="http://tempuri.org/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="ns1" namespace="http://schemas.datacontract.org/2004/07/Nmp.Crm.BusinessEntity.DataContract" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="cmp" namespace="http://xmlns.oracle.com/xdb/CMPLATAFORMACOMERCIAL" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.2e.15e49562148.N8000</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/cmp:NMP_AJUSTE_PRECIOS_TYPE/TIPO_OPERACION = 'N'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/publish/config">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.28.15e49399849.N7fff</con2:id>
+                                    <con1:service ref="OperacionPrendaria/Inventario/ProxyServices/NMPIndexarArticuloQueueCloudPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                    <con1:operation>publicarArticulosQueue</con1:operation>
+                                    <con1:outboundTransform>
+                                        <con5:replace varName="body" contents-only="false" xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/alert/config" xmlns:con4="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con5="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con6="http://www.bea.com/wli/sb/stages/publish/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                                            <con2:id>_ActionId-a1e030f.830c5ee.28.15e49399849.N7ffe</con2:id>
+                                            <con5:location>
+                                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./*</con:xpathText>
+                                            </con5:location>
+                                            <con5:expr>
+                                                <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                                    <con:resource ref="OperacionPrendaria/Inventario/Resources/Transformations/TrIndexarArticuloToQueue"/>
+                                                    <con:input>$body/*</con:input>
+                                                </con:xsltTransform>
+                                            </con5:expr>
+                                        </con5:replace>
+                                    </con1:outboundTransform>
+                                </con1:route>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+            <con:stage name="stage_ActualizarPrecioAgilirion" errorHandler="_onErrorHandler-a1e030f.830c5ee.43.15e4f0447e6.N8000">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="cmp" namespace="http://xmlns.oracle.com/xdb/CMPLATAFORMACOMERCIAL" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.4a.15e0b39b9cb.N8000</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/cmp:NMP_AJUSTE_PRECIOS_TYPE/TIPO_OPERACION ='A'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:assign varName="body_tmp_Update_Agilirion">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.1d.15e3ddfd9b1.N8000</con2:id>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<ProductPricebooks>
+    <ProductPricebook>
+        <ProductCode>{$body//FOLIO/text()}</ProductCode>
+        <PriceBook>Default</PriceBook>
+        <Price>{$body//PRECIO_VENTA/text()}</Price>
+    </ProductPricebook>
+</ProductPricebooks>]]></con:xqueryText>
+                                    </con1:expr>
+                                </con1:assign>
+                                <con1:wsCallout>
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.49.15e0b2f881d.N7fff</con2:id>
+                                    <con1:service ref="OperacionPrendaria/Articulo/BusinessServices/NMPProductosAgilironRestPxyBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                    <con1:request>
+                                        <con1:payload wrapped="false">body_tmp_Update_Agilirion</con1:payload>
+                                    </con1:request>
+                                    <con1:response>
+                                        <con1:payload wrapped="false">body_response</con1:payload>
+                                    </con1:response>
+                                    <con1:requestTransform>
+                                        <con1:routing-options>
+                                            <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.49.15e0b2f881d.N7ffe</con2:id>
+                                            <con1:restOptions>
+                                                <con1:verb>POST</con1:verb>
+                                                <con1:relPath>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'ListaPreciosProductos'</con:xqueryText>
+                                                </con1:relPath>
+                                            </con1:restOptions>
+                                        </con1:routing-options>
+                                    </con1:requestTransform>
+                                    <con1:responseTransform/>
+                                </con1:wsCallout>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-af100e2.1465741d.0.15c4048c867.N7f32" name="stage_ActualizarPrecioELK" errorHandler="_onErrorHandler-a1e030f.830c5ee.44.15e4f051f7a.N8000" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con3="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con4="http://www.bea.com/wli/sb/stages/publish/config" xmlns:con5="http://www.bea.com/wli/sb/stages/logging/config">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+                    <con1:userNsDecl prefix="nmpm" namespace="http://servicios.montedepiedad.com.mx/NMP/SchemaNXSD/NMPPartidasMontos"/>
+                    <con1:varNsDecl prefix="cmp" namespace="http://xmlns.oracle.com/xdb/CMPLATAFORMACOMERCIAL"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-a1e030f.830c5ee.32.15e4dd5c68d.N8000</con1:id>
+                        <con2:case>
+                            <con2:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/cmp:NMP_AJUSTE_PRECIOS_TYPE/TIPO_OPERACION = 'A'</con:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:assign varName="actualizarPrecios">
+                                    <con1:id>_ActionId-a1e030f.830c5ee.33.15e4dd612db.N8000</con1:id>
+                                    <con2:expr>
+                                        <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                            <con:resource ref="OperacionPrendaria/Inventario/Resources/Transformations/TrArticulosQueueToELK"/>
+                                            <con:input>$body/cmp:NMP_AJUSTE_PRECIOS_TYPE</con:input>
+                                        </con:xsltTransform>
+                                    </con2:expr>
+                                </con2:assign>
+                                <con2:nxsdTranslation>
+                                    <con1:id>_ActionId-a1e030f.830c5ee.34.15e4dd63b60.N8000</con1:id>
+                                    <con2:type>XML-To-Native</con2:type>
+                                    <con2:sourceExpr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$actualizarPrecios</con:xqueryText>
+                                    </con2:sourceExpr>
+                                    <con2:nxsd ref="OperacionPrendaria/Inventario/Resources/Schemas/NMPActualizaArtEKLNXSD"/>
+                                    <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/SchemaNXSD/NMPActualizaArtEKL">nmp:doc</con2:schemaElement>
+                                    <con2:assign-variable>actualizarPreciosEKL</con2:assign-variable>
+                                    <con2:enforceSchemaOrder>false</con2:enforceSchemaOrder>
+                                </con2:nxsdTranslation>
+                                <con2:assign varName="body_requestUpdatePrecioEKL">
+                                    <con1:id>_ActionId-a1e030f.830c5ee.34.15e4dd63b60.N7fff</con1:id>
+                                    <con2:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:binary-to-text($actualizarPreciosEKL,'UTF-8')</con:xqueryText>
+                                    </con2:expr>
+                                </con2:assign>
+                                <con1:wsCallout xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.33.15e4dd612db.N7fff</con2:id>
+                                    <con1:service ref="OperacionPrendaria/Articulo/BusinessServices/NMPProductosElkRestPxyBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                    <con1:request>
+                                        <con1:payload wrapped="false">body_requestUpdatePrecioEKL</con1:payload>
+                                    </con1:request>
+                                    <con1:response>
+                                        <con1:payload wrapped="false">body_ResponseUpdatePrecioEKL</con1:payload>
+                                    </con1:response>
+                                    <con1:requestTransform>
+                                        <con1:transport-headers copy-all="false">
+                                            <con6:id xmlns:con6="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.33.15e4dd612db.N7ffe</con6:id>
+                                            <con1:header-set>outbound-request</con1:header-set>
+                                            <con1:header name="Content-Type" value="expression">
+                                                <con6:xqueryText xmlns:con6="http://www.bea.com/wli/sb/stages/config">'application/json'</con6:xqueryText>
+                                            </con1:header>
+                                        </con1:transport-headers>
+                                        <con1:routing-options>
+                                            <con6:id xmlns:con6="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.33.15e4dd612db.N7ffd</con6:id>
+                                            <con1:restOptions>
+                                                <con1:verb>POST</con1:verb>
+                                                <con1:relPath>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'producto/actualiza'</con:xqueryText>
+                                                </con1:relPath>
+                                            </con1:restOptions>
+                                        </con1:routing-options>
+                                    </con1:requestTransform>
+                                    <con1:responseTransform/>
+                                </con1:wsCallout>
+                            </con2:actions>
+                        </con2:case>
+                    </con2:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="_onErrorHandler-a1e030f.830c5ee.33.15e4dd612db.N7ffa" type="error">
+            <con:stage name="Stage_FaultActualizar_Descripcion">
+                <con:actions>
+                    <con1:reply isError="true" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+                        <con1:id>_ActionId-a1e030f.830c5ee.3f.15e4f01cd9e.N7fff</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="_onErrorHandler-a1e030f.830c5ee.44.15e4f051f7a.N8000" type="error">
+            <con:stage name="Stage_FaultActualizarPreciosELK"/>
+        </con:pipeline>
+        <con:pipeline name="_onErrorHandler-a1e030f.830c5ee.43.15e4f0447e6.N8000" type="error">
+            <con:stage name="Stage_FaultActualizarPreciosAgilirion">
+                <con:actions>
+                    <con1:reply isError="true" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+                        <con1:id>_ActionId-a1e030f.830c5ee.3f.15e4f01cd9e.N7ffe</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="PipelinePairNode1">
+                <con:request>PipelinePairNode1_request</con:request>
+                <con:response>PipelinePairNode1_response</con:response>
+            </con:pipeline-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

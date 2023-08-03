@@ -1,0 +1,115 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Wed Jan 04 11:40:52 CST 2017
+  Author:  jeabril
+  Type: BPEL 2.0 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="GuardarArchivoProrrateo" targetNamespace="http://qualitas.com.mx/Comunes/Prorrateo/guardarArchivoProrrateo/" xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:client="http://qualitas.com.mx/Comunes/Prorrateo/guardarArchivoProrrateo/" xmlns:ora="http://schemas.oracle.com/xpath/extension" xmlns:ui="http://xmlns.oracle.com/soa/designer" xmlns:bpelx="http://schemas.oracle.com/bpel/extension" xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xml:id="id_1"
+         xmlns:ns2="http://qualitas.com.mx/comunes/objetosComunes/v1/"
+         xmlns:ns1="http://qualitas.com.mx/Comunes/Prorrateo/guardarArchivoProrrateo/v1/"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ess="http://xmlns.oracle.com/scheduler" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap">
+
+    <import ui:processWSDL="true" namespace="http://qualitas.com.mx/Comunes/Prorrateo/guardarArchivoProrrateo/" location="../WSDLs/GuardarArchivoProrrateo.wsdl" importType="http://schemas.xmlsoap.org/wsdl/" xml:id="id_2"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks xml:id="id_3">
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="guardararchivoprorrateo_client" partnerLinkType="client:GuardarArchivoProrrateo" myRole="GuardarArchivoProrrateoProvider" xml:id="id_4"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables xml:id="id_5">
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:GuardarArchivoProrrateoRequestMessage" xml:id="id_6"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:GuardarArchivoProrrateoResponseMessage" xml:id="id_7"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main" xml:id="id_8">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in GuardarArchivoProrrateo.wsdl) -->
+    <receive name="receiveInput" partnerLink="guardararchivoprorrateo_client" portType="client:GuardarArchivoProrrateo" operation="process" variable="inputVariable" createInstance="yes" xml:id="id_9"/>
+    <if name="If1" xml:id="id_30">
+      <condition xml:id="id_32">$inputVariable.payload/ns1:Input/ns1:id_solicitud != 12345</condition>
+      <assign name="Assign_Archivo" xml:id="id_11">
+        <copy xml:id="id_12">
+          <from xml:id="id_13">$inputVariable.payload/ns1:Input/ns1:nombreArchivo</from>
+          <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_14">$outputVariable.payload/ns1:resultDataResponse/ns1:nombreArchivo</to>
+        </copy>
+        <copy xml:id="id_15">
+          <from xml:id="id_16">ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+          <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_17">$outputVariable.payload/ns1:resultDataResponse/ns1:fechaRecepcion</to>
+        </copy>
+        <copy xml:id="id_27">
+          <from xml:id="id_28">ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+          <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_29">$outputVariable.payload/ns1:OperationResponse/ns2:fecha</to>
+        </copy>
+        <copy xml:id="id_18">
+          <from xml:id="id_19">ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+          <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_20">$outputVariable.payload/ns1:resultDataResponse/ns1:fechaCreacion</to>
+        </copy>
+        <copy xml:id="id_21">
+          <from xml:id="id_22">0</from>
+          <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_23">$outputVariable.payload/ns1:OperationResponse/ns2:codigoRespuesta</to>
+        </copy>
+        <copy xml:id="id_24">
+          <from xml:id="id_25">"Archivo Guardado Correctamente"</from>
+          <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_26">$outputVariable.payload/ns1:OperationResponse/ns2:descripcionRespuesta</to>
+        </copy>
+      </assign>
+      <else xml:id="id_31">
+        <assign name="Assign_Error" xml:id="id_33">
+          <copy xml:id="id_34">
+            <from xml:id="id_35">1</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_36">$outputVariable.payload/ns1:OperationResponse/ns2:codigoRespuesta</to>
+          </copy>
+          <copy xml:id="id_37">
+            <from xml:id="id_38">"Error, No se pudo almacenar el archivo"</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_39">$outputVariable.payload/ns1:OperationResponse/ns2:descripcionRespuesta</to>
+          </copy>
+          <copy xml:id="id_40">
+            <from xml:id="id_41">ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_42">$outputVariable.payload/ns1:OperationResponse/ns2:fecha</to>
+          </copy>
+        </assign>
+      </else>
+    </if>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="guardararchivoprorrateo_client" portType="client:GuardarArchivoProrrateo" operation="process" variable="outputVariable" xml:id="id_10"/>
+  </sequence>
+</process>

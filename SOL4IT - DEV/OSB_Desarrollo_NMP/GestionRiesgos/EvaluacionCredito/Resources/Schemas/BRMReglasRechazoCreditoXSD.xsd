@@ -1,0 +1,57 @@
+<xsd:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/ReglaRechazoCredito"
+            xmlns:brm="http://servicios.montedepiedad.com.mx/NMP/Schema/ReglaRechazoCredito"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xsd:complexType name="aplicarReglasRechazoRequestType">
+    <xsd:sequence>
+      <xsd:element name="cliente">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="idCliente" type="xsd:long" minOccurs="1"/>
+            <xsd:element name="consultasEfetudasBuroCredito" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="calificacionBuro" type="xsd:long" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="siva" type="xsd:int" minOccurs="1"/>
+            <xsd:element name="probabilidadIncumplimiento" type="xsd:decimal" minOccurs="1"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="cuentaEvaluar">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="numeroCuenta" type="xsd:string" minOccurs="1"/>
+            <xsd:element name="tipoContrato" type="xsd:string" minOccurs="1"/>
+            <xsd:element name="institucionReporto" type="xsd:string" minOccurs="1"/>
+            <xsd:element name="estadoCuenta" type="xsd:string" minOccurs="1"/>
+            <xsd:element name="saldoActual" type="xsd:long" minOccurs="1"/>
+            <xsd:element name="saldoVencido" type="xsd:long" minOccurs="1"/>
+            <xsd:element name="mopActual" type="xsd:long" minOccurs="1"/>
+            <xsd:element name="mopHistoricoMasAlto" type="xsd:long" minOccurs="1"/>
+            <xsd:element name="frecuenciaPago" type="xsd:string" minOccurs="1"/>
+            <xsd:element name="porcentajeMora" type="xsd:decimal" minOccurs="1"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="grupoCuentas">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="cuenta" maxOccurs="unbounded">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="numeroCuenta" type="xsd:string" minOccurs="1"/>
+                  <xsd:element name="saldoActual" type="xsd:long" minOccurs="1"/>
+                  <xsd:element name="saldoVencido" type="xsd:long" minOccurs="1"/>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="aplicarReglasRechazoResponseType">
+    <xsd:sequence>
+      <xsd:element name="resultadoEvaluacion" type="xsd:string" minOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="aplicarReglasRechazoRequest" type="brm:aplicarReglasRechazoRequestType"/>
+  <xsd:element name="aplicarReglasRechazoResponse" type="brm:aplicarReglasRechazoResponseType"/>
+</xsd:schema>

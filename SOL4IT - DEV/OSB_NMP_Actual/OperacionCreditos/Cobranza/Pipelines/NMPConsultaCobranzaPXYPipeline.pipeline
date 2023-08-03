@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="OperacionCreditos/Cobranza/Resources/WSDLs/NMPCobranzaConsultasWSDL"/>
+            <con:binding>
+                <con:name>ConsultaCobranzaBinding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Services/CobranzaConsultas</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:tracingEnabled>true</oper:tracingEnabled>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router errorHandler="error-N5601d8a2.44f1848b.0.15627c99803.N7e5f">
+        <con:pipeline type="request" name="request-N5601d8a2.44f1848b.0.15627c99803.N7f4e">
+            <con:stage id="_StageId-N5601d8a2.44f1848b.0.15627c99803.N7f4d" name="Request Stage" errorHandler="error-N5601d8a2.N14b41a90.0.15651c81563.N7a13">
+                <con:context/>
+                <con:actions>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-N5601d8a2.44f1848b.0.15627c99803.N7f4c</con2:id>
+                        <con1:service ref="OperacionCreditos/Cobranza/Business Services/SAPCobranzaClienteBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>ZlmRfcCobranzaCliente</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">cobranzaClienteReq</con1:body>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">cobranzaClienteRes</con1:body>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:routing-options>
+                                <con2:id>_ActionId-N3f57c7ff.63d05b41.0.157c02e52c6.N7c79</con2:id>
+                                <con1:uriExpr>
+                                    <con2:xqueryText>$targetEndpoint</con2:xqueryText>
+                                </con1:uriExpr>
+                            </con1:routing-options>
+                            <con1:replace varName="cobranzaClienteReq">
+                                <con2:id>_ActionId-N5601d8a2.44f1848b.0.15627c99803.N7f4b</con2:id>
+                                <con1:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="OperacionCreditos/Cobranza/Resources/Transformations/TrConsultarCobranzaClienteReqToSAPCobranzaCliente"/>
+                                        <con2:input>$body/*</con2:input>
+                                    </con2:xsltTransform>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:requestTransform>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N5601d8a2.44f1848b.0.15627c99803.N7f4a">
+            <con:stage id="_StageId-N5601d8a2.44f1848b.0.15627c99803.N7f49" name="Response Stage">
+                <con:context/>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-N5601d8a2.44f1848b.0.15627c99803.N7f48</con2:id>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="OperacionCreditos/Cobranza/Resources/Transformations/TrSAPCobranzaClienteToConsultarCobranzaClienteRes"/>
+                                <con2:input>$cobranzaClienteRes</con2:input>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N5601d8a2.44f1848b.0.15627c99803.N7ed6">
+            <con:stage id="_StageId-N5601d8a2.44f1848b.0.15627c99803.N7ecd" name="RequestStage" errorHandler="error-N5601d8a2.N14b41a90.0.15651c81563.N79af">
+                <con:context/>
+                <con:actions>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-N5601d8a2.44f1848b.0.15627c99803.N7ecc</con2:id>
+                        <con1:service ref="OperacionCreditos/Cobranza/Business Services/SAPEstatusCobranzaBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>ZlmRfcEstatusCobranza</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">estatusCobranzaReq</con1:body>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">estatusCobranzaRes</con1:body>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:routing-options>
+                                <con2:id>_ActionId-N3f57c7ff.63d05b41.0.157c02e52c6.N7c45</con2:id>
+                                <con1:uriExpr>
+                                    <con2:xqueryText>$targetEndpoint</con2:xqueryText>
+                                </con1:uriExpr>
+                            </con1:routing-options>
+                            <con1:replace varName="estatusCobranzaReq">
+                                <con2:id>_ActionId-N5601d8a2.44f1848b.0.15627c99803.N7e98</con2:id>
+                                <con1:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="OperacionCreditos/Cobranza/Resources/Transformations/TrConsultarEstatusCobranzaReqToSAPEstatusCobranza"/>
+                                        <con2:input>$body/*</con2:input>
+                                    </con2:xsltTransform>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:requestTransform>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N5601d8a2.44f1848b.0.15627c99803.N7ed2">
+            <con:stage id="_StageId-N5601d8a2.44f1848b.0.15627c99803.N7ed1" name="Response Stage">
+                <con:context/>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-N5601d8a2.44f1848b.0.15627c99803.N7ed0</con2:id>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="OperacionCreditos/Cobranza/Resources/Transformations/TrSAPEstatusCobranzaTrConsultarEstatusCobranzaRes"/>
+                                <con2:input>$estatusCobranzaRes</con2:input>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N5601d8a2.44f1848b.0.15627c99803.N7e97">
+            <con:stage id="_StageId-N5601d8a2.44f1848b.0.15627c99803.N7e95" name="StageRequest">
+                <con:context/>
+                <con:actions>
+                    <con1:Error>
+                        <con2:id>_ActionId-N5601d8a2.44f1848b.0.15627c99803.N7e91</con2:id>
+                        <con1:errCode>NMP-1001</con1:errCode>
+                        <con1:message>La operación requerida no existe</con1:message>
+                    </con1:Error>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N5601d8a2.44f1848b.0.15627c99803.N7e96"/>
+        <con:pipeline type="error" name="error-N5601d8a2.44f1848b.0.15627c99803.N7e5f">
+            <con:stage id="_StageId-N5601d8a2.44f1848b.0.15627c99803.N7e5e" name="StageError">
+                <con:context/>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:env="http://www.bea.com/wli/config/env" xmlns:tran="http://www.bea.com/wli/sb/transports">
+                        <con2:id>_ActionId-N5601d8a2.44f1848b.0.15627c99803.N7e2a</con2:id>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="OperacionCreditos/Cobranza/Resources/Transformations/TransformCobranzaFault"/>
+                                <con2:input>$fault</con2:input>
+                                <con2:param name="app">
+                                    <con2:path>0</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con2:reply isError="true">
+                        <con2:id>_ActionId-N5601d8a2.44f1848b.0.15627c99803.N7e27</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N5601d8a2.N14b41a90.0.15651c81563.N7a13">
+            <con:stage id="_StageId-N5601d8a2.N14b41a90.0.15651c81563.N78dc" name="StageError">
+                <con:context/>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:env="http://www.bea.com/wli/config/env" xmlns:tran="http://www.bea.com/wli/sb/transports">
+                        <con2:id>_ActionId-N5601d8a2.N14b41a90.0.15651c81563.N78db</con2:id>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="OperacionCreditos/Cobranza/Resources/Transformations/TransformCobranzaFault"/>
+                                <con2:input>$fault</con2:input>
+                                <con2:param name="app">
+                                    <con2:path>1</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con2:reply isError="true">
+                        <con2:id>_ActionId-N5601d8a2.N14b41a90.0.15651c81563.N78da</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N5601d8a2.N14b41a90.0.15651c81563.N79af">
+            <con:stage id="_StageId-N5601d8a2.N14b41a90.0.15651c81563.N7914" name="StageError">
+                <con:context/>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:env="http://www.bea.com/wli/config/env" xmlns:tran="http://www.bea.com/wli/sb/transports">
+                        <con2:id>_ActionId-N5601d8a2.N14b41a90.0.15651c81563.N7913</con2:id>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="OperacionCreditos/Cobranza/Resources/Transformations/TransformCobranzaFault"/>
+                                <con2:input>$fault</con2:input>
+                                <con2:param name="app">
+                                    <con2:path>1</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con2:reply isError="true">
+                        <con2:id>_ActionId-N5601d8a2.N14b41a90.0.15651c81563.N7912</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.63d05b41.0.157c02e52c6.N7ce9" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:env="http://www.bea.com/wli/config/env" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+            <con:stage id="_StageId-N3f57c7ff.63d05b41.0.157c02e52c6.N7ce8" name="StageTargetEndpoint">
+                <con:context>
+                    <con2:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="endpoints">
+                        <con2:id>_ActionId-N3f57c7ff.63d05b41.0.157c02e52c6.N7ce7</con2:id>
+                        <con1:expr>
+                            <con2:xqueryTransform>
+                                <con2:resource ref="OperacionCreditos/Cobranza/Resources/Transformations/NMPConsultaCbzEnrutamientoSAP"/>
+                            </con2:xqueryTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="targetEndpoint">
+                        <con2:id>_ActionId-N3f57c7ff.63d05b41.0.157c02e52c6.N7ce6</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$endpoints//route[@establishment=$header/nmph:headerMessage/nmph:idDestino/text()]/operations/operation[@name=fn:data($operation)]/endpointURL/text()</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-N3f57c7ff.63d05b41.0.157c02e52c6.N7ce5</con2:id>
+                        <con1:case id="_BranchId-N3f57c7ff.63d05b41.0.157c02e52c6.N7ce4">
+                            <con1:condition>
+                                <con2:xqueryText>fn:string-length($targetEndpoint) = 0</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:assign varName="targetEndpoint">
+                                    <con2:id>_ActionId-N3f57c7ff.63d05b41.0.157c02e52c6.N7ce3</con2:id>
+                                    <con1:expr>
+                                        <con2:xqueryText>$endpoints//route[@establishment='SAP']/operations/operation[@name=fn:data($operation)]/endpointURL/text()</con2:xqueryText>
+                                    </con1:expr>
+                                </con1:assign>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.63d05b41.0.157c02e52c6.N7ce2" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:env="http://www.bea.com/wli/config/env" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config"/>
+        <con:flow>
+            <con:pipeline-node name="PipelineConsultaCobranza" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:env="http://www.bea.com/wli/config/env" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                <con:request>request-N3f57c7ff.63d05b41.0.157c02e52c6.N7ce9</con:request>
+                <con:response>response-N3f57c7ff.63d05b41.0.157c02e52c6.N7ce2</con:response>
+            </con:pipeline-node>
+            <con:branch-node type="operation" id="_FlowId-N5601d8a2.44f1848b.0.15627c99803.N7fc0" name="BranchCobranza">
+                <con:context/>
+                <con:branch-table>
+                    <con:branch name="consultarCobranzaCliente">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineConsultaCobranzaCliente">
+                                <con:request>request-N5601d8a2.44f1848b.0.15627c99803.N7f4e</con:request>
+                                <con:response>response-N5601d8a2.44f1848b.0.15627c99803.N7f4a</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="consultarEstatusCobranza">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineCosultaEstatusCobranza">
+                                <con:request>request-N5601d8a2.44f1848b.0.15627c99803.N7ed6</con:request>
+                                <con:response>response-N5601d8a2.44f1848b.0.15627c99803.N7ed2</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairNode1">
+                                <con:request>request-N5601d8a2.44f1848b.0.15627c99803.N7e97</con:request>
+                                <con:response>response-N5601d8a2.44f1848b.0.15627c99803.N7e96</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

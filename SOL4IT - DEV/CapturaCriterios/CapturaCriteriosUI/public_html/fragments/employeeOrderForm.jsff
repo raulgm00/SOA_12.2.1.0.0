@@ -1,0 +1,630 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1" xmlns:af="http://xmlns.oracle.com/adf/faces/rich"
+          xmlns:f="http://java.sun.com/jsf/core"  xmlns:hlKioskLib="/hlKioskLib" xmlns:c="http://java.sun.com/jsp/jstl/core">
+  <c:set var="employeepurchaseuiBundle" value="#{adfBundle['hl.ep.view.EmployeePurchaseUIBundle']}"/>
+   <af:resource type="javascript" source="/resources/javascript/employeepurchase.js"/>
+  <af:panelGroupLayout id="pgl1" layout="vertical" partialTriggers="p3"
+                       binding="#{backingBeanScope.employeeOrderFormBean.employeeOrderLayout}">
+    <af:spacer width="10" height="10" id="s3"/>
+    <af:panelStretchLayout id="psl1" endWidth="200px" startWidth="400px" topHeight="0px" bottomHeight="0px"
+                           dimensionsFrom="auto">
+      <f:facet name="end"/>
+      <f:facet name="start">
+        <af:panelFormLayout id="pfl2" maxColumns="2" rows="1">
+          <af:inputDate value="#{bindings.OrderedDate.inputValue}"
+                        label="#{employeepurchaseuiBundle.ORDER_ORDERED_DATE}"
+                        required="#{bindings.OrderedDate.hints.mandatory}"
+                        columns="#{bindings.OrderedDate.hints.displayWidth}"
+                        shortDesc="#{bindings.OrderedDate.hints.tooltip}" id="id1" readOnly="true">
+            <f:validator binding="#{bindings.OrderedDate.validator}"/>
+            <af:convertDateTime pattern="#{bindings.OrderedDate.format}"/>
+          </af:inputDate>
+          <af:inputText value="#{bindings.OrderNumber.inputValue}"
+                        label="#{employeepurchaseuiBundle.ORDER_ORDER_NUMBER}"
+                        required="#{bindings.OrderNumber.hints.mandatory}"
+                        columns="#{bindings.OrderNumber.hints.displayWidth}"
+                        maximumLength="#{bindings.OrderNumber.hints.precision}"
+                        shortDesc="#{bindings.OrderNumber.hints.tooltip}" id="it2" readOnly="true" rendered="false">
+            <f:validator binding="#{bindings.OrderNumber.validator}"/>
+          </af:inputText>
+        </af:panelFormLayout>
+      </f:facet>
+    </af:panelStretchLayout>
+    <af:spacer width="10" height="20" id="s1"/>
+    <af:panelStretchLayout id="psl3" dimensionsFrom="auto" startWidth="40%" endWidth="25%">
+      <f:facet name="center">
+          <af:panelHeader text="#{employeepurchaseuiBundle.SHIPPING_INFORMATION_TITLE}" id="ph2" size="1"
+                          contentStyle="height:170px;">
+            <af:spacer width="10" height="10" id="s10"/>
+            <af:panelFormLayout id="pfl3">
+              <af:selectOneChoice value="#{bindings.Country.inputValue}"
+                                  label="#{employeepurchaseuiBundle.ORDER_SHIPPING_COUNTRY}"
+                                  shortDesc="#{bindings.Country.hints.tooltip}" id="soc2" autoSubmit="true"
+                                  immediate="true" showRequired="true"
+                                  binding="#{backingBeanScope.employeeOrderFormBean.country}">
+                <f:selectItems value="#{bindings.Country.items}" id="si2"/>
+              </af:selectOneChoice>
+              <af:selectOneChoice value="#{bindings.ProcessingLocation.inputValue}"
+                                  label="#{employeepurchaseuiBundle.ORDER_SHIPPING_LOCATION}"
+                                  shortDesc="#{bindings.ProcessingLocation.hints.tooltip}" id="socLocation"
+                                  contentStyle="width:250px;" autoSubmit="true" immediate="true" showRequired="true"
+                                  partialTriggers="soc2" binding="#{backingBeanScope.employeeOrderFormBean.location}"
+                                  valueChangeListener="#{backingBeanScope.employeeOrderFormBean.changeLocation}">
+                <f:selectItems value="#{bindings.ProcessingLocation.items}" id="si1"/>
+              <af:clientListener method="showPopupTimer" type="valueChange"/>
+            </af:selectOneChoice>
+              <af:inputText value="#{bindings.Address.inputValue}"
+                            label="#{employeepurchaseuiBundle.ORDER_SHIPPING_ADDRESS}"
+                            columns="#{bindings.Address.hints.displayWidth}"
+                            maximumLength="#{bindings.Address.hints.precision}"
+                            shortDesc="#{bindings.Address.hints.tooltip}" id="it7" contentStyle="width:250px;"
+                            showRequired="true" binding="#{backingBeanScope.employeeOrderFormBean.address}"
+                            readOnly="#{bindings.DefaultAddress.inputValue != 'N'}">
+                <f:validator binding="#{bindings.Address.validator}"/>
+              <af:clientListener method="valueChangeStreet" type="valueChange"/>
+            </af:inputText>
+              <af:inputText value="#{bindings.City.inputValue}" label="#{employeepurchaseuiBundle.ORDER_SHIPPING_CITY}"
+                            required="#{bindings.City.hints.mandatory}" columns="#{bindings.City.hints.displayWidth}"
+                            maximumLength="#{bindings.City.hints.precision}" shortDesc="#{bindings.City.hints.tooltip}"
+                            id="it8" contentStyle="width:250px;"
+                            readOnly="#{bindings.DefaultAddress.inputValue != 'N'}">
+                <f:validator binding="#{bindings.City.validator}"/>
+              </af:inputText>
+              <af:inputText label="#{employeepurchaseuiBundle.ORDER_SHIPPING_COUNTY}"
+                            required="#{bindings.County.hints.mandatory}"
+                            columns="#{bindings.County.hints.displayWidth}"
+                            maximumLength="#{bindings.County.hints.precision}"
+                            shortDesc="#{bindings.County.hints.tooltip}" id="it1" value="#{bindings.County.inputValue}"
+                            contentStyle="width:250px;" readOnly="#{bindings.DefaultAddress.inputValue != 'N'}">
+                <f:validator binding="#{bindings.County.validator}"/>
+              </af:inputText>
+              <af:inputText value="#{bindings.State.inputValue}"
+                            label="#{employeepurchaseuiBundle.ORDER_SHIPPING_STATE}"
+                            required="#{bindings.State.hints.mandatory}" columns="#{bindings.State.hints.displayWidth}"
+                            maximumLength="#{bindings.State.hints.precision}"
+                            shortDesc="#{bindings.State.hints.tooltip}" id="it9" contentStyle="width:250px;"
+                            readOnly="#{bindings.DefaultAddress.inputValue != 'N'}">
+                <f:validator binding="#{bindings.State.validator}"/>
+              </af:inputText>
+              <af:inputText value="#{bindings.PostalCode.inputValue}"
+                            label="#{employeepurchaseuiBundle.ORDER_SHIPPING_POSTALCODE}"
+                            columns="#{bindings.PostalCode.hints.displayWidth}"
+                            maximumLength="#{bindings.PostalCode.hints.precision}"
+                            shortDesc="#{bindings.PostalCode.hints.tooltip}" id="it10" contentStyle="width:250px;"
+                            showRequired="true" binding="#{backingBeanScope.employeeOrderFormBean.zip}"
+                            readOnly="#{bindings.DefaultAddress.inputValue != 'N'}">
+                <f:validator binding="#{bindings.PostalCode.validator}"/>
+              <af:clientListener method="valueChangeZIP" type="valueChange"/>
+            </af:inputText>
+            </af:panelFormLayout>
+          </af:panelHeader>
+      </f:facet>
+      <f:facet name="start">
+        
+       
+              <af:panelHeader text="#{employeepurchaseuiBundle.EMPLOYEE_INFORMATION_TITLE}" id="ph1" size="1"
+                              contentStyle="height:170px;">
+                <af:panelStretchLayout id="psl5" dimensionsFrom="auto" topHeight="10px">
+                  <f:facet name="center">
+                    <af:panelGroupLayout layout="vertical" id="pgl7">
+                      <af:outputText value="#{employeepurchaseuiBundle.EMPLOYEE_INFORMATION_MESSAGE}" id="ot8"
+                                     inlineStyle="color:rgb(148,0,0); font-weight:normal; font-style:italic;"
+                                     noWrap="false"/>
+                    </af:panelGroupLayout>
+                  </f:facet>
+                  <f:facet name="end">
+                    <af:spacer width="10" height="10" id="s8"/>
+                  </f:facet>
+                  <f:facet name="top">
+                    <af:spacer width="10" height="1" id="s7"/>
+                  </f:facet>
+                </af:panelStretchLayout>
+                <af:spacer width="10" height="10" id="s9"/>
+                <af:panelFormLayout id="pfl1">
+                  <af:inputText value="#{bindings.CustomerName.inputValue}"
+                                label="#{employeepurchaseuiBundle.EMPLOYEE_NAME}"
+                                columns="#{bindings.CustomerName.hints.displayWidth}"
+                                maximumLength="#{bindings.CustomerName.hints.precision}"
+                                shortDesc="#{bindings.CustomerName.hints.tooltip}" id="it3" contentStyle="width:300px;"
+                                autoSubmit="true" immediate="true" showRequired="true"
+                                binding="#{backingBeanScope.employeeOrderFormBean.customerName}">
+                    <f:validator binding="#{bindings.CustomerName.validator}"/>
+                    <af:clientListener method="valueChangeName" type="valueChange"/>
+                  </af:inputText>
+                  <af:inputText value="#{bindings.FileNumber.inputValue}"
+                                label="#{employeepurchaseuiBundle.EMPLOYEE_FILE}"
+                                columns="#{bindings.FileNumber.hints.displayWidth}" maximumLength="6"
+                                shortDesc="#{bindings.FileNumber.hints.tooltip}" id="it4" contentStyle="width:300px;"
+                                autoSubmit="true" immediate="true" showRequired="true"
+                                binding="#{backingBeanScope.employeeOrderFormBean.fileNumber}">
+                    <f:validator binding="#{bindings.FileNumber.validator}"/>
+                    <af:clientListener type="valueChange" method="valueChangeFileNumber"/>
+                  </af:inputText>
+                  <af:inputText value="#{bindings.ContactNumber.inputValue}"
+                                label="#{employeepurchaseuiBundle.EMPLOYEE_PHONE}"
+                                required="#{bindings.ContactNumber.hints.mandatory}"
+                                columns="#{bindings.ContactNumber.hints.displayWidth}"
+                                maximumLength="#{bindings.ContactNumber.hints.precision}"
+                                shortDesc="#{bindings.ContactNumber.hints.tooltip}" id="it11"
+                                contentStyle="width:300px;" autoSubmit="true" immediate="true">
+                    <f:validator binding="#{bindings.ContactNumber.validator}"/>
+                  </af:inputText>
+                  <af:inputText value="#{bindings.Extension.inputValue}"
+                                label="#{employeepurchaseuiBundle.EMPLOYEE_EXT}"
+                                required="#{bindings.Extension.hints.mandatory}"
+                                columns="#{bindings.Extension.hints.displayWidth}"
+                                maximumLength="#{bindings.Extension.hints.precision}"
+                                shortDesc="#{bindings.Extension.hints.tooltip}" id="it5" contentStyle="width:300px;"
+                                autoSubmit="true" immediate="true">
+                    <f:validator binding="#{bindings.Extension.validator}"/>
+                  </af:inputText>
+                  <af:inputText label="Label 3" id="itPriceList" clientComponent="true"
+                                value="#{bindings.PriceList.inputValue}" immediate="true" autoSubmit="true"
+                                visible="false"/>
+                </af:panelFormLayout>
+              </af:panelHeader>
+            </f:facet>
+        
+      
+     
+      <f:facet name="end">
+          <af:panelHeader text="#{employeepurchaseuiBundle.GENERAL_INFORMATION_TITLE}" id="ph3" size="1"
+                          contentStyle="height:170px;">
+            <af:spacer width="10" height="25" id="s11"/>
+            <af:panelGroupLayout id="pgl2" layout="vertical" halign="center">
+              <af:outputText value="#{employeepurchaseuiBundle.GENERAL_INFORMATION_SUB_TITLE}" id="ot2"
+                             inlineStyle="color:Red; font-weight:bold;"/>
+              <af:separator id="s2"/>
+              <af:outputText value="#{employeepurchaseuiBundle.GENERAL_INFORMATION_MESSAGE}" id="ot3"
+                             inlineStyle="color:Navy;"/>
+            </af:panelGroupLayout>
+            <af:spacer width="10" height="25" id="s12"/>
+          </af:panelHeader>
+      </f:facet>
+    </af:panelStretchLayout>
+    <af:spacer width="10" height="10" id="s5"/>
+    <af:panelBox text="Lines" id="pb3" rendered="false"/>
+    <af:panelTabbed id="pt1" dimensionsFrom="disclosedChild"
+                    binding="#{backingBeanScope.employeeOrderFormBean.tabLine}">
+      <af:showDetailItem text="#{employeepurchaseuiBundle.ENTERBYSKU_TAB}" id="sdi1" styleClass="AFStretchWidth"
+                         binding="#{backingBeanScope.employeeOrderFormBean.tabSku}">
+        <af:spacer width="10" height="10" id="s13"/>
+        <af:panelStretchLayout id="psl2" dimensionsFrom="auto" startWidth="360px" bottomHeight="0px" topHeight="0px"
+                               endWidth="200px">
+          <f:facet name="start">
+            <af:toolbar id="t2">
+              <af:commandToolbarButton actionListener="#{bindings.addOrderLines1.execute}"
+                                       text="#{employeepurchaseuiBundle.ADDLINE_LABEL}" id="ctb5"
+                                       icon="/resources/images/add-icon.png"/>
+              <af:commandToolbarButton actionListener="#{bindings.addOrderLines.execute}"
+                                       text="#{employeepurchaseuiBundle.ADD5LINES_LABEL}"
+                                       disabled="#{!bindings.addOrderLines.enabled}" id="ctb6"
+                                       icon="/resources/images/add-icon.png"/>
+              <af:commandToolbarButton
+                                       text="#{employeepurchaseuiBundle.REMOVESELECTEDLINES_LABEL}"
+                                       id="ctb1" icon="/resources/images/delete_ena.png" partialSubmit="false"
+                                       action="#{backingBeanScope.employeeOrderFormBean.removeSelectedLines}"/>
+            </af:toolbar>
+          </f:facet>
+          <f:facet name="end">
+            <af:panelGroupLayout id="pgl4" layout="vertical">
+              <af:goLink text="#{employeepurchaseuiBundle.VIEWPRODUCTLIST_LABEL}" id="gl1"
+                         destination="http://www.herbalifephotos.com/Corpor/Apparel/Staff-Apparel-2013/30892102_BRGsMQ#!i=2671667602&amp;k=DwZnF89"
+                         targetFrame="_blank"/>
+            </af:panelGroupLayout>
+          </f:facet>
+          <f:facet name="center">
+            <af:panelGroupLayout layout="vertical" id="pgl9" valign="middle" halign="center">
+              <af:outputText clientComponent="true"
+                             inlineStyle="color:Red; font-weight:bolder; text-align:center; font-size:small;"
+                             id="errmsg1">
+                             
+                               
+                <!--
+            <af:clientListener method="offFocusDiscPrice" type="mouseUp"/>
+            <af:clientListener method="offFocusDiscPrice" type="click"/>
+            <af:clientListener method="offFocusDiscPrice" type="dblClick"/>
+            -->
+              </af:outputText>
+            </af:panelGroupLayout>
+          </f:facet>
+        </af:panelStretchLayout>
+        <af:spacer width="10" height="10" id="s4"/>
+        <af:table var="row" fetchSize="1000" rowBandingInterval="1" id="linesTb" width="100%" summary="Order Lines"
+                  clientComponent="true" contentDelivery="immediate" styleClass="AFStretchWidth" immediate="true"
+                  columnStretching="column:c6" columnResizing="disabled" disableColumnReordering="true"
+                  value="#{bindings.EmployeePurchaseOrderLinesVO.collectionModel}" partialTriggers="::ctb1"
+                  columnBandingInterval="1" autoHeightRows="10">
+          <af:column headerText="OrderNo" id="c1" rendered="false" rowHeader="true" align="center" width="80"
+                     sortable="false">
+            <af:outputText id="ot1"/>
+          </af:column>
+          <af:column id="c20" width="25" headerText="Sel" sortable="false">
+            <af:selectBooleanCheckbox id="sbc1" autoSubmit="true"
+                                      value="#{row!=null ? row.bindings.Selected.inputValue : false}"/>
+          </af:column>
+          <af:column headerText="Line No" id="c2" align="center" width="40" sortable="false" headerNoWrap="true">
+            <af:inputText id="itLno" contentStyle="text-align:center;" clientComponent="true"
+                          value="#{row.bindings.LineNumber.inputValue}" styleClass="inputLines"/>
+          </af:column>
+          <af:column headerText="Sku No." id="c3" align="center" width="45" sortable="false">
+            <af:inputText maximumLength="4" id="skuNo1" clientComponent="true" value="#{row.bindings.Sku.inputValue}">
+                <af:clientListener method="GetSkuDetails" type="valueChange"/>
+                 <!--
+                <af:clientListener method="onSkuBlur" type="blur"/>
+             
+            <af:clientListener method="onSkuFocus" type="focus"/>
+           
+             -->    
+            
+            </af:inputText>
+          </af:column>
+          <af:column headerText="Qty" id="c4" width="50" sortable="false" align="center">
+            <af:inputText maximumLength="10" id="qty1" clientComponent="true" contentStyle="text-align:right;"
+                          value="#{row.bindings.Quantity.inputValue}">
+            <af:clientListener method="onChangeOfQtyField" type="valueChange"/>
+            <af:clientListener method="onBlurOfQtyField" type="blur"/>
+            </af:inputText>
+          </af:column>
+          <af:column headerText="UOM" id="c5" align="center" width="35" sortable="false">
+            <af:inputText id="it20" clientComponent="true" value="#{row.bindings.Uom.inputValue}"
+                          styleClass="inputLinesBold">
+              <!--
+            <af:clientListener method="onFocusOfUOM" type="focus"/>
+            <af:clientListener method="onBlurOfReadonlyFields" type="blur"/>
+            -->
+            </af:inputText>
+          </af:column>
+          <af:column headerText="Description" id="c6" align="center" sortable="false" width="180">
+            <af:inputText id="it21" clientComponent="true" value="#{row.bindings.ItemDescription.inputValue}"
+                          styleClass="inputLinesBold">
+              <!--
+            <af:clientListener method="onFocusOfReadonlyFields" type="focus"/>
+            <af:clientListener method="onBlurOfReadonlyFields" type="blur"/>
+            -->
+            </af:inputText>
+          </af:column>
+          <af:column headerText="Type" id="c7" align="center" width="40" sortable="false">
+            <af:inputText id="it22" clientComponent="true" contentStyle="text-align:center;"
+                          value="#{row.bindings.ItemType.inputValue}" styleClass="inputLinesBold">
+              <!--
+            <af:clientListener method="onFocusOfReadonlyFields" type="focus"/>
+            <af:clientListener method="onBlurOfReadonlyFields" type="blur"/>
+            -->
+            </af:inputText>
+          </af:column>
+          <af:column headerText="Unit Vol." id="c8" align="center" width="55" sortable="false" rendered="false">
+            <af:inputText id="it23" clientComponent="true" styleClass="inputLinesBold" contentStyle="text-align:left;">
+              <!--
+            <af:clientListener method="onFocusOfReadonlyFields" type="focus"/>
+            <af:clientListener method="onBlurOfReadonlyFields" type="blur"/>
+            -->
+            </af:inputText>
+          </af:column>
+          <af:column headerText="Unit Price" id="c9" align="center" width="55" sortable="false">
+            <af:inputText id="it24" clientComponent="true" styleClass="inputLinesBold" contentStyle="text-align:left;"
+                          value="#{row.bindings.UnitPrice.inputValue}">
+              <!--
+            <af:clientListener method="onFocusOfReadonlyFields" type="focus"/>
+            <af:clientListener method="onBlurOfReadonlyFields" type="blur"/>
+             -->
+              <af:convertNumber type="number" pattern="###,##0.##" minFractionDigits="2"/>
+            </af:inputText>
+          </af:column>
+          <af:column headerText="Total Vol." id="c10" align="center" width="60" sortable="false" rendered="false">
+            <af:inputText id="it25" clientComponent="true" styleClass="inputLinesBold" contentStyle="text-align:left;">
+              <!--
+            <af:clientListener method="onFocusOfReadonlyFields" type="focus"/>
+            <af:clientListener method="onBlurOfReadonlyFields" type="blur"/>
+            <af:convertNumber pattern="###,##0.##" type="number" minFractionDigits="2"/>
+            -->
+            </af:inputText>
+          </af:column>
+          <af:column headerText="Total Price" id="c11" align="center" width="70" sortable="false">
+            <af:inputText id="it26" clientComponent="true" styleClass="inputLinesBold" contentStyle="text-align:left;"
+                          value="#{row.bindings.TotalItemPrice.inputValue}">
+              <!--
+            <af:clientListener method="onFocusOfReadonlyFields" type="focus"/>
+            <af:clientListener method="onBlurOfReadonlyFields" type="blur"/>
+            <af:convertNumber pattern="###,##0.##" type="number" minFractionDigits="2"/>
+            -->
+              <af:convertNumber type="number" pattern="###,##0.##" minFractionDigits="2"/>
+            </af:inputText>
+          </af:column>
+          <af:column headerText="Disc Price" id="c13" align="center" width="70" sortable="false">
+            <af:inputText id="it28" clientComponent="true" styleClass="inputLinesBold" contentStyle="text-align:left;"
+                          value="#{row.bindings.TotalDiscountPrice.inputValue}">
+              <!--
+            <af:clientListener method="onFocusOfReadonlyFields" type="focus"/>
+            <af:clientListener method="onBlurOfReadonlyFields" type="blur"/>
+            <af:convertNumber pattern="###,##0.##" type="number" minFractionDigits="2"/>
+            -->
+              <af:convertNumber type="number" pattern="###,##0.##" minFractionDigits="2"/>
+            </af:inputText>
+            <af:inputText label="Label 1" id="itInv" value="#{row.bindings.InventoryItemId.inputValue}"
+                          clientComponent="true" visible="false">
+              <af:convertNumber type="number" pattern="###,##0.##" minFractionDigits="2"/>
+            </af:inputText>
+            <af:inputText label="Label 2" id="itUnit" value="#{row.bindings.UnitEarnBase.inputValue}"
+                          clientComponent="true" visible="false">
+              <af:convertNumber type="number" pattern="###,##0.##" minFractionDigits="2"/>
+            </af:inputText>
+          </af:column>
+        </af:table>
+      </af:showDetailItem>
+      <af:showDetailItem text="#{employeepurchaseuiBundle.BROWSEPRODUCTCATALOG_TAB}" id="sdi2" styleClass="AFStretchWidth"
+                         binding="#{backingBeanScope.employeeOrderFormBean.tabPriceList}">
+        <af:spacer width="10" height="10" id="s18"/>
+        <af:panelStretchLayout id="psl7" dimensionsFrom="auto" startWidth="300px" endWidth="200px">
+          <f:facet name="start">
+            
+              <af:panelFormLayout id="pfl5" maxColumns="1">
+                <af:selectOneChoice label="Category" id="socCategory" partialTriggers="socLocation"
+                                    valueChangeListener="#{backingBeanScope.employeeOrderFormBean.changeCategory}"
+                                    autoSubmit="true" binding="#{backingBeanScope.employeeOrderFormBean.category}" clientComponent="true">
+                  <af:selectItem label="All" value="0" id="si11"/>
+                  <af:forEach items="#{bindings.DisplayName.iteratorBinding.allRowsInRange}" var="row">
+                    <f:selectItem id="myItem2" itemLabel="#{row.displayName}" itemValue="#{row.categoryId}"/>
+                  </af:forEach>
+              </af:selectOneChoice>
+                                
+                                    
+            </af:panelFormLayout>
+            
+          </f:facet>
+          <f:facet name="end">
+            <af:panelGroupLayout id="pgl10" halign="center" valign="middle" layout="vertical">
+              <af:toolbar id="t5">
+                <af:commandToolbarButton id="ctb3" icon="/resources/images/add-icon.png"
+                                         text="#{employeepurchaseuiBundle.BROWSE_LIST_ADD_LINE}"
+                                         actionListener="#{backingBeanScope.employeeOrderFormBean.addToLine}"/>
+              </af:toolbar>
+            </af:panelGroupLayout>
+          </f:facet>
+        </af:panelStretchLayout>
+        <af:spacer width="10" height="10" id="s20"/>
+        <af:table value="#{bindings.ProductPriceListSKUTransientVO1.collectionModel}" var="row"
+                  rows="#{bindings.ProductPriceListSKUTransientVO1.rangeSize}"
+                  emptyText="#{bindings.ProductPriceListSKUTransientVO1.viewable ? 'No data to display.' : 'Access Denied.'}"
+                  fetchSize="#{bindings.ProductPriceListSKUTransientVO1.rangeSize}" rowBandingInterval="0"
+                  selectedRowKeys="#{bindings.ProductPriceListSKUTransientVO1.collectionModel.selectedRow}"
+                  selectionListener="#{bindings.ProductPriceListSKUTransientVO1.collectionModel.makeCurrent}"
+                  rowSelection="single" id="t4" partialTriggers="::socCategory ::socLocation" width="100%"
+                  columnStretching="column:c17">
+          <af:column sortProperty="#{bindings.ProductPriceListSKUTransientVO1.hints.SKUId.name}" sortable="false"
+                     headerText="#{employeepurchaseuiBundle.PRODUCT_TAB_SKU}" id="c12" width="120">
+            <af:panelGroupLayout id="pgl82" layout="horizontal">
+              <af:image inlineStyle="height:30px; width:30px;" id="is1"
+                        rendered="#{!row.bindings.belowAllowedQuantity.inputValue}"
+                        source="https://www.myherbalife.com/#{row.bindings.ImagePath.inputValue}"/>
+              <af:image inlineStyle="height:30px; width:30px;" id="i2"
+                        rendered="#{row.bindings.belowAllowedQuantity.inputValue}"
+                        source="/resources/images/phase-3/New_Unavailable_1_en.jpg"/>
+              <af:spacer width="10" height="10" id="s21"/>
+              <af:outputText inlineStyle="font-weight:bold; "
+                             value="#{row.bindings.SKUNumber.inputValue}" id="ot4"
+                             rendered="#{row.bindings.belowAllowedQuantity.inputValue}"/>
+              <af:commandLink text="#{row.bindings.SKUNumber.inputValue}" id="cl1" inlineStyle="font-weight:bold; "
+                              rendered="#{!row.bindings.belowAllowedQuantity.inputValue}">
+                <af:showPopupBehavior triggerType="mouseMove" align="startAfter" popupId="p5"/>
+                <af:popup childCreation="deferred" autoCancel="disabled" id="p5">
+                
+                    <af:panelHeader text=" " id="ph4" size="0" inlineStyle="border-color:Black;"
+                                    messageType="none">
+                    <af:panelSplitter id="ps1" splitterPosition="200" disabled="true"
+                                      inlineStyle="height:250px; width:200px;" orientation="vertical">
+                      <f:facet name="first">
+                        <af:image id="i4" source="https://www.myherbalife.com/#{row.bindings.ImagePath.inputValue}"
+                                  inlineStyle="height:200px; width:200px;"/>
+                      </f:facet>
+                      <f:facet name="second">
+                        <af:panelGroupLayout id="pgl11" layout="vertical" valign="top" halign="center">
+                          <af:separator id="s23"/>
+                          <af:outputText value="#{row.bindings.SKUNumber.inputValue} #{row.Description}" id="ot14"
+                                         inlineStyle="font-weight:bold; "/>
+                        </af:panelGroupLayout>
+                      </f:facet>
+                    </af:panelSplitter>
+                  </af:panelHeader>
+                 
+                </af:popup>
+              </af:commandLink>
+            </af:panelGroupLayout>
+          </af:column>
+          <af:column sortProperty="#{bindings.ProductPriceListSKUTransientVO1.hints.Description.name}" sortable="false"
+                     headerText="#{employeepurchaseuiBundle.PRODUCT_TAB_DESCRIPTION}" id="c17" width="200">
+            <af:panelGroupLayout id="pgl41" styleClass="AFStretchWidth AFStretchHeight" valign="middle" halign="left">
+              <af:outputFormatted value="#{row.Description}" id="ot19" inlineStyle="font-weight:bold; "/>
+            </af:panelGroupLayout>
+          </af:column>
+          <af:column sortProperty="#{bindings.ProductPriceListSKUTransientVO1.hints.ListPrice.name}" sortable="false"
+                     headerText="#{employeepurchaseuiBundle.PRODUCT_TAB_RETAIL_PRICE}" id="c26" align="center">
+            <af:outputFormatted value="#{row.ListPrice}" id="of2" inlineStyle="font-weight:bold; "/>
+          </af:column>
+          <af:column sortProperty="#{bindings.ProductPriceListSKUTransientVO1.hints.VolumePoints.name}" sortable="false"
+                     headerText="#{employeepurchaseuiBundle.PRODUCT_TAB_VOLUME_POINTS}" id="c24" align="center">
+            <af:outputText value="#{row.VolumePoints}" id="ot11" inlineStyle="font-weight:bold; "/>
+          </af:column>
+          <af:column sortProperty="#{bindings.ProductPriceListSKUTransientVO1.hints.EarnBase.name}" sortable="false"
+                     headerText="#{employeepurchaseuiBundle.PRODUCT_TAB_EARN_BASE}" id="c25" align="center">
+            <af:outputText value="#{row.EarnBase}" id="ot12" inlineStyle="font-weight:bold; "/>
+          </af:column>
+          
+          <af:column sortProperty="#{bindings.ProductPriceListSKUTransientVO1.hints.Quantity.name}"
+                                               sortable="false" headerText="#{viewcontrollerBundle.QUANTITY}" id="c33"
+                                               align="center" width="240" displayIndex="-1">
+                                             
+                                        <hlKioskLib:hlKioskAutoIncrementDecrement value="#{row.Quantity}" id="hkaid1" ProductOrEvent="Product"
+                                                                                      maxValue="#{row.bindings.MaxAllowedQuantity.inputValue}"  prevValue="#{row.bindings.TempQuantity.inputValue}"
+                                                                                   disabled="#{row.belowAllowedQuantity}"
+                                                                      rendered="#{!row.bindings.belowAllowedQuantity.inputValue}"
+                                                                                  locale="#{pageFlowScope.currentLocale}"/>
+                                                                                
+                                        <af:image  rendered="#{row.bindings.belowAllowedQuantity.inputValue}"
+                                                  source="/resources/images/phase-3/base_Disabled.png" id="i3"
+                                                  inlineStyle="height:30px; "/>
+        </af:column>
+                                                            
+        </af:table>
+        <af:spacer width="10" height="10" id="s19"/>
+      </af:showDetailItem>
+    </af:panelTabbed>
+    <af:panelStretchLayout id="psl4" dimensionsFrom="children" endWidth="500px" startWidth="200px" topHeight="0px">
+      <f:facet name="end">
+        <af:panelFormLayout id="pfl4" maxColumns="10" rows="1">
+          <af:toolbar id="t3">
+            <af:commandToolbarButton text="#{employeepurchaseuiBundle.CALCULATEPRICE_LABEL}" id="cbPrice" icon="/resources/images/search_ena.png"
+                                     actionListener="#{backingBeanScope.employeeOrderFormBean.calculatePrice}" unsecure="disabled" partialSubmit="false">
+              <af:clientListener type="action" method="showPopupFromAction"/>
+            </af:commandToolbarButton>
+          </af:toolbar>
+          <af:inputText value="#{bindings.SubTotal.inputValue}" label="#{employeepurchaseuiBundle.ORDER_SUBTOTAL}"
+                        required="#{bindings.SubTotal.hints.mandatory}"
+                        columns="#{bindings.SubTotal.hints.displayWidth}"
+                        maximumLength="#{bindings.SubTotal.hints.precision}"
+                        shortDesc="#{bindings.SubTotal.hints.tooltip}" id="it12" contentStyle="width:50px;"
+                        styleClass="inputLinesBold">
+            <f:validator binding="#{bindings.SubTotal.validator}"/>
+            <af:convertNumber groupingUsed="false" pattern="#{bindings.SubTotal.format}"/>
+          </af:inputText>
+          <af:inputText value="#{bindings.TaxAmount.inputValue}" label="#{employeepurchaseuiBundle.ORDER_TAX}"
+                        required="#{bindings.TaxAmount.hints.mandatory}"
+                        columns="#{bindings.TaxAmount.hints.displayWidth}"
+                        maximumLength="#{bindings.TaxAmount.hints.precision}"
+                        shortDesc="#{bindings.TaxAmount.hints.tooltip}" id="it13" contentStyle="width:50px;"
+                        styleClass="inputLinesBold">
+            <f:validator binding="#{bindings.TaxAmount.validator}"/>
+            <af:convertNumber groupingUsed="false" pattern="#{bindings.TaxAmount.format}"/>
+          </af:inputText>
+          <af:inputText value="#{bindings.TotalPrice.inputValue}" label="#{employeepurchaseuiBundle.ORDER_TOTAL}"
+                        required="#{bindings.TotalPrice.hints.mandatory}"
+                        columns="#{bindings.TotalPrice.hints.displayWidth}"
+                        maximumLength="#{bindings.TotalPrice.hints.precision}"
+                        shortDesc="#{bindings.TotalPrice.hints.tooltip}" id="it14"
+                        contentStyle="width:50px;text-align:left;" styleClass="inputLinesBold">
+            <!--
+            <f:validator binding="#{bindings.TotalPrice.validator}"/>
+           
+            <af:convertNumber groupingUsed="false" pattern="#{bindings.TotalPrice.format}"/>
+            -->
+          </af:inputText>
+        </af:panelFormLayout>
+      </f:facet>
+      <f:facet name="start">
+        <af:panelGroupLayout layout="vertical" id="pgl6">
+          <af:spacer width="10" height="10" id="s14"/>
+          <af:panelGroupLayout id="pgl5" layout="horizontal">
+            <af:outputText value="#{employeepurchaseuiBundle.PRICINGSTATUS_LABEL}" id="ot10"
+                           inlineStyle="font-size:11px; font-weight:bold; color:rgb(148,0,0);"/>
+            <af:spacer width="5" height="10" id="s15"/>
+            <af:outputText id="itPStat" clientComponent="true" inlineStyle="color:Black; font-weight:bold;"
+                           binding="#{backingBeanScope.employeeOrderFormBean.pricingStatusInput}"/>
+          </af:panelGroupLayout>
+        </af:panelGroupLayout>
+      </f:facet>
+      
+      
+     <f:facet name="top">
+     <af:panelGroupLayout id="pgl53" layout="vertical" visible="false">
+       <af:outputText id="ctlgurlop"
+        visible="false" clientComponent="true"
+        value="#{backingBeanScope.employeeOrderFormBean.catalogUrl}" partialTriggers="socLocation"/>
+        <af:outputText id="limitTypeSku"
+        visible="false" clientComponent="true"
+        value="#{backingBeanScope.employeeOrderFormBean.limitPerSkuType}"/>
+    </af:panelGroupLayout>
+    </f:facet>
+      
+      
+    </af:panelStretchLayout>
+    <af:spacer width="10" height="10" id="s6"/>
+    <af:panelFormLayout id="pb2">
+      <af:outputFormatted value="#{employeepurchaseuiBundle.AUTHORIZATION_TITTLE}" id="of1" inlineStyle="font-weight:bolder; color:Blue;"/>
+      <af:spacer width="10" height="10" id="s16"/>
+      <af:selectBooleanCheckbox required="#{bindings.Signature.hints.mandatory}"
+                                shortDesc="#{bindings.Signature.hints.tooltip}" id="it15"
+                                text="#{employeepurchaseuiBundle.AUTHORIZATION_MESSAGE}"
+                                value="#{bindings.Signature.inputValue}"
+                                binding="#{backingBeanScope.employeeOrderFormBean.signatureCheck}"
+                                clientComponent="true">
+        <f:validator binding="#{bindings.Signature.validator}"/>
+      </af:selectBooleanCheckbox>
+      <f:facet name="footer"/>
+    </af:panelFormLayout>
+    <af:panelStretchLayout id="psl6" dimensionsFrom="auto" endWidth="200">
+      <f:facet name="end">
+        <af:toolbar id="t1">
+          <af:commandToolbarButton text="Create Order" id="ctb4" icon="/resources/images/new_ena.png"
+                                   disabled="#{!bindings.CreateInsert.enabled}" accessKey="C"
+                                   actionListener="#{bindings.createEmployeePurchaseOrder.execute}"
+                                   visible="#{!bindings.Commit.enabled}" rendered="false"/>
+          <af:commandToolbarButton text="#{employeepurchaseuiBundle.ORDER_SUBMITORDER_LABEL}" id="cbSmt1"
+                                   icon="/resources/images/accept-icon.png" accessKey="S"
+                                   actionListener="#{backingBeanScope.employeeOrderFormBean.submitOrder}"
+                                   unsecure="disabled" disabled="true">
+            <!--
+                <af:showPopupBehavior popupId="p3" triggerType="action"/>
+                                -->
+          </af:commandToolbarButton>
+          <af:commandToolbarButton text="#{employeepurchaseuiBundle.ORDER_DISCARD_LABEL}" id="ctb2"
+                                   icon="/resources/images/close.gif" immediate="true" accessKey="D">
+            <af:showPopupBehavior popupId="p2" triggerType="action"/>
+          </af:commandToolbarButton>
+        </af:toolbar>
+      </f:facet>
+    </af:panelStretchLayout>
+    <af:spacer width="10" height="10" id="s17"/>
+    <af:popup childCreation="deferred" autoCancel="disabled" id="p1"
+              binding="#{backingBeanScope.employeeOrderFormBean.sucessPopup}">
+      <af:dialog id="d1" title="Information" type="ok">
+        <af:panelGroupLayout id="pgl3" inlineStyle="height:30px; width:200px;">
+          <af:outputText value="#{pageFlowScope.msgSucessPopup}" id="ot5"/>
+        </af:panelGroupLayout>
+      </af:dialog>
+    </af:popup>
+
+    
+    <af:popup id="p2">
+      <af:dialog id="d2" type="yesNo"
+                 title="Confirmation"
+                 dialogListener="#{backingBeanScope.employeeOrderFormBean.confirmDiscard}">
+        <af:outputText id="ot6" value="#{employeepurchaseuiBundle.ORDER_UNSAVED_CHANGES}"/>
+      </af:dialog>
+    </af:popup>
+    <af:popup id="p3" contentDelivery="lazyUncached"
+              binding="#{backingBeanScope.employeeOrderFormBean.confirmationPopup}">
+      <af:dialog id="d3" type="cancel" title="Confirmation" affirmativeTextAndAccessKey="Yes"
+                 dialogListener="#{backingBeanScope.employeeOrderFormBean.confirmSubmitOrder}"
+                 cancelTextAndAccessKey="No">
+        <af:outputText id="ot7" value="#{employeepurchaseuiBundle.ORDER_SUBMIT_CHANGES}"/>
+        <f:facet name="buttonBar">
+          <af:commandButton id="cb2" text="Yes"
+                            actionListener="#{backingBeanScope.employeeOrderFormBean.confirmSubmitOrder}"/>
+        </f:facet>
+      </af:dialog>
+    </af:popup>
+    <af:popup childCreation="deferred" autoCancel="disabled" id="p4" contentDelivery="lazyUncached"
+              binding="#{backingBeanScope.employeeOrderFormBean.errorPopup}">
+      <af:dialog id="d4" type="ok" title="Error">
+        <af:outputText value="#{pageFlowScope.msgErrorPopup}" id="ot9"/>
+      </af:dialog>
+    </af:popup>
+    
+    
+    <af:popup id="glassPane" contentDelivery="immediate">
+          <af:dialog id="d22" type="none" closeIconVisible="false"
+                     title="Processing">
+            <af:panelGroupLayout id="pgl33" layout="vertical" halign="center">
+              <af:outputText value="Please Wait"
+                             id="ot22"/>
+              <af:spacer width="10" height="10"
+                         id="s22"/>
+              <af:image source="/resources/images/upload_file.gif"
+                        id="i1"/>
+            </af:panelGroupLayout>
+          </af:dialog>
+        </af:popup>
+    
+  </af:panelGroupLayout>
+  <!--oracle-jdev-comment:preferred-managed-bean-name:employeeOrderFormBean-->
+</jsp:root>

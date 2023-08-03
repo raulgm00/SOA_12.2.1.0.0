@@ -1,0 +1,658 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+    <con:coreEntry>
+        <con:description/>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="GestionIdentidades/MIDAS/Autorizacion/Resources/WSDL/NMPAutorizacionSvcWSDL"/>
+            <con:binding>
+                <con:name>ValidaClaveBinding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Services/NMPAutorizacion</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations>
+            <oper:logging enabled="false" level="debug"/>
+            <oper:monitoring enabled="true" level="action" aggregationInterval="2880"/>
+            <oper:reporting>false</oper:reporting>
+        </oper:operations>
+    </con:coreEntry>
+    <con:router xmlns:ser="http://www.bea.com/wli/sb/services">
+        <con:pipeline name="PipelinePairNode1_response" type="response">
+            <con:stage name="Response Stage" id="_StageId-N3f57c7ff.N63fc1b84.0.156299138ac.N7fc5">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="con" namespace="http://www.bea.com/wli/sb/context"/>
+                    <con1:userNsDecl prefix="ns1" namespace="urn:mx.com.nmp.midas"/>
+                    <con1:userNsDecl prefix="NMPAuto" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal"/>
+                    <con1:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal"/>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="header" contents-only="false" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-4672933421076769680--773d94a4.14252537b97.-7e4d</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML('&lt;soapenv:Header xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">&lt;/soapenv:Header>')</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:assign varName="autorizacionReqBody" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-4672933421076769680--773d94a4.14252537b97.-7e55</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="true" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-4672933421076769680--773d94a4.14252537b97.-7f7d</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(fn:concat("
+	&lt;NMPAuto:validaClaveAutorizacionResponse xmlns:NMPAuto='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal'>
+		&lt;NMPAuto:validacion>", $validarClaveAutorizacionRes/ns1:out/text(), "&lt;/NMPAuto:validacion>
+	&lt;/NMPAuto:validaClaveAutorizacionResponse>"
+))</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:report xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-4672933421076769680--773d94a4.14252537b97.-7e54</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$autorizacionReqBody</con:xqueryText>
+                        </con1:expr>
+                    </con1:report>
+                    <con1:report xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-4672933421076769680--773d94a4.14252537b97.-7e4e</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con1:expr>
+                        <con1:labels>
+                            <con1:key>validacion</con1:key>
+                            <con1:varName>body</con1:varName>
+                            <con1:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./validarClaveAutorizacionResponse/NMPAuto:validacion</con:xpathText>
+                            </con1:value>
+                        </con1:labels>
+                    </con1:report>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="request-N3f57c7ff.N63fc1b84.0.156299138ac.N7e81" type="request">
+            <con:stage name="Validar Esquema" errorHandler="error-N3f57c7ff.N63fc1b84.0.156299138ac.N7e7e" id="_StageId-N3f57c7ff.N63fc1b84.0.156299138ac.N7e80">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal"/>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-af100b8.N6d6bbe94.0.1598e155643.N7f7c</con1:id>
+                        <con2:case id="_BranchId-af100b8.N6d6bbe94.0.1598e155643.N7f7b">
+                            <con2:condition>
+                                <con1:xqueryText>$header/nmp:headerMessage/nmp:idConsumidor</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:validate>
+                                    <con1:id>_ActionId-af100b8.N6d6bbe94.0.1598e155643.N7f7a</con1:id>
+                                    <con1:disabled>true</con1:disabled>
+                                    <con2:schema ref="Common/XSD/NMPStandardHeader"/>
+                                    <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con2:schemaElement>
+                                    <con2:varName>header</con2:varName>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                </con2:validate>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default>
+                            <con2:Error>
+                                <con1:id>_ActionId-af100b8.N6d6bbe94.0.1598e155643.N7f79</con1:id>
+                                <con1:disabled>true</con1:disabled>
+                                <con2:errCode>NMP-008</con2:errCode>
+                                <con2:message>Hacen falta datos del encabezado. Favor de intentarlo nuevamente</con2:message>
+                            </con2:Error>
+                            <con2:assign varName="header">
+                                <con1:id>_ActionId-af100b8.N6d6bbe94.0.1598e155643.N7f78</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText><![CDATA[<soap:Header   xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+        <nmp:headerMessage xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">
+            <nmp:usuario>NMP</nmp:usuario>
+            <nmp:idConsumidor>0</nmp:idConsumidor>                 
+            <nmp:idDestino>MIDAS</nmp:idDestino>
+        </nmp:headerMessage>
+</soap:Header>]]></con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                        </con2:default>
+                    </con2:ifThenElse>
+                    <con1:validate xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-N3f57c7ff.N63fc1b84.0.156299138ac.N7e7f</con2:id>
+                        <con1:schema ref="GestionIdentidades/MIDAS/Autorizacion/Resources/Schemas/NMPAutorizacionElementosXSD"/>
+                        <con1:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal">nmp:validarHuellaDigitalRequest</con1:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con2:xpathText xmlns:con2="http://www.bea.com/wli/sb/stages/config">./nmp1:validarHuellaDigitalRequest</con2:xpathText>
+                        </con1:location>
+                        <con1:resultVarName/>
+                    </con1:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57c7ff.7aa42f3.0.1564869c59e.N7ff9" name="Stage1" errorHandler="error-N3f57c7ff.7aa42f3.0.1564869c59e.N7fbe">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="obtenerHuellaGerenteRequest">
+                        <con1:id>_ActionId-N3f57c7ff.7aa42f3.0.1564869c59e.N7ff6</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionIdentidades/MIDAS/Autorizacion/Resources/Transformations/TRValidasHuellaDigitalReqToObtenerHuellaGerenteMidasReq"/>
+                                <con1:input>$body/nmp:validarHuellaDigitalRequest</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-N3f57c7ff.7aa42f3.0.1564869c59e.N7ff3</con1:id>
+                        <con2:service ref="GestionIdentidades/MIDAS/Autorizacion/Business Services/MIDASHuellaDigitalBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>obtenerHuellaGerente</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">obtenerHuellaGerenteRequest</con2:body>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">obtenerHuellaGerenteResponse</con2:body>
+                        </con2:response>
+                        <con2:requestTransform/>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode1_request" type="request">
+            <con:stage name="StageValidacion" errorHandler="_onErrorHandler-4672933421076769680--773d94a4.14252537b97.-7e52" id="_StageId-N3f57c7ff.N63fc1b84.0.156299138ac.N7fc7">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal"/>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-af100b8.N6d6bbe94.0.1598e155643.N7ffa</con1:id>
+                        <con2:case id="_BranchId-af100b8.N6d6bbe94.0.1598e155643.N7ff9">
+                            <con2:condition>
+                                <con1:xqueryText>$header/nmp:headerMessage/nmp:idConsumidor</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:validate>
+                                    <con1:id>_ActionId-af100b8.N6d6bbe94.0.1598e155643.N7ff6</con1:id>
+                                    <con1:disabled>true</con1:disabled>
+                                    <con2:schema ref="Common/XSD/NMPStandardHeader"/>
+                                    <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con2:schemaElement>
+                                    <con2:varName>header</con2:varName>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                </con2:validate>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default>
+                            <con2:Error>
+                                <con1:id>_ActionId-af100b8.N6d6bbe94.0.1598e155643.N7ff3</con1:id>
+                                <con1:disabled>true</con1:disabled>
+                                <con2:errCode>NMP-008</con2:errCode>
+                                <con2:message>Hacen falta datos del encabezado. Favor de intentarlo nuevamente</con2:message>
+                            </con2:Error>
+                            <con2:assign varName="header">
+                                <con1:id>_ActionId-af100b8.N6d6bbe94.0.1598e155643.N7ff0</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText><![CDATA[<soap:Header   xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+        <nmp:headerMessage xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">
+            <nmp:usuario>NMP</nmp:usuario>
+            <nmp:idConsumidor>0</nmp:idConsumidor>                 
+            <nmp:idDestino>MIDAS</nmp:idDestino>
+        </nmp:headerMessage>
+</soap:Header>]]></con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                        </con2:default>
+                    </con2:ifThenElse>
+                    <con1:validate xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-4672933421076769680--773d94a4.14252537b97.-7e53</con2:id>
+                        <con1:schema ref="GestionIdentidades/MIDAS/Autorizacion/Resources/Schemas/NMPAutorizacionElementosXSD"/>
+                        <con1:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal">nmp:validaClaveAutorizacionRequest</con1:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./nmp1:validaClaveAutorizacionRequest</con:xpathText>
+                        </con1:location>
+                        <con1:resultVarName/>
+                    </con1:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage name="Request Stage" errorHandler="_onErrorHandler-7092059257446416358--56c1ee59.142e0944a1e.-7f9f" id="_StageId-N3f57c7ff.N63fc1b84.0.156299138ac.N7fc6">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="con" namespace="http://www.bea.com/wli/sb/context"/>
+                    <con1:userNsDecl prefix="ns1" namespace="urn:mx.com.nmp.midas"/>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="validarClaveAutorizacionReq" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8784771085556668063-452ca78b.142de42add5.-7ff1</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("<ns0:validarClaveAutorizacion 	xmlns:ns0='urn:mx.com.nmp.midas'>
+		<ns0:in0>", $body/nmp1:validaClaveAutorizacionRequest/nmp1:idSucursal/text(), "</ns0:in0>
+		<ns0:in1>", $body/nmp1:validaClaveAutorizacionRequest/nmp1:claveManager/text(), "</ns0:in1>
+	</ns0:validarClaveAutorizacion>"
+))]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:wsCallout xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-5649137415443890657--33d97d5a.142be96febc.-7fe9</con2:id>
+                        <con1:service ref="GestionIdentidades/MIDAS/Autorizacion/Business Services/MIDASClaveAutorizacionSvcBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>validarClaveAutorizacion</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">validarClaveAutorizacionReq</con1:body>
+                            <con1:header/>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">validarClaveAutorizacionRes</con1:body>
+                            <con1:header/>
+                        </con1:response>
+                        <con1:requestTransform/>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="_onErrorHandler-7092059257446416358--56c1ee59.142e0944a1e.-7f9f" type="error">
+            <con:stage name="Error Handler Stage" id="_StageId-N3f57c7ff.N63fc1b84.0.156299138ac.N7fd3">
+                <con:context>
+                    <con1:userNsDecl prefix="con" namespace="http://www.bea.com/wli/sb/context"/>
+                    <con1:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                    <con1:userNsDecl prefix="nmp2" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente"/>
+                    <con1:userNsDecl prefix="ns1" namespace="urn:mx.com.nmp.midas"/>
+                    <con1:userNsDecl prefix="NMPAuto" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal"/>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="header" contents-only="false" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-4672933421076769680--773d94a4.14252537b97.-7e2f</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML('&lt;soapenv:Header xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">&lt;/soapenv:Header>')</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:report xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-5159819096348468750-7788eb9a.145e1add37b.-7f8c</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault</con:xqueryText>
+                        </con1:expr>
+                        <con1:labels>
+                            <con1:key>errorAutorizacion</con1:key>
+                            <con1:varName>fault</con1:varName>
+                            <con1:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                            </con1:value>
+                        </con1:labels>
+                    </con1:report>
+                    <con1:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7092059257446416358--56c1ee59.142e0944a1e.-7f9d</con2:id>
+                        <con1:case id="_BranchId-N3f57c7ff.N63fc1b84.0.156299138ac.N7fd2">
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/con:errorCode = 'OSB-380000'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7092059257446416358--56c1ee59.142e0944a1e.-7f9a</con2:id>
+                                    <con1:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-003</faultcode>
+		<faultstring>Se ha excedido el tiempo de espera</faultstring>
+		<faultactor/>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+										xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-003</codigoError>
+				<descripcionError>Se ha excedido el tiempo de espera</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>2</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                                <con2:reply isError="true" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                                    <con2:id>_ActionId-2535381169015083341-3c70b5f2.142e38b0b16.-7ff2</con2:id>
+                                </con2:reply>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case id="_BranchId-N3f57c7ff.N63fc1b84.0.156299138ac.N7fd1">
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/con:errorCode = 'OSB-382500'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-4760122414284448554--aac8b60.142ed47bb5c.-7ff5</con2:id>
+                                    <con1:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-005</faultcode>
+		<faultstring>SOAP Fault Response: Ha ocurrido un error inesperado (", $fault/con:details/con1:ReceivedFaultDetail/con1:faultstring/text(),")</faultstring>
+		<faultactor/>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+										xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-005</codigoError>
+				<descripcionError>SOAP Fault Response: Ha ocurrido un error inesperado (", $fault/con:details/con1:ReceivedFaultDetail/con1:faultstring/text(),")</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>2</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                                <con2:reply isError="true" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                                    <con2:id>_ActionId-4760122414284448554--aac8b60.142ed47bb5c.-7ff4</con2:id>
+                                </con2:reply>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case id="_BranchId-N3f57c7ff.N63fc1b84.0.156299138ac.N7fd0">
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/con:errorCode = 'OSB-380002'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-4672933421076769680--773d94a4.14252537b97.-7f9f</con2:id>
+                                    <con1:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-001</faultcode>
+		<faultstring>Error conectividad 1 - destination unreachable</faultstring>
+		<faultactor/>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+										xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-001</codigoError>
+				<descripcionError>Error conectividad 1 - destination unreachable</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>1</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                                <con2:reply isError="true" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                                    <con2:id>_ActionId-4672933421076769680--773d94a4.14252537b97.-7f9e</con2:id>
+                                </con2:reply>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case id="_BranchId-N3f57c7ff.N63fc1b84.0.156299138ac.N7fcf">
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/con:errorCode = 'OSB-382502'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-4672933421076769680--773d94a4.14252537b97.-7f49</con2:id>
+                                    <con1:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-002</faultcode>
+		<faultstring>Error conectividad 2 - not found (404)</faultstring>
+		<faultactor/>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+										xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-002</codigoError>
+				<descripcionError>Error conectividad 2 - not found (404)</descripcionError>
+				<tipoError>Técnico</tipoError>
+				<severidad>2</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                                <con2:reply isError="true" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                                    <con2:id>_ActionId-4672933421076769680--773d94a4.14252537b97.-7f4a</con2:id>
+                                </con2:reply>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="error-N3f57c7ff.N63fc1b84.0.156299138ac.N7e7e" type="error">
+            <con:stage name="Error Stage" id="_StageId-N3f57c7ff.N63fc1b84.0.156299138ac.N7e7d">
+                <con:context>
+                    <con1:userNsDecl prefix="con" namespace="http://www.bea.com/wli/sb/context"/>
+                    <con1:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                    <con1:userNsDecl prefix="ns1" namespace="urn:mx.com.nmp.midas"/>
+                    <con1:userNsDecl prefix="NMPAuto" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal"/>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente"/>
+                    <con1:varNsDecl prefix="nmp2" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal"/>
+                </con:context>
+                <con:actions>
+                    <con1:report xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-N3f57c7ff.N63fc1b84.0.156299138ac.N7e7b</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault</con:xqueryText>
+                        </con1:expr>
+                        <con1:labels>
+                            <con1:key>errorAutorizacion</con1:key>
+                            <con1:varName>fault</con1:varName>
+                            <con1:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                            </con1:value>
+                        </con1:labels>
+                    </con1:report>
+                    <con1:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-N3f57c7ff.N63fc1b84.0.156299138ac.N7e7a</con2:id>
+                        <con1:case id="_BranchId-N3f57c7ff.N63fc1b84.0.156299138ac.N7e79">
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/con:errorCode = 'OSB-382505'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-N3f57c7ff.N63fc1b84.0.156299138ac.N7e78</con2:id>
+                                    <con1:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-008</faultcode>
+		<faultstring>Error aplicación - Error en los parámetros del mensaje (", $fault/con:details/con1:ValidationFailureDetail/con1:message/text(),")</faultstring>
+		<faultactor/>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+										xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-008</codigoError>
+				<descripcionError>Error aplicación - Error en los parámetros del mensaje (", $fault/con:details/con1:ValidationFailureDetail/con1:message/text(),")</descripcionError>
+				<tipoError></tipoError>
+				<severidad>2</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con2:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                                <con2:reply isError="true" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                                    <con2:id>_ActionId-N3f57c7ff.N63fc1b84.0.156299138ac.N7e77</con2:id>
+                                </con2:reply>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="_onErrorHandler-4672933421076769680--773d94a4.14252537b97.-7e52" type="error">
+            <con:stage name="Error Stage" id="_StageId-N3f57c7ff.N63fc1b84.0.156299138ac.N7ff4">
+                <con:context>
+                    <con1:userNsDecl prefix="con" namespace="http://www.bea.com/wli/sb/context"/>
+                    <con1:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                    <con1:userNsDecl prefix="ns1" namespace="urn:mx.com.nmp.midas"/>
+                    <con1:userNsDecl prefix="NMPAuto" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal"/>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente"/>
+                    <con1:varNsDecl prefix="nmp2" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="header" contents-only="false" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-4672933421076769680--773d94a4.14252537b97.-7e2e</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML('&lt;soapenv:Header xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">&lt;/soapenv:Header>')</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:report xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-5159819096348468750-7788eb9a.145e1add37b.-7f8b</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault</con:xqueryText>
+                        </con1:expr>
+                        <con1:labels>
+                            <con1:key>errorAutorizacion</con1:key>
+                            <con1:varName>fault</con1:varName>
+                            <con1:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                            </con1:value>
+                        </con1:labels>
+                    </con1:report>
+                    <con1:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-4672933421076769680--773d94a4.14252537b97.-7e51</con2:id>
+                        <con1:case id="_BranchId-N3f57c7ff.N63fc1b84.0.156299138ac.N7ff3">
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/con:errorCode = 'OSB-382505'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-4672933421076769680--773d94a4.14252537b97.-7e50</con2:id>
+                                    <con1:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("
+	<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
+		<faultcode>NMP-008</faultcode>
+		<faultstring>Error aplicación - Error en los parámetros del mensaje (", $fault/con:details/con1:ValidationFailureDetail/con1:message/text(),")</faultstring>
+		<faultactor/>
+		<detail>
+			<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+										xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+				<codigoError>NMP-008</codigoError>
+				<descripcionError>Error aplicación - Error en los parámetros del mensaje (", $fault/con:details/con1:ValidationFailureDetail/con1:message/text(),")</descripcionError>
+				<tipoError></tipoError>
+				<severidad>2</severidad>
+			</messageError>
+		</detail>
+	</soap-env:Fault>
+"))]]></con:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                                <con2:reply isError="true" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                                    <con2:id>_ActionId-4672933421076769680--773d94a4.14252537b97.-7e4f</con2:id>
+                                </con2:reply>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.7aa42f3.0.1564869c59e.N7fbe">
+            <con:stage id="_StageId-N3f57c7ff.7aa42f3.0.1564869c59e.N7fbd" name="Stage1">
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57c7ff.7aa42f3.0.1564869c59e.N7fb7</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xqueryText>$fault</con1:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57c7ff.7aa42f3.0.1564869c59e.N7fba</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="response-N3f57c7ff.N63fc1b84.0.156299138ac.N7e62" type="response">
+            <con:stage name="Response Stage" id="_StageId-N3f57c7ff.N63fc1b84.0.156299138ac.N7e61">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="con" namespace="http://www.bea.com/wli/sb/context"/>
+                    <con1:userNsDecl prefix="ns1" namespace="urn:mx.com.nmp.midas"/>
+                    <con1:userNsDecl prefix="NMPAuto" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal"/>
+                    <con1:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal"/>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57c7ff.7aa42f3.0.1564869c59e.N7ff0</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="GestionIdentidades/MIDAS/Autorizacion/Resources/Transformations/TRObtenerHuellaGerenteResToValidarHuellaDigitalRes"/>
+                                <con:input>$obtenerHuellaGerenteResponse</con:input>
+                            </con:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:branch-node type="operation" id="_FlowId-N3f57c7ff.N63fc1b84.0.156299138ac.N8000" name="BranchNode1">
+                <con:context/>
+                <con:branch-table>
+                    <con:branch name="validaClaveAutorizacion">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairNode1">
+                                <con:request>PipelinePairNode1_request</con:request>
+                                <con:response>PipelinePairNode1_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="validarHuellaDigital">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairNode2">
+                                <con:request>request-N3f57c7ff.N63fc1b84.0.156299138ac.N7e81</con:request>
+                                <con:response>response-N3f57c7ff.N63fc1b84.0.156299138ac.N7e62</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

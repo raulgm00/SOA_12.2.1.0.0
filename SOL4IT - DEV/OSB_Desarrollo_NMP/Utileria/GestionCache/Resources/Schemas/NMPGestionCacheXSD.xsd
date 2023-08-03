@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:gc="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCache"
+            targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCache"
+            elementFormDefault="qualified">
+  <xsd:element name="generarLlaveRequest" type="gc:llavesType">
+    <xsd:annotation>
+      <xsd:documentation>A sample element</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:element name="generarLlaveResponse" type="gc:responseLlavesType"/>
+  <xsd:element name="consultarLlaveRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="gc:idLlave"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="consultarLlaveResponse" type="gc:llavesType"/>
+  <xsd:element name="listarLlavesRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="gc:nombreCache"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="listarLlavesResponse" type="gc:llavesType"/>
+  <xsd:element name="removerLlaveRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="gc:idLlave"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="removerLlaveResponse" type="gc:responseType"/>
+  <xsd:element name="depurarCacheRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="gc:nombreCache"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="depurarCacheResponse" type="gc:responseType"/>
+  <xsd:element name="llavesXML">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="llave" type="gc:llaveType" maxOccurs="unbounded"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:complexType name="responseType">
+    <xsd:sequence>
+      <xsd:element ref="gc:respuesta"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="responseLlavesType">
+    <xsd:sequence>
+      <xsd:element ref="gc:respuesta"/>
+      <xsd:element name="llaves" type="gc:llaveType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="respuesta">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="codigo" type="xsd:string"/>
+        <xsd:element name="mensaje" type="xsd:string"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:complexType name="llavesType">
+    <xsd:sequence>
+      <xsd:element name="llaves" type="gc:llaveType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="llaveType">
+    <xsd:sequence>
+      <xsd:element name="llave" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element ref="gc:idLlave"/>
+            <xsd:element name="contenido" maxOccurs="unbounded" minOccurs="0">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="nombre" type="xsd:string"/>
+                  <xsd:element name="valor" type="xsd:string"/>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="nombreCache" type="xsd:string"/>
+  <xsd:element name="idLlave" type="xsd:string"/>
+</xsd:schema>

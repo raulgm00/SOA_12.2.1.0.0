@@ -1,0 +1,152 @@
+<xsd:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente" elementFormDefault="qualified" version="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:NMPClien="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente" xmlns:NMPPers="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPersona">
+  <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPersona" schemaLocation="NMPPersona.xsd"/>
+  <!--Example element-->  
+  <xsd:element name="Cliente" type="NMPClien:ClienteType"/>  
+  
+  <!-- Simple Type definition -->
+  <xsd:simpleType name="idType">
+    <xsd:restriction base="xsd:long">
+      <xsd:totalDigits value="12"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="sucursalRegstroType">
+    <xsd:restriction base="xsd:int">
+      <xsd:totalDigits value="5"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="numeroCredencialType">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="16"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="usuarioType">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="20"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="nombreImagenType">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="25"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="simpleIntFlagType">
+    <xsd:restriction base="xsd:int">
+      <xsd:enumeration value="1"/>
+      <xsd:enumeration value="0"/>
+      <xsd:totalDigits value="2"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="estatusAlmacenamientoImagenType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ALM"/>
+      <xsd:enumeration value="ALM_LOCAL"/>
+      <xsd:enumeration value="ALM_LOCAL_A"/>
+      <xsd:enumeration value="ALM_LOCAL_B"/>
+      <xsd:enumeration value="ALM_REPO"/>
+      <xsd:enumeration value="ALM_REPO_A"/>
+      <xsd:enumeration value="ALM_REPO_B"/>
+      <xsd:enumeration value="ERR_NF"/>
+      <xsd:enumeration value="ALM_TMP"/>
+      <xsd:maxLength value="15"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="tipoClienteType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="prendario"/>
+      <xsd:enumeration value="comercial"/>
+      <xsd:maxLength value="15"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="tipoOperacionClienteType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="prendario"/>
+      <xsd:enumeration value="comercial"/>
+      <xsd:maxLength value="15"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="representanteLegalType">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="12"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="huellaDigitalType">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="2000"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="decimalType">
+    <xsd:restriction base="xsd:decimal">
+      <xsd:fractionDigits value="5"/>
+      <xsd:totalDigits value="15"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="mandanteType">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="3"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="sociedadType">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="4"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <!-- Complex type definition -->
+  
+  <xsd:complexType name="ClienteType">
+    <xsd:complexContent>
+      <xsd:extension base="NMPPers:PersonaType">
+        <xsd:sequence>
+          <xsd:element name="id" minOccurs="0" type="NMPClien:idType"/>
+          <xsd:element name="infoBasicaCliente" minOccurs="0">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="tipoCliente" minOccurs="0" type="NMPClien:tipoClienteType"/>
+                <xsd:element name="numeroDeCredencial" minOccurs="0" type="NMPClien:numeroCredencialType"/>
+                <xsd:element name="nombreDeLaImagen" minOccurs="0" type="NMPClien:nombreImagenType"/>
+                <xsd:element name="tipoOperacionCliente" minOccurs="0" type="NMPClien:tipoOperacionClienteType"/>
+                <xsd:element name="estatusAlmacenamientoImagen" minOccurs="0" type="NMPClien:estatusAlmacenamientoImagenType"/>
+                <xsd:element name="huellaDigital" minOccurs="0" type="NMPClien:huellaDigitalType"/>
+                <xsd:element name="clienteVIP" type="xsd:boolean" minOccurs="0"/>
+                <xsd:element name="mandante" type="NMPClien:mandanteType" minOccurs="0"/>
+                <xsd:element name="sociedad" type="NMPClien:sociedadType" minOccurs="0"/>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="datosRegistro" minOccurs="0">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="fechaDeRegistro" type="xsd:date" minOccurs="0"/>
+                <xsd:element name="sucursalDeRegstro" minOccurs="0" type="NMPClien:sucursalRegstroType"/>
+                <xsd:element name="fechaDeCreacion" type="xsd:dateTime" minOccurs="0"/>
+                <xsd:element name="fechadDeUltimaActualizacion" type="xsd:dateTime" minOccurs="0"/>
+                <xsd:element name="usuarioCreador" minOccurs="0" type="NMPClien:usuarioType"/>
+                <xsd:element name="usuarioUltimaModificacion" minOccurs="0" type="NMPClien:usuarioType"/>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="representanteLegal" minOccurs="0" type="NMPClien:representanteLegalType"/>
+          <xsd:element name="cotitular" type="NMPPers:PersonaType" minOccurs="0"/>
+          <xsd:element name="beneficiario" type="NMPPers:PersonaType" minOccurs="0"/>
+          <xsd:element name="calificacionCliente" minOccurs="0">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="calificacionReal" minOccurs="0" type="NMPClien:decimalType"/>
+                <xsd:element name="calificacionMidas" minOccurs="0" type="NMPClien:decimalType"/>
+                <xsd:element name="capacidadDePago" minOccurs="0" type="NMPClien:decimalType"/>
+                <xsd:element name="probabilidadIncumplimiento" minOccurs="0" type="NMPClien:decimalType"/>
+                <xsd:element name="gradoDeConfianza" minOccurs="0" type="NMPClien:decimalType"/>
+                <xsd:element name="ultimafechaConsultaBuro" type="xsd:date" minOccurs="0"/>
+                <xsd:element name="calificacionBuro" type="NMPClien:decimalType" minOccurs="0"/>
+                <xsd:element name="calificacionSiva" type="NMPClien:decimalType" minOccurs="0"/>
+                <xsd:element name="sobreAforo" minOccurs="0" type="NMPClien:decimalType"/>
+                <xsd:element name="porcentajeAforo" minOccurs="0" type="NMPClien:decimalType"/>
+                <xsd:element name="indiceRecuperacion" minOccurs="0" type="NMPClien:decimalType"/>
+                <xsd:element name="banderaDeBoletinacion" minOccurs="0" type="NMPClien:simpleIntFlagType"/>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+</xsd:schema>

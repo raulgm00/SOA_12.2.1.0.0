@@ -1,0 +1,56 @@
+<wsdl:definitions name="Ofertas" targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Services/Ofertas/Bpel" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:SvcNMPOfertasE="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Ofertas" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Services/Ofertas/Bpel" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:documentation>
+        <abstractWSDL>http://10.30.3.15:8001/soa-infra/services/OPP_PREN_CRM/CRMOfertaPrendaria!1.0/WSDLs/SoaOfertaPrendariaWSDL.wsdl</abstractWSDL>
+    </wsdl:documentation>
+  <wsdl:types>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Ofertas" schemaLocation="../Schemas/NMPOfertasSvcElementosXSD.xsd"/>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="guardarOfertasRequestMessage">
+    <wsdl:part name="guardarOfertasRequest" element="SvcNMPOfertasE:GuardarOfertasRequest"/>
+  </wsdl:message>
+  <wsdl:message name="guardarOfertasResponseMessage">
+    <wsdl:part name="guardarOfertasResponse" element="SvcNMPOfertasE:GuardarOfertasResponse"/>
+  </wsdl:message>
+  <wsdl:message name="ofertasFaultMessage">
+    <wsdl:part name="ofertasFault" element="NMPsm:messageError"/>
+  </wsdl:message>
+  <wsdl:message name="NMPHeaderRequest">
+    <wsdl:part name="requestHeader" element="NMPsh:headerMessage"/>
+  </wsdl:message>
+  <wsdl:message name="NMPHeaderResponse">
+    <wsdl:part name="responseHeader" element="NMPsh:headerMessageResponse"/>
+  </wsdl:message>
+  <wsdl:portType name="Ofertas_ptt">
+    <wsdl:operation name="guardarOfertas">
+      <wsdl:input message="tns:guardarOfertasRequestMessage"/>
+      <wsdl:output message="tns:guardarOfertasResponseMessage"/>
+      <wsdl:fault name="Fault" message="tns:ofertasFaultMessage"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="SoaOfertasBinding" type="tns:Ofertas_ptt">
+    <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="guardarOfertas">
+      <wsdlsoap:operation style="document" soapAction="guardarOfertas"/>
+      <wsdl:input>
+        <wsdlsoap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <wsdlsoap:header message="tns:NMPHeaderResponse" part="responseHeader" use="literal"/>
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="Fault">
+        <wsdlsoap:fault name="Fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="SoaOfertaPrendariaResequencer">
+    <wsdl:port name="Ofertas_pt" binding="tns:SoaOfertasBinding">
+      <wsdlsoap:address location="http://10.30.3.15:8001/soa-infra/services/OPP_PREN_CRM/CRMOfertaPrendaria/SoaOfertaPrendariaResequencer"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

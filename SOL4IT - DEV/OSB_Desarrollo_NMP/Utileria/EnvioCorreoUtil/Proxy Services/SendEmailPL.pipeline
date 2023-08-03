@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:wsdl ref="Utileria/EnvioCorreoUtil/Resouces/wsdl/SendEmailWSDL"/>
+            <con:binding>
+                <con:name>SendEmailSOAP11Binding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Services/SendEmail</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:logging enabled="false" level="debug"/>
+            <oper:monitoring enabled="true" level="service" aggregationInterval="60"/>
+            <oper:reporting>false</oper:reporting>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:pipeline name="SendEmailPipelinePair_request" type="request">
+            <con:stage name="input_stage">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="ema" namespace="http://www.example.org/EmailRequest" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="ema1" namespace="http://email.com" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="sen" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/SendEmail" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="tmp" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N46f09b50.16.1533361fa34.N7ff6</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/*</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:report xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.26a809d1.26.1535d5745d5.N8000</con2:id>
+                        <con1:labels>
+                            <con1:key>to</con1:key>
+                            <con1:varName>body</con1:varName>
+                            <con1:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./sen:Email/sen:to/text()</con:xpathText>
+                            </con1:value>
+                        </con1:labels>
+                    </con1:report>
+                    <con1:replace varName="body" contents-only="true" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N46f09b50.16.1533361fa34.N7ff5</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$tmp//*:content/text()</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/publish/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N46f09b50.16.1533361fa34.N7ff4</con2:id>
+                        <con1:service ref="Utileria/EnvioCorreoUtil/Business Services/OSBEnvioCorreoBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                        <con1:outboundTransform>
+                            <con1:replace varName="attachmentsTmp" contents-only="false" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.26a809d1.1f.1535844b9ef.N8000</con2:id>
+                                <con1:expr>
+                                    <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                        <con:resource ref="Utileria/EnvioCorreoUtil/Resouces/xsl/TransformAttachment"/>
+                                        <con:input>$tmp</con:input>
+                                    </con:xsltTransform>
+                                </con1:expr>
+                            </con1:replace>
+                            <con2:replace varName="attachments" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.26a809d1.11.15357a1ec65.N7ffe</con3:id>
+                                <con2:location>
+                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$attachmentsTmp/*</con:xqueryText>
+                                </con2:expr>
+                            </con2:replace>
+                            <con1:foreach xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.26a809d1.20.153584563bb.N8000</con2:id>
+                                <con1:variable>attachmentsTmp</con1:variable>
+                                <con1:expression>
+                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./ctx:attachment</con:xpathText>
+                                </con1:expression>
+                                <con1:value-variable>att</con1:value-variable>
+                                <con1:index-variable>i</con1:index-variable>
+                                <con1:actions>
+                                    <con1:javaCallout varName="decode">
+                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.26a809d1.20.153584563bb.N7fff</con2:id>
+                                        <con1:archive ref="Utileria/EnvioCorreoUtil/Resouces/jar/base64sun"/>
+                                        <con1:className>base64sun.Base64sun</con1:className>
+                                        <con1:method>public static [B Base64toByteArray2(java.lang.String)</con1:method>
+                                        <con1:expr>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$att/ctx:body/text()</con:xqueryText>
+                                        </con1:expr>
+                                        <con1:return-param-as-ref>false</con1:return-param-as-ref>
+                                    </con1:javaCallout>
+                                    <con2:replace varName="attachments" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con1="http://www.bea.com/wli/sb/stages/publish/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.26a809d1.20.153584563bb.N7ffe</con3:id>
+                                        <con2:location>
+                                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./ctx:attachment[$i]/ctx:body</con:xpathText>
+                                        </con2:location>
+                                        <con2:expr>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$decode</con:xqueryText>
+                                        </con2:expr>
+                                    </con2:replace>
+                                </con1:actions>
+                            </con1:foreach>
+                            <con2:transport-headers copy-all="false" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N46f09b50.16.1533361fa34.N7ff2</con3:id>
+                                <con2:header-set>outbound-request</con2:header-set>
+                                <con2:header name="To" value="expression">
+                                    <con3:xqueryText xmlns:con3="http://www.bea.com/wli/sb/stages/config">$tmp//*:to/text()</con3:xqueryText>
+                                </con2:header>
+                                <con2:header name="From" value="expression">
+                                    <con3:xqueryText xmlns:con3="http://www.bea.com/wli/sb/stages/config">$tmp//*:from/text()</con3:xqueryText>
+                                </con2:header>
+                                <con2:header name="Subject" value="expression">
+                                    <con3:xqueryText xmlns:con3="http://www.bea.com/wli/sb/stages/config">$tmp//*:subject/text()</con3:xqueryText>
+                                </con2:header>
+                                <con2:header name="Content-Type" value="expression">
+                                    <con3:xqueryText xmlns:con3="http://www.bea.com/wli/sb/stages/config">'text/html'</con3:xqueryText>
+                                </con2:header>
+                            </con2:transport-headers>
+                        </con1:outboundTransform>
+                    </con1:route>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="SendEmailPipelinePair_response" type="response">
+            <con:stage name="output_stage">
+                <con:comment/>
+                <con:actions>
+                    <con1:delete varName="body" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N46f09b50.16.1533361fa34.N7ff1</con2:id>
+                    </con1:delete>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="SendEmailPipelinePair">
+                <con:comment/>
+                <con:request>SendEmailPipelinePair_request</con:request>
+                <con:response>SendEmailPipelinePair_response</con:response>
+            </con:pipeline-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

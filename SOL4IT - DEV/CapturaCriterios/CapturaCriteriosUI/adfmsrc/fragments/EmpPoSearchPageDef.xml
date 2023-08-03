@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pageDefinition xmlns="http://xmlns.oracle.com/adfm/uimodel" version="11.1.2.60.17" id="EmpPoSearchPageDef"
+                Package="fragments">
+  <parameters/>
+  <executables>
+    <variableIterator id="variables">
+      <variableUsage DataControl="EmployeePurchaseManagementDataControl"
+                     Binds="OrderHeadersSearchVO1.variablesMap.bndOrderNumber" Name="ExecuteWithParams_bndOrderNumber"
+                     IsQueriable="false"/>
+      <variableUsage DataControl="EmployeePurchaseManagementDataControl"
+                     Binds="OrderHeadersSearchVO1.variablesMap.bndOrderedDate" Name="ExecuteWithParams_bndOrderedDate"
+                     IsQueriable="false"/>
+      <variableUsage DataControl="EmployeePurchaseManagementDataControl"
+                     Binds="OrderHeadersSearchVO1.variablesMap.bndProcessingLoc"
+                     Name="ExecuteWithParams_bndProcessingLoc" IsQueriable="false"/>
+      <variableUsage DataControl="EmployeePurchaseManagementDataControl"
+                     Binds="OrderHeadersSearchVO1.variablesMap.bndFileNumber" Name="ExecuteWithParams_bndFileNumber"
+                     IsQueriable="false"/>
+    </variableIterator>
+    <iterator Binds="OrderHeadersSearchVO1" RangeSize="25" DataControl="EmployeePurchaseManagementDataControl"
+              id="OrderHeadersSearchVO1Iterator" ChangeEventPolicy="none"/>
+    <iterator Binds="OrderLinesSearchVO1" RangeSize="25" DataControl="EmployeePurchaseManagementDataControl"
+              id="OrderLinesSearchVO1Iterator" ChangeEventPolicy="none"/>
+    <iterator Binds="EmployeePurchaseLocationVO1" RangeSize="-1" DataControl="EmployeePurchaseManagementDataControl"
+              id="EmployeePurchaseLocationVO1Iterator"/>
+    <searchRegion Binds="OrderLinesSearchVO1Iterator" Criteria=""
+                  Customizer="oracle.jbo.uicli.binding.JUSearchBindingCustomizer" id="OrderLinesSearchVO1Query"/>
+    <searchRegion Binds="OrderHeadersSearchVO1Iterator" Criteria=""
+                  Customizer="oracle.jbo.uicli.binding.JUSearchBindingCustomizer" id="OrderHeadersSearchVO1Query"/>
+  </executables>
+  <bindings>
+    <tree IterBinding="OrderHeadersSearchVO1Iterator" id="OrderHeadersSearchVO1">
+      <nodeDefinition DefName="hl.ep.model.views.search.OrderHeadersSearchVO" Name="OrderHeadersSearchVO10">
+        <AttrNames>
+          <Item Value="OrderNumber"/>
+          <Item Value="CustomerName"/>
+          <Item Value="OrderedDate"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <tree IterBinding="OrderLinesSearchVO1Iterator" id="OrderLinesSearchVO1">
+      <nodeDefinition DefName="hl.ep.model.views.search.OrderLinesSearchVO" Name="OrderLinesSearchVO10">
+        <AttrNames>
+          <Item Value="LineNumber"/>
+          <Item Value="Quantity"/>
+          <Item Value="ItemType"/>
+          <Item Value="ItemDescription"/>
+          <Item Value="Uom"/>
+          <Item Value="UnitPrice"/>
+          <Item Value="TotalDiscountAmount"/>
+          <Item Value="TotalDiscountPrice"/>
+          <Item Value="Sku"/>
+          <Item Value="TotalItemPrice"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <attributeValues IterBinding="OrderHeadersSearchVO1Iterator" id="OrderNumber">
+      <AttrNames>
+        <Item Value="OrderNumber"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="OrderHeadersSearchVO1Iterator" id="CustomerName">
+      <AttrNames>
+        <Item Value="CustomerName"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="OrderHeadersSearchVO1Iterator" id="FileNumber">
+      <AttrNames>
+        <Item Value="FileNumber"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="OrderHeadersSearchVO1Iterator" id="Extension">
+      <AttrNames>
+        <Item Value="Extension"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="OrderHeadersSearchVO1Iterator" id="OrderedDate">
+      <AttrNames>
+        <Item Value="OrderedDate"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="OrderHeadersSearchVO1Iterator" id="ProcessingLocation">
+      <AttrNames>
+        <Item Value="ProcessingLocation"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="OrderHeadersSearchVO1Iterator" id="Address">
+      <AttrNames>
+        <Item Value="Address"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="OrderHeadersSearchVO1Iterator" id="City">
+      <AttrNames>
+        <Item Value="City"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="OrderHeadersSearchVO1Iterator" id="State">
+      <AttrNames>
+        <Item Value="State"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="OrderHeadersSearchVO1Iterator" id="PostalCode">
+      <AttrNames>
+        <Item Value="PostalCode"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="OrderHeadersSearchVO1Iterator" id="ContactNumber">
+      <AttrNames>
+        <Item Value="ContactNumber"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="OrderHeadersSearchVO1Iterator" id="SubTotal">
+      <AttrNames>
+        <Item Value="SubTotal"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="OrderHeadersSearchVO1Iterator" id="TaxAmount">
+      <AttrNames>
+        <Item Value="TaxAmount"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="OrderHeadersSearchVO1Iterator" id="TotalPrice">
+      <AttrNames>
+        <Item Value="TotalPrice"/>
+      </AttrNames>
+    </attributeValues>
+    <action IterBinding="OrderHeadersSearchVO1Iterator" id="ExecuteWithParams" RequiresUpdateModel="true"
+            Action="executeWithParams">
+      <NamedData NDName="bndOrderNumber" NDType="java.lang.String"
+                 NDValue="${bindings.ExecuteWithParams_bndOrderNumber}"/>
+      <NamedData NDName="bndOrderedDate" NDType="oracle.jbo.domain.Date"
+                 NDValue="${bindings.ExecuteWithParams_bndOrderedDate}"/>
+      <NamedData NDName="bndProcessingLoc" NDType="java.lang.String"
+                 NDValue="${bindings.ExecuteWithParams_bndProcessingLoc}"/>
+      <NamedData NDName="bndFileNumber" NDType="java.lang.String"
+                 NDValue="${bindings.ExecuteWithParams_bndFileNumber}"/>
+    </action>
+    <attributeValues IterBinding="variables" id="bndOrderNumber">
+      <AttrNames>
+        <Item Value="ExecuteWithParams_bndOrderNumber"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="variables" id="bndOrderedDate">
+      <AttrNames>
+        <Item Value="ExecuteWithParams_bndOrderedDate"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="variables" id="bndFileNumber">
+      <AttrNames>
+        <Item Value="ExecuteWithParams_bndFileNumber"/>
+      </AttrNames>
+    </attributeValues>
+    <list IterBinding="variables" id="bndProcessingLoc" DTSupportsMRU="true" SelectItemValueMode="ListObject"
+          StaticList="false" ListIter="EmployeePurchaseLocationVO1Iterator"
+          NullValueFlag="start"
+          NullValueId="${adfBundle['oracle.javatools.resourcebundle.SystemBundle']['NULL_VALUE_RESID']}">
+      <AttrNames>
+        <Item Value="ExecuteWithParams_bndProcessingLoc"/>
+      </AttrNames>
+      <ListAttrNames>
+        <Item Value="LocationId"/>
+      </ListAttrNames>
+      <ListDisplayAttrNames>
+        <Item Value="Location"/>
+      </ListDisplayAttrNames>
+    </list>
+    <attributeValues IterBinding="OrderHeadersSearchVO1Iterator" id="Country">
+      <AttrNames>
+        <Item Value="Country"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="OrderHeadersSearchVO1Iterator" id="County">
+      <AttrNames>
+        <Item Value="County"/>
+      </AttrNames>
+    </attributeValues>
+    <methodAction id="invokeContextualEventCopyOrder" InstanceName="data.CustomEventHandler.dataProvider"
+                  DataControl="CustomEventHandler" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="invokeContextualEventCopyOrder" IsViewObjectMethod="false">
+      <events xmlns="http://xmlns.oracle.com/adfm/contextualEvent">
+        <event name="openTabForm"/>
+      </events>
+    </methodAction>
+    <methodAction id="copyOrder" InstanceName="data.EmployeePurchaseManagementDataControl.dataProvider"
+                  DataControl="EmployeePurchaseManagementDataControl" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="copyOrder" IsViewObjectMethod="false"
+                  ReturnName="data.EmployeePurchaseManagementDataControl.methodResults.copyOrder_EmployeePurchaseManagementDataControl_dataProvider_copyOrder_result"/>
+  </bindings>
+</pageDefinition>

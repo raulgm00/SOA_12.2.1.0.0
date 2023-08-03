@@ -1,0 +1,29 @@
+<wsdl:definitions name="MotorFormulasEndpointService" targetNamespace="http://ws.api.motorformulas.pagos.ms.nmp.com.mx/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://ws.api.motorformulas.pagos.ms.nmp.com.mx/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns3="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://nmp.com.mx/ms/pagos/motorformulas/ws/formulas/">
+    <wsdl:import location="BMIXMotorFormulasSchemaWSDL.wsdl" namespace="http://nmp.com.mx/ms/pagos/motorformulas/ws/formulas/"/>
+    <wsdl:binding name="MotorFormulasEndpointServiceSoapBinding" type="ns1:MotorFormulasService">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="resolverFormula">
+            <soap:operation soapAction="http://nmp.com.mx/ms/pagos/ws/motorformulas/resolverFormula" style="document"/>
+            <wsdl:input name="resolverFormula">
+                <soap:header message="ns1:resolverFormula" part="GUID" use="literal"/>
+                <soap:body parts="contextoEvaluacion" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="resolverFormulaResponse">
+                <soap:header message="ns1:resolverFormulaResponse" part="GUID" use="literal"/>
+                <soap:body parts="evaluacionFormula" use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="resolverFormulaAsincrono">
+            <soap:operation soapAction="http://nmp.com.mx/ms/pagos/ws/motorformulas/resolverFormulaAsincrono" style="document"/>
+            <wsdl:input name="resolverFormulaAsincrono">
+                <soap:header message="ns1:resolverFormulaAsincrono" part="GUID" use="literal"/>
+                <soap:body parts="contextoEvaluacionAsincrono" use="literal"/>
+            </wsdl:input>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="MotorFormulasEndpointService">
+        <wsdl:port binding="tns:MotorFormulasEndpointServiceSoapBinding" name="MotorFormulasEndpointPort">
+            <soap:address location="https://dev1775-pagos-motorformulas-dummy.mybluemix.net/soap-api/MotorFormulas"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:wsdl ref="Finance/AP/GPA/Entity/Resources/Solicitud/ActualizarEstadoWSDL"/>
+            <con:binding>
+                <con:name>ActualizaEstadoSolicitudBPELBinding</con:name>
+                <con:namespace>http://qualitas.com.mx/ActualizarEstadoSolicitudApp/ActualizarEstadoSolicitudPrj/ActualizaEstadoSolicitudBPEL</con:namespace>
+            </con:binding>
+        </con:binding>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:flow>
+            <con:route-node name="RouteNode1">
+                <con:context>
+                    <con1:userNsDecl prefix="v1" namespace="http://qualitas.com.mx/Seguimiento/GenerarSeguimiento/v1/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="v11" namespace="http://qualitas.com.mx/comunes/objetosComunes/v1/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="ser" namespace="http://service.gpa.mx.com.qualitas/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="act" namespace="http://qualitas.com.mx/ActualizarEstadoSolicitudApp/ActualizarEstadoSolicitudPrj/ActualizaEstadoSolicitudBPEL" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                        <con2:id>_ActionId-b320018.33d06e72.5c.159f5ceadf1.N7ffd</con2:id>
+                        <con1:service ref="Finance/AP/GPA/Entity/BusinessSvc/ActualizarEstadoSolicitudBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                        <con1:operation>process</con1:operation>
+                        <con1:outboundTransform>
+                            <con3:report xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+                                <con2:id>_ActionId-N53efe1ac.657c7735.0.15d8a1ce8e8.N7fec</con2:id>
+                                <con3:expr>
+                                    <con2:xqueryText>$body</con2:xqueryText>
+                                </con3:expr>
+                                <con3:labels>
+                                    <con3:key>Request:ActualizarEstado idSolicitud =</con3:key>
+                                    <con3:varName>body</con3:varName>
+                                    <con3:value>
+                                        <con2:xpathText>./act:estadoSolicitudRequest/act:idSolicitud/text()</con2:xpathText>
+                                    </con3:value>
+                                </con3:labels>
+                            </con3:report>
+                            <con2:log xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.N42a563f9.3.15b354cae39.N8000</con3:id>
+                                <con2:logLevel>warning</con2:logLevel>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                                </con2:expr>
+                                <con2:message>ENTRADA SVC ACT ESTADO</con2:message>
+                            </con2:log>
+                            <con2:assign varName="backup" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.N7c4be833.12.15b8c380f3c.N7fff</con3:id>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                        </con1:outboundTransform>
+                        <con1:responseTransform>
+                            <con3:report xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+                                <con2:id>_ActionId-N53efe1ac.657c7735.0.15d8a1ce8e8.N7fe9</con2:id>
+                                <con3:expr>
+                                    <con2:xqueryText>$body</con2:xqueryText>
+                                </con3:expr>
+                                <con3:labels>
+                                    <con3:key>ResponseActualizarEstado =</con3:key>
+                                    <con3:varName>body</con3:varName>
+                                    <con3:value>
+                                        <con2:xpathText>./act:estadoSolicitudResponse/act:OperationResponse/v11:codigoRespuesta/text()</con2:xpathText>
+                                    </con3:value>
+                                </con3:labels>
+                            </con3:report>
+                            <con2:replace varName="" contents-only="false" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.0.15a4c27c10e.N7fff</con3:id>
+                                <con3:disabled xmlns:con3="http://www.bea.com/wli/sb/stages/config">true</con3:disabled>
+                            </con2:replace>
+                            <con2:wsCallout xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1.15a4c2e177a.N8000</con3:id>
+                                <con2:service ref="Finance/AP/GPA/Entity/ProxySvc/SolicitudServicePxy" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                <con2:operation>actualizarSolicitud</con2:operation>
+                                <con2:request>
+                                    <con2:param>
+                                        <con2:name>request</con2:name>
+                                        <con2:variable>actualizarSolInput</con2:variable>
+                                    </con2:param>
+                                    <con2:header/>
+                                </con2:request>
+                                <con2:response>
+                                    <con2:param>
+                                        <con2:name>response</con2:name>
+                                        <con2:variable>actualizarSolOutput</con2:variable>
+                                    </con2:param>
+                                    <con2:header/>
+                                </con2:response>
+                                <con2:requestTransform>
+                                    <con2:assign varName="actualizarSolInput">
+                                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1.15a4c2e177a.N7fff</con3:id>
+                                        <con2:expr>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat('<ser:actualizarSolicitud xmlns:ser="http://service.gpa.mx.com.qualitas/">
+         <request>
+            <solicitudModel>
+               <estado>
+                  <codigo>',$backup/act:estadoSolicitudRequest/act:idEdoSolicitud/text(),'</codigo>
+               </estado>
+               <id>',$backup/act:estadoSolicitudRequest/act:idSolicitud/text(),'</id>
+            </solicitudModel>
+         </request>
+      </ser:actualizarSolicitud>'))]]></con:xqueryText>
+                                        </con2:expr>
+                                    </con2:assign>
+                                </con2:requestTransform>
+                                <con2:responseTransform>
+                                    <con3:log xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+                                        <con4:id xmlns:con4="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1.15a4c2e177a.N7ffe</con4:id>
+                                        <con3:logLevel>warning</con3:logLevel>
+                                        <con3:expr>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$actualizarSolOutput</con:xqueryText>
+                                        </con3:expr>
+                                        <con3:message>Actualizar Solicitud Response Phase 2</con3:message>
+                                    </con3:log>
+                                </con2:responseTransform>
+                            </con2:wsCallout>
+                        </con1:responseTransform>
+                    </con1:route>
+                </con:actions>
+            </con:route-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

@@ -1,0 +1,548 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+    <con:coreEntry>
+        <con:description>El NMPConversionDivisasPL implementaá la logica de Negocios para consumir el tipo de cambio del banco Banxico</con:description>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="Utileria/ConversionDivisas/Resources/WSDLs/NMPConversionDivisasSvcWSDL"/>
+            <con:binding>
+                <con:name>ConversionDivisas_bind</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Servicios/Utileria/ConversionDivisas</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:tracingEnabled>true</oper:tracingEnabled>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router errorHandler="error-N3f57b7ff.N1c030ada.0.15771a9424d.N7ff3">
+        <con:pipeline type="error" name="error-N3f57b7ff.N1c030ada.0.15771a9424d.N7ff3">
+            <con:stage id="_StageId-N3f57b7ff.N1c030ada.0.15771a9424d.N7ff2" name="StageErrorHandlerConversionDivisasPL">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:userNsDecl prefix="div" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Divisas"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-N3f57b7ff.N1c030ada.0.15771a9424d.N7fb4</con1:id>
+                        <con2:case id="_BranchId-N3f57b7ff.N1c030ada.0.15771a9424d.N7fb3">
+                            <con2:condition>
+                                <con1:xqueryText>$header/nmp:headerMessage</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace varName="header" contents-only="true">
+                                    <con1:id>_ActionId-N3f57b7ff.N1c030ada.0.15771a9424d.N7f80</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con1:xsltTransform>
+                                            <con1:resource ref="Utileria/ConversionDivisas/Resources/Transformations/TRConversionDivisasHeader"/>
+                                            <con1:input>$header/*</con1:input>
+                                            <con1:param name="codigoRespuesta">
+                                                <con1:path>500</con1:path>
+                                            </con1:param>
+                                        </con1:xsltTransform>
+                                    </con2:expr>
+                                </con2:replace>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default/>
+                    </con2:ifThenElse>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57b7ff.N1c030ada.0.15771a9424d.N7f4a</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="Utileria/ConversionDivisas/Resources/Transformations/TRConversionDivisasFaultBody"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="app">
+                                    <con1:path>4</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57b7ff.N1c030ada.0.15771a9424d.N7f16</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57b7ff.N1c030ada.0.15771a9424d.N7ffb">
+            <con:stage id="_StageId-N3f57b7ff.N1c030ada.0.15771a9424d.N7ff9" name="StageValidacionObtenerListaTiposCambioBanxico">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:userNsDecl prefix="div" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Divisas"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-N3f57b7ff.N1c030ada.0.15771a9424d.N7ddf</con1:id>
+                        <con2:case id="_BranchId-N3f57b7ff.N1c030ada.0.15771a9424d.N7dde">
+                            <con2:condition>
+                                <con1:xqueryText>$header/nmp:headerMessage</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:validate>
+                                    <con1:id>_ActionId-N3f57b7ff.N1c030ada.0.15771a9424d.N7d47</con1:id>
+                                    <con2:schema ref="Common/XSD/NMPStandardHeader"/>
+                                    <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con2:schemaElement>
+                                    <con2:varName>header</con2:varName>
+                                    <con2:location>
+                                        <con1:xpathText>./nmp:headerMessage</con1:xpathText>
+                                    </con2:location>
+                                </con2:validate>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default>
+                            <con2:Error>
+                                <con1:id>_ActionId-N3f57b7ff.N1c030ada.0.15771a9424d.N7d7a</con1:id>
+                                <con2:errCode>NMP-020</con2:errCode>
+                                <con2:message>Hacen falta datos en el header</con2:message>
+                            </con2:Error>
+                        </con2:default>
+                    </con2:ifThenElse>
+                    <con2:validate>
+                        <con1:id>_ActionId-N3f57b7ff.N1c030ada.0.15771a9424d.N7a6b</con1:id>
+                        <con2:schema ref="Utileria/ConversionDivisas/Resources/Schemas/NMPConversionDivisasSvcElementosXSD"/>
+                        <con2:schemaElement xmlns:div="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Divisas">div:ObtenerListaTiposCambioBanxicoRequest</con2:schemaElement>
+                        <con2:varName>body</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./div:ObtenerListaTiposCambioBanxicoRequest</con1:xpathText>
+                        </con2:location>
+                    </con2:validate>
+                    <con2:assign varName="id_peticion">
+                        <con1:id>_ActionId-N3f57b7ff.N1c030ada.0.15771a9424d.N7a68</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$messageID</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:assign varName="header_tmp">
+                        <con1:id>_ActionId-N3f57b7ff.N1c030ada.0.15771a9424d.N7a65</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$header</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:assign varName="body_tmp">
+                        <con1:id>_ActionId-N3f57b7ff.N1c030ada.0.15771a9424d.N7a62</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$body</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57b7ff.N1c030ada.0.15771a9424d.N7a61" name="StageInvocacionBanxico" errorHandler="error-N3f57b7ff.361ed72e.0.157765a713c.N7f9a">
+                <con:context>
+                    <con1:userNsDecl prefix="bm" namespace="http://www.banxico.org.mx/structure/key_families/dgie/sie/series/compact"/>
+                </con:context>
+                <con:actions>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-N3f57b7ff.N1c030ada.0.15771a9424d.N7a5e</con1:id>
+                        <con2:service ref="Utileria/ConversionDivisas/Business Services/BanxicoTiposCambioBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>tiposDeCambioBanxico</con2:operation>
+                        <con2:request>
+                            <con2:header/>
+                        </con2:request>
+                        <con2:response>
+                            <con2:param>
+                                <con2:name>result</con2:name>
+                                <con2:variable>banxico_response</con2:variable>
+                            </con2:param>
+                            <con2:header/>
+                        </con2:response>
+                        <con2:requestTransform>
+                            <con2:assign varName="body">
+                                <con1:id>_ActionId-N3f57b7ff.N1c030ada.0.15771a9424d.N7a2b</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText>&lt;soapenv:Body xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ws1="http://ws.dgie.banxico.org.mx">
+&lt;ws1:tiposDeCambioBanxico soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+&lt;/soapenv:Body></con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                        </con2:requestTransform>
+                        <con2:responseTransform>
+                            <con2:assign varName="banxico_response">
+                                <con1:id>_ActionId-N3f57b7ff.N1c030ada.0.15771a9424d.N7a28</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText>fn-bea:inlinedXML($banxico_response/text())</con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:assign varName="response_serieLista">
+                                <con1:id>_ActionId-N3f57b7ff.N1c030ada.0.15771a9424d.N7a25</con1:id>
+                                <con2:expr>
+                                    <con1:xsltTransform>
+                                        <con1:resource ref="Utileria/ConversionDivisas/Resources/Transformations/TRBanxicoResToGetListaTiposCambioBaxicoRes"/>
+                                        <con1:input>$banxico_response</con1:input>
+                                    </con1:xsltTransform>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:replace varName="header" contents-only="true">
+                                <con1:id>_ActionId-N3f57b7ff.361ed72e.0.157765a713c.N7e90</con1:id>
+                                <con2:location>
+                                    <con1:xpathText>.</con1:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con1:xsltTransform>
+                                        <con1:resource ref="Utileria/ConversionDivisas/Resources/Transformations/TRConversionDivisasHeader"/>
+                                        <con1:input>$header/*</con1:input>
+                                        <con1:param name="codigoRespuesta">
+                                            <con1:path>0</con1:path>
+                                        </con1:param>
+                                    </con1:xsltTransform>
+                                </con2:expr>
+                            </con2:replace>
+                            <con2:replace varName="body" contents-only="true">
+                                <con1:id>_ActionId-N3f57b7ff.N1c030ada.0.15771a9424d.N7a22</con1:id>
+                                <con2:location>
+                                    <con1:xpathText>.</con1:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con1:xqueryText>$response_serieLista</con1:xqueryText>
+                                </con2:expr>
+                            </con2:replace>
+                        </con2:responseTransform>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57b7ff.N1c030ada.0.15771a9424d.N7fff">
+            <con:stage id="_StageId-N3f57b7ff.N1c030ada.0.15771a9424d.N7ffd" name="StageValidacionObtenerTipoCambioBanxicoFix">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:userNsDecl prefix="div" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Divisas"/>
+                    <con1:userNsDecl prefix="div1" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/Divisas"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-N3f57b7ff.N1c030ada.0.15771a9424d.N7e7b</con1:id>
+                        <con2:case id="_BranchId-N3f57b7ff.N1c030ada.0.15771a9424d.N7e7a">
+                            <con2:condition>
+                                <con1:xqueryText>$header/nmp:headerMessage</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:validate>
+                                    <con1:id>_ActionId-N3f57b7ff.N1c030ada.0.15771a9424d.N7e47</con1:id>
+                                    <con2:schema ref="Common/XSD/NMPStandardHeader"/>
+                                    <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con2:schemaElement>
+                                    <con2:varName>header</con2:varName>
+                                    <con2:location>
+                                        <con1:xpathText>./nmp:headerMessage</con1:xpathText>
+                                    </con2:location>
+                                    <con2:resultVarName/>
+                                </con2:validate>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default>
+                            <con2:Error>
+                                <con1:id>_ActionId-N3f57b7ff.N1c030ada.0.15771a9424d.N7e14</con1:id>
+                                <con2:errCode>NMP-020</con2:errCode>
+                                <con2:message>Hacen falta datos en el header</con2:message>
+                            </con2:Error>
+                        </con2:default>
+                    </con2:ifThenElse>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-N3f57b7ff.N125a063d.0.157900ee869.N7fc3</con1:id>
+                        <con2:case id="_BranchId-N3f57b7ff.N125a063d.0.157900ee869.N7fc2">
+                            <con2:condition>
+                                <con1:xqueryText>fn:string-length($body/div:ObtenerTipoCambioBanxicoFixRequest/div1:idSerie/text()) = 7</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:validate>
+                                    <con1:id>_ActionId-N3f57b7ff.N1c030ada.0.15771a9424d.N7d44</con1:id>
+                                    <con2:schema ref="Utileria/ConversionDivisas/Resources/Schemas/NMPConversionDivisasSvcElementosXSD"/>
+                                    <con2:schemaElement xmlns:div="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Divisas">div:ObtenerTipoCambioBanxicoFixRequest</con2:schemaElement>
+                                    <con2:varName>body</con2:varName>
+                                    <con2:location>
+                                        <con1:xpathText>./div:ObtenerTipoCambioBanxicoFixRequest</con1:xpathText>
+                                    </con2:location>
+                                    <con2:resultVarName/>
+                                </con2:validate>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default>
+                            <con2:Error>
+                                <con1:id>_ActionId-N3f57b7ff.N125a063d.0.157900ee869.N7fbd</con1:id>
+                                <con2:errCode>NMP-021</con2:errCode>
+                                <con2:message>EL identificador de la serie debe tener una longitud de 7 caracteres</con2:message>
+                            </con2:Error>
+                        </con2:default>
+                    </con2:ifThenElse>
+                    <con2:assign varName="id_peticion">
+                        <con1:id>_ActionId-N3f57b7ff.N1c030ada.0.15771a9424d.N7d41</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$messageID</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:assign varName="header_tmp">
+                        <con1:id>_ActionId-N3f57b7ff.N1c030ada.0.15771a9424d.N7d3e</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$header</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:assign varName="body_tmp">
+                        <con1:id>_ActionId-N3f57b7ff.N1c030ada.0.15771a9424d.N7d3b</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$body</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:assign varName="idSerie">
+                        <con1:id>_ActionId-N3f57b7ff.N1c030ada.0.15771a9424d.N7b32</con1:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/div:ObtenerTipoCambioBanxicoFixRequest/div1:idSerie/text()</con:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57b7ff.N1c030ada.0.15771a9424d.N7d3a" name="StageInvocacionBanxico" errorHandler="error-N3f57b7ff.N1c030ada.0.15771a9424d.N7d08">
+                <con:context>
+                    <con1:userNsDecl prefix="bm" namespace="http://www.banxico.org.mx/structure/key_families/dgie/sie/series/compact"/>
+                    <con1:varNsDecl prefix="div" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/Divisas"/>
+                </con:context>
+                <con:actions>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-N3f57b7ff.N1c030ada.0.15771a9424d.N7c9e</con1:id>
+                        <con2:service ref="Utileria/ConversionDivisas/Business Services/BanxicoTiposCambioBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>tiposDeCambioBanxico</con2:operation>
+                        <con2:request>
+                            <con2:header/>
+                        </con2:request>
+                        <con2:response>
+                            <con2:param>
+                                <con2:name>result</con2:name>
+                                <con2:variable>banxico_response</con2:variable>
+                            </con2:param>
+                            <con2:header/>
+                        </con2:response>
+                        <con2:requestTransform>
+                            <con2:assign varName="body">
+                                <con1:id>_ActionId-N3f57b7ff.N1c030ada.0.15771a9424d.N7c2f</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText>&lt;soapenv:Body xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ws1="http://ws.dgie.banxico.org.mx">
+&lt;ws1:tiposDeCambioBanxico soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+&lt;/soapenv:Body></con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                        </con2:requestTransform>
+                        <con2:responseTransform>
+                            <con2:assign varName="banxico_response">
+                                <con1:id>_ActionId-a1e030f.24c85e56.11.15772cc4ed7.N8000</con1:id>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML($banxico_response/text())</con:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:assign varName="response_serie">
+                                <con1:id>_ActionId-N3f57b7ff.N1c030ada.0.15771a9424d.N7b36</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText><![CDATA[<div:ObtenerTipoCambioBanxicoFixResponse 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:div="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Divisas"
+    xmlns="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Divisas"
+	xmlns:bm="http://www.banxico.org.mx/structure/key_families/dgie/sie/series/compact"
+	xmlns:ser="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/Divisas">
+  <ser:serie>
+    <ser:tipoCambio>{string($banxico_response/bm:DataSet/bm:Series[@IDSERIE=$idSerie]/@TITULO)}</ser:tipoCambio>
+    <ser:idSerie>{string($banxico_response/bm:DataSet/bm:Series[@IDSERIE=$idSerie]/@IDSERIE)}</ser:idSerie>
+    <ser:frecuencia>{string($banxico_response/bm:DataSet/bm:Series[@IDSERIE=$idSerie]/@BANXICO_FREQ)}</ser:frecuencia>
+    <ser:unidad>{string($banxico_response/bm:DataSet/bm:Series[@IDSERIE=$idSerie]/@BANXICO_UNIT_TYPE)}</ser:unidad>
+    <ser:fecha>{string($banxico_response/bm:DataSet/bm:Series[@IDSERIE=$idSerie]/bm:Obs/@TIME_PERIOD)}</ser:fecha>
+    <ser:valorFix>{string($banxico_response/bm:DataSet/bm:Series[@IDSERIE=$idSerie]/bm:Obs/@OBS_VALUE)}</ser:valorFix>
+  </ser:serie>
+</div:ObtenerTipoCambioBanxicoFixResponse>]]></con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:replace varName="header" contents-only="true">
+                                <con1:id>_ActionId-N3f57b7ff.361ed72e.0.157765a713c.N7e93</con1:id>
+                                <con2:location>
+                                    <con1:xpathText>.</con1:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con1:xsltTransform>
+                                        <con1:resource ref="Utileria/ConversionDivisas/Resources/Transformations/TRConversionDivisasHeader"/>
+                                        <con1:input>$header/*</con1:input>
+                                        <con1:param name="codigoRespuesta">
+                                            <con1:path>0</con1:path>
+                                        </con1:param>
+                                    </con1:xsltTransform>
+                                </con2:expr>
+                            </con2:replace>
+                            <con2:replace varName="body" contents-only="true">
+                                <con1:id>_ActionId-a1e030f.24c85e56.11.15772cc4ed7.N7fff</con1:id>
+                                <con2:location>
+                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$response_serie</con:xqueryText>
+                                </con2:expr>
+                            </con2:replace>
+                        </con2:responseTransform>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57b7ff.N1c030ada.0.15771a9424d.N7ffe"/>
+        <con:pipeline type="error" name="error-N3f57b7ff.N1c030ada.0.15771a9424d.N7d08">
+            <con:stage id="_StageId-N3f57b7ff.N1c030ada.0.15771a9424d.N7d07" name="StageManejadorErrorInvocacionBanxico">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:userNsDecl prefix="div" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Divisas"/>
+                    <con1:userNsDecl prefix="div1" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/Divisas"/>
+                </con:context>
+                <con:actions>
+                    <con2:replace varName="header" contents-only="true">
+                        <con1:id>_ActionId-N3f57b7ff.N1c030ada.0.15771a9424d.N7c6b</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="Utileria/ConversionDivisas/Resources/Transformations/TRConversionDivisasHeader"/>
+                                <con1:input>$header/*</con1:input>
+                                <con1:param name="codigoRespuesta">
+                                    <con1:path>801</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57b7ff.N1c030ada.0.15771a9424d.N7c68</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="Utileria/ConversionDivisas/Resources/Transformations/TRConversionDivisasFaultBody"/>
+                                <con:input>$body/*</con:input>
+                                <con:param name="app">
+                                    <con:path>1</con:path>
+                                </con:param>
+                            </con:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con3:report>
+                        <con1:id>_ActionId-N3f57b7ff.N1c030ada.0.15771a9424d.N7c65</con1:id>
+                        <con3:expr>
+                            <con1:xqueryText>$body</con1:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>idSerie_errorHandler</con3:key>
+                            <con3:varName>body_tmp</con3:varName>
+                            <con3:value>
+                                <con1:xpathText>./div:GetTipoCambioBanxicoRequest/div1:idSerie</con1:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57b7ff.N1c030ada.0.15771a9424d.N7c62</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57b7ff.N1c030ada.0.15771a9424d.N7ff6"/>
+        <con:pipeline type="error" name="error-N3f57b7ff.361ed72e.0.157765a713c.N7f9a">
+            <con:stage id="_StageId-N3f57b7ff.361ed72e.0.157765a713c.N7f99" name="StageManejadorErrorInvocacionListaBanxico">
+                <con:context>
+                    <con1:userNsDecl prefix="div" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Divisas"/>
+                    <con1:userNsDecl prefix="div1" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/Divisas"/>
+                </con:context>
+                <con:actions>
+                    <con2:replace varName="header" contents-only="true">
+                        <con1:id>_ActionId-N3f57b7ff.361ed72e.0.157765a713c.N7f66</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="Utileria/ConversionDivisas/Resources/Transformations/TRConversionDivisasHeader"/>
+                                <con1:input>$header/*</con1:input>
+                                <con1:param name="codigoRespuesta">
+                                    <con1:path>801</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57b7ff.361ed72e.0.157765a713c.N7f33</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="Utileria/ConversionDivisas/Resources/Transformations/TRConversionDivisasFaultBody"/>
+                                <con1:input>$body/*</con1:input>
+                                <con1:param name="app">
+                                    <con1:path>2</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con3:report>
+                        <con1:id>_ActionId-N3f57b7ff.361ed72e.0.157765a713c.N7e8d</con1:id>
+                        <con3:expr>
+                            <con1:xqueryText>$body</con1:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>idSerie</con3:key>
+                            <con3:varName>body_tmp</con3:varName>
+                            <con3:value>
+                                <con1:xpathText>./div:GetTipoCambioBanxicoRequest/div1:idSeriediv1</con1:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57b7ff.361ed72e.0.157765a713c.N7e8a</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57b7ff.N1c030ada.0.15771a9424d.N7ffa"/>
+        <con:pipeline type="request" name="request-N3f57b7ff.N1c030ada.0.15771a9424d.N7ff7">
+            <con:stage id="_StageId-N3f57b7ff.N1c030ada.0.15771a9424d.N7ff5" name="StageDefault">
+                <con:context/>
+                <con:actions>
+                    <con2:Error>
+                        <con1:id>_ActionId-N3f57b7ff.N1c030ada.0.15771a9424d.N7eb0</con1:id>
+                        <con2:errCode>NMP-021</con2:errCode>
+                        <con2:message>Operación no permitida</con2:message>
+                    </con2:Error>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:branch-node type="operation" id="_FlowId-N3f57b7ff.N1c030ada.0.15771a9424d.N8000" name="BranchConversionDivisas">
+                <con:context/>
+                <con:branch-table>
+                    <con:branch name="obtenerTipoCambioBanxicoFix">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineObtenerTipoCambioBanxicoFix">
+                                <con:request>request-N3f57b7ff.N1c030ada.0.15771a9424d.N7fff</con:request>
+                                <con:response>response-N3f57b7ff.N1c030ada.0.15771a9424d.N7ffe</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="obtenerListaTiposCambioBanxico">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineObtenerListaTiposCambioBanxico">
+                                <con:request>request-N3f57b7ff.N1c030ada.0.15771a9424d.N7ffb</con:request>
+                                <con:response>response-N3f57b7ff.N1c030ada.0.15771a9424d.N7ffa</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineDefault">
+                                <con:request>request-N3f57b7ff.N1c030ada.0.15771a9424d.N7ff7</con:request>
+                                <con:response>response-N3f57b7ff.N1c030ada.0.15771a9424d.N7ff6</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

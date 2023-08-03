@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAConfigPlan xmlns:jca="http://platform.integration.oracle/blocks/adapter/fw/metadata" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:orawsp="http://schemas.oracle.com/ws/2006/01/policy" xmlns:edl="http://schemas.oracle.com/events/edl" xmlns="http://schemas.oracle.com/soa/configplan">
+   <composite name="ActualizarEstadoSolicitudPrj">
+      <!--Add search and replace rules for the import section of a composite
+	Example:
+	<searchReplace>
+		<search>http://my-dev-server</search>
+		<replace>http://my-test-server</replace>
+	<searchReplace>
+	<searchReplace>
+		<search>8888</search>
+		<replace>8889</replace>
+	<searchReplace>-->
+      <import>
+         <searchReplace>
+            <search/>
+            <replace/>
+         </searchReplace>
+      </import>
+      <service name="actualizaestadosolicitudbpel_client_ep">
+         <binding type="ws">
+            <attribute name="port">
+               <replace>http://qualitas.com.mx/ActualizarEstadoSolicitudApp/ActualizarEstadoSolicitudPrj/ActualizaEstadoSolicitudBPEL#wsdl.endpoint(actualizaestadosolicitudbpel_client_ep/ActualizaEstadoSolicitudBPEL_pt)</replace>
+            </attribute>
+         </binding>
+      </service>
+      <property name="compositeID">
+         <replace>b9a45b3f-f31f-4d39-971d-0e234c95a3b5</replace>
+      </property>
+      <property name="productVersion">
+         <replace>12.2.1.0.0.151013</replace>
+      </property>
+      <!--Add search and replace rules for the component properties
+	For components and service/reference bindings, you can add policy references.
+	Example:
+	<component name="*">
+		<wsp:PolicyReference orawsp:category="management" orawsp:status="enabled" URI="oracle/log_policy"/>
+	</component>-->
+      <component name="ActualizaEstadoSolicitudBPEL">
+         <property name="bpel.config.transaction">
+            <replace>required</replace>
+         </property>
+      </component>
+      <!--Add search and replace rules for the reference properties
+	Example:
+	<searchReplace>
+		<search>http://my-dev-server</search>
+		<replace>http://my-test-server</replace>
+	<searchReplace>
+	<searchReplace>
+		<search>8888
+		<replace>8889</replace>
+	<searchReplace>
+	or provide a new replace value like:
+	<replace>http://my-new-server:8889/myservice</replace>-->
+      <reference name="SPUpdEdoSolDB">
+         <property name="jca.retry.count">
+            <replace>4</replace>
+         </property>
+         <property name="jca.retry.interval">
+            <replace>1</replace>
+         </property>
+         <property name="jca.retry.backoff">
+            <replace>2</replace>
+         </property>
+         <property name="jca.retry.maxInterval">
+            <replace>120</replace>
+         </property>
+         <binding type="jca"/>
+      </reference>
+      <reference name="SPGenerarSeguDB">
+         <property name="jca.retry.count">
+            <replace>4</replace>
+         </property>
+         <property name="jca.retry.interval">
+            <replace>1</replace>
+         </property>
+         <property name="jca.retry.backoff">
+            <replace>2</replace>
+         </property>
+         <property name="jca.retry.maxInterval">
+            <replace>120</replace>
+         </property>
+         <binding type="jca"/>
+      </reference>
+      <reference name="SPGenerarObservacionesDB">
+         <property name="jca.retry.count">
+            <replace>4</replace>
+         </property>
+         <property name="jca.retry.interval">
+            <replace>1</replace>
+         </property>
+         <property name="jca.retry.backoff">
+            <replace>2</replace>
+         </property>
+         <property name="jca.retry.maxInterval">
+            <replace>120</replace>
+         </property>
+         <binding type="jca"/>
+      </reference>
+   </composite>
+   <!--To configure monitor.config: 
+	<property name="enabled"><replace>true</replace></property>
+	<property name="dataObjectsFolder"><searchReplace><search>mydev</search><replace>myproduction</replace></searchReplace></property>
+	
+	sample properties to configure for adapter: 
+	<jca:property name="QueueName"><replace>medmq1</replace></jca:property>
+	
+	To add search and replace rules for wsdls, xsd and jca files
+	Example:
+	<searchReplace>
+		<search>http://my-dev-server</search>
+		<replace>http://my-test-server</replace>
+	<searchReplace>
+	<searchReplace>
+		<search>8888</search>
+		<replace>8889</replace>
+	<searchReplace>
+	-->
+   <!--wsdlAndSchema name="Adapters/SPGenerarObservacionesDB_db.jca|Adapters/SPGenerarSeguDB_db.jca|Adapters/SPUpdEdoSolDB_db.jca|Schemas/ActualizaEstadoSolicitudBPEL.xsd|Schemas/objetosComunes.xsd|Schemas/SeguimientoOEN.xsd|Schemas/SPGenerarObservacionesDB_sp.xsd|Schemas/SPGenerarSeguDB_sp.xsd|Schemas/SPUpdEdoSolDB_sp.xsd|WSDLs/ActualizaEstadoSolicitudBPEL.wsdl|WSDLs/SPGenerarObservacionesDB.wsdl|WSDLs/SPGenerarSeguDB.wsdl|WSDLs/SPUpdEdoSolDB.wsdl">
+      <searchReplace>
+         <search/>
+         <replace/>
+      </searchReplace>
+   </wsdlAndSchema-->
+</SOAConfigPlan>

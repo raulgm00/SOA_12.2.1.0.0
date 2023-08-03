@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ser:proxyServiceEntry xmlns:ser="http://www.bea.com/wli/sb/services">
+    <ser:coreEntry isAutoPublish="false">
+        <ser:security>
+            <con:inboundWss processWssHeader="true" xmlns:con="http://www.bea.com/wli/sb/services/security/config"/>
+            <con:access-control-policies xmlns:con="http://www.bea.com/wli/sb/services/security/config">
+                <con:message-level-policies>
+                    <con1:default-policy xsi:type="con:ProviderPolicyContainerType" xmlns:con="http://www.bea.com/wli/sb/security/accesscontrol/config" xmlns:con1="http://www.bea.com/wli/sb/services/security/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <con:policy provider-id="XACMLAuthorizer">
+                            <con:policy-expression>Usr(bstrnsinvdev)</con:policy-expression>
+                        </con:policy>
+                    </con1:default-policy>
+                </con:message-level-policies>
+            </con:access-control-policies>
+        </ser:security>
+        <ser:binding type="SOAP" xsi:type="con:SoapBindingType" isSoap12="false" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:wsdl ref="Utileria/TransferenciaArchivoUtil/Resources/WSDL/TransferenciaArchivoUtilWSDL"/>
+            <con:binding>
+                <con:name>TransferArchivoUtilPTSOAP11Binding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Services/TransferenciaArchivoUtil</con:namespace>
+            </con:binding>
+            <con:selector type="SOAP body"/>
+        </ser:binding>
+        <oper:operations enabled="true" xmlns:oper="http://xmlns.oracle.com/servicebus/proxy/operations">
+            <oper:messageTracing enabled="true">
+                <oper1:detailsLevel xmlns:oper1="http://xmlns.oracle.com/servicebus/operations">terse</oper1:detailsLevel>
+                <oper1:maxSize xmlns:oper1="http://xmlns.oracle.com/servicebus/operations">8192</oper1:maxSize>
+            </oper:messageTracing>
+            <oper:monitoring enabled="true" aggregationInterval="720"/>
+        </oper:operations>
+        <ser:ws-policy>
+            <ser:binding-mode>owsm-policy-bindings</ser:binding-mode>
+            <ser:owsm-policy-metadata>
+                <orawsp:wsm-assembly xmlns:orawsp="http://schemas.oracle.com/ws/2006/01/policy">
+                    <sca11:policySet name="policySet" appliesTo="PROXY-SERVICE()" attachTo="PROXY-SERVICE('.')" orawsp:highId="1" xml:id="PROXY-SERVICE__PROXY-SERVICE_____" xmlns:sca11="http://docs.oasis-open.org/ns/opencsa/sca/200912">
+                        <wsp:PolicyReference DigestAlgorithm="http://www.w3.org/ns/ws-policy/Sha1Exc" URI="oracle/wss_username_token_service_policy" orawsp:status="enabled" orawsp:id="1" xmlns:wsp="http://www.w3.org/ns/ws-policy"/>
+                    </sca11:policySet>
+                </orawsp:wsm-assembly>
+            </ser:owsm-policy-metadata>
+        </ser:ws-policy>
+        <ser:invoke ref="Utileria/TransferenciaArchivoUtil/Proxy Services/TransferenciaArchivoUtilPXY" xsi:type="con:PipelineRef" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        <ser:xqConfiguration>
+            <ser:snippetVersion>1.0</ser:snippetVersion>
+        </ser:xqConfiguration>
+    </ser:coreEntry>
+    <ser:endpointConfig>
+        <tran:provider-id xmlns:tran="http://www.bea.com/wli/sb/transports">http</tran:provider-id>
+        <tran:inbound xmlns:tran="http://www.bea.com/wli/sb/transports">true</tran:inbound>
+        <tran:URI xmlns:tran="http://www.bea.com/wli/sb/transports">
+            <env:value xmlns:env="http://www.bea.com/wli/config/env">/NMP/Utileria/TransferenciaArchivo</env:value>
+        </tran:URI>
+        <tran:inbound-properties xmlns:tran="http://www.bea.com/wli/sb/transports"/>
+        <tran:provider-specific xsi:type="http:HttpEndPointConfiguration" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <http:inbound-properties/>
+            <http:compression>
+                <http:compression-support>false</http:compression-support>
+            </http:compression>
+        </tran:provider-specific>
+    </ser:endpointConfig>
+</ser:proxyServiceEntry>

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/alert/config">
+    <con:coreEntry>
+        <con:description>Pipeline del flujo de envio hacia el SID. En este flujo se hace la seleccion de las operaciones que se deben distribuir hacia el SID, transformar en caso de encontrarse una operacion de reempeno y depositarse en un recurso JMS. SID consume de forma asincrona el recurso JMS.</con:description>
+        <con:binding type="Mixed" xsi:type="con:MixedBindingType">
+            <con:request type="XML">
+                <con4:schema ref="OperacionPrendaria/Prestamo/Resources/Schemas/PrestamoSvcXSD" element="updatePrestamoRequest" xmlns:con4="http://www.bea.com/wli/sb/typesystem/config" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:jms="http://www.bea.com/wli/sb/transports/jms" xmlns:con1="http://www.bea.com/wli/sb/pipeline/config" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:env="http://www.bea.com/wli/config/env" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con2="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+            </con:request>
+        </con:binding>
+        <oper:operations>
+            <oper:tracingEnabled>true</oper:tracingEnabled>
+            <oper:monitoring enabled="true" level="action" aggregationInterval="1440"/>
+            <oper:pipeline-alerting enabled="true" level="critical"/>
+        </oper:operations>
+    </con:coreEntry>
+    <con1:router xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:con="http://www.bea.com/wli/sb/typesystem/config" xmlns:jms="http://www.bea.com/wli/sb/transports/jms" xmlns:con1="http://www.bea.com/wli/sb/pipeline/config" xmlns:con2="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con3="http://www.bea.com/wli/sb/stages/config" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+        <con1:pipeline type="error" name="_onErrorHandler-3066310923147464624--4779f6b0.14b93bf5c94.-7eb8">
+            <con1:stage name="StageGeneralErrorHandler">
+                <con1:comment>Menejador generico de errores en el procesamiento de mensaje a SID</con1:comment>
+                <con1:context>
+                    <con3:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPrestamo"/>
+                </con1:context>
+                <con1:actions>
+                    <con4:ifThenElse>
+                        <con3:comment>Determinar el tipo de error generado. Error de generado por el programador o error en el procesamiento</con3:comment>
+                        <con3:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N76b0</con3:id>
+                        <con4:case id="_BranchId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N76af">
+                            <con4:condition>
+                                <con3:xqueryText>$fault/ctx:errorCode = 'NMP-009'</con3:xqueryText>
+                            </con4:condition>
+                            <con4:actions>
+                                <con5:report xmlns:con5="http://www.bea.com/wli/sb/stages/logging/config">
+                                    <con3:comment>Notificar que ningun mensaje debe propagarse para SID</con3:comment>
+                                    <con3:id>_ActionId-a1e041d.4cc945f5.2.154eb125f2a.N7fff</con3:id>
+                                    <con5:expr>
+                                        <con3:xqueryText>$msgId</con3:xqueryText>
+                                    </con5:expr>
+                                    <con5:labels>
+                                        <con5:key>FechaOperacionSid:</con5:key>
+                                        <con5:varName>body</con5:varName>
+                                        <con5:value>
+                                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.//*:fechaOperacion</con:xpathText>
+                                        </con5:value>
+                                    </con5:labels>
+                                    <con5:labels>
+                                        <con5:key>Notificacion:</con5:key>
+                                        <con5:varName>fault</con5:varName>
+                                        <con5:value>
+                                            <con3:xpathText>./ctx:reason</con3:xpathText>
+                                        </con5:value>
+                                    </con5:labels>
+                                </con5:report>
+                            </con4:actions>
+                        </con4:case>
+                        <con4:default>
+                            <con4:replace contents-only="true" varName="body">
+                                <con3:comment>Generar error para mostrar en la alerta</con3:comment>
+                                <con3:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7617</con3:id>
+                                <con4:location>
+                                    <con3:xpathText>.</con3:xpathText>
+                                </con4:location>
+                                <con4:expr>
+                                    <con3:xsltTransform>
+                                        <con3:resource ref="OperacionPrendaria/Prestamo/Resources/Transformations/TRPrestamoFault"/>
+                                        <con3:input>$fault</con3:input>
+                                        <con3:param name="detailFault">
+                                            <con3:path>$fault/ctx:reason</con3:path>
+                                        </con3:param>
+                                        <con3:param name="codeFault">
+                                            <con3:path>$fault/ctx:errorCode</con3:path>
+                                        </con3:param>
+                                    </con3:xsltTransform>
+                                </con4:expr>
+                            </con4:replace>
+                            <con5:alert xmlns:con5="http://www.bea.com/wli/sb/stages/alert/config">
+                                <con3:comment>Generar alerta por problemas en el procesamiento o direccionamiento del mensaje</con3:comment>
+                                <con3:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N764a</con3:id>
+                                <con5:destination ref="OperacionPrendaria/Prestamo/Resources/Alerts/NMPPrestamoAlert"/>
+                                <con5:description>Problema en el envio de mensaje a la cola de SID: LoanToSIDQ</con5:description>
+                                <con5:severity>critical</con5:severity>
+                                <con5:payload>
+                                    <con3:xqueryText>$body</con3:xqueryText>
+                                </con5:payload>
+                            </con5:alert>
+                        </con4:default>
+                    </con4:ifThenElse>
+                    <con3:resume>
+                        <con3:comment>Continuar con la ejecucion normal</con3:comment>
+                        <con3:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N757b</con3:id>
+                    </con3:resume>
+                </con1:actions>
+            </con1:stage>
+        </con1:pipeline>
+        <con1:flow>
+            <con1:route-node name="RouteToSID" error-handler="_onErrorHandler-3066310923147464624--4779f6b0.14b93bf5c94.-7eb8">
+                <con1:comment>Procesamiento de operaciones para envio a SID</con1:comment>
+                <con1:context>
+                    <con3:varNsDecl namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPrestamo" prefix="nmp"/>
+                </con1:context>
+                <con1:actions>
+                    <con2:route>
+                        <con3:comment>Direccionar mensaje recibido hacia un recurso JMS que sera consumido por SID</con3:comment>
+                        <con3:id>_ActionId-3066310923147464624--4779f6b0.14b93bf5c94.-7fc3</con3:id>
+                        <con2:service ref="OperacionPrendaria/Prestamo/Business Services/OSBEncolarJmsToSIDBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:outboundTransform>
+                            <con4:assign varName="msgId">
+                                <con3:comment>Almacenar en variable el Message ID de la peticion de origen para dar trazabilidad a la peticion</con3:comment>
+                                <con3:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7778</con3:id>
+                                <con4:expr>
+                                    <con3:xqueryText>$inbound/ctx:transport/ctx:request/tp:headers/jms:JMSCorrelationID/text()</con3:xqueryText>
+                                </con4:expr>
+                            </con4:assign>
+                            <con5:report xmlns:con5="http://www.bea.com/wli/sb/stages/logging/config">
+                                <con3:comment>Reportar entrada de peticion para dar trazabilidad</con3:comment>
+                                <con3:id>_ActionId-a1e041d.4cc945f5.4.154eb2ede3c.N8000</con3:id>
+                                <con5:expr>
+                                    <con3:xqueryText>$msgId</con3:xqueryText>
+                                </con5:expr>
+                                <con5:labels>
+                                    <con5:key>FechaOperacionSid:</con5:key>
+                                    <con5:varName>body</con5:varName>
+                                    <con5:value>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.//*:fechaOperacion</con:xpathText>
+                                    </con5:value>
+                                </con5:labels>
+                            </con5:report>
+                            <con7:assign varName="dvm" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con5="http://www.bea.com/wli/sb/typesystem/config" xmlns:con4="http://www.bea.com/wli/sb/stages/publish/config" xmlns:con6="http://www.bea.com/wli/sb/pipeline/config" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con7="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con8:comment xmlns:con8="http://www.bea.com/wli/sb/stages/config">Almacenar DVM TipoOperacionDVM en una variable</con8:comment>
+                                <con8:id xmlns:con8="http://www.bea.com/wli/sb/stages/config">_ActionId-3066310923147464624--4779f6b0.14b93bf5c94.-7f17</con8:id>
+                                <con7:expr>
+                                    <con8:xqueryTransform xmlns:con8="http://www.bea.com/wli/sb/stages/config">
+                                        <con8:resource ref="Common/DVM/TipoOperacionDVM"/>
+                                    </con8:xqueryTransform>
+                                </con7:expr>
+                            </con7:assign>
+                            <con4:replace varName="body" contents-only="true">
+                                <con3:comment>Transformar operaciones de reempeno a su equivalente y selecion de las aceptadas por SID</con3:comment>
+                                <con3:id>_ActionId-3066310923147464624--4779f6b0.14b93bf5c94.-7ed4</con3:id>
+                                <con4:location>
+                                    <con3:xpathText>.</con3:xpathText>
+                                </con4:location>
+                                <con4:expr>
+                                    <con:xqueryTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                        <con:resource ref="OperacionPrendaria/Prestamo/Resources/Transformations/TRSeleccionOpsSid"/>
+                                        <con:param name="dvmTipoOperacion">
+                                            <con:path>$dvm</con:path>
+                                        </con:param>
+                                        <con:param name="updatePrestamoRequest">
+                                            <con:path>$body/nmp:updatePrestamoRequest</con:path>
+                                        </con:param>
+                                    </con:xqueryTransform>
+                                </con4:expr>
+                            </con4:replace>
+                            <con4:ifThenElse>
+                                <con3:comment>Determinar el total de operaciones que se enviaran a SID. En caso de ser 0, ninguna operacion debe enviarse a SID</con3:comment>
+                                <con3:id>_ActionId-1444958177821158495--25f1e05b.14ba979e38c.-7fdc</con3:id>
+                                <con4:case>
+                                    <con4:condition>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:count($body/nmp:updatePrestamoRequest/nmp:ListaOperaciones/nmp:Operacion) = 0</con:xqueryText>
+                                    </con4:condition>
+                                    <con4:actions>
+                                        <con4:Error>
+                                            <con3:comment>Generar informe que indica que las operaciones contenidas en el mensaje no se deben propagarse a SID</con3:comment>
+                                            <con3:id>_ActionId-1444958177821158495--25f1e05b.14ba979e38c.-7fdb</con3:id>
+                                            <con4:errCode>NMP-009</con4:errCode>
+                                            <con4:message>Ninguna operacion se debe enviar a SID</con4:message>
+                                        </con4:Error>
+                                    </con4:actions>
+                                </con4:case>
+                                <con4:default>
+                                    <con4:transport-headers>
+                                        <con3:comment>Agregar ID de correlación para dar trazabilidad al mensaje enviado a SID</con3:comment>
+                                        <con3:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N75e4</con3:id>
+                                        <con4:header-set>outbound-request</con4:header-set>
+                                        <con4:header value="expression" name="JMSCorrelationID">
+                                            <con3:xqueryText>fn:data($msgId)</con3:xqueryText>
+                                        </con4:header>
+                                    </con4:transport-headers>
+                                </con4:default>
+                            </con4:ifThenElse>
+                        </con2:outboundTransform>
+                        <con2:responseTransform>
+                            <con3:reply>
+                                <con3:comment>Generar un replay una vez que se comunico el error</con3:comment>
+                                <con3:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N75ae</con3:id>
+                            </con3:reply>
+                        </con2:responseTransform>
+                    </con2:route>
+                </con1:actions>
+            </con1:route-node>
+        </con1:flow>
+    </con1:router>
+</con:pipelineEntry>

@@ -1,0 +1,93 @@
+<definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Service/RTClientesDbPXY" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Service/RTClientesDbPXY" xmlns:NMPSM="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:NMPSH="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:Trans="http://servicios.montedepiedad.com.mx/NMP/Schema/RTTransaccionesDbXSD" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/RTTransaccionesDbXSD" schemaLocation="../Schemas/NMPRiesgoTransaccionalDBXSD.xsd"/>
+    </schema>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+    </xsd:schema>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+    </xsd:schema>
+  </types>
+  <message name="InsertaClienteRT">
+    <part name="ClientesCollection" element="Trans:NmpClientesCollection"/>
+  </message>
+  <message name="ValidaClienteRT">
+    <part name="ValidaClienteDB" element="Trans:ValidaClienteDB"/>
+  </message>
+  <message name="standardMessageFault">
+    <part name="fault" element="NMPSM:messageError"/>
+  </message>
+  <message name="standardMessageHeader">
+    <part name="header" element="NMPSH:headerMessage"/>
+  </message>
+  <message name="ValidaClienteRTResponse">
+    <part name="ValidaClienteDBResponse" element="Trans:NmpClientesCollection"/>
+  </message>
+  <message name="InsertaClienteRTResponse">
+    <part name="NmpClientesCollectionResponse" element="Trans:NmpClientesCollectionResponse"/>
+  </message>
+  <message name="updateClientesRequest">
+    <part name="request" element="Trans:updateClientesRequest"/>
+  </message>
+  <message name="updateClienteResponse">
+    <part name="response" element="Trans:NmpClientesCollectionResponse"/>
+  </message>
+  <portType name="RTClientesDb">
+    <operation name="InsertCliente">
+      <input message="tns:InsertaClienteRT"/>
+      <output message="tns:InsertaClienteRTResponse"/>
+      <fault message="tns:standardMessageFault" name="fault"/>
+    </operation>
+    <operation name="ValidaCliente">
+      <input message="tns:ValidaClienteRT"/>
+      <output message="tns:ValidaClienteRTResponse"/>
+      <fault message="tns:standardMessageFault" name="fault"/>
+    </operation>
+    <operation name="updateCliente">
+      <input message="tns:updateClientesRequest"/>
+      <output message="tns:updateClienteResponse"/>
+      <fault message="tns:InsertaClienteRT" name="fault"/>
+    </operation>
+  </portType>
+  <binding name="RTClientesDBSOAP11Binding" type="tns:RTClientesDb">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="InsertCliente">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/RTClientesDbPXY/InsertCliente"/>
+      <input>
+        <soap:body use="literal" parts="ClientesCollection"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="NmpClientesCollectionResponse"/>
+      </output>
+      <fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="ValidaCliente">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/RTClientesDbPXY/ValidaCliente"/>
+      <input>
+        <soap:body use="literal" parts="ValidaClienteDB"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="ValidaClienteDBResponse"/>
+      </output>
+      <fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="updateCliente">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/RTClientesDbPXY/updateCliente"/>
+      <input>
+        <soap:body use="literal" parts="request"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="response"/>
+      </output>
+      <fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+</definitions>

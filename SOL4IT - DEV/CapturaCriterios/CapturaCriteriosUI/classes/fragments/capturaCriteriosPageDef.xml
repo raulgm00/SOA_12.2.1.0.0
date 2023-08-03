@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pageDefinition xmlns="http://xmlns.oracle.com/adfm/uimodel" version="12.1.3.10.8" id="capturaCriteriosPageDef"
+                Package="fragments">
+  <parameters/>
+  <executables>
+    <iterator Binds="ConcentradoraVO1" RangeSize="-1" DataControl="CapturaCriteriosAMDataControl"
+              id="ConcentradoraVO1Iterator"/>
+    <iterator Binds="TabSucExpVO1" RangeSize="-1" DataControl="CapturaCriteriosAMDataControl"
+              id="TabSucExpVO1Iterator"/>
+    <iterator Binds="TabNumPartVO1" RangeSize="-1" DataControl="CapturaCriteriosAMDataControl"
+              id="TabNumPartVO1Iterator"/>
+    <iterator Binds="ListaArchivosVO1" RangeSize="25" DataControl="CapturaCriteriosAMDataControl"
+              id="ListaArchivosVO1Iterator"/>
+    <variableIterator id="variables">
+      <variable Type="void" Name="ingresarTabSucExp_return" IsQueriable="false" IsUpdateable="0"
+                DefaultValue="${bindings.ingresarTabSucExp.result}"/>
+      <variable Type="int" Name="ingresarTabSucExp_sucursal" IsQueriable="false"/>
+      <variable Type="int" Name="ingresarTabSucExp_expendio" IsQueriable="false"/>
+      <variable Type="void" Name="ingresarTabNumPart_return" IsQueriable="false" IsUpdateable="0"
+                DefaultValue="${bindings.ingresarTabNumPart.result}"/>
+      <variable Type="int" Name="ingresarTabNumPart_numPartida" IsQueriable="false"/>
+      <variable Type="void" Name="ingresarTabSucExp1_return" IsQueriable="false" IsUpdateable="0"
+                DefaultValue="${bindings.ingresarTabSucExp1.result}"/>
+      <variable Type="int" Name="ingresarTabSucExp1_sucursal" IsQueriable="false"/>
+      <variable Type="java.lang.String" Name="ingresarTabSucExp1_expendioVariable" IsQueriable="false"/>
+      <variable Type="int" Name="ingresarTabSucExp1_paramSucursal" IsQueriable="false"/>
+      <variable Type="java.lang.String" Name="ingresarTabSucExp1_paramVariable" IsQueriable="false"/>
+      <variable Type="java.lang.String" Name="ingresarTabSucExp1_sucursalStr" IsQueriable="false"/>
+      <variable Type="java.lang.String" Name="ingresarTabSucExp1_expendioStr" IsQueriable="false"/>
+    </variableIterator>
+    <iterator Binds="RolByIdVO1" RangeSize="25" DataControl="AdminAMDataControl" id="RolByIdVO1Iterator"/>
+    <iterator Binds="TabNumPartDesVO1" RangeSize="-1" DataControl="CapturaCriteriosAMDataControl"
+              id="TabNumPartDesVO1Iterator"/>
+    <iterator Binds="ListaArchiDescartarVO1" RangeSize="25" DataControl="CapturaCriteriosAMDataControl"
+              id="ListaArchiDescartarVO1Iterator"/>
+  </executables>
+  <bindings>
+    <list IterBinding="ConcentradoraVO1Iterator" StaticList="false" Uses="LOV_NuevaEtapa" id="NuevaEtapa"
+          DTSupportsMRU="false" SelectItemValueMode="ListObject"/>
+    
+    <!--attributeValues IterBinding="ConcentradoraVO1Iterator" id="Etapa1">
+      <AttrNames>
+        <Item Value="Etapa"/>
+      </AttrNames>
+    </attributeValues-->
+    <attributeValues IterBinding="ConcentradoraVO1Iterator" id="SubEtapa">
+      <AttrNames>
+        <Item Value="SubEtapa"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="ConcentradoraVO1Iterator" id="FechaSolicitud">
+      <AttrNames>
+        <Item Value="FechaSolicitud"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="ConcentradoraVO1Iterator" id="FechaEjecucion">
+      <AttrNames>
+        <Item Value="FechaEjecucion"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="ConcentradoraVO1Iterator" id="FechaIngresoAlmoneda">
+      <AttrNames>
+        <Item Value="FechaIngresoAlmoneda"/>
+      </AttrNames>
+    </attributeValues>
+    <list IterBinding="ConcentradoraVO1Iterator" StaticList="false" Uses="LOV_OperadorFechaIngresoAlmoneda"
+          id="OperadorFechaIngresoAlmoneda" DTSupportsMRU="true" SelectItemValueMode="ListObject"/>
+    <attributeValues IterBinding="ConcentradoraVO1Iterator" id="Fuente">
+      <AttrNames>
+        <Item Value="Fuente"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="ConcentradoraVO1Iterator" id="Ramo">
+      <AttrNames>
+        <Item Value="Ramo"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="ConcentradoraVO1Iterator" id="Subramo">
+      <AttrNames>
+        <Item Value="Subramo"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="ConcentradoraVO1Iterator" id="Factor">
+      <AttrNames>
+        <Item Value="Factor"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="ConcentradoraVO1Iterator" id="CanalIngreso">
+      <AttrNames>
+        <Item Value="CanalIngreso"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="ConcentradoraVO1Iterator" id="Refrendos">
+      <AttrNames>
+        <Item Value="Refrendos"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="ConcentradoraVO1Iterator" id="EdoPrenda">
+      <AttrNames>
+        <Item Value="EdoPrenda"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="ConcentradoraVO1Iterator" id="Sucursal">
+      <AttrNames>
+        <Item Value="Sucursal"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="ConcentradoraVO1Iterator" id="Expendio">
+      <AttrNames>
+        <Item Value="Expendio"/>
+      </AttrNames>
+    </attributeValues>
+    <tree IterBinding="TabSucExpVO1Iterator" id="TabSucExpVO1">
+      <nodeDefinition DefName="model.capturacriterios.vo.TabSucExpVO" Name="TabSucExpVO10">
+        <AttrNames>
+          <Item Value="Sucursal"/>
+          <Item Value="NumeroExpendio"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <action IterBinding="TabSucExpVO1Iterator" id="Delete" RequiresUpdateModel="false" Action="removeCurrentRow"/>
+    <tree IterBinding="TabNumPartVO1Iterator" id="TabNumPartVO1">
+      <nodeDefinition DefName="model.capturacriterios.vo.TabNumPartVO" Name="TabNumPartVO10">
+        <AttrNames>
+          <Item Value="NumPartida"/>
+          <Item Value="Opcion"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <action IterBinding="TabNumPartVO1Iterator" id="Delete1" RequiresUpdateModel="false" Action="removeCurrentRow"/>
+    <!--list IterBinding="ConcentradoraVO1Iterator" StaticList="false" Uses="LOV_Etapa" id="Etapa" DTSupportsMRU="true"
+          SelectItemValueMode="ListObject"/-->
+    
+    
+    <attributeValues IterBinding="variables" id="sucursal">
+      <AttrNames>
+        <Item Value="ingresarTabSucExp_sucursal"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="variables" id="expendio">
+      <AttrNames>
+        <Item Value="ingresarTabSucExp_expendio"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="variables" id="numPartida">
+      <AttrNames>
+        <Item Value="ingresarTabNumPart_numPartida"/>
+      </AttrNames>
+    </attributeValues>
+    <list IterBinding="ListaFuenteVO1Iterator" ListOperMode="navigation" ListIter="ListaFuenteVO1Iterator"
+          id="ListaFuenteVO1" DTSupportsMRU="true" SelectItemValueMode="ListObject">
+      <AttrNames>
+        <Item Value="Abreviatura"/>
+      </AttrNames>
+    </list>
+    <methodAction id="enviarCriterios" RequiresUpdateModel="true" Action="invokeMethod" MethodName="enviarCriterios"
+                  IsViewObjectMethod="false" DataControl="CapturaCriteriosAMDataControl"
+                  InstanceName="data.CapturaCriteriosAMDataControl.dataProvider"
+                  ReturnName="data.CapturaCriteriosAMDataControl.methodResults.enviarCriterios_CapturaCriteriosAMDataControl_dataProvider_enviarCriterios_result">
+      <NamedData NDName="pestania" NDType="int"/>
+      <NamedData NDName="url" NDType="java.lang.String"/>
+    </methodAction>
+    <methodAction id="cleanTabSucExp" RequiresUpdateModel="true" Action="invokeMethod" MethodName="cleanTabSucExp"
+                  IsViewObjectMethod="false" DataControl="CapturaCriteriosAMDataControl"
+                  InstanceName="data.CapturaCriteriosAMDataControl.dataProvider"
+                  ReturnName="data.CapturaCriteriosAMDataControl.methodResults.cleanTabSucExp_CapturaCriteriosAMDataControl_dataProvider_cleanTabSucExp_result"/>
+    <methodAction id="cleanTabNumPart" RequiresUpdateModel="true" Action="invokeMethod" MethodName="cleanTabNumPart"
+                  IsViewObjectMethod="false" DataControl="CapturaCriteriosAMDataControl"
+                  InstanceName="data.CapturaCriteriosAMDataControl.dataProvider"
+                  ReturnName="data.CapturaCriteriosAMDataControl.methodResults.cleanTabNumPart_CapturaCriteriosAMDataControl_dataProvider_cleanTabNumPart_result"/>
+    <attributeValues IterBinding="variables" id="sucursalStr1">
+      <AttrNames>
+        <Item Value="ingresarTabSucExp1_sucursalStr"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="variables" id="expendioStr1">
+      <AttrNames>
+        <Item Value="ingresarTabSucExp1_expendioStr"/>
+      </AttrNames>
+    </attributeValues>
+    <methodAction id="ingresarTabSucExp1" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="ingresarTabSucExp" IsViewObjectMethod="false" DataControl="CapturaCriteriosAMDataControl"
+                  InstanceName="data.CapturaCriteriosAMDataControl.dataProvider"
+                  ReturnName="data.CapturaCriteriosAMDataControl.methodResults.ingresarTabSucExp_CapturaCriteriosAMDataControl_dataProvider_ingresarTabSucExp_result">
+      <NamedData NDName="sucursal" NDValue="#{bindings.sucursalStr1.inputValue}" NDType="int"/>
+      <NamedData NDName="expendio" NDValue="#{bindings.expendioStr1.inputValue}" NDType="java.lang.String"/>
+    </methodAction>
+    <attributeValues IterBinding="ConcentradoraVO1Iterator" id="Etapa1">
+      <AttrNames>
+        <Item Value="Etapa"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="ConcentradoraVO1Iterator" id="EtapaCbo">
+      <AttrNames>
+        <Item Value="EtapaCbo"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="ConcentradoraVO1Iterator" id="FechaIngresoAlmonedaFin">
+      <AttrNames>
+        <Item Value="FechaIngresoAlmonedaFin"/>
+      </AttrNames>
+    </attributeValues>
+    <methodAction id="ingresarTabNumPart" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="ingresarTabNumPart" IsViewObjectMethod="false" DataControl="CapturaCriteriosAMDataControl"
+                  InstanceName="data.CapturaCriteriosAMDataControl.dataProvider"
+                  ReturnName="data.CapturaCriteriosAMDataControl.methodResults.ingresarTabNumPart_CapturaCriteriosAMDataControl_dataProvider_ingresarTabNumPart_result">
+      <NamedData NDName="numPartida" NDValue="#{bindings.numPartida.inputValue}" NDType="int"/>
+      <NamedData NDName="tipo" NDValue="simple" NDType="java.lang.String"/>
+    </methodAction>
+    <methodAction id="ingresarTabSucExp" RequiresUpdateModel="true" Action="invokeMethod" MethodName="ingresarTabSucExp"
+                  IsViewObjectMethod="false" DataControl="CapturaCriteriosAMDataControl"
+                  InstanceName="data.CapturaCriteriosAMDataControl.dataProvider"
+                  ReturnName="data.CapturaCriteriosAMDataControl.methodResults.ingresarTabSucExp_CapturaCriteriosAMDataControl_dataProvider_ingresarTabSucExp_result">
+      <NamedData NDName="sucursal" NDValue="#{bindings.sucursalStr1.inputValue}" NDType="int"/>
+      <NamedData NDName="expendio" NDValue="#{bindings.expendioStr1.inputValue}" NDType="java.lang.String"/>
+      <NamedData NDName="numeroExpendio" NDValue="" NDType="java.lang.String"/>
+    </methodAction>
+    <list IterBinding="ListaArchivosVO1Iterator" ListOperMode="navigation" ListIter="ListaArchivosVO1Iterator"
+          id="ListaArchivosVO1" DTSupportsMRU="false" SelectItemValueMode="ListObject">
+      <AttrNames>
+        <Item Value="Nombre"/>
+      </AttrNames>
+    </list>
+    <methodAction id="addFileName" RequiresUpdateModel="true" Action="invokeMethod" MethodName="addFileName"
+                  IsViewObjectMethod="false" DataControl="CapturaCriteriosAMDataControl"
+                  InstanceName="data.CapturaCriteriosAMDataControl.dataProvider"
+                  ReturnName="data.CapturaCriteriosAMDataControl.methodResults.addFileName_CapturaCriteriosAMDataControl_dataProvider_addFileName_result">
+      <NamedData NDName="nombre" NDType="java.lang.String"/>
+    </methodAction>
+    <methodAction id="cleanListaArchivos" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="cleanListaArchivos" IsViewObjectMethod="false" DataControl="CapturaCriteriosAMDataControl"
+                  InstanceName="data.CapturaCriteriosAMDataControl.dataProvider"
+                  ReturnName="data.CapturaCriteriosAMDataControl.methodResults.cleanListaArchivos_CapturaCriteriosAMDataControl_dataProvider_cleanListaArchivos_result"/>
+    <attributeValues IterBinding="RolByIdVO1Iterator" id="IdRol">
+      <AttrNames>
+        <Item Value="IdRol"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="ConcentradoraVO1Iterator" id="EdoPrenda1">
+      <AttrNames>
+        <Item Value="EdoPrenda"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="ConcentradoraVO1Iterator" id="CanalVenta">
+      <AttrNames>
+        <Item Value="CanalVenta"/>
+      </AttrNames>
+    </attributeValues>
+    <attributeValues IterBinding="ConcentradoraVO1Iterator" id="ProyectoPantalla">
+      <AttrNames>
+        <Item Value="ProyectoPantalla"/>
+      </AttrNames>
+    </attributeValues>
+    <methodAction id="iniciarConcentradora" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="iniciarConcentradora" IsViewObjectMethod="false"
+                  DataControl="CapturaCriteriosAMDataControl"
+                  InstanceName="data.CapturaCriteriosAMDataControl.dataProvider"
+                  ReturnName="data.CapturaCriteriosAMDataControl.methodResults.iniciarConcentradora_CapturaCriteriosAMDataControl_dataProvider_iniciarConcentradora_result">
+      <NamedData NDName="tipoP" NDValue="#{pageFlowScope.tipoP}" NDType="java.lang.Integer"/>
+    </methodAction>
+    <methodAction id="asignarEtapaOp2" RequiresUpdateModel="true" Action="invokeMethod" MethodName="asignarEtapaOp2"
+                  IsViewObjectMethod="false" DataControl="CapturaCriteriosAMDataControl"
+                  InstanceName="data.CapturaCriteriosAMDataControl.dataProvider"
+                  ReturnName="data.CapturaCriteriosAMDataControl.methodResults.asignarEtapaOp2_CapturaCriteriosAMDataControl_dataProvider_asignarEtapaOp2_result">
+      <NamedData NDName="tp" NDType="int"/>
+      <NamedData NDName="etapa" NDType="int"/>
+    </methodAction>
+    <methodAction id="asignarEtapaOp1" RequiresUpdateModel="true" Action="invokeMethod" MethodName="asignarEtapaOp1"
+                  IsViewObjectMethod="false" DataControl="CapturaCriteriosAMDataControl"
+                  InstanceName="data.CapturaCriteriosAMDataControl.dataProvider"
+                  ReturnName="data.CapturaCriteriosAMDataControl.methodResults.asignarEtapaOp1_CapturaCriteriosAMDataControl_dataProvider_asignarEtapaOp1_result">
+      <NamedData NDName="tp" NDType="int"/>
+    </methodAction>
+    <attributeValues IterBinding="ConcentradoraVO1Iterator" id="Proyecto">
+      <AttrNames>
+        <Item Value="Proyecto"/>
+      </AttrNames>
+    </attributeValues>
+    <methodAction id="iniciarVoAdminAm" RequiresUpdateModel="true" Action="invokeMethod" MethodName="iniciarVoAdminAm"
+                  IsViewObjectMethod="false" DataControl="AdminAMDataControl"
+                  InstanceName="data.AdminAMDataControl.dataProvider"
+                  ReturnName="data.AdminAMDataControl.methodResults.iniciarVoAdminAm_AdminAMDataControl_dataProvider_iniciarVoAdminAm_result">
+      <NamedData NDName="usr" NDValue="#{securityContext.userName}" NDType="java.lang.String"/>
+    </methodAction>
+    <tree IterBinding="TabNumPartDesVO1Iterator" id="TabNumPartDesVO1">
+      <nodeDefinition DefName="model.capturacriterios.vo.TabNumPartDesVO" Name="TabNumPartDesVO10">
+        <AttrNames>
+          <Item Value="NumPartDes"/>
+          <Item Value="Opcion"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <action IterBinding="TabNumPartDesVO1Iterator" id="Delete2" RequiresUpdateModel="false" Action="removeCurrentRow"/>
+    <list ListOperMode="navigation" IterBinding="ListaArchiDescartarVO1Iterator" id="ListaArchiDescartarVO1"
+          SelectItemValueMode="ListObject" ListIter="ListaArchiDescartarVO1Iterator">
+      <AttrNames>
+        <Item Value="Nombre"/>
+      </AttrNames>
+    </list>
+    <methodAction id="ingresarTabPartDesc" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="ingresarTabPartDesc" IsViewObjectMethod="false"
+                  DataControl="CapturaCriteriosAMDataControl"
+                  InstanceName="data.CapturaCriteriosAMDataControl.dataProvider"
+                  ReturnName="data.CapturaCriteriosAMDataControl.methodResults.ingresarTabPartDesc_CapturaCriteriosAMDataControl_dataProvider_ingresarTabPartDesc_result">
+      <NamedData NDName="numPartidaDesmarcar" NDType="int"/>
+    </methodAction>
+    <methodAction id="cleanTabNumPartDescartar" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="cleanTabNumPartDescartar" IsViewObjectMethod="false"
+                  DataControl="CapturaCriteriosAMDataControl"
+                  InstanceName="data.CapturaCriteriosAMDataControl.dataProvider"
+                  ReturnName="data.CapturaCriteriosAMDataControl.methodResults.cleanTabNumPartDescartar_CapturaCriteriosAMDataControl_dataProvider_cleanTabNumPartDescartar_result"/>
+    <methodAction id="cleanListaArchivosNumPartDescartar" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="cleanListaArchivosNumPartDescartar" IsViewObjectMethod="false"
+                  DataControl="CapturaCriteriosAMDataControl"
+                  InstanceName="data.CapturaCriteriosAMDataControl.dataProvider"
+                  ReturnName="data.CapturaCriteriosAMDataControl.methodResults.cleanListaArchivosNumPartDescartar_CapturaCriteriosAMDataControl_dataProvider_cleanListaArchivosNumPartDescartar_result"/>
+    <methodAction id="addFileNameNumPartDescartar" RequiresUpdateModel="true" Action="invokeMethod"
+                  MethodName="addFileNameNumPartDescartar" IsViewObjectMethod="false"
+                  DataControl="CapturaCriteriosAMDataControl"
+                  InstanceName="data.CapturaCriteriosAMDataControl.dataProvider"
+                  ReturnName="data.CapturaCriteriosAMDataControl.methodResults.addFileNameNumPartDescartar_CapturaCriteriosAMDataControl_dataProvider_addFileNameNumPartDescartar_result">
+      <NamedData NDName="nombre" NDType="java.lang.String"/>
+    </methodAction>
+  </bindings>
+</pageDefinition>

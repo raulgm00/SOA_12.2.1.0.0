@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ser:proxyServiceEntry xmlns:ser="http://www.bea.com/wli/sb/services">
+    <ser:coreEntry isAutoPublish="false">
+        <ser:description>Este Proxy contiene 3 operaciones principales que se detallan a continuación:
+
+- Generación de ofertas: esta operación tiene como objetivo interactuar con el motor de reglas para calculas las ofertas base y personalizadas del cliente. Una vez calculadas las ofertas, estas deberán ser enviadas a CRM para almacenar las ofertas aplicables al cliente
+
+- Guardar Ofertas aplicables: esta operación tiene como objetivo virtualizar el servicio de CRM para almacenar las ofertas aplicables al cliente, una vez que han sido calculadas por el motor de reglas
+
+-Actualización de Ofertas: Esta operación tiene como objetivo ir a modificar una o crear una oferta a CRM con la finalidad de ir creando un historial de ofertas para cada uno de los clientes</ser:description>
+        <ser:binding type="SOAP" xsi:type="con:SoapBindingType" isSoap12="false" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:wsdl ref="OperacionPrendaria/Ofertas/Resources/WSDLs/NMPOfertasSvcWSDL"/>
+            <con:port>
+                <con:name>OfertasPort</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Services/Ofertas</con:namespace>
+            </con:port>
+            <con:selector type="SOAP body"/>
+        </ser:binding>
+        <oper:operations enabled="true" xmlns:oper="http://xmlns.oracle.com/servicebus/proxy/operations" xmlns:cus="http://www.bea.com/wli/config/customizations" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xt="http://www.bea.com/wli/config/xmltypes" xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert">
+            <oper:monitoring enabled="true" aggregationInterval="1"/>
+        </oper:operations>
+        <ser:ws-policy>
+            <ser:binding-mode>no-policies</ser:binding-mode>
+        </ser:ws-policy>
+        <ser:invoke ref="OperacionPrendaria/Ofertas/Pipelines/NMPOfertasPrendarioPL" xsi:type="con:PipelineRef" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        <ser:xqConfiguration>
+            <ser:snippetVersion>1.0</ser:snippetVersion>
+        </ser:xqConfiguration>
+    </ser:coreEntry>
+    <ser:endpointConfig>
+        <tran:provider-id xmlns:tran="http://www.bea.com/wli/sb/transports">http</tran:provider-id>
+        <tran:inbound xmlns:tran="http://www.bea.com/wli/sb/transports">true</tran:inbound>
+        <tran:URI xmlns:tran="http://www.bea.com/wli/sb/transports">
+            <env:value xmlns:env="http://www.bea.com/wli/config/env">/NMP/Ofertas/Prendario</env:value>
+        </tran:URI>
+        <tran:inbound-properties xmlns:tran="http://www.bea.com/wli/sb/transports"/>
+        <tran:provider-specific xsi:type="http:HttpEndPointConfiguration" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <http:inbound-properties/>
+            <http:compression>
+                <http:compression-support>false</http:compression-support>
+            </http:compression>
+        </tran:provider-specific>
+    </ser:endpointConfig>
+    <aler:alertRules xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert">
+        <aler:alertRule enabled="true" name="timeout_error_warning" xmlns:cus="http://www.bea.com/wli/config/customizations" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xt="http://www.bea.com/wli/config/xmltypes">
+            <aler:description>Advertencia. El tiempo de respuesta del servicio ha sido mayor a 5 segundos o ha tenido un numero de respuestas erróneas mayor a 15 en un periodo de 30 minutos.</aler:description>
+            <aler:frequency>once-until-conditions-clear</aler:frequency>
+            <aler:severity>warning</aler:severity>
+            <aler:stopProcessing>false</aler:stopProcessing>
+            <aler:condition aggregation-interval="30">
+                <con1:logicalExpr logical-operator="or" xmlns:con1="http://xmlns.oracle.com/servicebus/monitoring/alert/condition">
+                    <con1:logicalExpr logical-operator="and">
+                        <con1:monCondExpr>
+                            <con1:function>average</con1:function>
+                            <con1:lhs>Transport.response-time</con1:lhs>
+                            <con1:operator>></con1:operator>
+                            <con1:rhs>5000</con1:rhs>
+                        </con1:monCondExpr>
+                        <con1:monCondExpr>
+                            <con1:function>average</con1:function>
+                            <con1:lhs>Transport.response-time</con1:lhs>
+                            <con1:operator>&lt;</con1:operator>
+                            <con1:rhs>8000</con1:rhs>
+                        </con1:monCondExpr>
+                    </con1:logicalExpr>
+                    <con1:logicalExpr logical-operator="and">
+                        <con1:monCondExpr>
+                            <con1:function>count</con1:function>
+                            <con1:lhs>Transport.error-count</con1:lhs>
+                            <con1:operator>></con1:operator>
+                            <con1:rhs>15</con1:rhs>
+                        </con1:monCondExpr>
+                        <con1:monCondExpr>
+                            <con1:function>count</con1:function>
+                            <con1:lhs>Transport.error-count</con1:lhs>
+                            <con1:operator>&lt;</con1:operator>
+                            <con1:rhs>20</con1:rhs>
+                        </con1:monCondExpr>
+                    </con1:logicalExpr>
+                </con1:logicalExpr>
+            </aler:condition>
+            <aler:alertDestination ref="OperacionPrendaria/Ofertas/Resources/Alerts/NMPOfertasPrendarioAlert"/>
+            <aler:summary>Alerta de advertencia. Plataforma OSB</aler:summary>
+        </aler:alertRule>
+        <aler:alertRule enabled="true" name="timeout_error_major" xmlns:cus="http://www.bea.com/wli/config/customizations" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xt="http://www.bea.com/wli/config/xmltypes">
+            <aler:description>Mayor. El tiempo de respuesta del servicio ha sido mayor a 8 segundos o ha tenido un numero de respuestas erróneas mayor a 20 en un periodo de 30 minutos.</aler:description>
+            <aler:frequency>once-until-conditions-clear</aler:frequency>
+            <aler:severity>major</aler:severity>
+            <aler:stopProcessing>false</aler:stopProcessing>
+            <aler:condition aggregation-interval="30">
+                <con1:logicalExpr logical-operator="or" xmlns:con1="http://xmlns.oracle.com/servicebus/monitoring/alert/condition">
+                    <con1:logicalExpr logical-operator="and">
+                        <con1:monCondExpr>
+                            <con1:function>average</con1:function>
+                            <con1:lhs>Transport.response-time</con1:lhs>
+                            <con1:operator>></con1:operator>
+                            <con1:rhs>7999</con1:rhs>
+                        </con1:monCondExpr>
+                        <con1:monCondExpr>
+                            <con1:function>average</con1:function>
+                            <con1:lhs>Transport.response-time</con1:lhs>
+                            <con1:operator>&lt;</con1:operator>
+                            <con1:rhs>12000</con1:rhs>
+                        </con1:monCondExpr>
+                    </con1:logicalExpr>
+                    <con1:logicalExpr logical-operator="and">
+                        <con1:monCondExpr>
+                            <con1:function>count</con1:function>
+                            <con1:lhs>Transport.error-count</con1:lhs>
+                            <con1:operator>></con1:operator>
+                            <con1:rhs>19</con1:rhs>
+                        </con1:monCondExpr>
+                        <con1:monCondExpr>
+                            <con1:function>count</con1:function>
+                            <con1:lhs>Transport.error-count</con1:lhs>
+                            <con1:operator>&lt;</con1:operator>
+                            <con1:rhs>30</con1:rhs>
+                        </con1:monCondExpr>
+                    </con1:logicalExpr>
+                </con1:logicalExpr>
+            </aler:condition>
+            <aler:alertDestination ref="OperacionPrendaria/Ofertas/Resources/Alerts/NMPOfertasPrendarioAlert"/>
+            <aler:summary>Alerta mayor.Plataforma OSB</aler:summary>
+        </aler:alertRule>
+        <aler:alertRule enabled="true" name="timeout_error_critical" xmlns:cus="http://www.bea.com/wli/config/customizations" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xt="http://www.bea.com/wli/config/xmltypes">
+            <aler:description>Crítico. El tiempo de respuesta del servicio ha sido mayor a 12 segundos o ha tenido un numero de respuestas erróneas mayor a 30 en un periodo de 30 minutos.</aler:description>
+            <aler:frequency>once-until-conditions-clear</aler:frequency>
+            <aler:severity>critical</aler:severity>
+            <aler:stopProcessing>false</aler:stopProcessing>
+            <aler:condition aggregation-interval="30">
+                <con1:logicalExpr logical-operator="or" xmlns:con1="http://xmlns.oracle.com/servicebus/monitoring/alert/condition">
+                    <con1:monCondExpr>
+                        <con1:function>count</con1:function>
+                        <con1:lhs>Transport.error-count</con1:lhs>
+                        <con1:operator>></con1:operator>
+                        <con1:rhs>30</con1:rhs>
+                    </con1:monCondExpr>
+                    <con1:monCondExpr>
+                        <con1:function>average</con1:function>
+                        <con1:lhs>Transport.response-time</con1:lhs>
+                        <con1:operator>></con1:operator>
+                        <con1:rhs>12000</con1:rhs>
+                    </con1:monCondExpr>
+                </con1:logicalExpr>
+            </aler:condition>
+            <aler:alertDestination ref="OperacionPrendaria/Ofertas/Resources/Alerts/NMPOfertasPrendarioAlert"/>
+            <aler:summary>Alerta crítica. Plataforma OSB</aler:summary>
+        </aler:alertRule>
+    </aler:alertRules>
+</ser:proxyServiceEntry>

@@ -1,0 +1,118 @@
+<wsdl:definitions name="ClientesAutosDB" targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Service/ClientesAutosDB" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Service/ClientesAutosDB" xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/" xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:nmpsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:nmpsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:ca="http://servicios.montedepiedad.com.mx/NMP/Schema/ClientesAutoInfoDB" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <plt:partnerLinkType name="ClientesAutosDB_plt">
+    <plt:role name="ClientesAutosDB_role">
+      <plt:portType name="tns:ClientesAutosDB_ptt"/>
+    </plt:role>
+  </plt:partnerLinkType>
+    <wsdl:types>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema">
+        <import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/ClientesAutoInfoDB" schemaLocation="../XSD/NmpClientesAutosDB.xsd"/>
+        <import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../../Common/XSD/NMPStandardMessage.xsd"/>
+      <import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../../Common/XSD/NMPStandardHeader.xsd"/>
+      </schema>
+    </wsdl:types>
+    <wsdl:message name="getInfoClienteAutoRequest">
+        <wsdl:part name="selectByPrimaryKey_inputParameters" element="ca:getInfoClienteAutoRequest"/>
+    </wsdl:message>    
+    <wsdl:message name="getFoliosClienteRequest">
+        <wsdl:part name="req" element="ca:getFoliosClienteRequest"/>
+    </wsdl:message>
+    <wsdl:message name="getFoliosClienteResponse">
+        <wsdl:part name="req" element="ca:getFoliosClienteResponse"/>
+    </wsdl:message>
+    <wsdl:message name="NmpClientesInfoCollection_msg">
+        <wsdl:part name="NmpClientesInfoCollection" element="ca:NmpClientesInfoCollection"/>
+    </wsdl:message>
+    <wsdl:message name="UpdateNmpClientesInfoCollection">
+        <wsdl:part name="NmpClientesInfoCollection" element="ca:updateClientesInfoCollection"/>
+    </wsdl:message>
+    <wsdl:message name="NMPHeaderRequest">
+    <wsdl:part name="headerReq" element="nmpsh:headerMessage"/>
+  </wsdl:message>
+  <wsdl:message name="NMPHeaderResponse">
+    <wsdl:part name="headerRes" element="nmpsh:headerMessageResponse"/>
+  </wsdl:message>
+  <wsdl:message name="NMPFaultMessage">
+    <wsdl:part name="fault" element="nmpsm:messageError"/>
+  </wsdl:message>
+    <wsdl:portType name="ClientesAutosDB_ptt">
+        <wsdl:operation name="insertClienteAutoInfo">
+            <wsdl:input message="tns:NmpClientesInfoCollection_msg"/>
+            <wsdl:output message="tns:clientesAutosResponse"/>
+            <wsdl:fault name="faultClientesAutosDb" message="tns:NMPFaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="getClienteAutoInfo">
+            <wsdl:input message="tns:getInfoClienteAutoRequest"/>
+            <wsdl:output message="tns:NmpClientesInfoCollection_msg"/>
+            <wsdl:fault name="faultClientesAutosDb" message="tns:NMPFaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="updateClienteAutoInfo">
+            <wsdl:input message="tns:UpdateNmpClientesInfoCollection"/>
+            <wsdl:output message="tns:clientesAutosResponse"/>
+            <wsdl:fault name="faultClientesAutosDb" message="tns:NMPFaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="getFoliosCliente">
+            <wsdl:input message="tns:getFoliosClienteRequest"/>
+            <wsdl:output message="tns:getFoliosClienteResponse"/>
+            <wsdl:fault message="tns:NMPFaultMessage" name="faultClientesAutosDb"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="ClientesAutosDB_pttSOAP11Binding" type="tns:ClientesAutosDB_ptt">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="insertClienteAutoInfo">
+            <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/ClientesAutosDB/insertClienteAutoInfo"/>
+            <wsdl:input>
+                <soap:body use="literal" parts="NmpClientesInfoCollection"/>
+                <soap:header message="tns:NMPHeaderRequest" part="headerReq" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" parts="res"/>
+                <soap:header message="tns:NMPHeaderResponse" part="headerRes" use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="faultClientesAutosDb">
+                <soap:fault name="faultClientesAutosDb" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getClienteAutoInfo">
+            <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/ClientesAutosDB/getClienteAutoInfo"/>
+            <wsdl:input>
+                <soap:body use="literal" parts="selectByPrimaryKey_inputParameters"/>
+                <soap:header message="tns:NMPHeaderRequest" part="headerReq" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" parts="NmpClientesInfoCollection"/>
+                <soap:header message="tns:NMPHeaderResponse" part="headerRes" use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="faultClientesAutosDb">
+                <soap:fault name="faultClientesAutosDb" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="updateClienteAutoInfo">
+            <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/ClientesAutosDB/updateClienteAutoInfo"/>
+            <wsdl:input>
+                <soap:body use="literal" parts="NmpClientesInfoCollection"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" parts="res"/>
+            </wsdl:output>
+            <wsdl:fault name="faultClientesAutosDb">
+                <soap:fault name="faultClientesAutosDb" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getFoliosCliente">
+            <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/ClientesAutosDB/getFoliosCliente"/>
+            <wsdl:input>
+                <soap:body use="literal" parts="req"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" parts="req"/>
+            </wsdl:output>
+            <wsdl:fault name="faultClientesAutosDb">
+                <soap:fault name="faultClientesAutosDb" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:message name="clientesAutosResponse">
+        <wsdl:part name="res" element="ca:clientesAutosResponse"/>
+    </wsdl:message>
+</wsdl:definitions>

@@ -1,0 +1,123 @@
+<wsdl:definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Service/GestionCobranza" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Service/GestionCobranza" xmlns:gcob="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:movilg="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovil" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza" schemaLocation="../Schemas/NMPGestionCobranzaXSD.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="notificaGestionRequest">
+    <wsdl:part name="request" element="gcob:notificaGestionCobranzaRequest"/>
+  </wsdl:message>
+  <wsdl:message name="notificaGestionResponse">
+    <wsdl:part name="response" element="gcob:notificaGestionCobranzaResponse"/>
+  </wsdl:message>
+  <wsdl:message name="recepcionGestionRequest">
+    <wsdl:part name="request" element="gcob:recepcionGestionRequest"/>
+  </wsdl:message>
+  <wsdl:message name="recepcionGestionResponse">
+    <wsdl:part name="response" element="gcob:recepcionGestionResponse"/>
+  </wsdl:message>
+  <wsdl:message name="revocarGestionRequest">
+    <wsdl:part name="response" element="gcob:revocarGestionRequest"/>
+  </wsdl:message>
+  <wsdl:message name="revocarGestionResponse">
+    <wsdl:part name="response" element="gcob:revocarGestionResponse"/>
+  </wsdl:message>
+  <wsdl:message name="actualizarGestionRequest">
+    <wsdl:part name="response" element="gcob:actualizarGestionRequest"/>
+  </wsdl:message>
+  <wsdl:message name="actualizarGestionResponse">
+    <wsdl:part name="response" element="gcob:actualizarGestionResponse"/>
+  </wsdl:message>
+  <wsdl:message name="NMPHeaderRequest">
+    <wsdl:part name="headerReq" element="NMPsh:headerMessage"/>
+  </wsdl:message>
+  <wsdl:message name="NMPFaultMessage">
+    <wsdl:part name="error" element="NMPsm:messageError"/>
+  </wsdl:message>
+  <wsdl:message name="NMPHeaderResponse">
+    <wsdl:part name="headerRes" element="NMPsh:headerMessageResponse"/>
+  </wsdl:message>
+  <wsdl:portType name="GestionCobranzaPortType">
+    <wsdl:operation name="notificaResultado">
+      <wsdl:input message="tns:notificaGestionRequest"/>
+      <wsdl:output message="tns:notificaGestionResponse"/>
+      <wsdl:fault message="tns:NMPFaultMessage" name="Fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="recepcionGestion">
+      <wsdl:input message="tns:recepcionGestionRequest"/>
+      <wsdl:output message="tns:recepcionGestionResponse"/>
+      <wsdl:fault message="tns:NMPFaultMessage" name="Fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="revocarGestion">
+      <wsdl:input message="tns:revocarGestionRequest"/>
+      <wsdl:output message="tns:revocarGestionResponse"/>
+      <wsdl:fault message="tns:NMPFaultMessage" name="Fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="actualizarGestion">
+      <wsdl:input message="tns:actualizarGestionRequest"/>
+      <wsdl:output message="tns:actualizarGestionResponse"/>
+      <wsdl:fault message="tns:NMPFaultMessage" name="Fault"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="GestionCobranzaSOAP11Binding" type="tns:GestionCobranzaPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="notificaResultado">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/GestionCobranza/notificaResultado"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="request"/>
+        <soap:header message="tns:NMPHeaderRequest" part="headerReq" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="response"/>
+        <soap:header message="tns:notificaGestionResponse" part="response" use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="Fault">
+        <soap:fault name="Fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="recepcionGestion">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/GestionCobranza/recepcionGestion"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="request"/>
+        <soap:header message="tns:NMPHeaderRequest" part="headerReq" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="response"/>
+        <soap:header message="tns:NMPHeaderResponse" part="headerRes" use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="Fault">
+        <soap:fault name="Fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="revocarGestion">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/GestionCobranza/revocarGestion"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="response"/>
+        <soap:header message="tns:NMPHeaderRequest" part="headerReq" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="response"/>
+        <soap:header message="tns:NMPHeaderResponse" part="headerRes" use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="Fault">
+        <soap:fault name="Fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="actualizarGestion">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/GestionCobranza/actualizarGestion"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="response"/>
+        <soap:header message="tns:NMPHeaderRequest" part="headerReq" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="response"/>
+        <soap:header message="tns:NMPHeaderResponse" part="headerRes" use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="Fault">
+        <soap:fault name="Fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+</wsdl:definitions>

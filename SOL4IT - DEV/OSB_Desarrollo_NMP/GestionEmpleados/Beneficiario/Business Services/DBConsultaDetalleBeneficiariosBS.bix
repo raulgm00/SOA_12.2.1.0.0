@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:businessServiceEntry xmlns:con="http://xmlns.oracle.com/servicebus/business/config" xmlns:oper="http://xmlns.oracle.com/servicebus/business/operations">
+    <con:coreEntry>
+        <con1:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config" xmlns:jca="http://www.bea.com/wli/sb/transports/jca" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:env="http://www.bea.com/wli/config/env" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://xmlns.oracle.com/servicebus/business/config">
+            <con:wsdl ref="GestionEmpleados/Beneficiario/Resources/WSDLs/DBConsultaDetalleBeneficiariosSvcWSDL"/>
+            <con:binding>
+                <con:name>DetallePadronDBAdapter_ptt-binding</con:name>
+                <con:namespace>http://xmlns.oracle.com/pcbpel/adapter/db/NMP_Padr%C3%B3n_Compontes/NMP_Componentes/DetallePadronDBAdapter</con:namespace>
+            </con:binding>
+        </con1:binding>
+        <oper:operations enabled="true">
+            <oper:throttling enabled="false">
+                <oper:capacity>0</oper:capacity>
+                <oper:maxQueueLength>0</oper:maxQueueLength>
+                <oper:timeToLive>0</oper:timeToLive>
+            </oper:throttling>
+            <oper:resultCachingEnabled>true</oper:resultCachingEnabled>
+        </oper:operations>
+        <con:ws-policy>
+            <ser:binding-mode xmlns:ser="http://www.bea.com/wli/sb/services">no-policies</ser:binding-mode>
+        </con:ws-policy>
+        <con:result-caching isSupported="false"/>
+    </con:coreEntry>
+    <con:endpointConfig xmlns:jca="http://www.bea.com/wli/sb/transports/jca" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:env="http://www.bea.com/wli/config/env" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <tran:provider-id>jca</tran:provider-id>
+        <tran:inbound>false</tran:inbound>
+        <tran:URI weight="0">
+            <env:value>jca://eis/DB/PeopleSoftAdapter</env:value>
+        </tran:URI>
+        <tran:outbound-properties>
+            <tran:load-balancing-algorithm>round-robin</tran:load-balancing-algorithm>
+            <tran:retry-count>4</tran:retry-count>
+            <tran:retry-interval>2</tran:retry-interval>
+            <tran:retry-application-errors>true</tran:retry-application-errors>
+        </tran:outbound-properties>
+        <tran:all-headers>false</tran:all-headers>
+        <tran:provider-specific xsi:type="jca:JCAEndPointConfiguration">
+            <jca:jca-file ref="GestionEmpleados/Beneficiario/Resources/Adapters/DBConsultaDetalleBeneficiariosDB"/>
+            <jca:adapter-name>DetallePadronDBAdapter</jca:adapter-name>
+            <jca:adapter-type>DB</jca:adapter-type>
+            <jca:always-use-wsdl>true</jca:always-use-wsdl>
+            <jca:connection-mode>managed</jca:connection-mode>
+            <jca:connection-property-username-password-overwrite>false</jca:connection-property-username-password-overwrite>
+            <jca:outbound-properties>
+                <jca:operation-properties>
+                    <jca:operation-name>DetallePadronDBAdapter</jca:operation-name>
+                    <jca:spec-properties>
+                        <jca:property>
+                            <jca:name>SqlString</jca:name>
+                            <jca:value>SELECT NMP_TIP_REG AS TIP_REG, NMP_EMP_BEN AS EMP_BEN, NMP_TIPO_MOVTO AS TIPO_MOVTO, NMP_PLAN_MED AS PLAN_MEDICO, NMP_PLAN_DENT AS PLAN_DENTAL, NMP_SUBGPO AS SUBGRUPO, NMP_CLASE AS CLASE, NMP_NO_NOMINA AS NUMERO_NOMINA, NMP_NOMBRE AS NOMBRE, NMP_PATERNO AS APELLIDO_PATERNO, NMP_MATERNO AS APELLIDO_MATERNO, NMP_FEC_CONTRA AS FECHA_CONTRATACION, NMP_DEPTO AS DEPARTAMENTO, NMP_STATUS_NOMI AS STATUS_DERECHOHABIENTE, NMP_BENEF AS BENEFICIARIO, NMP_FEC_RETI AS FECHA_RETIRO, NMP_FEC_TERM AS FEHA_TERMINACION, NMP_MOTIVO_TERM AS RAZON_TERMINACION, NMP_FEC_ALTA_SM AS FECHA_ALTE, NMP_FEC_FIN_DERE AS FECHA_FIN_DERECHOS, NMP_PARENTESCO AS PARENTESCO, NMP_FEC_NAC AS FECHA_NACIMIENTO, NMP_SEXO AS SEXO, NMP_EDO_CIVIL AS ESTADO_CIVIL, NMP_RFC AS RFC, NMP_IMSS AS IMSS, NMP_CALLE1 AS DOMICILIO1, NMP_COLONIA AS DOMICILIO2, NMP_CALLE2 AS DOMICILIO3, NMP_CIUDAD AS CIUDAD, NMP_DELEG AS DELEGACION, NMP_ESTADO AS ESTADO, NMP_CP AS CP, NMP_TEL_PART AS TEL_PARTICULAR, NMP_TEL_OFIC AS TEL_OFICINA, NMP_EXT AS EXTENSION, NMP_CP_PAGO AS CP_PAGO, NMP_FEC_ESTUD AS FECHA_ESTUDIANTE, NMP_TIPO_ESTUD AS TIPO_ESTUDIANTE, NMP_NOM_ESC AS NOMBRE_ESCUELA, NMP_FEC_INI_DISC AS FEC_INI_DISCAPACIDAD, NMP_FEC_FIN_DISC AS FEC_FIN_DISCAPACIDAD, NMP_TIPO_DISC AS TIPO_DISCAPACIDAD FROM PS_NMP_LAYOUT_DET</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>GetActiveUnitOfWork</jca:name>
+                            <jca:value>false</jca:value>
+                        </jca:property>
+                    </jca:spec-properties>
+                </jca:operation-properties>
+            </jca:outbound-properties>
+        </tran:provider-specific>
+    </con:endpointConfig>
+</con:businessServiceEntry>

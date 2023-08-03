@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:wsdl ref="MasterData/CentrosCostos/Resources/ValidarCentroCostoWSDL"/>
+            <con:binding>
+                <con:name>ValidarCentroDeCostosBPELBinding</con:name>
+                <con:namespace>http://qualitas.com.mx/ValidarCentroDeCostosApp/ValidarCentrosDeCostosPrj/ValidarCentroDeCostosBPEL</con:namespace>
+            </con:binding>
+        </con:binding>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:pipeline name="PipelinePairNode1_request" type="request">
+            <con:stage name="ConsultarCentroCostos">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="v1" namespace="http://qualitas.com.mx/Comun/CentroCostos/validarCentroCostos/v1/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:log xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.69.15a0f0f8be9.N7ffd</con2:id>
+                        <con1:logLevel>warning</con1:logLevel>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con1:expr>
+                        <con1:message>ConsultaCentroCostoDataSrvInput</con1:message>
+                    </con1:log>
+                    <con1:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.61.15a09f1c28e.N8000</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/v1:ValidarCentroCostosRequest/v1:Input/v1:idTipoServicio=1</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:wsCallout>
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.5d.159f5d59de6.N7ff7</con2:id>
+                                    <con1:service ref="Finance/AP/GPA/Data/ProxySvc/CentroCostoOficinaDataSvcPxy" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                    <con1:operation>CentroCostoOficinaDataSvcSelect</con1:operation>
+                                    <con1:request>
+                                        <con1:body wrapped="false">ccOficinaInput</con1:body>
+                                        <con1:header/>
+                                    </con1:request>
+                                    <con1:response>
+                                        <con1:body wrapped="false">ccOficinaOutput</con1:body>
+                                        <con1:header/>
+                                    </con1:response>
+                                    <con1:requestTransform>
+                                        <con1:assign varName="ccOficinaInput">
+                                            <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.63.15a09ffa9b8.N8000</con2:id>
+                                            <con1:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(
+fn:concat(
+      '&lt;cen:CentroCostoOficinaDataSvcSelect_pCCInputParameters xmlns:cen="http://xmlns.oracle.com/pcbpel/adapter/db/top/CentroCostoOficinaDataSvc">',
+         '&lt;cen:pCC>',$body/v1:ValidarCentroCostosRequest/v1:Input/v1:centroCostos,'&lt;/cen:pCC>',
+      '&lt;/cen:CentroCostoOficinaDataSvcSelect_pCCInputParameters>'
+)
+)</con:xqueryText>
+                                            </con1:expr>
+                                        </con1:assign>
+                                    </con1:requestTransform>
+                                    <con1:responseTransform/>
+                                </con1:wsCallout>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/v1:ValidarCentroCostosRequest/v1:Input/v1:idTipoServicio=2 or $body/v1:ValidarCentroCostosRequest/v1:Input/v1:idTipoServicio=3</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:wsCallout>
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.60.15a0280770a.N7ffd</con2:id>
+                                    <con1:service ref="Finance/AP/GPA/Data/ProxySvc/CentroCostoAreaDataSvcPxy" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                    <con1:operation>CentroCostoAreaDataSvcSelect</con1:operation>
+                                    <con1:request>
+                                        <con1:body wrapped="false">ccAreaInput</con1:body>
+                                        <con1:header/>
+                                    </con1:request>
+                                    <con1:response>
+                                        <con1:body wrapped="false">ccAreaOutput</con1:body>
+                                        <con1:header/>
+                                    </con1:response>
+                                    <con1:requestTransform>
+                                        <con1:assign varName="ccAreaInput">
+                                            <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.5f.159fbf073d1.N7ffd</con2:id>
+                                            <con1:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(
+fn:concat(
+      '&lt;cen:CentroCostoAreaDataSvcSelect_pCCInputParameters xmlns:cen="http://xmlns.oracle.com/pcbpel/adapter/db/top/CentroCostoAreaDataSvc">',
+       '&lt;cen:pCC>',$body/v1:ValidarCentroCostosRequest/v1:Input/v1:centroCostos,'&lt;/cen:pCC>',
+      '&lt;/cen:CentroCostoAreaDataSvcSelect_pCCInputParameters>'
+)
+)</con:xqueryText>
+                                            </con1:expr>
+                                        </con1:assign>
+                                    </con1:requestTransform>
+                                    <con1:responseTransform/>
+                                </con1:wsCallout>
+                                <con1:ifThenElse>
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.53.159f4a2a2c9.N7ffb</con2:id>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:string-length($ccAreaOutput//*:GpaCatCcArea/*:centroCosto/text())=0</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con2:log xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config">
+                                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.64.15a0a01a8ea.N8000</con3:id>
+                                                <con2:logLevel>warning</con2:logLevel>
+                                                <con2:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/v1:ValidarCentroCostosRequest/v1:Input/v1:centroCostos</con:xqueryText>
+                                                </con2:expr>
+                                                <con2:message>CentroCostoArea NO ConsultaCCOficina</con2:message>
+                                            </con2:log>
+                                            <con1:wsCallout>
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.60.15a0280770a.N7ffc</con2:id>
+                                                <con1:service ref="Finance/AP/GPA/Data/ProxySvc/CentroCostoOficinaDataSvcPxy" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                                <con1:operation>CentroCostoOficinaDataSvcSelect</con1:operation>
+                                                <con1:request>
+                                                    <con1:body wrapped="false">ccOficinaInput</con1:body>
+                                                    <con1:header/>
+                                                </con1:request>
+                                                <con1:response>
+                                                    <con1:body wrapped="false">ccOficinaOutput</con1:body>
+                                                    <con1:header/>
+                                                </con1:response>
+                                                <con1:requestTransform>
+                                                    <con1:assign varName="ccOficinaInput">
+                                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.60.15a0280770a.N7ffb</con2:id>
+                                                        <con1:expr>
+                                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(
+fn:concat(
+      '&lt;cen:CentroCostoOficinaDataSvcSelect_pCCInputParameters xmlns:cen="http://xmlns.oracle.com/pcbpel/adapter/db/top/CentroCostoOficinaDataSvc">',
+         '&lt;cen:pCC>',$body/v1:ValidarCentroCostosRequest/v1:Input/v1:centroCostos,'&lt;/cen:pCC>',
+      '&lt;/cen:CentroCostoOficinaDataSvcSelect_pCCInputParameters>'
+)
+)</con:xqueryText>
+                                                        </con1:expr>
+                                                    </con1:assign>
+                                                </con1:requestTransform>
+                                                <con1:responseTransform/>
+                                            </con1:wsCallout>
+                                        </con1:actions>
+                                    </con1:case>
+                                </con1:ifThenElse>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode1_response" type="response">
+            <con:stage name="ConfigurarRespuesta">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="v1" namespace="http://qualitas.com.mx/Comun/CentroCostos/validarCentroCostos/v1/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.65.15a0a06dfae.N8000</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:string-length($ccAreaOutput//*:GpaCatCcArea/*:centroCosto/text())>0</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.60.15a0280770a.N7ffa</con2:id>
+                                    <con1:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<ValidarCentroCostosResponse xmlns="http://qualitas.com.mx/Comun/CentroCostos/validarCentroCostos/v1/">
+         <idTipoCC>1</idTipoCC>
+         <centroCostos>{$ccAreaOutput//*:GpaCatCcArea/*:centroCosto/text()}</centroCostos>
+         <claveOficina xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+         <descOficina xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+         <descArea>{$ccAreaOutput//*:GpaCatCcArea/*:undOrg/text()}</descArea>
+         <responsableArea>{$ccAreaOutput//*:GpaCatCcArea/*:responsable/text()}</responsableArea>
+         <OperationResponse>
+            <codigoOperacionoper xmlns="http://qualitas.com.mx/comunes/objetosComunes/v1/"/>
+            <codigoRespuesta xmlns="http://qualitas.com.mx/comunes/objetosComunes/v1/">0</codigoRespuesta>
+            <descripcionRespuesta xmlns="http://qualitas.com.mx/comunes/objetosComunes/v1/">EJECUCION EXITOSA</descripcionRespuesta>
+            <tiempoRespuesta xmlns="http://qualitas.com.mx/comunes/objetosComunes/v1/"/>
+            <fecha xmlns="http://qualitas.com.mx/comunes/objetosComunes/v1/">{fn:current-dateTime()}</fecha>
+         </OperationResponse>
+      </ValidarCentroCostosResponse>]]></con:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:string-length($ccOficinaOutput//*:GpaCatCcOficina/*:centroCosto/text())>0</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.63.15a09ffa9b8.N7fff</con2:id>
+                                    <con1:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<ValidarCentroCostosResponse xmlns="http://qualitas.com.mx/Comun/CentroCostos/validarCentroCostos/v1/">
+         <idTipoCC>2</idTipoCC>
+         <centroCostos>{$ccOficinaOutput//*:GpaCatCcOficina/*:centroCosto/text()}</centroCostos>
+         <claveOficina>{$ccOficinaOutput//*:GpaCatCcOficina/*:cvOficina/text()}</claveOficina>
+         <descOficina>{$ccOficinaOutput//*:GpaCatCcOficina/*:descripcion/text()}</descOficina>
+         <descArea xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+         <responsableArea xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+         <OperationResponse>
+            <codigoOperacionoper xmlns="http://qualitas.com.mx/comunes/objetosComunes/v1/"/>
+            <codigoRespuesta xmlns="http://qualitas.com.mx/comunes/objetosComunes/v1/">0</codigoRespuesta>
+            <descripcionRespuesta xmlns="http://qualitas.com.mx/comunes/objetosComunes/v1/">EJECUCION EXITOSA</descripcionRespuesta>
+            <tiempoRespuesta xmlns="http://qualitas.com.mx/comunes/objetosComunes/v1/"/>
+            <fecha xmlns="http://qualitas.com.mx/comunes/objetosComunes/v1/">{fn:current-dateTime()}</fecha>
+         </OperationResponse>
+      </ValidarCentroCostosResponse>]]></con:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:default>
+                            <con1:replace varName="body" contents-only="true">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.53.159f4a2a2c9.N7ffa</con2:id>
+                                <con1:location>
+                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                </con1:location>
+                                <con1:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<ValidarCentroCostosResponse xmlns="http://qualitas.com.mx/Comun/CentroCostos/validarCentroCostos/v1/">
+         <idTipoCC xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+         <centroCostos>{$body/v1:ValidarCentroCostosRequest/v1:Input/v1:centroCostos/text()}</centroCostos>
+         <claveOficina xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+         <descOficina xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+         <descArea xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+         <responsableArea xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+         <OperationResponse>
+            <codigoOperacionoper xmlns="http://qualitas.com.mx/comunes/objetosComunes/v1/"/>
+            <codigoRespuesta xmlns="http://qualitas.com.mx/comunes/objetosComunes/v1/">1</codigoRespuesta>
+            <descripcionRespuesta xmlns="http://qualitas.com.mx/comunes/objetosComunes/v1/">EJECUCION EXITOSA</descripcionRespuesta>
+            <tiempoRespuesta xmlns="http://qualitas.com.mx/comunes/objetosComunes/v1/"/>
+            <fecha xmlns="http://qualitas.com.mx/comunes/objetosComunes/v1/">{fn:current-dateTime()}</fecha>
+         </OperationResponse>
+      </ValidarCentroCostosResponse>]]></con:xqueryText>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:default>
+                    </con1:ifThenElse>
+                    <con:log xmlns:con="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.61.15a09f1c28e.N7ffb</con1:id>
+                        <con:logLevel>warning</con:logLevel>
+                        <con:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con:expr>
+                        <con:message>ConsultaCentroCostoDataSrvOutput</con:message>
+                    </con:log>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="PipelinePairNode1">
+                <con:request>PipelinePairNode1_request</con:request>
+                <con:response>PipelinePairNode1_response</con:response>
+            </con:pipeline-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

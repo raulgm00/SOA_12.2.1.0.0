@@ -1,0 +1,766 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+    <con:coreEntry>
+        <con:description>PL que tiene como funcionalidad realizar un insert a una base de datos Oracle</con:description>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="GestionClientes/AppMonte/Resources/WSDLs/NMPAppMonteSvcWSDL"/>
+            <con:binding>
+                <con:name>AppMonte_bind</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Servicios/GestionClientes/AppMonte</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:tracingEnabled>true</oper:tracingEnabled>
+            <oper:monitoring enabled="true" level="service" aggregationInterval="10"/>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router errorHandler="error-7f000001.3efb3a9.0.158c095d8e7.N7e65">
+        <con:pipeline type="error" name="error-7f000001.3efb3a9.0.158c095d8e7.N7e65">
+            <con:stage id="_StageId-7f000001.3efb3a9.0.158c095d8e7.N7e64" name="StageErrorHandlerNMPAppMonte">
+                <con:context>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con2:userNsDecl prefix="app" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/AppMonte"/>
+                    <con2:userNsDecl prefix="app1" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/AppMonte"/>
+                </con:context>
+                <con:actions>
+                    <con3:report>
+                        <con2:id>_ActionId-af10c2a.1aa16cdf.0.158d5420194.N7cf2</con2:id>
+                        <con3:expr>
+                            <con2:xqueryText>$fault</con2:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>id_faul_gen</con3:key>
+                            <con3:varName>fault</con3:varName>
+                            <con3:value>
+                                <con2:xpathText>./ctx:errorCode/text()</con2:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                        <con3:labels>
+                            <con3:key>id_cliente_gen</con3:key>
+                            <con3:varName>body</con3:varName>
+                            <con3:value>
+                                <con2:xpathText>./app:registrarClienteAppRequest/app1:idCliente</con2:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-7f000001.3efb3a9.0.158c095d8e7.N7dca</con2:id>
+                        <con1:case id="_BranchId-af10c2a.1aa16cdf.0.158d5420194.N7c49">
+                            <con1:condition>
+                                <con2:xqueryText>contains($fault/ctx:errorCode/text(),'OSB-382505')</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="header" contents-only="true">
+                                    <con2:id>_ActionId-af10c2a.1aa16cdf.0.158d5420194.N7c46</con2:id>
+                                    <con1:location>
+                                        <con2:xpathText>.</con2:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con2:xsltTransform>
+                                            <con2:resource ref="GestionClientes/AppMonte/Resources/Transformations/TRAppMonteHeader"/>
+                                            <con2:input>$header/*</con2:input>
+                                            <con2:param name="codigoRespuesta">
+                                                <con2:path>800</con2:path>
+                                            </con2:param>
+                                        </con2:xsltTransform>
+                                    </con1:expr>
+                                </con1:replace>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id>_ActionId-N3f579bf7.15bab45d.0.158d95a3310.N7f98</con2:id>
+                                    <con1:location>
+                                        <con2:xpathText>.</con2:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con2:xsltTransform>
+                                            <con2:resource ref="GestionClientes/AppMonte/Resources/Transformations/TRAppMonteFault"/>
+                                            <con2:input>$fault</con2:input>
+                                            <con2:param name="app">
+                                                <con2:path>1</con2:path>
+                                            </con2:param>
+                                        </con2:xsltTransform>
+                                    </con1:expr>
+                                </con1:replace>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case id="_BranchId-af10c2a.1aa16cdf.0.158d5420194.N7d53">
+                            <con1:condition>
+                                <con2:xqueryText>contains($fault/ctx:errorCode/text(),'OSB-382500')</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="header" contents-only="true">
+                                    <con2:id>_ActionId-af10c2a.1aa16cdf.0.158d5420194.N7d3e</con2:id>
+                                    <con1:location>
+                                        <con2:xpathText>.</con2:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con2:xsltTransform>
+                                            <con2:resource ref="GestionClientes/AppMonte/Resources/Transformations/TRAppMonteHeader"/>
+                                            <con2:input>$header/*</con2:input>
+                                            <con2:param name="codigoRespuesta">
+                                                <con2:path>801</con2:path>
+                                            </con2:param>
+                                        </con2:xsltTransform>
+                                    </con1:expr>
+                                </con1:replace>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id>_ActionId-N3f579bf7.15bab45d.0.158d95a3310.N7f94</con2:id>
+                                    <con1:location>
+                                        <con2:xpathText>.</con2:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con2:xsltTransform>
+                                            <con2:resource ref="GestionClientes/AppMonte/Resources/Transformations/TRAppMonteFault"/>
+                                            <con2:input>$fault</con2:input>
+                                            <con2:param name="app">
+                                                <con2:path>2</con2:path>
+                                            </con2:param>
+                                        </con2:xsltTransform>
+                                    </con1:expr>
+                                </con1:replace>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case id="_BranchId-af10c2a.108f1201.0.158e4c53c33.N7ecd">
+                            <con1:condition>
+                                <con2:xqueryText>contains($fault/ctx:errorCode/text(),'NMP-021')</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="header" contents-only="true">
+                                    <con2:id>_ActionId-af10c2a.108f1201.0.158e4c53c33.N7eca</con2:id>
+                                    <con1:location>
+                                        <con2:xpathText>.</con2:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con2:xsltTransform>
+                                            <con2:resource ref="GestionClientes/AppMonte/Resources/Transformations/TRAppMonteHeader"/>
+                                            <con2:input>$header/*</con2:input>
+                                            <con2:param name="codigoRespuesta">
+                                                <con2:path>802</con2:path>
+                                            </con2:param>
+                                        </con2:xsltTransform>
+                                    </con1:expr>
+                                </con1:replace>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id>_ActionId-af10c2a.108f1201.0.158e4c53c33.N7ec6</con2:id>
+                                    <con1:location>
+                                        <con2:xpathText>.</con2:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con2:xsltTransform>
+                                            <con2:resource ref="GestionClientes/AppMonte/Resources/Transformations/TRAppMonteFault"/>
+                                            <con2:input>$fault</con2:input>
+                                            <con2:param name="app">
+                                                <con2:path>3</con2:path>
+                                            </con2:param>
+                                        </con2:xsltTransform>
+                                    </con1:expr>
+                                </con1:replace>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:default>
+                            <con1:replace varName="header" contents-only="true">
+                                <con2:id>_ActionId-af10c2a.1aa16cdf.0.158d5420194.N7d86</con2:id>
+                                <con1:location>
+                                    <con2:xpathText>.</con2:xpathText>
+                                </con1:location>
+                                <con1:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="GestionClientes/AppMonte/Resources/Transformations/TRAppMonteHeader"/>
+                                        <con2:input>$header/*</con2:input>
+                                        <con2:param name="codigoRespuesta">
+                                            <con2:path>500</con2:path>
+                                        </con2:param>
+                                    </con2:xsltTransform>
+                                </con1:expr>
+                            </con1:replace>
+                            <con1:replace varName="body" contents-only="true">
+                                <con2:id>_ActionId-N3f579bf7.15bab45d.0.158d95a3310.N7f91</con2:id>
+                                <con1:location>
+                                    <con2:xpathText>.</con2:xpathText>
+                                </con1:location>
+                                <con1:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="GestionClientes/AppMonte/Resources/Transformations/TRAppMonteFault"/>
+                                        <con2:input>$fault</con2:input>
+                                        <con2:param name="app">
+                                            <con2:path>4</con2:path>
+                                        </con2:param>
+                                    </con2:xsltTransform>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:default>
+                    </con1:ifThenElse>
+                    <con2:reply isError="true">
+                        <con2:id>_ActionId-af10c2a.1aa16cdf.0.158d5420194.N7fc8</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-af10c2a.1aa16cdf.0.158d5420194.N7e65">
+            <con:stage id="_StageId-af10c2a.1aa16cdf.0.158d5420194.N7e64" name="StageErrorHandlerRegistarClienteAppMonteDb">
+                <con:context>
+                    <con2:userNsDecl prefix="app" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/AppMonte"/>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con2:userNsDecl prefix="app1" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/AppMonte"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-N3f579bf7.15bab45d.0.158d95a3310.N7f9b</con2:id>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="GestionClientes/AppMonte/Resources/Transformations/TRAppMonteFault"/>
+                                <con2:input>$fault</con2:input>
+                                <con2:param name="app">
+                                    <con2:path>2</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con3:report>
+                        <con2:id>_ActionId-af10c2a.N42def60e.0.158df34a559.N7ff4</con2:id>
+                        <con3:expr>
+                            <con2:xqueryText>$fault</con2:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>bd_id_error</con3:key>
+                            <con3:varName>fault</con3:varName>
+                            <con3:value>
+                                <con2:xpathText>./ctx:errorCode</con2:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                        <con3:labels>
+                            <con3:key>id_cliente</con3:key>
+                            <con3:varName>body_tmp</con3:varName>
+                            <con3:value>
+                                <con2:xpathText>./app:registrarClienteAppRequest/app1:idCliente</con2:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                    <con2:reply isError="true">
+                        <con2:id>_ActionId-af10c2a.7c0f07fb.0.158db7c3145.N7f9a</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-7f000001.3efb3a9.0.158c095d8e7.N7e99">
+            <con:stage id="_StageId-af10c2a.7c0f07fb.0.158db7c3145.N7f64" name="StageValidacionRegistraClienteAppMonteResponse">
+                <con:context>
+                    <con2:userNsDecl prefix="app" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/AppMonte"/>
+                    <con2:userNsDecl prefix="app1" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/AppMonte"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="body">
+                        <con2:id>_ActionId-N53efffe6.Nf2c5186.0.158f9c61d81.N7fef</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<soapenv:Body xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:app="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/AppMonte" xmlns:app1="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/AppMonte">
+<app:registrarClienteAppResponse>
+<app1:respuesta> {fn:concat('Cliente registrado con éxito No Credencial: ', $body_tmp/app:registrarClienteAppRequest/app1:noCredencial,' SMS enviado')} </app1:respuesta>
+</app:registrarClienteAppResponse>
+</soapenv:Body>]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con2:reply isError="false">
+                        <con2:id>_ActionId-af10c2a.7c0f07fb.0.158db7c3145.N7f63</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-7f000001.3efb3a9.0.158c095d8e7.N7e9a">
+            <con:stage id="_StageId-N3f579cff.N230cd4f5.0.15a6dd30b06.N7ffa" name="StageValidarCodigoSMS">
+                <con:context>
+                    <con2:userNsDecl prefix="app" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/AppMonte"/>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con2:userNsDecl prefix="tns" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPNotificacionesSMS"/>
+                    <con2:userNsDecl prefix="app1" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/AppMonte"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="header" contents-only="false">
+                        <con2:id>_ActionId-a1e030f.Na171ddb.d.15a72218eb5.N8000</con2:id>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="GestionClientes/AppMonte/Resources/Transformations/TRHeadersRest"/>
+                                <con:param name="inbound">
+                                    <con:path>$inbound</con:path>
+                                </con:param>
+                                <con:param name="requestHeader">
+                                    <con:path>$header</con:path>
+                                </con:param>
+                            </con:xqueryTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:assign varName="headerReq">
+                        <con2:id>_ActionId-a1e030f.N2a94e5f5.b.15ab8ed6018.N7ff3</con2:id>
+                        <con1:expr>
+                            <con:xqueryTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="GestionClientes/AppMonte/Resources/Transformations/TRHeadersRest"/>
+                                <con:param name="inbound">
+                                    <con:path>$inbound</con:path>
+                                </con:param>
+                                <con:param name="requestHeader">
+                                    <con:path>$header</con:path>
+                                </con:param>
+                            </con:xqueryTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="header">
+                        <con2:id>_ActionId-a1e030f.N2a94e5f5.b.15ab8ed6018.N7ff4</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$header</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-N3f579cff.N230cd4f5.0.15a6dd30b06.N7fb9</con2:id>
+                        <con1:case id="_BranchId-N3f579cff.N230cd4f5.0.15a6dd30b06.N7fb8">
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$header/nmp:headerMessage/nmp:idConsumidor= '19'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:wsCallout>
+                                    <con2:id>_ActionId-N3f579cff.N230cd4f5.0.15a6dd30b06.N7fc6</con2:id>
+                                    <con1:service ref="Utileria/NotificacionesSMS/ProxyServices/NMPNotificacionesSMSSoapPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                    <con1:operation>validarCodigo</con1:operation>
+                                    <con1:request>
+                                        <con1:body wrapped="false">validarCodigoSMSRequest</con1:body>
+                                        <con1:header>header</con1:header>
+                                    </con1:request>
+                                    <con1:response>
+                                        <con1:body wrapped="false">validarCodigoSMSResponse</con1:body>
+                                        <con1:header/>
+                                    </con1:response>
+                                    <con1:requestTransform>
+                                        <con1:assign varName="validarCodigoSMSRequest">
+                                            <con2:id>_ActionId-N3f579cff.N230cd4f5.0.15a6dd30b06.N7fc3</con2:id>
+                                            <con1:expr>
+                                                <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                                    <con:resource ref="GestionClientes/AppMonte/Resources/Transformations/TrAppMonteToNMPCodigosValidacionSMS"/>
+                                                    <con:input>$body/app:registrarClienteAppRequest</con:input>
+                                                </con:xsltTransform>
+                                            </con1:expr>
+                                        </con1:assign>
+                                    </con1:requestTransform>
+                                    <con1:responseTransform/>
+                                </con1:wsCallout>
+                                <con1:ifThenElse>
+                                    <con2:id>_ActionId-N3f579cff.N230cd4f5.0.15a6dd30b06.N7f19</con2:id>
+                                    <con1:case id="_BranchId-N3f579cff.N230cd4f5.0.15a6dd30b06.N7f18">
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$validarCodigoSMSResponse/tns:codigo/text() != 0</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace varName="body" contents-only="true">
+                                                <con2:id>_ActionId-N3f579cff.N230cd4f5.0.15a6dd30b06.N7ee1</con2:id>
+                                                <con1:location>
+                                                    <con2:xpathText>.</con2:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                                        <con:resource ref="GestionClientes/AppMonte/Resources/Transformations/TrCodigoInvalidoXSD"/>
+                                                        <con:input>$body/app:registrarClienteAppRequest</con:input>
+                                                    </con:xsltTransform>
+                                                </con1:expr>
+                                            </con1:replace>
+                                            <con2:reply isError="false">
+                                                <con2:id>_ActionId-N3f579cff.N230cd4f5.0.15a6dd30b06.N7ee4</con2:id>
+                                            </con2:reply>
+                                        </con1:actions>
+                                    </con1:case>
+                                </con1:ifThenElse>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+            <con:stage name="stageActualizacionCliente">
+                <con:comment/>
+                <con:context>
+                    <con2:userNsDecl prefix="app" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/AppMonte"/>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con2:userNsDecl prefix="tns" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPNotificacionesSMS"/>
+                    <con2:userNsDecl prefix="app1" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/AppMonte"/>
+                    <con2:userNsDecl prefix="crm" namespace="http://tempuri.org/"/>
+                    <con2:userNsDecl prefix="a" namespace="http://schemas.datacontract.org/2004/07/Nmp.Crm.BusinessEntity.DataContract"/>
+                </con:context>
+                <con:actions>
+                    <con:wsCallout xmlns:con="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N2a94e5f5.f.15ab99a2602.N7ffb</con1:id>
+                        <con:service ref="GestionClientes/Clientes/Proxy Services/NMPClientesSoapPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con:operation>updateCliente</con:operation>
+                        <con:request>
+                            <con:body wrapped="false">bodyReq</con:body>
+                            <con:header>header</con:header>
+                        </con:request>
+                        <con:response>
+                            <con:body wrapped="false">bodyResponse</con:body>
+                            <con:header/>
+                        </con:response>
+                        <con:requestTransform>
+                            <con:assign varName="bodyReq">
+                                <con2:id>_ActionId-a1e030f.N2a94e5f5.f.15ab99a2602.N7ffa</con2:id>
+                                <con:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<nmp:updateClienteRequest xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente">
+    <!--Optional:-->
+    <nmp:idCliente>{$body/app:registrarClienteAppRequest/app1:idCliente/text()}</nmp:idCliente>
+    <!--Optional:-->
+    <nmp:aplicacionMovil>0</nmp:aplicacionMovil>
+    <!--Optional:-->
+   
+</nmp:updateClienteRequest>]]></con:xqueryText>
+                                </con:expr>
+                            </con:assign>
+                        </con:requestTransform>
+                        <con:responseTransform/>
+                    </con:wsCallout>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-a1e030f.N2a94e5f5.e.15ab8f1bdbb.N7ff6</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$bodyResponse/crm:ActualizaInformacionClienteResponse/a:Codigo  != 0</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con2:reply isError="true">
+                                    <con2:id>_ActionId-a1e030f.N2a94e5f5.9.15ab8eb0d2c.N7ff1</con2:id>
+                                </con2:reply>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-af10c2a.a1ef6e3.0.158d1184e36.N7fb5" name="StageValidacionRegistraClienteAppMonteRequest">
+                <con:context>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con2:userNsDecl prefix="app" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/AppMonte"/>
+                    <con2:userNsDecl prefix="app1" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/AppMonte"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="header" contents-only="false">
+                        <con2:id>_ActionId-af10c2a.N42def60e.0.158df34a559.N7ffd</con2:id>
+                        <con2:disabled>true</con2:disabled>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="GestionClientes/AppMonte/Resources/Transformations/TRHeadersRest"/>
+                                <con:param name="inbound">
+                                    <con:path>$inbound</con:path>
+                                </con:param>
+                                <con:param name="requestHeader">
+                                    <con:path>$header</con:path>
+                                </con:param>
+                            </con:xqueryTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:assign varName="header">
+                        <con2:id>_ActionId-af10c2a.N42def60e.0.158df34a559.N7ffa</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$header</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con3:report>
+                        <con2:id>_ActionId-N53efffed.39f50693.0.158d4d224a6.N7ff7</con2:id>
+                        <con3:expr>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>idCliente</con3:key>
+                            <con3:varName>body</con3:varName>
+                            <con3:value>
+                                <con2:xpathText>./app:registrarClienteAppRequest/app1:idCliente/text()</con2:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                    <con1:validate>
+                        <con2:id>_ActionId-af10c2a.a1ef6e3.0.158d1184e36.N7fb9</con2:id>
+                        <con1:schema ref="Common/XSD/NMPStandardHeader"/>
+                        <con1:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con1:schemaElement>
+                        <con1:varName>header</con1:varName>
+                        <con1:location>
+                            <con2:xpathText>./nmp:headerMessage</con2:xpathText>
+                        </con1:location>
+                        <con1:resultVarName/>
+                    </con1:validate>
+                    <con1:validate>
+                        <con2:id>_ActionId-af10c2a.a1ef6e3.0.158d1184e36.N7fae</con2:id>
+                        <con1:schema ref="GestionClientes/AppMonte/Resources/Schemas/NMPAppMonteSvcElementosXSD"/>
+                        <con1:schemaElement xmlns:app="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/AppMonte">app:registrarClienteAppRequest</con1:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con2:xpathText>./app:registrarClienteAppRequest</con2:xpathText>
+                        </con1:location>
+                        <con1:resultVarName/>
+                    </con1:validate>
+                    <con1:assign varName="header_tmp">
+                        <con2:id>_ActionId-N53efffed.39f50693.0.158d4d224a6.N7ffb</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$header</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="body_tmp">
+                        <con2:id>_ActionId-N53efffed.39f50693.0.158d4d224a6.N7ffe</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-7f000001.3efb3a9.0.158c095d8e7.N7e98" name="StageServiceCollaoutRegistrarClienteRequest" errorHandler="error-af10c2a.1aa16cdf.0.158d5420194.N7e65">
+                <con:context>
+                    <con2:userNsDecl prefix="app" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/AppMonte"/>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con2:userNsDecl prefix="app1" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/AppMonte"/>
+                    <con2:userNsDecl prefix="db" namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/AppMonteUsuariosDb"/>
+                </con:context>
+                <con:actions>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-af100b8.7d7d6956.0.1599372114e.N7e4a</con2:id>
+                        <con1:service ref="GestionClientes/AppMonte/Bussiness Services/DBAppMonteUsuariosBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>selectByPrimaryKey</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">existeClienteAppMonteReq</con1:body>
+                            <con1:header/>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">existeClienteAppMonteRes</con1:body>
+                            <con1:header/>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:assign varName="existeClienteAppMonteReq">
+                                <con2:id>_ActionId-af100b8.7d7d6956.0.1599372114e.N7e47</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryTransform>
+                                        <con2:resource ref="GestionClientes/AppMonte/Resources/Transformations/TRRegistrarClienteAppMonteReqToRegistroAppDbSelect"/>
+                                        <con2:param name="registrarClienteAppRequest">
+                                            <con2:path>$body/*</con2:path>
+                                        </con2:param>
+                                    </con2:xqueryTransform>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:requestTransform>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-af100b8.7d7d6956.0.1599372114e.N7eb3</con2:id>
+                        <con1:case id="_BranchId-af100b8.7d7d6956.0.1599372114e.N7eb2">
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:count($existeClienteAppMonteRes/db:AppRegistro) > 0</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:wsCallout>
+                                    <con2:id>_ActionId-af100b8.7d7d6956.0.1599372114e.N7e44</con2:id>
+                                    <con1:service ref="GestionClientes/AppMonte/Bussiness Services/DBAppMonteUsuariosBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                    <con1:operation>update</con1:operation>
+                                    <con1:request>
+                                        <con1:body wrapped="false">actualizaClienteAppMonteReq</con1:body>
+                                        <con1:header/>
+                                    </con1:request>
+                                    <con1:response>
+                                        <con1:body wrapped="false">actualizaClienteAppMonteRes</con1:body>
+                                        <con1:header/>
+                                    </con1:response>
+                                    <con1:requestTransform>
+                                        <con1:assign varName="actualizaClienteAppMonteReq">
+                                            <con2:id>_ActionId-af100b8.7d7d6956.0.1599372114e.N7e41</con2:id>
+                                            <con1:expr>
+                                                <con2:xqueryTransform>
+                                                    <con2:resource ref="GestionClientes/AppMonte/Resources/Transformations/TRRegistrarClienteAppMonteReqToRegistroAppDbUpdate"/>
+                                                    <con2:param name="registrarClienteAppRequest">
+                                                        <con2:path>$body/*</con2:path>
+                                                    </con2:param>
+                                                </con2:xqueryTransform>
+                                            </con1:expr>
+                                        </con1:assign>
+                                    </con1:requestTransform>
+                                    <con1:responseTransform/>
+                                </con1:wsCallout>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:default>
+                            <con1:wsCallout>
+                                <con2:id>_ActionId-af10c2a.N34127147.0.158cfeeb276.N7f8a</con2:id>
+                                <con1:service ref="GestionClientes/AppMonte/Bussiness Services/DBAppMonteUsuariosBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                <con1:operation>insert</con1:operation>
+                                <con1:request>
+                                    <con1:body wrapped="false">registrarClienteAppMonteRequest</con1:body>
+                                    <con1:header/>
+                                </con1:request>
+                                <con1:response>
+                                    <con1:body wrapped="false">registrarClienteAppMonteResponse</con1:body>
+                                    <con1:header/>
+                                </con1:response>
+                                <con1:requestTransform>
+                                    <con1:assign varName="registrarClienteAppMonteRequest">
+                                        <con2:id>_ActionId-af10c2a.a1ef6e3.0.158d1184e36.N7ffb</con2:id>
+                                        <con1:expr>
+                                            <con2:xqueryTransform>
+                                                <con2:resource ref="GestionClientes/AppMonte/Resources/Transformations/TRRegistrarClienteAppMonteReqToRegistroAppDbInsert"/>
+                                                <con2:param name="registrarClienteAppRequest">
+                                                    <con2:path>$body/*</con2:path>
+                                                </con2:param>
+                                            </con2:xqueryTransform>
+                                        </con1:expr>
+                                    </con1:assign>
+                                </con1:requestTransform>
+                                <con1:responseTransform>
+                                    <con1:replace varName="header" contents-only="true">
+                                        <con2:id>_ActionId-af10c2a.a1ef6e3.0.158d1184e36.N7ff8</con2:id>
+                                        <con1:location>
+                                            <con2:xpathText>.</con2:xpathText>
+                                        </con1:location>
+                                        <con1:expr>
+                                            <con2:xsltTransform>
+                                                <con2:resource ref="GestionClientes/AppMonte/Resources/Transformations/TRAppMonteHeader"/>
+                                                <con2:input>$header_tmp/*</con2:input>
+                                                <con2:param name="codigoRespuesta">
+                                                    <con2:path>0</con2:path>
+                                                </con2:param>
+                                            </con2:xsltTransform>
+                                        </con1:expr>
+                                    </con1:replace>
+                                    <con1:replace varName="body" contents-only="true">
+                                        <con2:id>_ActionId-af10c2a.a1ef6e3.0.158d1184e36.N7ff5</con2:id>
+                                        <con1:location>
+                                            <con2:xpathText>.</con2:xpathText>
+                                        </con1:location>
+                                        <con1:expr>
+                                            <con2:xqueryTransform>
+                                                <con2:resource ref="GestionClientes/AppMonte/Resources/Transformations/TRRegistroAppMonteReqToRegistroAppMonteRes"/>
+                                                <con2:param name="registrarClienteAppRequest">
+                                                    <con2:path>$body_tmp/*</con2:path>
+                                                </con2:param>
+                                            </con2:xqueryTransform>
+                                        </con1:expr>
+                                    </con1:replace>
+                                </con1:responseTransform>
+                            </con1:wsCallout>
+                        </con1:default>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-af10c2a.108f1201.0.158e4c53c33.N8000" name="StageServiceCollaoutMensajeriaUtilSMSRequest" errorHandler="error-af10c2a.108f1201.0.158e4c53c33.N7fcb">
+                <con:context>
+                    <con2:userNsDecl prefix="app" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/AppMonte"/>
+                    <con2:userNsDecl prefix="tpmex" namespace="http://services.montepiedad.tpmex.com/"/>
+                    <con2:userNsDecl prefix="app1" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/AppMonte"/>
+                </con:context>
+                <con:actions>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-af10c2a.108f1201.0.158e4c53c33.N7ffd</con2:id>
+                        <con1:service ref="Utileria/MensajeriaUtil/Proxy Services/MensajeriaSyncPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>enviaMensajeSMS</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">enviarMensajeRequest</con1:body>
+                            <con1:header>header_tmp</con1:header>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">enviarMensajeResponse</con1:body>
+                            <con1:header/>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:assign varName="enviarMensajeRequest">
+                                <con2:id>_ActionId-af10c4b.N6a92495d.0.15922f555ca.N7ffe</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryTransform>
+                                        <con2:resource ref="GestionClientes/AppMonte/Resources/Transformations/TRRegistraClienteAppReqToEnvioSMSReq"/>
+                                        <con2:param name="registrarClienteAppRequest">
+                                            <con2:path>$body_tmp/*</con2:path>
+                                        </con2:param>
+                                    </con2:xqueryTransform>
+                                </con1:expr>
+                            </con1:assign>
+                            <con1:assign varName="enviarMensajeRequest">
+                                <con2:id>_ActionId-af10c2a.108f1201.0.158e4c53c33.N7ed2</con2:id>
+                                <con2:disabled>true</con2:disabled>
+                                <con1:expr>
+                                    <con2:xqueryTransform>
+                                        <con2:resource ref="GestionClientes/AppMonte/Resources/Transformations/TRRegistrarClienteReqToInsertaMensajesReq"/>
+                                        <con2:param name="registrarClienteAppRequest">
+                                            <con2:path>$body_tmp/*</con2:path>
+                                        </con2:param>
+                                    </con2:xqueryTransform>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:requestTransform>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-af10c2a.108f1201.0.158e4c53c33.N7fcb">
+            <con:stage id="_StageId-af10c2a.108f1201.0.158e4c53c33.N7fca" name="StageErrorHandlerMensajeriaUtil">
+                <con:context>
+                    <con2:userNsDecl prefix="app" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/AppMonte"/>
+                    <con2:userNsDecl prefix="app1" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/AppMonte"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-N53effeb8.N1b92fda2.0.158f42668a6.N7ffd</con2:id>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="GestionClientes/AppMonte/Resources/Transformations/TRAppMonteFault"/>
+                                <con2:input>$fault</con2:input>
+                                <con2:param name="app">
+                                    <con2:path>3</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con3:report>
+                        <con2:id>_ActionId-N53effeb8.N1b92fda2.0.158f42668a6.N7ffa</con2:id>
+                        <con3:expr>
+                            <con2:xqueryText>$fault</con2:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>sms_id_error</con3:key>
+                            <con3:varName>fault</con3:varName>
+                            <con3:value>
+                                <con2:xpathText>./ctx:errorCode/text()</con2:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                        <con3:labels>
+                            <con3:key>id_cliente</con3:key>
+                            <con3:varName>body</con3:varName>
+                            <con3:value>
+                                <con2:xpathText>./app:registrarClienteAppRequest/app1:idCliente/text()</con2:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                    <con2:reply isError="true">
+                        <con2:id>_ActionId-N53effeb8.N1b92fda2.0.158f42668a6.N7ff7</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:branch-node type="operation" id="_FlowId-7f000001.3efb3a9.0.158c095d8e7.N7f65" name="BranchNMPAppMonte">
+                <con:context/>
+                <con:branch-table>
+                    <con:branch name="registrarClienteApp">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePaiirRegistrarClienteApp">
+                                <con:request>request-7f000001.3efb3a9.0.158c095d8e7.N7e9a</con:request>
+                                <con:response>response-7f000001.3efb3a9.0.158c095d8e7.N7e99</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+    <aler:alertRules xsi:nil="true" xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert"/>
+</con:pipelineEntry>

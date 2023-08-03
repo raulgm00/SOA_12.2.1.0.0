@@ -1,0 +1,78 @@
+<wsdl:definitions name="AdministrarPuntosWSDL" targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Services/ProgramasLealtad/AdministrarPuntos" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Services/ProgramasLealtad/AdministrarPuntos" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:inp1="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPAdministrarPuntos" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPAdministrarPuntos" schemaLocation="../XSD/AdministrarPuntosXSD.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="getPuntosRequest">
+    <wsdl:part name="payload" element="inp1:getPuntosRequest"/>
+  </wsdl:message>
+  <wsdl:message name="getPuntosResponse">
+    <wsdl:part name="payload" element="inp1:getPuntosResponse"/>
+  </wsdl:message>
+  <wsdl:message name="redimirPuntosRequest">
+    <wsdl:part name="payload" element="inp1:redimirPuntosRequest"/>
+  </wsdl:message>
+  <wsdl:message name="redimirPuntosResponse">
+    <wsdl:part name="payload" element="inp1:redimirPuntosResponse"/>
+  </wsdl:message>
+  <wsdl:message name="administrarPuntosHeaderMessage">
+    <wsdl:part name="headerMessage" element="NMPsh:headerMessage"/>
+  </wsdl:message>
+  <wsdl:message name="administrarPuntosHeaderMessageResponse">
+    <wsdl:part name="headerMessageResponse" element="NMPsh:headerMessageResponse"/>
+  </wsdl:message>
+  <wsdl:message name="administrarPuntosFaultMessage">
+    <wsdl:part name="psrt" element="NMPsm:messageError"/>
+  </wsdl:message>
+  <wsdl:portType name="administrarpuntosporttype">
+    <wsdl:operation name="getPuntos">
+      <wsdl:input message="tns:getPuntosRequest"/>
+      <wsdl:output message="tns:getPuntosResponse"/>
+      <wsdl:fault message="tns:administrarPuntosFaultMessage" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="redimirPuntos">
+      <wsdl:input message="tns:redimirPuntosRequest"/>
+      <wsdl:output message="tns:redimirPuntosResponse"/>
+      <wsdl:fault message="tns:administrarPuntosFaultMessage" name="fault"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="administrarpuntosbinding" type="tns:administrarpuntosporttype">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getPuntos">
+      <soap:operation style="document" soapAction="getPuntos"/>
+      <wsdl:input>
+        <soap:header message="tns:administrarPuntosHeaderMessage" part="headerMessage" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:header message="tns:administrarPuntosHeaderMessageResponse" part="headerMessageResponse" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="redimirPuntos">
+      <soap:operation style="document" soapAction="redimirPuntos"/>
+      <wsdl:input>
+        <soap:header message="tns:administrarPuntosHeaderMessage" part="headerMessage" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:header message="tns:administrarPuntosHeaderMessageResponse" part="headerMessageResponse" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="administrarpuntos">
+    <wsdl:port name="administrarpuntosport" binding="tns:administrarpuntosbinding">
+      <soap:address location=""/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

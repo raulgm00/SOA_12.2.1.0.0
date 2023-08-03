@@ -1,0 +1,280 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1" xmlns:af="http://xmlns.oracle.com/adf/faces/rich"
+          xmlns:f="http://java.sun.com/jsf/core" xmlns:c="http://java.sun.com/jsp/jstl/core">
+  <c:set var="employeepurchaseuiBundle" value="#{adfBundle['hl.ep.view.EmployeePurchaseUIBundle']}"/>
+  <af:panelGroupLayout layout="scroll" id="pgl2" styleClass="AFStretchWidth">
+    <af:panelSplitter id="ps1" styleClass="AFStretchWidth" dimensionsFrom="children" splitterPosition="350">
+      <f:facet name="first">
+        <af:panelGroupLayout layout="scroll" id="pgl4">
+          <af:panelBox text="#{employeepurchaseuiBundle.SEARCHORDERS_TITLE}" id="pb7" contentStyle="height:188px;" styleClass=" ">
+            <f:facet name="toolbar"/>
+            <af:panelFormLayout id="pfl2">
+              <af:inputText value="#{bindings.bndOrderNumber.inputValue}"
+                            label="#{employeepurchaseuiBundle.ORDER_ORDER_NUMBER}"
+                            required="#{bindings.bndOrderNumber.hints.mandatory}"
+                            columns="#{bindings.bndOrderNumber.hints.displayWidth}"
+                            maximumLength="#{bindings.bndOrderNumber.hints.precision}"
+                            shortDesc="#{bindings.bndOrderNumber.hints.tooltip}" id="it1" partialTriggers="cb2">
+                <f:validator binding="#{bindings.bndOrderNumber.validator}"/>
+              </af:inputText>
+              <af:inputDate value="#{bindings.bndOrderedDate.inputValue}"
+                            label="#{employeepurchaseuiBundle.ORDER_ORDERED_DATE}"
+                            required="#{bindings.bndOrderedDate.hints.mandatory}"
+                            columns="#{bindings.bndOrderedDate.hints.displayWidth}"
+                            shortDesc="#{bindings.bndOrderedDate.hints.tooltip}" id="id1">
+                <f:validator binding="#{bindings.bndOrderedDate.validator}"/>
+                <af:convertDateTime pattern="#{bindings.bndOrderedDate.format}"/>
+              </af:inputDate>
+              <af:inputText value="#{bindings.bndFileNumber.inputValue}"
+                            label="#{employeepurchaseuiBundle.EMPLOYEE_FILE}"
+                            required="#{bindings.bndFileNumber.hints.mandatory}"
+                            columns="#{bindings.bndFileNumber.hints.displayWidth}"
+                            maximumLength="#{bindings.bndFileNumber.hints.precision}"
+                            shortDesc="#{bindings.bndFileNumber.hints.tooltip}" id="it3">
+                <f:validator binding="#{bindings.bndFileNumber.validator}"/>
+              </af:inputText>
+              <af:selectOneChoice value="#{bindings.bndProcessingLoc.inputValue}"
+                                  label="#{employeepurchaseuiBundle.ORDER_SHIPPING_LOCATION}"
+                                  required="#{bindings.bndProcessingLoc.hints.mandatory}"
+                                  shortDesc="#{bindings.bndProcessingLoc.hints.tooltip}" id="soc1">
+                <f:selectItems value="#{bindings.bndProcessingLoc.items}" id="si1"/>
+              </af:selectOneChoice>
+              <af:panelGroupLayout id="pgl5" layout="horizontal">
+                <af:commandButton actionListener="#{bindings.ExecuteWithParams.execute}" text="Search"
+                                  disabled="#{!bindings.ExecuteWithParams.enabled}" id="cb1" accessKey="S"/>
+                <af:spacer width="10" height="10" id="s5"/>
+                <af:commandButton text="Reset" id="cb2" action="#{backingBeanScope.empPoSearchBean.clearSearch}"
+                                  accessKey="R">
+                  <af:resetActionListener/>
+                </af:commandButton>
+              </af:panelGroupLayout>
+            </af:panelFormLayout>
+            <af:spacer width="10" height="40" id="s1"/>
+          </af:panelBox>
+          <af:panelBox text="#{employeepurchaseuiBundle.RESULTS_TITLE}" id="pb1">
+            <f:facet name="toolbar"/>
+            <af:panelCollection id="pc1" styleClass="AFStretchWidth" partialTriggers="::cb1">
+              <f:facet name="menus"/>
+              <f:facet name="toolbar"/>
+              <f:facet name="statusbar"/>
+              <af:table value="#{bindings.OrderHeadersSearchVO1.collectionModel}" var="row"
+                        rows="#{bindings.OrderHeadersSearchVO1.rangeSize}"
+                        emptyText="#{bindings.OrderHeadersSearchVO1.viewable ? 'No data to display.' : 'Access Denied.'}"
+                        fetchSize="#{bindings.OrderHeadersSearchVO1.rangeSize}" rowBandingInterval="0"
+                        selectedRowKeys="#{bindings.OrderHeadersSearchVO1.collectionModel.selectedRow}"
+                        selectionListener="#{bindings.OrderHeadersSearchVO1.collectionModel.makeCurrent}"
+                        rowSelection="single" id="resId1" partialTriggers=":::cb1"
+                        filterModel="#{bindings.OrderHeadersSearchVO1Query.queryDescriptor}"
+                        queryListener="#{bindings.OrderHeadersSearchVO1Query.processQuery}" filterVisible="true"
+                        varStatus="vs">
+                <af:column sortProperty="#{bindings.OrderHeadersSearchVO1.hints.OrderNumber.name}" sortable="true"
+                           headerText="#{bindings.OrderHeadersSearchVO1.hints.OrderNumber.label}" id="resId1c2"
+                           width="110" filterable="true" displayIndex="-1">
+                  <af:outputText value="#{row.OrderNumber}" id="ot2" partialTriggers="::resId1 :::cb1"/>
+                </af:column>
+                <af:column sortProperty="#{bindings.OrderHeadersSearchVO1.hints.CustomerName.name}" sortable="true"
+                           headerText="#{bindings.OrderHeadersSearchVO1.hints.CustomerName.label}" id="resId1c3"
+                           width="120" filterable="true">
+                  <af:outputText value="#{row.CustomerName}" id="ot3"/>
+                </af:column>
+                <af:column sortProperty="#{bindings.OrderHeadersSearchVO1.hints.OrderedDate.name}" sortable="true"
+                           headerText="#{bindings.OrderHeadersSearchVO1.hints.OrderedDate.label}" id="resId1c6"
+                           width="60" filterable="true">
+                  <af:outputText value="#{row.OrderedDate}" id="ot6">
+                    <af:convertDateTime pattern="#{bindings.OrderHeadersSearchVO1.hints.OrderedDate.format}"/>
+                  </af:outputText>
+                  <f:facet name="filter">
+                    <af:inputDate value="#{vs.filterCriteria.OrderedDate}" id="id2">
+                      <af:convertDateTime pattern="#{bindings.OrderHeadersSearchVO1.hints.OrderedDate.format}"/>
+                    </af:inputDate>
+                  </f:facet>
+                </af:column>
+              </af:table>
+            </af:panelCollection>
+          </af:panelBox>
+        </af:panelGroupLayout>
+      </f:facet>
+      <f:facet name="second">
+        <af:panelGroupLayout layout="scroll" id="pgl1" styleClass="AFStretchWidth" partialTriggers="cb1 pc1:resId1">
+          <af:panelBox text="#{employeepurchaseuiBundle.ORDERINFORMATION_TITLE}" id="pb3" partialTriggers="pc1:resId1 cb1">
+            <f:facet name="toolbar">
+                <af:toolbar id="t2">
+                  <af:commandToolbarButton text="#{employeepurchaseuiBundle.COPYORDER_LABEL}" id="ctb1"
+                                           partialSubmit="false"
+                                           action="#{backingBeanScope.empPoSearchBean.copyOrder}"
+                                           icon="/resources/images/copy.png"/>
+                </af:toolbar>
+            </f:facet>
+            <af:panelGroupLayout id="pgl3" layout="horizontal" valign="top" styleClass="AFStretchWidth">
+              <af:panelBox id="pb4" text="#{employeepurchaseuiBundle.ORDERDETAILS_TITTLE}" showDisclosure="false" contentStyle="height:150px;">
+                <f:facet name="toolbar"/>
+                <af:panelFormLayout id="pfl1" maxColumns="4" rows="6" partialTriggers="pc1:resId1 cb1">
+                  <af:panelLabelAndMessage label="#{employeepurchaseuiBundle.ORDER_ORDER_NUMBER}" id="plam2"
+                                           inlineStyle="font-weight:bold; color:Green;">
+                    <af:outputText value="#{bindings.OrderNumber.inputValue}" id="ot5"/>
+                  </af:panelLabelAndMessage>
+                  <af:panelLabelAndMessage label="#{employeepurchaseuiBundle.ORDER_ORDERED_DATE}" id="plam6">
+                    <af:outputText value="#{bindings.OrderedDate.inputValue}" id="ot11">
+                      <af:convertDateTime pattern="#{bindings.OrderedDate.format}"/>
+                    </af:outputText>
+                  </af:panelLabelAndMessage>
+                  <af:panelLabelAndMessage label="#{employeepurchaseuiBundle.EMPLOYEE_NAME}" id="plam3">
+                    <af:outputText value="#{bindings.CustomerName.inputValue}" id="ot8"/>
+                  </af:panelLabelAndMessage>
+                  <af:panelLabelAndMessage label="#{employeepurchaseuiBundle.EMPLOYEE_FILE}" id="plam4">
+                    <af:outputText value="#{bindings.FileNumber.inputValue}" id="ot9"/>
+                  </af:panelLabelAndMessage>
+                  <af:panelLabelAndMessage label="#{employeepurchaseuiBundle.EMPLOYEE_PHONE}" id="plam12">
+                    <af:outputText value="#{bindings.ContactNumber.inputValue}" id="ot17"/>
+                  </af:panelLabelAndMessage>
+                  <af:panelLabelAndMessage label="#{employeepurchaseuiBundle.EMPLOYEE_EXT}" id="plam5">
+                    <af:outputText value="#{bindings.Extension.inputValue}" id="ot10"/>
+                  </af:panelLabelAndMessage>
+                </af:panelFormLayout>
+              </af:panelBox>
+              <af:panelBox id="pb5" text="#{employeepurchaseuiBundle.ADDRESS_TITLE}" showDisclosure="false" contentStyle="height:150px;">
+                <f:facet name="toolbar"/>
+                <af:panelFormLayout id="pfl3" rows="8">
+                  <f:facet name="footer"/>
+                  <af:panelLabelAndMessage label="#{employeepurchaseuiBundle.ORDER_SHIPPING_COUNTRY}" id="plam17">
+                    <af:outputText value="#{bindings.Country.inputValue}" id="ot7"/>
+                  </af:panelLabelAndMessage>
+                  <af:panelLabelAndMessage label="#{employeepurchaseuiBundle.ORDER_SHIPPING_LOCATION}" id="plam7">
+                    <af:outputText value="#{bindings.ProcessingLocation.inputValue}" id="ot12"/>
+                  </af:panelLabelAndMessage>
+                  <af:panelLabelAndMessage label="#{employeepurchaseuiBundle.ORDER_SHIPPING_ADDRESS}" id="plam8">
+                    <af:outputText value="#{bindings.Address.inputValue}" id="ot13"/>
+                  </af:panelLabelAndMessage>
+                  <af:panelLabelAndMessage label="#{employeepurchaseuiBundle.ORDER_SHIPPING_CITY}" id="plam9">
+                    <af:outputText value="#{bindings.City.inputValue}" id="ot14"/>
+                  </af:panelLabelAndMessage>
+                  <af:panelLabelAndMessage label="#{employeepurchaseuiBundle.ORDER_SHIPPING_COUNTY}" id="plam16">
+                    <af:outputText value="#{bindings.County.inputValue}" id="ot4"/>
+                  </af:panelLabelAndMessage>
+                  <af:panelLabelAndMessage label="#{employeepurchaseuiBundle.ORDER_SHIPPING_STATE}" id="plam10">
+                    <af:outputText value="#{bindings.State.inputValue}" id="ot15"/>
+                  </af:panelLabelAndMessage>
+                  <af:panelLabelAndMessage label="#{employeepurchaseuiBundle.ORDER_SHIPPING_POSTALCODE}" id="plam11">
+                    <af:outputText value="#{bindings.PostalCode.inputValue}" id="ot16"/>
+                  </af:panelLabelAndMessage>
+                </af:panelFormLayout>
+              </af:panelBox>
+              <af:panelBox id="pb6" text="#{employeepurchaseuiBundle.ORDERPRICE_TITLE}" showDisclosure="false"
+                           contentStyle="height:150px;">
+                <f:facet name="toolbar"/>
+                <af:panelFormLayout id="pfl4" rows="6">
+                  <af:panelLabelAndMessage label="#{employeepurchaseuiBundle.ORDER_SUBTOTAL}" id="plam13">
+                    <af:outputText value="#{bindings.SubTotal.inputValue}" id="ot19">
+                      <af:convertNumber groupingUsed="false" pattern="#{bindings.SubTotal.format}"/>
+                    </af:outputText>
+                  </af:panelLabelAndMessage>
+                  <af:panelLabelAndMessage label="#{employeepurchaseuiBundle.ORDER_TAX}" id="plam14">
+                    <af:outputText value="#{bindings.TaxAmount.inputValue}" id="ot28">
+                      <af:convertNumber groupingUsed="false" pattern="#{bindings.TaxAmount.format}"/>
+                    </af:outputText>
+                  </af:panelLabelAndMessage>
+                  <af:panelLabelAndMessage label="#{employeepurchaseuiBundle.ORDER_TOTAL}" id="plam15">
+                    <af:outputText value="#{bindings.TotalPrice.inputValue}" id="ot29">
+                      <af:convertNumber groupingUsed="false" pattern="#{bindings.TotalPrice.format}"/>
+                    </af:outputText>
+                  </af:panelLabelAndMessage>
+                  <af:panelLabelAndMessage label="Currency" id="plam1" rendered="false">
+                    <af:outputText value="USD" id="ot1">
+                      <af:convertNumber groupingUsed="false" pattern="#{bindings.TotalPrice.format}"/>
+                    </af:outputText>
+                  </af:panelLabelAndMessage>
+                </af:panelFormLayout>
+              </af:panelBox>
+            </af:panelGroupLayout>
+            <af:panelTabbed id="pt1" dimensionsFrom="disclosedChild">
+              <af:showDetailItem text="#{employeepurchaseuiBundle.ORDERLINES_TITLE}" id="sdi1">
+                <af:panelCollection id="pc2" partialTriggers="" styleClass="AFStretchWidth">
+                  <f:facet name="menus"/>
+                  <f:facet name="toolbar"/>
+                  <f:facet name="statusbar"/>
+                  <af:table value="#{bindings.OrderLinesSearchVO1.collectionModel}" var="row"
+                            rows="#{bindings.OrderLinesSearchVO1.rangeSize}"
+                            emptyText="#{bindings.OrderLinesSearchVO1.viewable ? 'No data to display.' : 'Access Denied.'}"
+                            fetchSize="#{bindings.OrderLinesSearchVO1.rangeSize}" rowBandingInterval="0" id="t1"
+                            partialTriggers=":::pc1:resId1 :::cb1"
+                            selectedRowKeys="#{bindings.OrderLinesSearchVO1.collectionModel.selectedRow}"
+                            selectionListener="#{bindings.OrderLinesSearchVO1.collectionModel.makeCurrent}"
+                            rowSelection="single" filterModel="#{bindings.OrderLinesSearchVO1Query.queryDescriptor}"
+                            queryListener="#{bindings.OrderLinesSearchVO1Query.processQuery}" filterVisible="true"
+                            varStatus="vs">
+                    <af:column sortProperty="#{bindings.OrderLinesSearchVO1.hints.LineNumber.name}" sortable="true"
+                               headerText="#{bindings.OrderLinesSearchVO1.hints.LineNumber.label}" id="c3"
+                               filterable="true">
+                      <af:outputText value="#{row.LineNumber}" id="ot18">
+                        <af:convertNumber groupingUsed="false"
+                                          pattern="#{bindings.OrderLinesSearchVO1.hints.LineNumber.format}"/>
+                      </af:outputText>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.OrderLinesSearchVO1.hints.Quantity.name}" sortable="true"
+                               headerText="#{bindings.OrderLinesSearchVO1.hints.Quantity.label}" id="c5" width="50"
+                               filterable="true">
+                      <af:outputText value="#{row.Quantity}" id="ot20">
+                        <af:convertNumber groupingUsed="false"
+                                          pattern="#{bindings.OrderLinesSearchVO1.hints.Quantity.format}"/>
+                      </af:outputText>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.OrderLinesSearchVO1.hints.ItemType.name}" sortable="true"
+                               headerText="#{bindings.OrderLinesSearchVO1.hints.ItemType.label}" id="c6"
+                               filterable="true">
+                      <af:outputText value="#{row.ItemType}" id="ot21"/>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.OrderLinesSearchVO1.hints.Sku.name}" sortable="true"
+                               headerText="#{bindings.OrderLinesSearchVO1.hints.Sku.label}" id="c12" filterable="true">
+                      <af:outputText value="#{row.Sku}" id="ot27"/>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.OrderLinesSearchVO1.hints.ItemDescription.name}" sortable="true"
+                               headerText="#{bindings.OrderLinesSearchVO1.hints.ItemDescription.label}" id="c7"
+                               filterable="true">
+                      <af:outputText value="#{row.ItemDescription}" id="ot22"/>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.OrderLinesSearchVO1.hints.Uom.name}" sortable="true"
+                               headerText="#{bindings.OrderLinesSearchVO1.hints.Uom.label}" id="c8" width="30"
+                               filterable="true">
+                      <af:outputText value="#{row.Uom}" id="ot23"/>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.OrderLinesSearchVO1.hints.UnitPrice.name}" sortable="true"
+                               headerText="#{bindings.OrderLinesSearchVO1.hints.UnitPrice.label}" id="c9"
+                               filterable="true">
+                      <af:outputText value="#{row.UnitPrice}" id="ot24">
+                        <af:convertNumber groupingUsed="false"
+                                          pattern="#{bindings.OrderLinesSearchVO1.hints.UnitPrice.format}"/>
+                      </af:outputText>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.OrderLinesSearchVO1.hints.TotalItemPrice.name}" sortable="true"
+                               headerText="#{bindings.OrderLinesSearchVO1.hints.TotalItemPrice.label}" id="c10"
+                               filterable="true">
+                      <af:outputText value="#{row.TotalItemPrice}" id="ot25">
+                        <af:convertNumber groupingUsed="false"
+                                          pattern="#{bindings.OrderLinesSearchVO1.hints.TotalDiscountAmount.format}"/>
+                      </af:outputText>
+                    </af:column>
+                    <af:column sortProperty="#{bindings.OrderLinesSearchVO1.hints.TotalDiscountPrice.name}"
+                               sortable="true"
+                               headerText="#{bindings.OrderLinesSearchVO1.hints.TotalDiscountPrice.label}" id="c11"
+                               filterable="true">
+                      <af:outputText value="#{row.TotalDiscountPrice}" id="ot26">
+                        <af:convertNumber groupingUsed="false"
+                                          pattern="#{bindings.OrderLinesSearchVO1.hints.TotalDiscountPrice.format}"/>
+                      </af:outputText>
+                    </af:column>
+                  </af:table>
+                </af:panelCollection>
+              </af:showDetailItem>
+            </af:panelTabbed>
+          </af:panelBox>
+        </af:panelGroupLayout>
+      </f:facet>
+    </af:panelSplitter>
+     <af:popup childCreation="deferred" autoCancel="disabled" id="p4" contentDelivery="lazyUncached"
+              binding="#{backingBeanScope.empPoSearchBean.errorPopup}">
+      <af:dialog id="d4" type="ok" title="Error">
+        <af:outputText value="#{pageFlowScope.msgErrorPopup}" id="ot49"/>
+      </af:dialog>
+    </af:popup>
+  </af:panelGroupLayout>
+</jsp:root>

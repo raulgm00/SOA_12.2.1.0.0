@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ser:proxyServiceEntry xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:oper="http://xmlns.oracle.com/servicebus/proxy/operations" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env">
+    <ser:coreEntry isAutoPublish="false">
+        <ser:description/>
+        <ser:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config">
+            <con:wsdl ref="PoC/Factura/Resources/WSDL/FacturaEmisorWSDL"/>
+            <con:port>
+                <con:name>FacturaEmisor_pttPort</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Schema/NMPFactura</con:namespace>
+            </con:port>
+            <con:selector type="SOAP body"/>
+            <con:WSI-compliant>false</con:WSI-compliant>
+        </ser:binding>
+        <oper:operations enabled="true">
+            <oper:messageTracing enabled="true">
+                <oper1:detailsLevel xmlns:oper1="http://xmlns.oracle.com/servicebus/operations">terse</oper1:detailsLevel>
+                <oper1:maxSize xmlns:oper1="http://xmlns.oracle.com/servicebus/operations">8192</oper1:maxSize>
+            </oper:messageTracing>
+        </oper:operations>
+        <ser:ws-policy>
+            <ser:binding-mode>wsdl-policy-attachments</ser:binding-mode>
+        </ser:ws-policy>
+        <ser:invoke ref="PoC/Factura/Proxy Services/FacturaEmisorPXY" xsi:type="con:PipelineRef" xmlns:con="http://www.bea.com/wli/sb/pipeline/config"/>
+    </ser:coreEntry>
+    <ser:endpointConfig>
+        <tran:provider-id>http</tran:provider-id>
+        <tran:inbound>true</tran:inbound>
+        <tran:URI>
+            <env:value>/NMP/CRM/FacturaEmisor1</env:value>
+        </tran:URI>
+        <tran:inbound-properties/>
+        <tran:all-headers>false</tran:all-headers>
+        <tran:provider-specific xsi:type="http:HttpEndPointConfiguration" xmlns:http="http://www.bea.com/wli/sb/transports/http">
+            <http:inbound-properties/>
+        </tran:provider-specific>
+    </ser:endpointConfig>
+</ser:proxyServiceEntry>

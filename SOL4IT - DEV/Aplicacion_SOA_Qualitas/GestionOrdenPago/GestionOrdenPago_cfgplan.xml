@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAConfigPlan xmlns:jca="http://platform.integration.oracle/blocks/adapter/fw/metadata" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:orawsp="http://schemas.oracle.com/ws/2006/01/policy" xmlns:edl="http://schemas.oracle.com/events/edl" xmlns="http://schemas.oracle.com/soa/configplan">
+   <composite name="GestionOrdenPago">
+      <!--Add search and replace rules for the import section of a composite
+	Example:
+	<searchReplace>
+		<search>http://my-dev-server</search>
+		<replace>http://my-test-server</replace>
+	<searchReplace>
+	<searchReplace>
+		<search>8888</search>
+		<replace>8889</replace>
+	<searchReplace>-->
+      <import>
+         <searchReplace>
+            <search/>
+            <replace/>
+         </searchReplace>
+      </import>
+      <service name="gestionordenpago_client_ep">
+         <binding type="ws">
+            <attribute name="port">
+               <replace>http://qualitas.com.mx/Comunes/gestionOrdenPagoBPEL/v1/#wsdl.endpoint(gestionordenpago_client_ep/gestionOrdenPagoBPELPort)</replace>
+            </attribute>
+         </binding>
+      </service>
+      <property name="compositeID">
+         <replace>f846c694-9cf1-44f1-bef0-6a2666613c2b</replace>
+      </property>
+      <property name="productVersion">
+         <replace>12.2.1.0.0.151013</replace>
+      </property>
+      <!--Add search and replace rules for the component properties
+	For components and service/reference bindings, you can add policy references.
+	Example:
+	<component name="*">
+		<wsp:PolicyReference orawsp:category="management" orawsp:status="enabled" URI="oracle/log_policy"/>
+	</component>-->
+      <reference name="PagosService">
+         <!--Add search and replace rules for the binding properties-->
+         <binding type="ws">
+            <attribute name="port">
+               <replace>http://service.pagos.qualitas.com.mx/#wsdl.endpoint(PagosServiceService/PagosServicePort)</replace>
+            </attribute>
+            <attribute name="location">
+               <replace>http://11.50.0.73:9010/pagos-web/servicios/pagosService?wsdl</replace>
+            </attribute>
+            <property name="weblogic.wsee.wsat.transaction.flowOption">
+               <replace>WSDLDriven</replace>
+            </property>
+         </binding>
+      </reference>
+      <reference name="DB_InsertOrdenPago">
+         <property name="jca.retry.count">
+            <replace>4</replace>
+         </property>
+         <property name="jca.retry.interval">
+            <replace>1</replace>
+         </property>
+         <property name="jca.retry.backoff">
+            <replace>2</replace>
+         </property>
+         <property name="jca.retry.maxInterval">
+            <replace>120</replace>
+         </property>
+         <binding type="jca"/>
+      </reference>
+      <reference name="DB_UpdateOrdenPago">
+         <property name="jca.retry.count">
+            <replace>4</replace>
+         </property>
+         <property name="jca.retry.interval">
+            <replace>1</replace>
+         </property>
+         <property name="jca.retry.backoff">
+            <replace>2</replace>
+         </property>
+         <property name="jca.retry.maxInterval">
+            <replace>120</replace>
+         </property>
+         <binding type="jca"/>
+      </reference>
+   </composite>
+   <!--To configure monitor.config: 
+	<property name="enabled"><replace>true</replace></property>
+	<property name="dataObjectsFolder"><searchReplace><search>mydev</search><replace>myproduction</replace></searchReplace></property>
+	
+	sample properties to configure for adapter: 
+	<jca:property name="QueueName"><replace>medmq1</replace></jca:property>
+	
+	To add search and replace rules for wsdls, xsd and jca files
+	Example:
+	<searchReplace>
+		<search>http://my-dev-server</search>
+		<replace>http://my-test-server</replace>
+	<searchReplace>
+	<searchReplace>
+		<search>8888</search>
+		<replace>8889</replace>
+	<searchReplace>
+	-->
+   <wsdlAndSchema name="Adapters/DB_InsertOrdenPago_db.jca|Adapters/DB_UpdateOrdenPago_db.jca|Schemas/DB_InsertOrdenPago_table.xsd|Schemas/DB_UpdateOrdenPago_table.xsd|Schemas/GestionOrdenPago.xsd|Schemas/objetosComunes.xsd|WSDLs/DB_InsertOrdenPago.wsdl|WSDLs/DB_UpdateOrdenPago.wsdl|WSDLs/GestionOrdenPagoBPEL.wsdl|WSDLs/GestionOrdenPagoBPELWrapper.wsdl|WSDLs/PagosServiceWrapper.wsdl">
+    <!--searchReplace>
+      <search></search>
+      <replace></replace>
+    </searchReplace>
+    <searchReplace>
+      <search></search>
+      <replace></replace>
+    </searchReplace-->
+   </wsdlAndSchema>
+</SOAConfigPlan>

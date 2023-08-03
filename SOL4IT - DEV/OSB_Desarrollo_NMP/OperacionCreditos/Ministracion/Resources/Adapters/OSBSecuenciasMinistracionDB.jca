@@ -1,0 +1,30 @@
+<adapter-config name="dbReference" adapter="db" wsdlLocation="../WSDLs/NMPSecuenciasMinistracionDBWSDL.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+    <connection-factory UIConnectionName="ProyectosBpmDev" location="eis/DB/NMPBMP_DBO"/>
+    
+   <endpoint-interaction portType="SecuenciasMinistracionDbPortType" operation="insertSequence">
+        <interaction-spec className="oracle.tip.adapter.db.DBWriteInteractionSpec">
+            <property name="DescriptorName" value="dbReference.NmpSecuencias"/>
+            <property name="DmlType" value="insert"/>
+            <property name="MappingsMetaDataURL" value="OSBSecuenciasMinistracionMAP.xml"/>
+            <property name="GetActiveUnitOfWork" value="false"/>
+            <property name="DetectOmissions" value="true"/>
+        </interaction-spec>
+    </endpoint-interaction>
+    <endpoint-interaction portType="SecuenciasMinistracionDbPortType" operation="updateSequence">
+        <interaction-spec className="oracle.tip.adapter.db.DBWriteInteractionSpec">
+            <property name="DescriptorName" value="dbReference.NmpSecuencias"/>
+            <property name="DmlType" value="update"/>
+            <property name="MappingsMetaDataURL" value="OSBSecuenciasMinistracionMAP.xml"/>
+            <property name="DetectOmissions" value="true"/>
+            <property name="GetActiveUnitOfWork" value="false"/>
+        </interaction-spec>
+    </endpoint-interaction> 
+    
+    <endpoint-interaction portType="SecuenciasMinistracionDbPortType" operation="getInfoSequence">
+    <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+      <property name="SqlString" value="select prefijo, secuencia, 1 tipoSeq, to_char(sysdate,'ddmm')||chr(secuencia) prefijoId         from nmp_secuencias         where prefijo=to_char(sysdate,'yyyy')         union          select prefijo, secuencia, 2 tipoSeq, to_char(sysdate,'ddmm')||chr(secuencia) prefijoId         from nmp_secuencias         where REGEXP_substr(prefijo,'\d+')=to_char(sysdate,'yyyy')-1         union         select prefijo, secuencia, 3 tipoSeq, prefijo prefijoId         from nmp_secuencias         where prefijo =  to_char(sysdate,'ddmm')||         (select chr(secuencia) from NMP_SECUENCIAS where prefijo=to_char(sysdate,'yyyy'))"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+    
+</adapter-config>

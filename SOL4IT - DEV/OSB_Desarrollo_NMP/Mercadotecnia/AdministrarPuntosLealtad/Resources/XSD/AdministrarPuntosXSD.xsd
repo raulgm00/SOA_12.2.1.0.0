@@ -1,0 +1,34 @@
+<xsd:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPAdministrarPuntos" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:NMPAdministrarP="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPAdministrarPuntos" xmlns:NMPCMessage="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage">
+  <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+
+  <xsd:element name="getPuntosRequest" type="NMPAdministrarP:getPuntosRequestType"/>
+  <xsd:element name="getPuntosResponse" type="NMPAdministrarP:getPuntosResponseType"/>
+  <xsd:element name="redimirPuntosRequest" type="NMPAdministrarP:redimirPuntosRequestType"/>
+  <xsd:element name="redimirPuntosResponse" type="NMPCMessage:MessageResponse"/>
+  <xsd:complexType name="getPuntosRequestType">
+    <xsd:sequence>
+      <xsd:element name="idCliente" minOccurs="0" type="xsd:int"/>
+      <xsd:element name="numeroDeCredencial" minOccurs="0" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="getPuntosResponseType">
+    <xsd:sequence>
+      <xsd:element name="cantidadPuntos" type="xsd:decimal" minOccurs="0" nillable="true"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="redimirPuntosRequestType">
+    <xsd:sequence>
+      <xsd:element name="IdCliente" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="numeroDeCredencial" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="puntos" minOccurs="1" type="xsd:decimal"/>
+      <xsd:element name="transaccion" minOccurs="0" nillable="true">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="idTransaccion" type="xsd:string" minOccurs="1"/>
+            <xsd:element name="idSucursal" type="xsd:int" minOccurs="1"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>

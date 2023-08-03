@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="PoC/AutosSinResguardo/NmpDB/Resources/WSDL/NmpClientesAutosDB"/>
+            <con:binding>
+                <con:name>ClientesAutosDB_pttSOAP11Binding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Service/ClientesAutosDB</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:logging enabled="false" level="debug"/>
+            <oper:monitoring enabled="true" level="service" aggregationInterval="10"/>
+            <oper:reporting>false</oper:reporting>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:pipeline name="_onErrorHandler-a1e030f.N7d8edf5d.19.1566fd82ed5.N8000" type="error">
+            <con:stage name="stage1">
+                <con:context>
+                    <con2:varNsDecl prefix="cli" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/ClientesAutoInfoDB"/>
+                </con:context>
+                <con:actions>
+                    <con3:report xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id>_ActionId-a1e030f.N7d8edf5d.1a.1566fd87e15.N8000</con2:id>
+                        <con3:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/ctx:reason</con:xqueryText>
+                        </con3:expr>
+                    </con3:report>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:route-node name="RouteNodeDB" error-handler="_onErrorHandler-a1e030f.N7d8edf5d.19.1566fd82ed5.N8000">
+                <con:context>
+                    <con2:varNsDecl prefix="cli" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/ClientesAutoInfoDB"/>
+                </con:context>
+                <con:actions>
+                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                        <con2:id>_ActionId-N3f57c7ff.714f8497.0.1560983aaa2.N7f9d</con2:id>
+                        <con1:service ref="PoC/AutosSinResguardo/NmpDB/Business Service/NmpClientesAutoDB2" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation passThrough="true"/>
+                        <con1:outboundTransform>
+                            <con3:report xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+                                <con2:id>_ActionId-a1e030f.N4089bba8.62.156342b2e25.N8000</con2:id>
+                                <con3:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                                </con3:expr>
+                                <con3:labels>
+                                    <con3:key>idCliente</con3:key>
+                                    <con3:varName>body</con3:varName>
+                                    <con3:value>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./cli:NmpClientesInfoCollection/cli:NmpClientesInfo/cli:numCredencial</con:xpathText>
+                                    </con3:value>
+                                </con3:labels>
+                            </con3:report>
+                        </con1:outboundTransform>
+                        <con1:responseTransform>
+                            <con3:ifThenElse xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con2:id>_ActionId-N3f57c7ff.714f8497.0.1560983aaa2.N7f35</con2:id>
+                                <con3:case id="_BranchId-N3f57c7ff.714f8497.0.1560983aaa2.N7f34">
+                                    <con3:condition>
+                                        <con2:xqueryText>$inbound/ctx:service/ctx:operation='insertClienteAutoInfo' or $inbound/ctx:service/ctx:operation='updateClienteAutoInfo'</con2:xqueryText>
+                                    </con3:condition>
+                                    <con3:actions>
+                                        <con3:assign varName="body">
+                                            <con2:id>_ActionId-N3f57c7ff.714f8497.0.1560983aaa2.N7f00</con2:id>
+                                            <con3:expr>
+                                                <con2:xqueryText><![CDATA[<soapenv:Body xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:ca="http://servicios.montedepiedad.com.mx/NMP/Schema/ClientesAutoInfoDB">
+    <ca:clientesAutosResponse>
+        <ca:resultado>
+            <ca:estado>OK</ca:estado>
+            <ca:mensaje>Registro realizado exitosamente</ca:mensaje>
+        </ca:resultado>
+    </ca:clientesAutosResponse>
+</soapenv:Body>]]></con2:xqueryText>
+                                            </con3:expr>
+                                        </con3:assign>
+                                    </con3:actions>
+                                </con3:case>
+                            </con3:ifThenElse>
+                        </con1:responseTransform>
+                    </con1:route>
+                </con:actions>
+            </con:route-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

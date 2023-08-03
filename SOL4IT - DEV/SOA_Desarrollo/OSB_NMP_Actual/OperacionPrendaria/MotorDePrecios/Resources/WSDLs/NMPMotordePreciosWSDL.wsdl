@@ -1,0 +1,78 @@
+<wsdl:definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/MotordePrecios" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:valuacion="http://servicios.montedepiedad.com.mx/NMP/Schema/MotordePrecios" xmlns:datatypes="http://servicios.montedepiedad.com.mx/NMP/Schema/MotordePrecios/Elementos" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:head="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">
+  <wsdl:types>
+    <s:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/MotordePrecios/Elementos" attributeFormDefault="qualified" elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema">
+      <s:include schemaLocation="../Schemas/NMPMotordePreciosElementosXSD.xsd"/>
+      <s:import schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+      <s:import namespace="http://schemas.xmlsoap.org/soap/envelope/" schemaLocation="../../../../Common/XSD/NMPStandardFault.xsd.xsd"/>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="inputHeader">
+    <wsdl:part name="input" element="head:headerMessage"/>
+  </wsdl:message>
+  <wsdl:message name="outputHeader">
+    <wsdl:part name="output" element="head:headerMessageResponse"/>
+  </wsdl:message>
+  <wsdl:message name="Fault">
+    <wsdl:part name="fault" element="env:Fault"/>
+  </wsdl:message>
+  <wsdl:message name="ValuarPrendaBasicoIn">
+    <wsdl:part name="parameters" element="datatypes:valuarPrendaBasicoRequest"/>
+  </wsdl:message>
+  <wsdl:message name="ValuarPrendaBasicoOut">
+    <wsdl:part name="parameters" element="datatypes:valuarPrendaBasicoResponse"/>
+  </wsdl:message>
+  <wsdl:message name="ValuarPrendaNMPIn">
+    <wsdl:part name="parameters" element="datatypes:valuarPrendaNMPRequest"/>
+  </wsdl:message>
+  <wsdl:message name="ValuarPrendaNMPOut">
+    <wsdl:part name="parameters" element="datatypes:valuarPrendaNMPResponse"/>
+  </wsdl:message>
+  <wsdl:portType name="ValuadorDiamantesService">
+    <wsdl:operation name="valuarPrendaBasico">
+      <wsdl:input message="valuacion:ValuarPrendaBasicoIn"/>
+      <wsdl:output message="valuacion:ValuarPrendaBasicoOut"/>
+      <wsdl:fault message="valuacion:Fault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="valuarPrendaNMP">
+      <wsdl:input message="valuacion:ValuarPrendaNMPIn"/>
+      <wsdl:output message="valuacion:ValuarPrendaNMPOut"/>
+      <wsdl:fault message="valuacion:Fault" name="fault"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ValuadorService" type="valuacion:ValuadorDiamantesService">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="valuarPrendaBasico">
+      <soap:operation soapAction="http://servicios.montedepiedad.com.mx/NMP/MotordePrecios/diamantes/valuarPrendaBasico" style="document"/>
+      <wsdl:input>
+        <soap:header message="valuacion:inputHeader" part="input" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:header message="valuacion:outputHeader" part="output" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="valuarPrendaNMP">
+      <soap:operation soapAction="http://servicios.montedepiedad.com.mx/NMP/MotordePrecios/diamantes/valuarPrendaNMP" style="document"/>
+      <wsdl:input>
+        <soap:header message="valuacion:inputHeader" part="input" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:header message="valuacion:outputHeader" part="output" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ValuadorDiamantes">
+    <wsdl:port name="ValuadorDiamantesService" binding="valuacion:ValuadorService">
+      <soap:address location="http://localhost:8011/ValuadorDiamantesService"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

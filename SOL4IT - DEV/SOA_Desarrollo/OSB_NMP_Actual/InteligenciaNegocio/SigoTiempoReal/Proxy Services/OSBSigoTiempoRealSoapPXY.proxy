@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ser:proxyServiceEntry xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con="http://www.bea.com/wli/sb/typesystem/config" xmlns:oper="http://xmlns.oracle.com/servicebus/proxy/operations" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env">
+    <ser:coreEntry>
+        <ser:description>Interfaz del flujo de servicio que recibe un mensaje XML que contine un conjunto de operaciones prendarias a enviarse al aplicativo BAM 12c.
+
+Las operaciones que permite hacer llegar al aplicativo BAM 12c son:
+* PP - PAGO EMPEÑO O AVALÚO
+* RF - REFRENDO
+* DS - DESEMPEÑO
+* PD - DEMASÍA
+* VB - VENTA CON BILLETE
+* VP - VENTA AL PÚBLICO
+* BA - CARGO AL VALUADOR
+* REP - RECHAZO
+* RE - RE EMPEÑO
+* DSR - DESEMPEÑO PARA RE-EMPEÑO
+* VBR - VENTA CONBILLETE PARA RE-EMPEÑO
+* PSF - PAGO SALDO A FAVOR</ser:description>
+        <ser:binding type="Mixed" xsi:type="con:MixedBindingType" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config">
+            <con:request type="XML">
+                <con1:schema ref="OperacionPrendaria/Prestamo/Resources/Schemas/PrestamoSvcXSD" element="updatePrestamoRequest" xmlns:con1="http://www.bea.com/wli/sb/typesystem/config"/>
+            </con:request>
+        </ser:binding>
+        <oper:operations enabled="true">
+            <oper:messageTracing enabled="true">
+                <oper1:detailsLevel xmlns:oper1="http://xmlns.oracle.com/servicebus/operations">full</oper1:detailsLevel>
+                <oper1:maxSize xmlns:oper1="http://xmlns.oracle.com/servicebus/operations">8192</oper1:maxSize>
+            </oper:messageTracing>
+            <oper:monitoring enabled="true" aggregationInterval="1440"/>
+        </oper:operations>
+        <ser:invoke ref="InteligenciaNegocio/SigoTiempoReal/Pipelines/OSBSigoTiempoRealPL" xsi:type="con:PipelineRef" xmlns:con="http://www.bea.com/wli/sb/pipeline/config"/>
+        <ser:xqConfiguration>
+            <ser:snippetVersion>1.0</ser:snippetVersion>
+        </ser:xqConfiguration>
+    </ser:coreEntry>
+    <ser:endpointConfig>
+        <tran:provider-id>jms</tran:provider-id>
+        <tran:inbound>true</tran:inbound>
+        <tran:URI>
+            <env:value>jms://10.30.3.15:8011/PrestamoCF/LoanStatusBAMQ</env:value>
+        </tran:URI>
+        <tran:inbound-properties/>
+        <tran:provider-specific xsi:type="jms:JmsEndPointConfiguration" xmlns:jms="http://www.bea.com/wli/sb/transports/jms">
+            <jms:is-queue>true</jms:is-queue>
+            <jms:is-secure>false</jms:is-secure>
+            <jms:inbound-properties>
+                <jms:response-required>false</jms:response-required>
+                <jms:XA-required>false</jms:XA-required>
+                <jms:transaction-timeout>600</jms:transaction-timeout>
+            </jms:inbound-properties>
+            <jms:request-encoding>UTF-8</jms:request-encoding>
+            <jms:jndi-timeout>0</jms:jndi-timeout>
+        </tran:provider-specific>
+    </ser:endpointConfig>
+</ser:proxyServiceEntry>

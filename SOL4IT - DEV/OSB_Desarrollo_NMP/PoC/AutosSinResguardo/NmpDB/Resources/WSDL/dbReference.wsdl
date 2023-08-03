@@ -1,0 +1,54 @@
+<wsdl:definitions name="dbReference" targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/ApplicationSOADevNMP/testProject/dbReference" xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/ApplicationSOADevNMP/testProject/dbReference" xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/" xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:top="http://servicios.montedepiedad.com.mx/NMP/Schema/ClientesAutoInfoDB" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <plt:partnerLinkType name="dbReference_plt">
+    <plt:role name="dbReference_role">
+      <plt:portType name="tns:dbReference_ptt"/>
+    </plt:role>
+  </plt:partnerLinkType>
+  <wsdl:types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/ClientesAutoInfoDB" schemaLocation="../XSD/NmpClientesAutosDB.xsd"/>
+    </schema>
+  </wsdl:types>
+  <wsdl:message name="selectByPrimaryKey_inputParameters">
+    <wsdl:part name="selectByPrimaryKey_inputParameters" element="top:getInfoClienteAutoRequest"/>
+  </wsdl:message>
+  <wsdl:message name="NmpClientesInfoCollection_msg">
+    <wsdl:part name="NmpClientesInfoCollection" element="top:NmpClientesInfoCollection"/>
+  </wsdl:message>
+  <wsdl:portType name="dbReference_ptt">
+    <wsdl:operation name="insert">
+      <wsdl:input message="tns:NmpClientesInfoCollection_msg"/>
+    </wsdl:operation>
+    <wsdl:operation name="update">
+      <wsdl:input message="tns:NmpClientesInfoCollection_msg"/>
+    </wsdl:operation>
+    <wsdl:operation name="selectByPrimaryKey">
+      <wsdl:input message="tns:selectByPrimaryKey_inputParameters"/>
+      <wsdl:output message="tns:NmpClientesInfoCollection_msg"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="dbReference_pttSOAP11Binding" type="tns:dbReference_ptt">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="insert">
+      <soap:operation style="document" soapAction="http://xmlns.oracle.com/pcbpel/adapter/db/ApplicationSOADevNMP/testProject/dbReference/insert"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="NmpClientesInfoCollection"/>
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="update">
+      <soap:operation style="document" soapAction="http://xmlns.oracle.com/pcbpel/adapter/db/ApplicationSOADevNMP/testProject/dbReference/update"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="NmpClientesInfoCollection"/>
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="selectByPrimaryKey">
+      <soap:operation style="document" soapAction="http://xmlns.oracle.com/pcbpel/adapter/db/ApplicationSOADevNMP/testProject/dbReference/selectByPrimaryKey"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="selectByPrimaryKey_inputParameters"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="NmpClientesInfoCollection"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+</wsdl:definitions>

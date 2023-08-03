@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/publish/config" xmlns:con4="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con5="http://www.bea.com/wli/sb/stages/alert/config">
+    <con:coreEntry>
+        <con:description>Pipeline en el que se procesa e intercambia informacion contable entre aplicaciones de NMP</con:description>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="Contabilidad/Contabilidad/Resources/WSDLs/NMPContabilidadSvcWSDL"/>
+            <con:binding>
+                <con:name>ContabilidadBinding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Services/NMPContabilidad</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:tracingEnabled>true</oper:tracingEnabled>
+        </oper:operations>
+        <con:transactions isRequired="true" sameTxForResponse="true"/>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router errorHandler="error-N3f57c7ff.N3899871a.0.15694179d3c.N7d1f">
+        <con:pipeline type="error" name="error-N3f57c7ff.N1c9cc691.0.1569eb8fd04.N7e5f">
+            <con:stage id="_StageId-N3f57c7ff.N1c9cc691.0.1569eb8fd04.N7e5e" name="StageValidarBodyCptoContErrorHandler">
+                <con:comment>Manejador de excepciones generados por la validacion del body de la peticion</con:comment>
+                <con:context/>
+                <con:actions>
+                    <con1:replace contents-only="true" varName="body">
+                        <con2:comment>Manejador de expciones generadas por la validacion del body de la peticion, servicio de Contabilidad, operacion registrarConceptoContable</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N1c9cc691.0.1569eb8fd04.N7e2a</con2:id>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="Contabilidad/Contabilidad/Resources/Transformations/TRContabilidadFault"/>
+                                <con2:input>$fault</con2:input>
+                                <con2:param name="AppError">
+                                    <con2:path>'(Validacion Body Request)'</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con2:reply isError="true">
+                        <con2:comment>Responder con un error de validacion en el body de la peticion</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N1c9cc691.0.1569eb8fd04.N7df6</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.N3899871a.0.15694179d3c.N7eae">
+            <con:stage id="_StageId-N3f57c7ff.N3899871a.0.15694179d3c.N7ead" name="StagePublicarCptoContToSidErrorHandler">
+                <con:comment>Manejador de excepciones generados por el procesamiento y envio de un concepto contable a recurso JMS</con:comment>
+                <con:context/>
+                <con:actions>
+                    <con1:replace contents-only="true" varName="body">
+                        <con2:comment>Manejador de expciones generadas en el envio de informacion a JMS Queue ConceptosToSidQ, servicio de Contabilidad, operacion registrarConceptoContable</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N66aef568.0.15699ddcfaa.N7ed0</con2:id>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="Contabilidad/Contabilidad/Resources/Transformations/TRContabilidadFault"/>
+                                <con2:input>$fault</con2:input>
+                                <con2:param name="AppError">
+                                    <con2:path>'(JMS Resource)'</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con5:alert>
+                        <con2:comment>Responder con un error de validacion en el header de la peticion</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N1c9cc691.0.1569eb8fd04.N7f2d</con2:id>
+                        <con5:destination ref="Contabilidad/Contabilidad/Resources/Alerts/NMPContabilidadAlert"/>
+                        <con5:description>Generar alerta en el procesamiento o envio de concepto contable a recurso JMS</con5:description>
+                        <con5:severity>critical</con5:severity>
+                        <con5:payload>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con5:payload>
+                    </con5:alert>
+                    <con4:report>
+                        <con2:comment>Reportar un fallo para las peticiones por errors en procesamiento o envio de concepto contable a recurso JMS</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N2204db2c.0.156a38ef1a0.N7ffe</con2:id>
+                        <con4:expr>
+                            <con2:xqueryText>$msgId</con2:xqueryText>
+                        </con4:expr>
+                        <con4:labels>
+                            <con4:key>FechaRegistro:</con4:key>
+                            <con4:varName>fechaRegistro</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>.</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                    </con4:report>
+                    <con2:reply isError="true">
+                        <con2:comment>Responder con un error generado en el procesamiento y envio de concepto contable a recurso JMS</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N66aef568.0.15699ddcfaa.N7ecd</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.N3899871a.0.15694179d3c.N7d1f">
+            <con:stage id="_StageId-N3f57c7ff.N3899871a.0.15694179d3c.N7d1e" name="StageGeneralErrorHandler">
+                <con:comment>Manejador de excepciones general para el servicio de contabilidad</con:comment>
+                <con:context/>
+                <con:actions>
+                    <con1:replace contents-only="true" varName="body">
+                        <con2:comment>Generar excepcion de acuerdo al catalogo de errores definido en TemplateFaultsMondePiedad.xsl y estructura de error del servicio</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N1c9cc691.0.1569eb8fd04.N7f37</con2:id>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="Contabilidad/Contabilidad/Resources/Transformations/TRContabilidadFault"/>
+                                <con2:input>$fault</con2:input>
+                                <con2:param name="AppError">
+                                    <con2:path>' '</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con5:alert>
+                        <con2:comment>Crear una alerta para notificar de un problema con el servicio de contabilidad</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N1c9cc691.0.1569eb8fd04.N7f2a</con2:id>
+                        <con5:destination ref="Contabilidad/Contabilidad/Resources/Alerts/NMPContabilidadAlert"/>
+                        <con5:description>Problema en servicio Contabilidad</con5:description>
+                        <con5:severity>critical</con5:severity>
+                        <con5:payload>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con5:payload>
+                    </con5:alert>
+                    <con2:reply isError="true">
+                        <con2:comment>Reply con error una vez que se ha alertado</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N1c9cc691.0.1569eb8fd04.N7f34</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.N3899871a.0.15694179d3c.N7f9d">
+            <con:stage id="_StageId-N3f57c7ff.N3899871a.0.15694179d3c.N7f9b" name="StageValidaHeader" errorHandler="error-N3f57c7ff.N3899871a.0.15694179d3c.N7ee1">
+                <con:comment>Validacion de header de la peticion al servicio Contabilidad, operacion registrarConceptoContable</con:comment>
+                <con:context>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPContabilidad"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="msgId">
+                        <con2:comment>Usar Message ID de la peticion para dar trazabilidad a la peticion en bitacora y reportes</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N3899871a.0.15694179d3c.N7f67</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$messageID</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="fechaRegistro">
+                        <con2:comment>Almacenar en variable la fecha de registro contenida en la peticion para dar trazabilidad en reportes</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N2204db2c.0.156a38ef1a0.N7fcb</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$body/nmp:registrarConceptoContableRequest/nmp:fechaRegistro</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con4:report>
+                        <con2:comment>Reportar entrada de peticion servicio Contabilidad, operacion registrarConceptoContable</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N1c9cc691.0.1569eb8fd04.N7f31</con2:id>
+                        <con4:expr>
+                            <con2:xqueryText>$msgId</con2:xqueryText>
+                        </con4:expr>
+                        <con4:labels>
+                            <con4:key>IDSucursal:</con4:key>
+                            <con4:varName>body</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./nmp:registrarConceptoContableRequest/nmp:idSucursal</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>FechaRegistro:</con4:key>
+                            <con4:varName>fechaRegistro</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>.</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>IDTransaccion:</con4:key>
+                            <con4:varName>body</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./nmp:registrarConceptoContableRequest/nmp:idTransaccion</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                    </con4:report>
+                    <con1:validate>
+                        <con2:comment>Validar que en la peticion venga especificado un header con la estructura definidad para el servicio y que no se esta violando alguna restriccion</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N3899871a.0.15694179d3c.N7f5a</con2:id>
+                        <con1:schema ref="Common/XSD/NMPStandardHeader"/>
+                        <con1:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con1:schemaElement>
+                        <con1:varName>header</con1:varName>
+                        <con1:location>
+                            <con2:xpathText>./*:headerMessage</con2:xpathText>
+                        </con1:location>
+                    </con1:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57c7ff.N1c9cc691.0.1569eb8fd04.N7e92" name="StageValidarBody" errorHandler="error-N3f57c7ff.N1c9cc691.0.1569eb8fd04.N7e5f">
+                <con:comment>Validacion de body de la peticion al servicio Contabilidad, operacion registrarConceptoContable</con:comment>
+                <con:context/>
+                <con:actions>
+                    <con1:validate>
+                        <con2:comment>Validar que el body de la peticion tiene la estructura definidad para el servicio y que no se esta violando alguna restriccion</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N3899871a.0.15694179d3c.N7f57</con2:id>
+                        <con1:schema ref="Contabilidad/Contabilidad/Resources/Schemas/NMPContabilidadSvcXSD"/>
+                        <con1:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPContabilidad">nmp:registrarConceptoContableRequest</con1:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con2:xpathText>$body/*:registrarConceptoContableRequest</con2:xpathText>
+                        </con1:location>
+                    </con1:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57c7ff.N3899871a.0.15694179d3c.N7f66" name="StagePublicarCptoContToSid" errorHandler="error-N3f57c7ff.N3899871a.0.15694179d3c.N7eae">
+                <con:comment>Publicar concepto contable en recurso JMS (ConceptosToSidQ) para consumo por aplicativo de NMP: SID</con:comment>
+                <con:context>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPContabilidad"/>
+                </con:context>
+                <con:actions>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-N3f57c7ff.N3899871a.0.15694179d3c.N7f5e</con2:id>
+                        <con1:case id="_BranchId-N3f57c7ff.N3899871a.0.15694179d3c.N7f5d">
+                            <con1:condition>
+                                <con2:xqueryText>(fn:exists($body/nmp:registrarConceptoContableRequest/nmp:idTransaccion) = fn:true() and fn:string-length($body/nmp:registrarConceptoContableRequest/nmp:idTransaccion) = 0) or fn:exists($body/nmp:registrarConceptoContableRequest/nmp:idTransaccion) = fn:false()</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace contents-only="true" varName="body">
+                                    <con2:comment>Verificar que el TransaccionId contenga un valor desde el origen, para en caso de no estar usar el Message ID para dar trazabilidad</con2:comment>
+                                    <con2:id>_ActionId-N3f57c7ff.N3899871a.0.15694179d3c.N7f4f</con2:id>
+                                    <con1:location>
+                                        <con2:xpathText>.</con2:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con2:xqueryTransform>
+                                            <con2:resource ref="Contabilidad/Contabilidad/Resources/Transformations/TRAsignarTrxIdToSIDConceptoContableReq"/>
+                                            <con2:param name="messageId">
+                                                <con2:path>$msgId</con2:path>
+                                            </con2:param>
+                                            <con2:param name="conceptoContableReq">
+                                                <con2:path>$body/nmp:registrarConceptoContableRequest</con2:path>
+                                            </con2:param>
+                                        </con2:xqueryTransform>
+                                    </con1:expr>
+                                </con1:replace>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                    <con3:route>
+                        <con2:comment>Queue concepto contable en recurso JMS (ConceptosToSidQ)</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N3899871a.0.15694179d3c.N7f4b</con2:id>
+                        <con3:service ref="Contabilidad/Contabilidad/Business Services/OSBEnviarConceptoContableReqToSIDBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con3:outboundTransform>
+                            <con1:routing-options>
+                                <con2:comment>Opciones de ruteo exactly one y one way</con2:comment>
+                                <con2:id>_ActionId-N3f57c7ff.N3899871a.0.15694179d3c.N7f16</con2:id>
+                                <con1:mode>request</con1:mode>
+                                <con1:qualityOfService>exactly-once</con1:qualityOfService>
+                            </con1:routing-options>
+                            <con1:transport-headers copy-all="false">
+                                <con2:comment>Especificar MessageID de la petición en el JMSCorrelationID del mensaje del concepto contable para trazabilidad con el consumidor del recurso JMS</con2:comment>
+                                <con2:id>_ActionId-N3f57c7ff.N3899871a.0.15694179d3c.N7f13</con2:id>
+                                <con1:header-set>outbound-request</con1:header-set>
+                                <con1:header value="expression" name="JMSCorrelationID">
+                                    <con2:xqueryText>fn:data($msgId)</con2:xqueryText>
+                                </con1:header>
+                            </con1:transport-headers>
+                        </con3:outboundTransform>
+                    </con3:route>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57c7ff.N3899871a.0.15694179d3c.N7eac" name="StagePublicarMsjToBitacora" errorHandler="error-N3f57c7ff.N3899871a.0.15694179d3c.N7cec">
+                <con:comment>Registrar en bitacora la peticion entrante al servicio de Contabilidad, operacion registrarConceptoContable</con:comment>
+                <con:context>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPContabilidad"/>
+                </con:context>
+                <con:actions>
+                    <con3:route>
+                        <con2:comment>Insertar registro en bitacora para la peticion entrante al servicio</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N3899871a.0.15694179d3c.N7ce8</con2:id>
+                        <con3:service ref="Contabilidad/Contabilidad/Business Services/OSBRegistrarBitacoraContabilidadBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con3:operation>insert</con3:operation>
+                        <con3:outboundTransform>
+                            <con1:routing-options>
+                                <con2:comment>Opciones de ruteo exactly one y one way</con2:comment>
+                                <con2:id>_ActionId-N3f57c7ff.N3899871a.0.15694179d3c.N7c53</con2:id>
+                                <con1:mode>request</con1:mode>
+                                <con1:qualityOfService>exactly-once</con1:qualityOfService>
+                            </con1:routing-options>
+                            <con1:replace contents-only="true" varName="body">
+                                <con2:comment>Generar estructura de mensaje para la insercion en la bitacora del servicio</con2:comment>
+                                <con2:id>_ActionId-N3f57c7ff.N3899871a.0.15694179d3c.N7c50</con2:id>
+                                <con1:location>
+                                    <con2:xpathText>.</con2:xpathText>
+                                </con1:location>
+                                <con1:expr>
+                                    <con2:xqueryTransform>
+                                        <con2:resource ref="Contabilidad/Contabilidad/Resources/Transformations/TRContabilidadToBitacoraDb"/>
+                                        <con2:param name="fecha">
+                                            <con2:path>fn:current-dateTime()</con2:path>
+                                        </con2:param>
+                                        <con2:param name="servicio">
+                                            <con2:path>'Contabilidad'</con2:path>
+                                        </con2:param>
+                                        <con2:param name="payload">
+                                            <con2:path>$body</con2:path>
+                                        </con2:param>
+                                        <con2:param name="messageId">
+                                            <con2:path>$msgId</con2:path>
+                                        </con2:param>
+                                        <con2:param name="operacion">
+                                            <con2:path>'registrarConceptoContable'</con2:path>
+                                        </con2:param>
+                                        <con2:param name="transaccionId">
+                                            <con2:path>$body/nmp:registrarConceptoContableRequest/nmp:idTransaccion/text()</con2:path>
+                                        </con2:param>
+                                    </con2:xqueryTransform>
+                                </con1:expr>
+                            </con1:replace>
+                        </con3:outboundTransform>
+                    </con3:route>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.N3899871a.0.15694179d3c.N7f9c">
+            <con:stage id="_StageId-N3f57c7ff.N3899871a.0.15694179d3c.N7f9a" name="StageResponserAck">
+                <con:comment>Responder con Acknowledgment despues de haber procesado la peticion satisfactoriamente</con:comment>
+                <con:context>
+                    <con2:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPContabilidad"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace contents-only="true" varName="body">
+                        <con2:comment>Generar respuesta para confirmar procesamiento de solicitud exitosamente</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N1c9cc691.0.1569eb8fd04.N7f9d</con2:id>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(
+    fn:concat('&lt;nmp1:registrarConceptoContableResponse xmlns:nmp1="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPContabilidad">',
+                  '&lt;nmp1:respuesta>ack&lt;/nmp1:respuesta>',
+              '&lt;/nmp1:registrarConceptoContableResponse>'))</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con2:reply isError="false">
+                        <con2:comment>Reply con exito para confirmar que la solicitud se proceso correctamente</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N66aef568.0.15699ddcfaa.N7e03</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.N3899871a.0.15694179d3c.N7ee1">
+            <con:stage id="_StageId-N3f57c7ff.N3899871a.0.15694179d3c.N7ee0" name="StageValidaHeaderCptoContErrorHandler">
+                <con:comment>Manejador de excepciones generados por la validacion del header de la peticion</con:comment>
+                <con:context/>
+                <con:actions>
+                    <con1:replace contents-only="true" varName="body">
+                        <con2:comment>Manejador de expciones generadas por la validacion del header de la peticion, servicio de Contabilidad, operacion registrarConceptoContable</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N66aef568.0.15699ddcfaa.N7f9b</con2:id>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="Contabilidad/Contabilidad/Resources/Transformations/TRContabilidadFault"/>
+                                <con2:input>$fault</con2:input>
+                                <con2:param name="AppError">
+                                    <con2:path>'(Validacion de Header Request)'</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con2:reply isError="true">
+                        <con2:comment>Responder con un error de validacion en el header de la peticion</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N66aef568.0.15699ddcfaa.N7f37</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.N3899871a.0.15694179d3c.N7cec">
+            <con:stage id="_StageId-N3f57c7ff.N3899871a.0.15694179d3c.N7ceb" name="StagePublicarBitacoraErrorHandler">
+                <con:comment>Manejador de excepciones generados por el registro en la bitacora del servicio</con:comment>
+                <con:context/>
+                <con:actions>
+                    <con1:replace contents-only="true" varName="body">
+                        <con2:comment>Manejador de expciones generadas en el almacenamiento de peticion en la bitacora, servicio de Contabilidad, operacion registrarConceptoContable a</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N66aef568.0.15699ddcfaa.N7e06</con2:id>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="Contabilidad/Contabilidad/Resources/Transformations/TRContabilidadFault"/>
+                                <con2:input>$fault</con2:input>
+                                <con2:param name="AppError">
+                                    <con2:path>'(Bitacora Servicio)'</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con5:alert>
+                        <con2:comment>Generar alerta de problema ocurrido con el registro en la bitacora del serivcio de contabilidad</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N2204db2c.0.156a38ef1a0.N7f97</con2:id>
+                        <con5:destination ref="Contabilidad/Contabilidad/Resources/Alerts/NMPContabilidadAlert"/>
+                        <con5:description>Problema para generar bitacora de servicio de contabilidad</con5:description>
+                        <con5:severity>warning</con5:severity>
+                        <con5:payload>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con5:payload>
+                    </con5:alert>
+                    <con2:resume>
+                        <con2:comment>Continuar la ejecucion del flujo del registro del concepto contable sin que problemas en el bitacoreo afecte</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N66aef568.0.15699ddcfaa.N7d65</con2:id>
+                    </con2:resume>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:branch-node type="operation" id="_FlowId-N3f57c7ff.N3899871a.0.15694179d3c.N7fcf" name="BranchOperacionesContabilidad">
+                <con:comment>Division de los flujos de acuerdo a la operacon invocado del servicio de Contabilidad</con:comment>
+                <con:context/>
+                <con:branch-table>
+                    <con:branch name="registrarConceptoContable">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineConceptoContable">
+                                <con:comment>Flujo de procesamiento para la recepcion y propagacion de los conceptos contables</con:comment>
+                                <con:request>request-N3f57c7ff.N3899871a.0.15694179d3c.N7f9d</con:request>
+                                <con:response>response-N3f57c7ff.N3899871a.0.15694179d3c.N7f9c</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

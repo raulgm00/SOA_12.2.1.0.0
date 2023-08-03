@@ -1,0 +1,287 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Thu Jan 05 11:29:31 CST 2017
+  Author:  Sol4IT Mexico
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="GestionArchivoProrrateoBPEL"
+               targetNamespace="http://xmlns.oracle.com/GestionArchivoProrrateo/GestionArchivoProrrateoPrj/GestionArchivoProrrateoBPEL"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/GestionArchivoProrrateo/GestionArchivoProrrateoPrj/GestionArchivoProrrateoBPEL"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+               xmlns:ns1="http://xmlns.oracle.com/GestionArchivoProrrateo/GestionArchivoProrrateoPrj/GestionArchivoProrrateoBPEL"
+               xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ui="http://xmlns.oracle.com/soa/designer" xmlns:ns2="http://qualitas.com.mx/comunes/objetosComunes/v1/"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ess="http://xmlns.oracle.com/scheduler" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:ns3="http://qualitas.com.mx/Comunes/Prorrateo/gestionArchivoProrrateo/v1/"
+         xmlns:ns4="http://xmlns.oracle.com/pcbpel/adapter/db/GestionArchivoProrrateo/GestionArchivoProrrateoPrj/OperacionesArchivoProrrateoDB"
+         xmlns:ns5="http://xmlns.oracle.com/pcbpel/adapter/db/OperacionesArchivoProrrateoDB"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:ns6="http://xmlns.oracle.com/pcbpel/adapter/db/GestionArchivoProrrateo/GestionArchivoProrrateoPrj/SPObtenerProrrateo"
+         xmlns:ns7="http://xmlns.oracle.com/pcbpel/adapter/db/sp/SPObtenerProrrateo">
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <import namespace="http://xmlns.oracle.com/GestionArchivoProrrateo/GestionArchivoProrrateoPrj/GestionArchivoProrrateoBPEL"
+          location="../WSDLs/GestionArchivoProrrateoBPEL.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"
+          ui:processWSDL="true"/>
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="OperacionesArchivoProrrateoDB" partnerLinkType="ns4:OperacionesArchivoProrrateoDB_plt"
+                 partnerRole="OperacionesArchivoProrrateoDB_role"/>
+    <partnerLink name="SPObtenerProrrateo" partnerLinkType="ns6:SPObtenerProrrateo_plt"
+                 partnerRole="SPObtenerProrrateo_role"/>
+    <partnerLink name="gestionarchivoprorrateobpel_client1" partnerLinkType="ns1:GestionArchivoProrrateoBPEL"
+                 myRole="gestionArchivoProrrateoBPEL"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="GuardarArchivoProrrateo_InputVariable"
+              messageType="client:guardarArchivoProrrateoBPELRequestMessage"/>
+    <variable name="ObtenerArchivoProrrateo_InputVariable"
+              messageType="client:obtenerArchivoProrrateoBPELRequestMessage"/>
+    <variable name="EliminarArchivoProrrateo_InputVariable"
+              messageType="client:eliminarArchivoProrrateoBPELRequestMessage"/>
+    <variable name="GuardarArchivoProrrateo_OutputVariable"
+              messageType="ns1:guardarArchivoProrrateoBPELResponseMessage"/>
+    <variable name="ObtenerArchivoProrrateo_OutputVariable"
+              messageType="ns1:obtenerArchivoProrrateoBPELResponseMessage"/>
+    <variable name="EliminarArchivoProrrateo_OutputVariable"
+              messageType="ns1:eliminarArchivoProrrateoBPELResponseMessage"/>
+    <variable name="GuardarArchivoDB_InputVariable" messageType="ns4:guardarArchivoProrrateoDBInput_msg"/>
+    <variable name="EliminarArchivoDB_InputVariable" messageType="ns4:eliminarArchivoProrrateoDBInput_msg"/>
+    <variable name="SPObtenerProrrateoInvoke_InputVariable" messageType="ns6:args_in_msg"/>
+    <variable name="SPObtenerProrrateoInvoke_OutputVariable" messageType="ns6:args_out_msg"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in GestionArchivoProrrateoBPEL.wsdl) -->
+
+    <!-- Generate reply to synchronous request -->
+    <pick name="Pick1" createInstance="yes">
+      <onMessage partnerLink="gestionarchivoprorrateobpel_client1" portType="ns1:gestionArchivoProrrateoBPEL"
+                 operation="guardarArchivoProrrateo" variable="GuardarArchivoProrrateo_InputVariable">
+        <sequence name="Sequence1">
+          <scope name="Scope1">
+            <faultHandlers>
+              <catchAll>
+                <assign name="Assign_ErrorGuardar">
+                  <copy>
+                    <from>1</from>
+                    <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$GuardarArchivoProrrateo_OutputVariable.guardarArchivoRes/ns3:OperationResponse/ns2:codigoRespuesta</to>
+                  </copy>
+                  <copy>
+                    <from>ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+                    <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$GuardarArchivoProrrateo_OutputVariable.guardarArchivoRes/ns3:OperationResponse/ns2:fecha</to>
+                  </copy>
+                  <copy>
+                    <from>"Error, No se pudo almacenar el archivo"</from>
+                    <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$GuardarArchivoProrrateo_OutputVariable.guardarArchivoRes/ns3:OperationResponse/ns2:descripcionRespuesta</to>
+                  </copy>
+                </assign>
+              </catchAll>
+            </faultHandlers>
+            <sequence>
+              <assign name="Assign_GuardarArchivo">
+                <copy>
+                  <from>$GuardarArchivoProrrateo_InputVariable.guardarArchivoReq/ns3:Input/ns3:id_solicitud</from>
+                  <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$GuardarArchivoDB_InputVariable.guardarArchivoProrrateoDBInput_msg/ns5:idSolicitud</to>
+                </copy>
+                <copy>
+                  <from>$GuardarArchivoProrrateo_InputVariable.guardarArchivoReq/ns3:Input/ns3:nombreArchivo</from>
+                  <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$GuardarArchivoDB_InputVariable.guardarArchivoProrrateoDBInput_msg/ns5:nombreDocumento</to>
+                </copy>
+                <copy>
+                  <from>$GuardarArchivoProrrateo_InputVariable.guardarArchivoReq/ns3:Input/ns3:archivoProrrateo</from>
+                  <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$GuardarArchivoDB_InputVariable.guardarArchivoProrrateoDBInput_msg/ns5:documento</to>
+                </copy>
+              </assign>
+              <invoke name="Invoke_GuardarArchivoDB" bpelx:invokeAsDetail="no"
+                      partnerLink="OperacionesArchivoProrrateoDB" portType="ns4:OperacionesArchivoProrrateoDB_ptt"
+                      operation="guardarArchivoProrrateoDB" inputVariable="GuardarArchivoDB_InputVariable"/>
+              <assign name="Assign_GuardarArchivo">
+                <copy>
+                  <from>$GuardarArchivoProrrateo_InputVariable.guardarArchivoReq/ns3:Input/ns3:nombreArchivo</from>
+                  <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$GuardarArchivoProrrateo_OutputVariable.guardarArchivoRes/ns3:resultDataResponse/ns3:nombreArchivo</to>
+                </copy>
+                <copy>
+                  <from>ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+                  <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$GuardarArchivoProrrateo_OutputVariable.guardarArchivoRes/ns3:resultDataResponse/ns3:fechaRecepcion</to>
+                </copy>
+                <copy>
+                  <from>ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+                  <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$GuardarArchivoProrrateo_OutputVariable.guardarArchivoRes/ns3:resultDataResponse/ns3:fechaCreacion</to>
+                </copy>
+                <copy>
+                  <from>ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+                  <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$GuardarArchivoProrrateo_OutputVariable.guardarArchivoRes/ns3:OperationResponse/ns2:fecha</to>
+                </copy>
+                <copy>
+                  <from>0</from>
+                  <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$GuardarArchivoProrrateo_OutputVariable.guardarArchivoRes/ns3:OperationResponse/ns2:codigoRespuesta</to>
+                </copy>
+                <copy>
+                  <from>"Archivo Guardado Correctamente"</from>
+                  <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$GuardarArchivoProrrateo_OutputVariable.guardarArchivoRes/ns3:OperationResponse/ns2:descripcionRespuesta</to>
+                </copy>
+              </assign>
+            </sequence>
+          </scope>
+          <reply name="Reply" partnerLink="gestionarchivoprorrateobpel_client1"
+                 variable="GuardarArchivoProrrateo_OutputVariable" portType="ns1:gestionArchivoProrrateoBPEL"
+                 operation="guardarArchivoProrrateo"/>
+        </sequence>
+      </onMessage>
+      <onMessage partnerLink="gestionarchivoprorrateobpel_client1" variable="ObtenerArchivoProrrateo_InputVariable"
+                 portType="ns1:gestionArchivoProrrateoBPEL" operation="obtenerArchivoProrrateo">
+        <sequence name="Sequence3">
+          <scope name="Scope2">
+            <faultHandlers>
+              <catchAll>
+                <assign name="Assign_ErrorObtener">
+                  <copy>
+                    <from>1</from>
+                    <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$ObtenerArchivoProrrateo_OutputVariable.obtenerArchivoRes/ns3:OperationResponse/ns2:codigoRespuesta</to>
+                  </copy>
+                  <copy>
+                    <from>ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+                    <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$ObtenerArchivoProrrateo_OutputVariable.obtenerArchivoRes/ns3:OperationResponse/ns2:fecha</to>
+                  </copy>
+                  <copy>
+                    <from>"No se encontro ningun archivo"</from>
+                    <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$ObtenerArchivoProrrateo_OutputVariable.obtenerArchivoRes/ns3:OperationResponse/ns2:descripcionRespuesta</to>
+                  </copy>
+                </assign>
+              </catchAll>
+            </faultHandlers>
+            <sequence>
+              <assign name="Assign1">
+                <copy>
+                  <from>$ObtenerArchivoProrrateo_InputVariable.obtenerArchivoReq/ns3:Input/ns3:id_solicitud</from>
+                  <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$SPObtenerProrrateoInvoke_InputVariable.InputParameters/ns7:P_IDSOLICITUD</to>
+                </copy>
+              </assign>
+              <invoke name="SPObtenerProrrateoInvoke" partnerLink="SPObtenerProrrateo"
+                      portType="ns6:SPObtenerProrrateo_ptt" operation="SPObtenerProrrateo"
+                      inputVariable="SPObtenerProrrateoInvoke_InputVariable"
+                      outputVariable="SPObtenerProrrateoInvoke_OutputVariable" bpelx:invokeAsDetail="no"/>
+              <assign name="Assign2">
+                <copy>
+                  <from>$SPObtenerProrrateoInvoke_OutputVariable.OutputParameters/ns7:P_NOMDOCUMENTO</from>
+                  <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$ObtenerArchivoProrrateo_OutputVariable.obtenerArchivoRes/ns3:resultDataResponse/ns3:nombreArchivo</to>
+                </copy>
+                <copy>
+                  <from>$SPObtenerProrrateoInvoke_OutputVariable.OutputParameters/ns7:P_DOCUMENTO</from>
+                  <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$ObtenerArchivoProrrateo_OutputVariable.obtenerArchivoRes/ns3:resultDataResponse/ns3:archivoProrrateo</to>
+                </copy>
+                <copy>
+                  <from>'EJECUCIÓN EXITOSA'</from>
+                  <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$ObtenerArchivoProrrateo_OutputVariable.obtenerArchivoRes/ns3:OperationResponse/ns2:descripcionRespuesta</to>
+                </copy>
+                <copy>
+                  <from>0</from>
+                  <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$ObtenerArchivoProrrateo_OutputVariable.obtenerArchivoRes/ns3:OperationResponse/ns2:codigoRespuesta</to>
+                </copy>
+                <copy>
+                  <from>ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+                  <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$ObtenerArchivoProrrateo_OutputVariable.obtenerArchivoRes/ns3:OperationResponse/ns2:tiempoRespuesta</to>
+                </copy>
+              </assign>
+            </sequence>
+          </scope>
+          <reply name="Reply1" partnerLink="gestionarchivoprorrateobpel_client1"
+                 variable="ObtenerArchivoProrrateo_OutputVariable" portType="ns1:gestionArchivoProrrateoBPEL"
+                 operation="obtenerArchivoProrrateo"/>
+        </sequence>
+      </onMessage>
+      <onMessage partnerLink="gestionarchivoprorrateobpel_client1" variable="EliminarArchivoProrrateo_InputVariable"
+                 portType="ns1:gestionArchivoProrrateoBPEL" operation="eliminarArchivoProrrateo">
+        <sequence name="Sequence5">
+          <scope name="Scope3">
+            <faultHandlers>
+              <catchAll>
+                <assign name="Assign_ErrorEliminar">
+                  <copy>
+                    <from>1</from>
+                    <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$EliminarArchivoProrrateo_OutputVariable.eliminarArchivoRes/ns3:OperationResponse/ns2:codigoRespuesta</to>
+                  </copy>
+                  <copy>
+                    <from>"Error al eliminar, Id Solicitud no encontrado"</from>
+                    <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$EliminarArchivoProrrateo_OutputVariable.eliminarArchivoRes/ns3:OperationResponse/ns2:descripcionRespuesta</to>
+                  </copy>
+                  <copy>
+                    <from>ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+                    <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$EliminarArchivoProrrateo_OutputVariable.eliminarArchivoRes/ns3:OperationResponse/ns2:fecha</to>
+                  </copy>
+                </assign>
+              </catchAll>
+            </faultHandlers>
+            <sequence name="Sequence8">
+              <assign name="Assign_EliminarArchivo">
+                <copy>
+                  <from>$EliminarArchivoProrrateo_InputVariable.eliminarArchivoReq/ns3:Input/ns3:id_solicitud</from>
+                  <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$EliminarArchivoDB_InputVariable.eliminarArchivoProrrateoDBInput_msg/ns5:idSolicitud</to>
+                </copy>
+              </assign>
+              <invoke name="Invoke_EliminarArchivoDB" bpelx:invokeAsDetail="no"
+                      partnerLink="OperacionesArchivoProrrateoDB" portType="ns4:OperacionesArchivoProrrateoDB_ptt"
+                      operation="eliminarArchivoProrrateoDB" inputVariable="EliminarArchivoDB_InputVariable"/>
+              <assign name="Assign_EliminarArchivo">
+                <copy>
+                  <from>0</from>
+                  <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$EliminarArchivoProrrateo_OutputVariable.eliminarArchivoRes/ns3:OperationResponse/ns2:codigoRespuesta</to>
+                </copy>
+                <copy>
+                  <from>"Se elimino el Archivo correctamente"</from>
+                  <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$EliminarArchivoProrrateo_OutputVariable.eliminarArchivoRes/ns3:OperationResponse/ns2:descripcionRespuesta</to>
+                </copy>
+              </assign>
+            </sequence>
+          </scope>
+          <reply name="Reply2" partnerLink="gestionarchivoprorrateobpel_client1"
+                 variable="EliminarArchivoProrrateo_OutputVariable" portType="ns1:gestionArchivoProrrateoBPEL"
+                 operation="eliminarArchivoProrrateo"/>
+        </sequence>
+      </onMessage>
+    </pick>
+  </sequence>
+</process>

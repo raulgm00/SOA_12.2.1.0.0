@@ -1,0 +1,612 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/routing/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="OperacionCreditos/VehiculoSinResguardo/Resources/WSDLs/NMPFlujoVehiculosSinResguardoWSDL"/>
+            <con:binding>
+                <con:name>flujoVehiculo_bind</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Services/VehiculoSinResguardo/Flujo</con:namespace>
+            </con:binding>
+        </con:binding>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router errorHandler="_onErrorHandler-a1e030f.N2a94e5f5.1.15ab4292505.N8000">
+        <con:pipeline type="request" name="request-af10c89.37c79ccf.0.15aab438558.N7f69">
+            <con:stage id="_StageId-af10c89.37c79ccf.0.15aab438558.N7f67" name="StageValidarBody">
+                <con:context>
+                    <con2:userNsDecl prefix="not" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NotificaEventosProceso"/>
+                    <con2:userNsDecl prefix="fluj" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculoSinResguardo/Flujo"/>
+                </con:context>
+                <con:actions>
+                    <con1:validate>
+                        <con2:id>_ActionId-af10c89.393b0703.0.15aaf1a6de3.N7fe3</con2:id>
+                        <con1:schema ref="OperacionCreditos/VehiculoSinResguardo/Resources/Schemas/NMPFlujoVehiculosSinResguardoSvcXSD"/>
+                        <con1:schemaElement xmlns:not="http://servicios.montedepiedad.com.mx/NMP/Schema/NotificaEventosProceso" xmlns:fluj="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculoSinResguardo/Flujo">fluj:notificarFinEventoRequest</con1:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con2:xpathText>./fluj:notificarFinEventoRequest</con2:xpathText>
+                        </con1:location>
+                        <con1:resultVarName/>
+                    </con1:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage name="stageCallNotifica" errorHandler="_onErrorHandler-a1e030f.N71c997df.29.15ab06d9e19.N8000">
+                <con:comment/>
+                <con:context>
+                    <con2:userNsDecl prefix="not" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NotificaEventosProceso"/>
+                    <con2:userNsDecl prefix="fluj" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculoSinResguardo/Flujo"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="folio">
+                        <con2:id>_ActionId-a1e030f.N71c997df.21.15ab040366c.N8000</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/fluj:notificarFinEventoRequest/fluj:folio/text()</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="credencial">
+                        <con2:id>_ActionId-a1e030f.N71c997df.22.15ab040c664.N8000</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/fluj:notificarFinEventoRequest/fluj:numeroCredencial/text()</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="estado">
+                        <con2:id>_ActionId-a1e030f.N71c997df.23.15ab04133bd.N8000</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/fluj:notificarFinEventoRequest/fluj:estadoFlujoBpm/text()</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="motivo">
+                        <con2:id>_ActionId-a1e030f.N71c997df.23.15ab04133bd.N7fff</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/fluj:notificarFinEventoRequest/fluj:motivoFin/text()</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="body_tmp">
+                        <con2:id>_ActionId-a1e030f.N71c997df.24.15ab04203df.N8000</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-a1e030f.N71c997df.25.15ab04297d4.N8000</con2:id>
+                        <con2:disabled>true</con2:disabled>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xqueryText><![CDATA[<not:notificaFinEventoRequest>
+         <not:resultado>
+            <not:estado>{$estado}</not:estado>
+            <not:mensaje>{$motivo}</not:mensaje>
+         </not:resultado>
+         <not:identificadores proceso="VSR">
+            <not:identificador tipo="numCredencial">
+               <not:id>{$credencial}</not:id>
+            </not:identificador>
+			<not:identificador tipo="folio">
+				<not:id>{$folio}</not:id>
+			</not:identificador>
+         </not:identificadores>
+      </not:notificaFinEventoRequest>]]></con2:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:assign varName="bodyFin_req">
+                        <con2:id>_ActionId-a1e030f.N71c997df.2d.15ab3db8e09.N8000</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<soap-env:Body>
+<not:notificaFinEventoRequest>
+         <not:resultado>
+            <not:estado>{$estado}</not:estado>
+            <not:mensaje>{$motivo}</not:mensaje>
+         </not:resultado>
+         <not:identificadores proceso="VSR">
+            <not:identificador tipo="numCredencial">
+               <not:id>{$credencial}</not:id>
+            </not:identificador>
+			<not:identificador tipo="folio">
+				<not:id>{$folio}</not:id>
+			</not:identificador>
+         </not:identificadores>
+      </not:notificaFinEventoRequest>
+</soap-env:Body>]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-a1e030f.N71c997df.26.15ab042d2e6.N8000</con2:id>
+                        <con1:service ref="OperacionCreditos/VehiculoSinResguardo/BusinessServices/NMPNotificaProcesoFinBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>notificaFinEvento</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="true">bodyFin_req</con1:body>
+                            <con1:header/>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="true">bodyFin_rep</con1:body>
+                            <con1:header/>
+                        </con1:response>
+                        <con1:requestTransform/>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af10c89.393b0703.0.15aaf1a6de3.N7fe2">
+            <con:stage id="_StageId-af10c89.393b0703.0.15aaf1a6de3.N7fe0" name="StageValidarBody">
+                <con:context>
+                    <con2:userNsDecl prefix="fluj" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculoSinResguardo/Flujo"/>
+                </con:context>
+                <con:actions>
+                    <con1:validate>
+                        <con2:id>_ActionId-af10c89.393b0703.0.15aaf1a6de3.N7fdc</con2:id>
+                        <con1:schema ref="OperacionCreditos/VehiculoSinResguardo/Resources/Schemas/NMPFlujoVehiculosSinResguardoSvcXSD"/>
+                        <con1:schemaElement xmlns:fluj="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculoSinResguardo/Flujo">fluj:iniciarFlujoVehiculoSinResguardoRequest</con1:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con2:xpathText>./fluj:iniciarFlujoVehiculoSinResguardoRequest</con2:xpathText>
+                        </con1:location>
+                        <con1:resultVarName/>
+                    </con1:validate>
+                    <con1:assign varName="bodyIniciaBpm_req">
+                        <con2:id>_ActionId-a1e030f.N2a94e5f5.d.15ab8f1a4c6.N7ffd</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af10c89.N31be52d3.0.15aa9efd19e.N7f9c">
+            <con:stage id="_StageId-af10c89.N31be52d3.0.15aa9efd19e.N7f9a" name="ValidarHeader">
+                <con:context>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con2:varNsDecl prefix="fluj" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculoSinResguardo/Flujo"/>
+                </con:context>
+                <con:actions>
+                    <con1:validate>
+                        <con2:id>_ActionId-af10c89.N31be52d3.0.15aa9efd19e.N7eca</con2:id>
+                        <con1:schema ref="Common/XSD/NMPStandardHeader"/>
+                        <con1:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con1:schemaElement>
+                        <con1:varName>header</con1:varName>
+                        <con1:location>
+                            <con2:xpathText>./nmp:headerMessage</con2:xpathText>
+                        </con1:location>
+                        <con1:resultVarName/>
+                    </con1:validate>
+                    <con1:assign varName="header_tmp">
+                        <con2:id>_ActionId-a1e030f.N71c997df.1f.15ab02e261d.N7fff</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$header</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af10c89.N31be52d3.0.15aa9efd19e.N7f9b">
+            <con:stage id="_StageId-af10c89.N31be52d3.0.15aa9efd19e.N7f99" name="Stage">
+                <con:context/>
+                <con:disabled>true</con:disabled>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af10c89.393b0703.0.15aaf1a6de3.N7fe1">
+            <con:stage id="_StageId-af10c89.393b0703.0.15aaf1a6de3.N7fdf" name="StageResponse">
+                <con:comment/>
+                <con:context>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con2:varNsDecl prefix="fluj" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculoSinResguardo/Flujo"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="header" contents-only="true">
+                        <con2:id>_ActionId-a1e030f.N71c997df.1f.15ab02e261d.N8000</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<nmp:headerMessageResponse>
+            <nmp:usuario>{$header_tmp//nmp:usuario/text()}</nmp:usuario>
+            <nmp:idConsumidor>{$header_tmp//nmp:idConsumidor/text()}</nmp:idConsumidor>
+            <nmp:idDestino>{$header_tmp//nmp:idDestino/text()}</nmp:idDestino>
+            <nmp:codigoRespuesta>0</nmp:codigoRespuesta>
+            <nmp:descripcionRespuesta>OK</nmp:descripcionRespuesta>
+        </nmp:headerMessageResponse>]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-a1e030f.N71c997df.20.15ab030d992.N8000</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<fluj:iniciarFlujoVehiculoSinResguardoResponse>
+            <fluj:Respuesta>
+                <nmp:codigo>0</nmp:codigo>
+                <nmp:descripcion>OK</nmp:descripcion>
+            </fluj:Respuesta>
+        </fluj:iniciarFlujoVehiculoSinResguardoResponse>]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="_onErrorHandler-a1e030f.N2a94e5f5.1.15ab4292505.N8000" type="error">
+            <con:stage name="stageErrorService">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con2:userNsDecl prefix="con" namespace="http://www.bea.com/wli/sb/context"/>
+                    <con1:varNsDecl prefix="fluj" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculoSinResguardo/Flujo" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-a1e030f.N2a94e5f5.9.15ab8eb0d2c.N8000</con2:id>
+                        <con2:disabled>true</con2:disabled>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/con:errorCode = 'OSB-380000'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:assign varName="errorCode">
+                                    <con2:id>_ActionId-a1e030f.N2a94e5f5.a.15ab8ec81f6.N8000</con2:id>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'NMP-003'</con:xqueryText>
+                                    </con1:expr>
+                                </con1:assign>
+                                <con1:assign varName="errorMessage">
+                                    <con2:id>_ActionId-a1e030f.N2a94e5f5.b.15ab8ed6018.N8000</con2:id>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'Se ha excedido el tiempo de espera'</con:xqueryText>
+                                    </con1:expr>
+                                </con1:assign>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/con:errorCode = 'OSB-380002'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:assign varName="errorCode">
+                                    <con2:id>_ActionId-a1e030f.N2a94e5f5.9.15ab8eb0d2c.N7fff</con2:id>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'NMP-001'</con:xqueryText>
+                                    </con1:expr>
+                                </con1:assign>
+                                <con1:assign varName="errorMessage">
+                                    <con2:id>_ActionId-a1e030f.N2a94e5f5.c.15ab8ef0ee4.N8000</con2:id>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'Error conectividad 1 - destination unreachable'</con:xqueryText>
+                                    </con1:expr>
+                                </con1:assign>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/con:errorCode = 'OSB-382502'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:assign varName="errorCode">
+                                    <con2:id>_ActionId-a1e030f.N2a94e5f5.b.15ab8ed6018.N7fff</con2:id>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'NMP-002'</con:xqueryText>
+                                    </con1:expr>
+                                </con1:assign>
+                                <con1:assign varName="errorMessage">
+                                    <con2:id>_ActionId-a1e030f.N2a94e5f5.9.15ab8eb0d2c.N7ffe</con2:id>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'Error conectividad 2 - not found (404)'</con:xqueryText>
+                                    </con1:expr>
+                                </con1:assign>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/con:errorCode = 'OSB-380001'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:assign varName="errorCode">
+                                    <con2:id>_ActionId-a1e030f.N2a94e5f5.d.15ab8f1a4c6.N8000</con2:id>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'NMP-005'</con:xqueryText>
+                                    </con1:expr>
+                                </con1:assign>
+                                <con1:assign varName="errorMessage">
+                                    <con2:id>_ActionId-a1e030f.N2a94e5f5.e.15ab8f1bdbb.N8000</con2:id>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'Internal Server Error (500)'</con:xqueryText>
+                                    </con1:expr>
+                                </con1:assign>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/con:errorCode = 'OSB-382505'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:assign varName="errorCode">
+                                    <con2:id>_ActionId-a1e030f.N2a94e5f5.d.15ab8f1a4c6.N7fff</con2:id>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'NMP-2004'</con:xqueryText>
+                                    </con1:expr>
+                                </con1:assign>
+                                <con1:assign varName="errorMessage">
+                                    <con2:id>_ActionId-a1e030f.N2a94e5f5.9.15ab8eb0d2c.N7ffd</con2:id>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'Error en los parámetros del mensaje'</con:xqueryText>
+                                    </con1:expr>
+                                </con1:assign>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                    <con1:assign varName="errorCode">
+                        <con2:id>_ActionId-a1e030f.N2a94e5f5.9.15ab8eb0d2c.N7ff6</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/con:errorCode/text()</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="errorMessage">
+                        <con2:id>_ActionId-a1e030f.N2a94e5f5.12.15aba3cf4b9.N7ffe</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/ctx:reason/text()</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-a1e030f.N2a94e5f5.2.15ab42f9c9d.N8000</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:starts-with($operation, "notificarFin")</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="header" contents-only="true">
+                                    <con2:id>_ActionId-a1e030f.N2a94e5f5.7.15ab43939ad.N8000</con2:id>
+                                    <con1:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<nmp:headerMessageResponse>
+            <nmp:usuario>{$header_tmp//nmp:usuario/text()}</nmp:usuario>
+            <nmp:idConsumidor>{$header_tmp//nmp:idConsumidor/text()}</nmp:idConsumidor>
+            <nmp:idDestino>{$header_tmp//nmp:idDestino/text()}</nmp:idDestino>
+            <nmp:codigoRespuesta>1</nmp:codigoRespuesta>
+            <nmp:descripcionRespuesta>ERROR</nmp:descripcionRespuesta>
+        </nmp:headerMessageResponse>]]></con:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id>_ActionId-a1e030f.N2a94e5f5.7.15ab43939ad.N7fff</con2:id>
+                                    <con1:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<fluj:notificarFinEventoResponse>
+            <fluj:Respuesta>
+                <nmp:codigo>{$errorCode}</nmp:codigo>
+                <nmp:descripcion>{$errorMessage}</nmp:descripcion>
+            </fluj:Respuesta>
+        </fluj:notificarFinEventoResponse>]]></con:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:default>
+                            <con1:replace varName="header" contents-only="true">
+                                <con2:id>_ActionId-a1e030f.N2a94e5f5.5.15ab43847f6.N8000</con2:id>
+                                <con1:location>
+                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                </con1:location>
+                                <con1:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<nmp:headerMessageResponse>
+            <nmp:usuario>{$header_tmp//nmp:usuario/text()}</nmp:usuario>
+            <nmp:idConsumidor>{$header_tmp//nmp:idConsumidor/text()}</nmp:idConsumidor>
+            <nmp:idDestino>{$header_tmp//nmp:idDestino/text()}</nmp:idDestino>
+            <nmp:codigoRespuesta>1</nmp:codigoRespuesta>
+            <nmp:descripcionRespuesta>ERROR</nmp:descripcionRespuesta>
+        </nmp:headerMessageResponse>]]></con:xqueryText>
+                                </con1:expr>
+                            </con1:replace>
+                            <con1:replace varName="body" contents-only="true">
+                                <con2:id>_ActionId-a1e030f.N2a94e5f5.6.15ab4387fad.N8000</con2:id>
+                                <con1:location>
+                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                </con1:location>
+                                <con1:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<fluj:iniciarFlujoVehiculoSinResguardoResponse>
+            <fluj:Respuesta>
+                <nmp:codigo>{$errorCode}</nmp:codigo>
+                <nmp:descripcion>{$errorMessage}</nmp:descripcion>
+            </fluj:Respuesta>
+        </fluj:iniciarFlujoVehiculoSinResguardoResponse>]]></con:xqueryText>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:default>
+                    </con1:ifThenElse>
+                    <con2:reply isError="false">
+                        <con2:id>_ActionId-a1e030f.N2a94e5f5.8.15ab45572fd.N8000</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af10c89.37c79ccf.0.15aab438558.N7f68">
+            <con:stage id="_StageId-af10c89.37c79ccf.0.15aab438558.N7f66" name="StageResposne">
+                <con:context>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con2:varNsDecl prefix="fluj" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculoSinResguardo/Flujo"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="header" contents-only="true">
+                        <con2:id>_ActionId-a1e030f.N71c997df.27.15ab0456dfa.N8000</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<nmp:headerMessageResponse>
+            <nmp:usuario>{$header_tmp//nmp:usuario/text()}</nmp:usuario>
+            <nmp:idConsumidor>{$header_tmp//nmp:idConsumidor/text()}</nmp:idConsumidor>
+            <nmp:idDestino>{$header_tmp//nmp:idDestino/text()}</nmp:idDestino>
+            <nmp:codigoRespuesta>0</nmp:codigoRespuesta>
+            <nmp:descripcionRespuesta>OK</nmp:descripcionRespuesta>
+        </nmp:headerMessageResponse>]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-a1e030f.N71c997df.28.15ab04b4b22.N8000</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<fluj:notificarFinEventoResponse>
+            <fluj:Respuesta>
+                <nmp:codigo>0</nmp:codigo>
+                <nmp:descripcion>OK</nmp:descripcion>
+            </fluj:Respuesta>
+        </fluj:notificarFinEventoResponse>]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="_onErrorHandler-a1e030f.N71c997df.29.15ab06d9e19.N8000" type="error">
+            <con:stage name="stageErrorCallNotifica">
+                <con:context>
+                    <con1:userNsDecl prefix="not" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NotificaEventosProceso" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="fluj" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculoSinResguardo/Flujo" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="headerIni_req">
+                        <con2:id>_ActionId-a1e030f.N71c997df.2a.15ab06ecfc9.N8000</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<soap-env:Header>
+<not:customHeaderBPEL  xmlns:not="http://servicios.montedepiedad.com.mx/NMP/Schema/NotificaEventosProceso">
+         <not:resultado>ERROR</not:resultado>
+      </not:customHeaderBPEL>
+ </soap-env:Header>]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="bodyIni_req">
+                        <con2:id>_ActionId-a1e030f.N71c997df.2b.15ab078e3f1.N8000</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<soap-env:Body>
+<not:notificaInicioEventoRequest>
+         <not:identificadores proceso="VSR">
+            <not:identificador tipo="numCredencial">
+               <not:id>{$credencial}</not:id>
+            </not:identificador>
+	    <not:identificador tipo="folio">
+		<not:id>{$folio}</not:id>
+             </not:identificador>
+         </not:identificadores>
+      </not:notificaInicioEventoRequest>
+</soap-env:Body>]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-a1e030f.N71c997df.2c.15ab0832104.N8000</con2:id>
+                        <con1:service ref="OperacionCreditos/VehiculoSinResguardo/BusinessServices/NMPNotificaProcesoFinBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>notificaInicioEvento</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="true">bodyIni_req</con1:body>
+                            <con1:header>headerIni_req</con1:header>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="true">bodyIni_resp</con1:body>
+                            <con1:header/>
+                        </con1:response>
+                        <con1:requestTransform/>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                    <con2:resume>
+                        <con2:id>_ActionId-a1e030f.N71c997df.2e.15ab3efd07e.N8000</con2:id>
+                    </con2:resume>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="PipelinePairNode1">
+                <con:request>request-af10c89.N31be52d3.0.15aa9efd19e.N7f9c</con:request>
+                <con:response>response-af10c89.N31be52d3.0.15aa9efd19e.N7f9b</con:response>
+            </con:pipeline-node>
+            <con:branch-node type="operation" id="_FlowId-af10c89.N31be52d3.0.15aa9efd19e.N7e32" name="BranchNode1">
+                <con:context/>
+                <con:branch-table>
+                    <con:branch name="iniciarFlujo">
+                        <con:operator>equals</con:operator>
+                        <con:value>iniciarFlujo</con:value>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairNode2">
+                                <con:request>request-af10c89.393b0703.0.15aaf1a6de3.N7fe2</con:request>
+                                <con:response>response-af10c89.393b0703.0.15aaf1a6de3.N7fe1</con:response>
+                            </con:pipeline-node>
+                            <con:route-node name="RouteToIniciaFlujoBpm">
+                                <con:comment/>
+                                <con:context>
+                                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                                    <con2:userNsDecl prefix="ges" namespace="http://xmlns.oracle.com/bpmn/bpmnProcess/GestionCreditoVSR"/>
+                                    <con2:userNsDecl prefix="fluj" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculoSinResguardo/Flujo"/>
+                                    <con2:userNsDecl prefix="inic" namespace="http://xmlns.oracle.com/bpm/bpmobject/Data/InicioGestionBO"/>
+                                </con:context>
+                                <con:actions>
+                                    <con3:route>
+                                        <con2:id>_ActionId-af10c89.37c79ccf.0.15aab438558.N7e6b</con2:id>
+                                        <con3:service ref="OperacionCreditos/VehiculoSinResguardo/BusinessServices/NMPGestionCreditoBpmBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                        <con3:operation>start</con3:operation>
+                                        <con3:outboundTransform>
+                                            <con1:assign varName="folio">
+                                                <con2:id>_ActionId-af10c89.37c79ccf.0.15aab438558.N7e02</con2:id>
+                                                <con1:expr>
+                                                    <con2:xqueryText>$body/fluj:iniciarFlujoVehiculoSinResguardoRequest/fluj:folio</con2:xqueryText>
+                                                </con1:expr>
+                                            </con1:assign>
+                                            <con1:assign varName="credencial">
+                                                <con2:id>_ActionId-af10c89.37c79ccf.0.15aab438558.N7dff</con2:id>
+                                                <con1:expr>
+                                                    <con2:xqueryText>$body/fluj:iniciarFlujoVehiculoSinResguardoRequest/fluj:cliente/fluj:numeroCredencial</con2:xqueryText>
+                                                </con1:expr>
+                                            </con1:assign>
+                                            <con1:replace varName="body" contents-only="true">
+                                                <con2:id>_ActionId-af10c89.37c79ccf.0.15aab438558.N7df9</con2:id>
+                                                <con1:location>
+                                                    <con2:xpathText>.</con2:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                                        <con:resource ref="OperacionCreditos/VehiculoSinResguardo/Resources/Transformations/TrGestionCreditoVSRReq"/>
+                                                        <con:input>$body/*</con:input>
+                                                    </con:xsltTransform>
+                                                </con1:expr>
+                                            </con1:replace>
+                                            <con1:replace varName="body" contents-only="true">
+                                                <con2:id>_ActionId-a1e030f.N2a94e5f5.14.15acee976aa.N7fff</con2:id>
+                                                <con2:disabled>true</con2:disabled>
+                                                <con1:location>
+                                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                                        <con:resource ref="OperacionCreditos/VehiculoSinResguardo/Resources/Transformations/TrGestionCreditoBpmReq"/>
+                                                        <con:input>$bodyIniciaBpm_req</con:input>
+                                                    </con:xsltTransform>
+                                                </con1:expr>
+                                            </con1:replace>
+                                        </con3:outboundTransform>
+                                        <con3:responseTransform/>
+                                    </con3:route>
+                                </con:actions>
+                            </con:route-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="notificarFin">
+                        <con:operator>equals</con:operator>
+                        <con:value>notificarFin</con:value>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairNode3">
+                                <con:request>request-af10c89.37c79ccf.0.15aab438558.N7f69</con:request>
+                                <con:response>response-af10c89.37c79ccf.0.15aab438558.N7f68</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

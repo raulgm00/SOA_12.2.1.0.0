@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:wsdl ref="Finance/AP/GPA/v1/ConsultaDetalleSolicitudV1WSDL"/>
+            <con:binding>
+                <con:name>consultarDetalleSolicitudBPELBindingSOAP</con:name>
+                <con:namespace>http://qualitas.com.mx/Solicitud/ConsultarDetalleSolicitud/</con:namespace>
+            </con:binding>
+        </con:binding>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:flow>
+            <con:route-node name="RouteNode1">
+                <con:context>
+                    <con1:userNsDecl prefix="sol" namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/SolicitudDB" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="v1" namespace="http://qualitas.com.mx/ConsultarDetalleSolicitud/v1/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.d.159d4971538.N7ffd</con2:id>
+                        <con1:service ref="Finance/AP/GPA/Entity/ProxySvc/db/SolicitudDBPxy" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                        <con1:operation>selectByPrimaryKey</con1:operation>
+                        <con1:outboundTransform>
+                            <con2:replace varName="body" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.17.159d5998e4f.N7ffa</con3:id>
+                                <con2:location>
+                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(
+fn:concat('&lt;sol:Gpa001SolicitudPrimaryKey xmlns:sol="http://xmlns.oracle.com/pcbpel/adapter/db/top/SolicitudDB">
+         &lt;sol:idSolicitud>',$body/v1:consultarDetalleSolicitudRequest/idSolicitud,'&lt;/sol:idSolicitud>
+      &lt;/sol:Gpa001SolicitudPrimaryKey>')
+)</con:xqueryText>
+                                </con2:expr>
+                            </con2:replace>
+                        </con1:outboundTransform>
+                        <con1:responseTransform>
+                            <con2:assign varName="plainData" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.18.159d5a1a70a.N7ffe</con3:id>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:serialize($body)</con:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:log xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.e.159d4fc7cef.N7ff7</con3:id>
+                                <con2:logLevel>warning</con2:logLevel>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$plainData</con:xqueryText>
+                                </con2:expr>
+                                <con2:message>RPTA_PLANA</con2:message>
+                            </con2:log>
+                            <con2:replace varName="body" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.15.159d58fde08.N7fff</con3:id>
+                                <con2:location>
+                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<consultarDetalleSolicitudResponse xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:ns4="http://qualitas.com.mx/comunes/objetosComunes/v1/" xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/db/ConsultarDetalleSolicitudApp/ConsultarDetalleSolicitudPrj/SPObtenerSolicitudDB" xmlns:ns6="http://qualitas.com.mx/Importes/v1/" xmlns:ns5="http://xmlns.oracle.com/pcbpel/adapter/db/ConsultarDetalleSolicitudApp/ConsultarDetalleSolicitudPrj/SelImportesCCDB" xmlns:ns8="http://qualitas.com.mx/Comun/Servicio/v1/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns7="http://qualitas.com.mx/comunes/" xmlns:ns9="http://qualitas.com.mx/Pagos/CuentasContables/v1/" xmlns:ns10="http://qualitas.com.mx/Comun/Servicio/ProyectoData/v1/" xmlns:client="http://qualitas.com.mx/Solicitud/ConsultarDetalleSolicitud/" xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://qualitas.com.mx/ConsultarDetalleSolicitud/v1/" xmlns="http://qualitas.com.mx/ConsultarDetalleSolicitud/v1/">
+         <pagoServicios xmlns="">
+
+
+            <Solicitud>
+               <idSolicitud>
+                  <idSolicitud>{$body/sol:Gpa001SolicitudCollection/sol:Gpa001Solicitud/sol:idSolicitud/text()}</idSolicitud>
+               </idSolicitud>
+               <totalPagar/>
+               <idUsuario/>
+               <numEmpleado>{$body/sol:Gpa001SolicitudCollection/sol:Gpa001Solicitud/sol:nuEmpleado/text()}</numEmpleado>
+               <nomEmpleado>{$body/sol:Gpa001SolicitudCollection/sol:Gpa001Solicitud/sol:nombreEmpleado/text()}</nomEmpleado>
+               <estado>
+              <codigo>{$body/sol:Gpa001SolicitudCollection/sol:Gpa001Solicitud/sol:idEstadoSolicitud/text()}</codigo>
+               </estado>
+            </Solicitud>
+         </pagoServicios>
+      </consultarDetalleSolicitudResponse>]]></con:xqueryText>
+                                </con2:expr>
+                            </con2:replace>
+                        </con1:responseTransform>
+                    </con1:route>
+                </con:actions>
+            </con:route-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

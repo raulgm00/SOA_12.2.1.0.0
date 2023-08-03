@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+    <con:coreEntry>
+        <con:binding type="Mixed" xsi:type="con:MixedBindingType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:request type="Text"/>
+            <con:response type="Text"/>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:logging enabled="false" level="debug"/>
+            <oper:reporting>false</oper:reporting>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:pipeline name="PipelinePairNode1_request" type="request">
+            <con:stage id="_StageId-N3f57c7ff.N1b152cac.0.15646c3c832.N7eb8" name="stage_ConvertBse64" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con3="http://www.bea.com/wli/sb/stages/publish/config" xmlns:con4="http://www.bea.com/wli/sb/stages/logging/config">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="open" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc"/>
+                </con:context>
+                <con:actions>
+                    <con2:foreach>
+                        <con1:id>_ActionId-a1e030f.796f47d5.d.158fa62e6e2.N7fff</con1:id>
+                        <con2:variable>attachments</con2:variable>
+                        <con2:expression>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./ctx:attachment</con:xpathText>
+                        </con2:expression>
+                        <con2:value-variable>archivo</con2:value-variable>
+                        <con2:index-variable>index</con2:index-variable>
+                        <con2:total-variable>count</con2:total-variable>
+                        <con2:actions>
+                            <con3:assign varName="binaryFile" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con2:id>_ActionId-a1e030f.796f47d5.d.158fa62e6e2.N7ffe</con2:id>
+                                <con3:expr>
+                                    <con2:xqueryText>$attachments/ctx:attachment[$index]/ctx:body/ctx:binary-content</con2:xqueryText>
+                                </con3:expr>
+                            </con3:assign>
+                            <con3:assign varName="nombreArchivo" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con2:id>_ActionId-a1e030f.796f47d5.d.158fa62e6e2.N7ffd</con2:id>
+                                <con3:expr>
+                                    <con2:xqueryText>$attachments/ctx:attachment[$index]/ctx:Content-Disposition/text()</con2:xqueryText>
+                                </con3:expr>
+                            </con3:assign>
+                            <con3:javaCallout varName="base64File" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con2:id>_ActionId-a1e030f.796f47d5.d.158fa62e6e2.N7ffc</con2:id>
+                                <con3:archive ref="OperacionPrendaria/ListasPreciosRapaport/Resources/JARs/binarytoBase64"/>
+                                <con3:className>mx.com.sps.Base64EncoderDecoder</con3:className>
+                                <con3:method>public static java.lang.String encode([B)</con3:method>
+                                <con3:expr>
+                                    <con2:xqueryText>$binaryFile</con2:xqueryText>
+                                </con3:expr>
+                                <con3:return-param-as-ref>false</con3:return-param-as-ref>
+                            </con3:javaCallout>
+                            <con3:javaCallout varName="fileSize" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con2:id>_ActionId-a1e030f.796f47d5.d.158fa62e6e2.N7ffb</con2:id>
+                                <con3:archive ref="OperacionPrendaria/ListasPreciosRapaport/Resources/JARs/binarytoBase64"/>
+                                <con3:className>mx.com.sps.Base64EncoderDecoder</con3:className>
+                                <con3:method>public static int getLength([B)</con3:method>
+                                <con3:expr>
+                                    <con2:xqueryText>$binaryFile</con2:xqueryText>
+                                </con3:expr>
+                                <con3:return-param-as-ref>false</con3:return-param-as-ref>
+                            </con3:javaCallout>
+                            <con2:assign varName="openTextRequest">
+                                <con1:id>_ActionId-a1e030f.796f47d5.d.158fa62e6e2.N7ffa</con1:id>
+                                <con2:expr>
+                                    <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                        <con:resource ref="PoC/AutosSinResguardo/Files/Resources/XSL/OpenText"/>
+                                        <con:input>$openTextTranslate</con:input>
+                                        <con:param name="nombreArchivo">
+                                            <con:path>$nombreArchivo</con:path>
+                                        </con:param>
+                                        <con:param name="contenido">
+                                            <con:path>$base64File</con:path>
+                                        </con:param>
+                                        <con:param name="indice">
+                                            <con:path>$index</con:path>
+                                        </con:param>
+                                        <con:param name="noFolio">
+                                            <con:path>$numeroFolio</con:path>
+                                        </con:param>
+                                        <con:param name="tamano">
+                                            <con:path>$fileSize</con:path>
+                                        </con:param>
+                                    </con:xsltTransform>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:assign varName="openTextHeader">
+                                <con1:id>_ActionId-a1e030f.796f47d5.d.158fa62e6e2.N7ff9</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText><![CDATA[<soapenv:Header xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+      <nmp:headerMessage xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">
+         <nmp:usuario>1</nmp:usuario>
+         <nmp:idConsumidor>1</nmp:idConsumidor>
+         <nmp:idDestino>1</nmp:idDestino>
+      </nmp:headerMessage>      
+   </soapenv:Header>]]></con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                            <con4:report>
+                                <con1:id>_ActionId-a1e030f.796f47d5.d.158fa62e6e2.N7ff8</con1:id>
+                                <con4:expr>
+                                    <con1:xqueryText>$nombreArchivo</con1:xqueryText>
+                                </con4:expr>
+                            </con4:report>
+                            <con2:wsCallout>
+                                <con1:id>_ActionId-a1e030f.796f47d5.d.158fa62e6e2.N7ff7</con1:id>
+                                <con2:service ref="PoC/AutosSinResguardo/Files/BusinessServices/OpenTextBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                <con2:operation>almacenaDocumentos</con2:operation>
+                                <con2:request>
+                                    <con2:body wrapped="false">openTextRequest</con2:body>
+                                    <con2:header>openTextHeader</con2:header>
+                                </con2:request>
+                                <con2:response>
+                                    <con2:body wrapped="false">openTextResponse</con2:body>
+                                    <con2:header/>
+                                </con2:response>
+                                <con2:requestTransform/>
+                                <con2:responseTransform/>
+                            </con2:wsCallout>
+                            <con2:replace varName="urls" contents-only="true">
+                                <con1:id>_ActionId-a1e030f.796f47d5.d.158fa62e6e2.N7ff6</con1:id>
+                                <con2:location>
+                                    <con1:xpathText>./archivo[$index]</con1:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con1:xqueryText><![CDATA[<archivo>
+<nombre>{$openTextResponse/open:documentos/open:nombreDocumento/text()}</nombre>
+<url>{$openTextResponse/open:documentos/open:documentoURL/text()}</url>
+</archivo>]]></con1:xqueryText>
+                                </con2:expr>
+                            </con2:replace>
+                        </con2:actions>
+                    </con2:foreach>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode1_response" type="response"/>
+        <con:flow>
+            <con:pipeline-node name="PipelinePairNode1">
+                <con:request>PipelinePairNode1_request</con:request>
+                <con:response>PipelinePairNode1_response</con:response>
+            </con:pipeline-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

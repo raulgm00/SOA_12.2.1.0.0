@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+                  xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://www.balammotion.com/"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/"
+                  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+                  xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+                  targetNamespace="http://www.balammotion.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://www.balammotion.com/">
+      <s:element name="ConsultaAmarre">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Contrato" type="s:double"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ConsultaAmarreResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ConsultaAmarreResult" type="s:boolean"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SolicitudAmarre">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Contrato" type="s:double"/>
+            <s:element minOccurs="1" maxOccurs="1" name="RFID" type="s:double"/>
+            <s:element minOccurs="0" maxOccurs="1" name="IndiceRotacion" type="s:string"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SolicitudAmarreResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SolicitudAmarreResult" type="s:string"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SolicitudSalida">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Contrato" type="s:double"/>
+            <s:element minOccurs="1" maxOccurs="1" name="numEntregaConsolidada" type="s:int"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SolicitudSalidaResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SolicitudSalidaResult" type="s:string"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="boolean" type="s:boolean"/>
+      <s:element name="string" nillable="true" type="s:string"/>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="ConsultaAmarreSoapIn">
+    <wsdl:part name="parameters" element="tns:ConsultaAmarre"/>
+  </wsdl:message>
+  <wsdl:message name="ConsultaAmarreSoapOut">
+    <wsdl:part name="parameters" element="tns:ConsultaAmarreResponse"/>
+  </wsdl:message>
+  <wsdl:message name="SolicitudAmarreSoapIn">
+    <wsdl:part name="parameters" element="tns:SolicitudAmarre"/>
+  </wsdl:message>
+  <wsdl:message name="SolicitudAmarreSoapOut">
+    <wsdl:part name="parameters" element="tns:SolicitudAmarreResponse"/>
+  </wsdl:message>
+  <wsdl:message name="SolicitudSalidaSoapIn">
+    <wsdl:part name="parameters" element="tns:SolicitudSalida"/>
+  </wsdl:message>
+  <wsdl:message name="SolicitudSalidaSoapOut">
+    <wsdl:part name="parameters" element="tns:SolicitudSalidaResponse"/>
+  </wsdl:message>
+  <wsdl:message name="ConsultaAmarreHttpGetIn">
+    <wsdl:part name="Contrato" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="ConsultaAmarreHttpGetOut">
+    <wsdl:part name="Body" element="tns:boolean"/>
+  </wsdl:message>
+  <wsdl:message name="SolicitudAmarreHttpGetIn">
+    <wsdl:part name="Contrato" type="s:string"/>
+    <wsdl:part name="RFID" type="s:string"/>
+    <wsdl:part name="IndiceRotacion" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="SolicitudAmarreHttpGetOut">
+    <wsdl:part name="Body" element="tns:string"/>
+  </wsdl:message>
+  <wsdl:message name="SolicitudSalidaHttpGetIn">
+    <wsdl:part name="Contrato" type="s:string"/>
+    <wsdl:part name="numEntregaConsolidada" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="SolicitudSalidaHttpGetOut">
+    <wsdl:part name="Body" element="tns:string"/>
+  </wsdl:message>
+  <wsdl:message name="ConsultaAmarreHttpPostIn">
+    <wsdl:part name="Contrato" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="ConsultaAmarreHttpPostOut">
+    <wsdl:part name="Body" element="tns:boolean"/>
+  </wsdl:message>
+  <wsdl:message name="SolicitudAmarreHttpPostIn">
+    <wsdl:part name="Contrato" type="s:string"/>
+    <wsdl:part name="RFID" type="s:string"/>
+    <wsdl:part name="IndiceRotacion" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="SolicitudAmarreHttpPostOut">
+    <wsdl:part name="Body" element="tns:string"/>
+  </wsdl:message>
+  <wsdl:message name="SolicitudSalidaHttpPostIn">
+    <wsdl:part name="Contrato" type="s:string"/>
+    <wsdl:part name="numEntregaConsolidada" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="SolicitudSalidaHttpPostOut">
+    <wsdl:part name="Body" element="tns:string"/>
+  </wsdl:message>
+  <wsdl:portType name="ServiciosMIDASSoap">
+    <wsdl:operation name="ConsultaAmarre">
+      <wsdl:input message="tns:ConsultaAmarreSoapIn"/>
+      <wsdl:output message="tns:ConsultaAmarreSoapOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="SolicitudAmarre">
+      <wsdl:input message="tns:SolicitudAmarreSoapIn"/>
+      <wsdl:output message="tns:SolicitudAmarreSoapOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="SolicitudSalida">
+      <wsdl:input message="tns:SolicitudSalidaSoapIn"/>
+      <wsdl:output message="tns:SolicitudSalidaSoapOut"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="ServiciosMIDASHttpGet">
+    <wsdl:operation name="ConsultaAmarre">
+      <wsdl:input message="tns:ConsultaAmarreHttpGetIn"/>
+      <wsdl:output message="tns:ConsultaAmarreHttpGetOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="SolicitudAmarre">
+      <wsdl:input message="tns:SolicitudAmarreHttpGetIn"/>
+      <wsdl:output message="tns:SolicitudAmarreHttpGetOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="SolicitudSalida">
+      <wsdl:input message="tns:SolicitudSalidaHttpGetIn"/>
+      <wsdl:output message="tns:SolicitudSalidaHttpGetOut"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="ServiciosMIDASHttpPost">
+    <wsdl:operation name="ConsultaAmarre">
+      <wsdl:input message="tns:ConsultaAmarreHttpPostIn"/>
+      <wsdl:output message="tns:ConsultaAmarreHttpPostOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="SolicitudAmarre">
+      <wsdl:input message="tns:SolicitudAmarreHttpPostIn"/>
+      <wsdl:output message="tns:SolicitudAmarreHttpPostOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="SolicitudSalida">
+      <wsdl:input message="tns:SolicitudSalidaHttpPostIn"/>
+      <wsdl:output message="tns:SolicitudSalidaHttpPostOut"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ServiciosMIDASSoap" type="tns:ServiciosMIDASSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="ConsultaAmarre">
+      <soap:operation soapAction="http://www.balammotion.com/ConsultaAmarre" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SolicitudAmarre">
+      <soap:operation soapAction="http://www.balammotion.com/SolicitudAmarre" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SolicitudSalida">
+      <soap:operation soapAction="http://www.balammotion.com/SolicitudSalida" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ServiciosMIDASSoap12" type="tns:ServiciosMIDASSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="ConsultaAmarre">
+      <soap12:operation soapAction="http://www.balammotion.com/ConsultaAmarre" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SolicitudAmarre">
+      <soap12:operation soapAction="http://www.balammotion.com/SolicitudAmarre" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SolicitudSalida">
+      <soap12:operation soapAction="http://www.balammotion.com/SolicitudSalida" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ServiciosMIDASHttpGet" type="tns:ServiciosMIDASHttpGet">
+    <http:binding verb="GET"/>
+    <wsdl:operation name="ConsultaAmarre">
+      <http:operation location="/ConsultaAmarre"/>
+      <wsdl:input>
+        <http:urlEncoded/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SolicitudAmarre">
+      <http:operation location="/SolicitudAmarre"/>
+      <wsdl:input>
+        <http:urlEncoded/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SolicitudSalida">
+      <http:operation location="/SolicitudSalida"/>
+      <wsdl:input>
+        <http:urlEncoded/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ServiciosMIDASHttpPost" type="tns:ServiciosMIDASHttpPost">
+    <http:binding verb="POST"/>
+    <wsdl:operation name="ConsultaAmarre">
+      <http:operation location="/ConsultaAmarre"/>
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SolicitudAmarre">
+      <http:operation location="/SolicitudAmarre"/>
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SolicitudSalida">
+      <http:operation location="/SolicitudSalida"/>
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ServiciosMIDAS">
+    <wsdl:port name="ServiciosMIDASSoap" binding="tns:ServiciosMIDASSoap">
+      <soap:address location="http://10.2.2.11:8091/ServiciosMIDAS.asmx"/>
+    </wsdl:port>
+    <wsdl:port name="ServiciosMIDASSoap12" binding="tns:ServiciosMIDASSoap12">
+      <soap12:address location="http://10.2.2.11:8091/ServiciosMIDAS.asmx"/>
+    </wsdl:port>
+    <wsdl:port name="ServiciosMIDASHttpGet" binding="tns:ServiciosMIDASHttpGet">
+      <http:address location="http://10.2.2.11:8091/ServiciosMIDAS.asmx"/>
+    </wsdl:port>
+    <wsdl:port name="ServiciosMIDASHttpPost" binding="tns:ServiciosMIDASHttpPost">
+      <http:address location="http://10.2.2.11:8091/ServiciosMIDAS.asmx"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,162 @@
+<xsd:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPUsuariosExternos" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPUsuariosExternos" xmlns:tcom="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Comun">
+  <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Comun" schemaLocation="../../../../Common/XSD/NMPComun_TIPOS.xsd"/>
+  <xsd:element name="nombre" type="xsd:string"/>
+  <xsd:element name="apellidoPaterno" type="xsd:string"/>
+  <xsd:element name="apellidoMaterno" type="xsd:string"/>
+  <xsd:element name="rfc" type="xsd:string"/>
+  <xsd:element name="nombreInstitucion" type="xsd:string"/>
+  <xsd:element name="figuraJuridica" type="xsd:string"/>
+  <xsd:element name="estado" type="xsd:string"/>
+  <xsd:element name="alias" type="xsd:string"/>
+  <xsd:element name="correo" type="tcom:emailType"/>
+  <xsd:element name="contrasena" type="xsd:string"/>
+  <xsd:element name="fechaActualizacion" type="xsd:dateTime"/>
+  <xsd:element name="estadoRegistro" type="xsd:string"/>
+  <xsd:element name="codigo">
+    <xsd:simpleType>
+      <xsd:restriction base="xsd:string">
+        <xsd:enumeration value="0">
+          <xsd:annotation>
+            <xsd:documentation>Pendiente</xsd:documentation>
+          </xsd:annotation>
+        </xsd:enumeration>
+        <xsd:enumeration value="1">
+          <xsd:annotation>
+            <xsd:documentation>Activado</xsd:documentation>
+          </xsd:annotation>
+        </xsd:enumeration>
+        <xsd:enumeration value="2">
+          <xsd:annotation>
+            <xsd:documentation>Reseteo</xsd:documentation>
+          </xsd:annotation>
+        </xsd:enumeration>
+        <xsd:enumeration value="3">
+          <xsd:annotation>
+            <xsd:documentation>Eliminado</xsd:documentation>
+          </xsd:annotation>
+        </xsd:enumeration>
+      </xsd:restriction>
+    </xsd:simpleType>
+  </xsd:element>
+  <xsd:element name="mensaje" type="xsd:string"/>
+  <xsd:element name="urlActivacion" type="xsd:string"/>
+  <xsd:element name="esActivo" type="xsd:boolean"/>
+  <xsd:element name="estadoConfirmacion" type="xsd:string"/>
+  <xsd:complexType name="usuarioTipo">
+    <xsd:sequence>
+      <xsd:element ref="nmp:nombre" minOccurs="0"/>
+      <xsd:element ref="nmp:apellidoPaterno" minOccurs="0"/>
+      <xsd:element ref="nmp:apellidoMaterno" minOccurs="0"/>
+      <xsd:element ref="nmp:rfc" minOccurs="0"/>
+      <xsd:element ref="nmp:nombreInstitucion" minOccurs="0"/>
+      <xsd:element ref="nmp:figuraJuridica" minOccurs="0"/>
+      <xsd:element ref="nmp:estado" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="cuentaCortaTipo">
+    <xsd:sequence>
+      <xsd:element ref="nmp:alias"/>
+      <xsd:element ref="nmp:contrasena"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="cuentaTipo">
+    <xsd:sequence>
+      <xsd:element ref="nmp:alias"/>
+      <xsd:element ref="nmp:correo"/>
+      <xsd:element ref="nmp:contrasena"/>
+      <xsd:element ref="nmp:fechaActualizacion"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="cuentaConsultaTipo">
+    <xsd:sequence>
+      <xsd:element ref="nmp:correo"/>
+      <xsd:element ref="nmp:fechaActualizacion"/>
+      <xsd:element ref="nmp:esActivo"/>
+      <xsd:element ref="nmp:estadoConfirmacion"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="respuestaTipo">
+    <xsd:sequence>
+      <xsd:element ref="nmp:estadoRegistro"/>
+      <xsd:element ref="nmp:codigo"/>
+      <xsd:element ref="nmp:mensaje"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="registrarCuentaPeticionTipo">
+    <xsd:sequence>
+      <xsd:element name="usuario" type="nmp:usuarioTipo" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="cuenta" type="nmp:cuentaTipo" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="registrarCuentaRespuestaTipo">
+    <xsd:sequence>
+      <xsd:element ref="nmp:correo"/>
+      <xsd:element name="resultado" type="nmp:respuestaTipo" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="obtenerUrlActivacionPeticionTipo">
+    <xsd:sequence>
+      <xsd:element ref="nmp:alias"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="obtenerUrlActivacionRespuestaTipo">
+    <xsd:sequence>
+      <xsd:element ref="nmp:alias"/>
+      <xsd:element ref="nmp:urlActivacion"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="activarCuentaPeticionTipo">
+    <xsd:sequence>
+      <xsd:element ref="nmp:alias"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="activarCuentaRespuestaTipo">
+    <xsd:sequence>
+      <xsd:element name="resultado" type="nmp:respuestaTipo" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="reestablecerContrasenaPeticionTipo">
+    <xsd:sequence>
+      <xsd:element name="cuenta" type="nmp:cuentaCortaTipo"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="reestablecerContrasenaRespuestaTipo">
+    <xsd:sequence>
+      <xsd:element ref="nmp:correo"/>
+      <xsd:element name="resultado" type="nmp:respuestaTipo" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="buscarCuentPeticionTipo">
+    <xsd:sequence>
+      <xsd:element ref="nmp:alias"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="buscarCuentaRespuestaTipo">
+    <xsd:sequence>
+      <xsd:element name="usuario" type="nmp:usuarioTipo"/>
+      <xsd:element name="cuenta" type="nmp:cuentaConsultaTipo" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="eliminarCuentaPeticionTipo">
+    <xsd:sequence>
+      <xsd:element ref="nmp:alias"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="eliminarCuentaRespuestaTipo">
+    <xsd:sequence>
+      <xsd:element name="resultado" type="nmp:respuestaTipo" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="registrarCuentaRequest" type="nmp:registrarCuentaPeticionTipo"/>
+  <xsd:element name="registrarCuentaResponse" type="nmp:registrarCuentaRespuestaTipo"/>
+  <xsd:element name="reestablecerContrasenaRequest" type="nmp:reestablecerContrasenaPeticionTipo"/>
+  <xsd:element name="reestablecerContrasenaResponse" type="nmp:reestablecerContrasenaRespuestaTipo"/>
+  <xsd:element name="activarCuentaRequest" type="nmp:activarCuentaPeticionTipo"/>
+  <xsd:element name="activarCuentaResponse" type="nmp:activarCuentaRespuestaTipo"/>
+  <xsd:element name="obtenerUrlActivacionRequest" type="nmp:obtenerUrlActivacionPeticionTipo"/>
+  <xsd:element name="obtenerUrlActivacionResponse" type="nmp:obtenerUrlActivacionRespuestaTipo"/>
+  <xsd:element name="buscarCuentaRequest" type="nmp:buscarCuentPeticionTipo"/>
+  <xsd:element name="buscarCuentaResponse" type="nmp:buscarCuentaRespuestaTipo"/>
+  <xsd:element name="eliminarCuentaRequest" type="nmp:eliminarCuentaPeticionTipo"/>
+  <xsd:element name="eliminarCuentaResponse" type="nmp:eliminarCuentaRespuestaTipo"/>
+</xsd:schema>

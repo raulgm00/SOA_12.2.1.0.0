@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:NMPPago="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPago"
+            targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPago"
+            elementFormDefault="qualified" version="2.0">
+    <!-- Example element-->
+    <xsd:element name="Pago" type="NMPPago:PagoType" />  
+    <!-- Simple Type -->
+    <xsd:simpleType name="decimalType">
+        <xsd:restriction base="xsd:decimal">
+            <xsd:fractionDigits value="5"/>
+            <xsd:totalDigits value="15"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <!--Complex Type-->
+    <xsd:complexType name="PagoType">
+        <xsd:sequence>
+            <xsd:element name="fechaPago" type="xsd:date" minOccurs="0"/>
+            <xsd:element name="capital" type="NMPPago:decimalType" minOccurs="0"/>
+            <xsd:element name="interes" type="NMPPago:decimalType" minOccurs="0"/>
+            <xsd:element name="otros" type="NMPPago:decimalType" minOccurs="0"/>
+            <xsd:element name="iva" type="NMPPago:decimalType" minOccurs="0"/>
+            <xsd:element name="importe" type="NMPPago:decimalType" minOccurs="0"/>
+            <xsd:element name="moneda" minOccurs="0">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="5"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="concepto" minOccurs="0">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="30"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>	
+</xsd:schema>

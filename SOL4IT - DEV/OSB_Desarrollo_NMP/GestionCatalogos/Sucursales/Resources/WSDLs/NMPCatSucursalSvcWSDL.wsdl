@@ -1,0 +1,49 @@
+<wsdl:definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Services/NMPCatSucSvc" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Services/NMPCatSucSvc" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:NMPCatSuc="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCatSucSvc" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage">
+  <wsdl:types>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCatSucSvc" schemaLocation="../Schemas/NMPCatSucursalSvcXSD.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="NMPHeaderRequest">
+    <wsdl:part name="requestHeader" element="NMPsh:headerMessage"/>
+  </wsdl:message>
+  <wsdl:message name="getSucursalesRequestMessage">
+    <wsdl:part name="parameters" element="NMPCatSuc:getSucursalesRequest"/>
+  </wsdl:message>
+  <wsdl:message name="getSucursalesResponseMessage">
+    <wsdl:part name="parameters" element="NMPCatSuc:getSucursalesResponse"/>
+  </wsdl:message>
+  <wsdl:message name="getSucursalesFaultMessage">
+    <wsdl:part name="parameters" element="NMPsm:messageError"/>
+  </wsdl:message>
+  <wsdl:portType name="CatSucursal_ptt">
+    <wsdl:operation name="getSucursales">
+      <wsdl:input message="tns:getSucursalesRequestMessage"/>
+      <wsdl:output message="tns:getSucursalesResponseMessage"/>
+      <wsdl:fault name="getSucursalesFault" message="tns:getSucursalesFaultMessage"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="CatSucursalBinding" type="tns:CatSucursal_ptt">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getSucursales">
+      <soap:operation soapAction="getSucursales" style="document"/>
+      <wsdl:input>
+        <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="getSucursalesFault">
+        <soap:fault name="getSucursalesFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="CatSucursal">
+    <wsdl:port binding="tns:CatSucursalBinding" name="CatSucursalPort">
+      <soap:address location=""/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,67 @@
+<wsdl:definitions name="ObtenerPreciosRapaport" targetNamespace="http://xmlns.oracle.com/OperacionPrendaria/ObtenerPrecios/ObtenerPreciosRapaport" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:client="http://xmlns.oracle.com/OperacionPrendaria/ObtenerPrecios/ObtenerPreciosRapaport" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:documentation>
+        <abstractWSDL>http://10.30.3.15:8001/soa-infra/services/OPP_PREN/ObtenerPrecios!1.0/WSDLs/ObtenerPreciosRapaport.wsdl</abstractWSDL>
+    </wsdl:documentation>
+    
+  <wsdl:types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://xmlns.oracle.com/OperacionPrendaria/ObtenerPrecios/ObtenerPreciosRapaport" schemaLocation="../Schemas/NMPObtenerPreciosXSD.xsd"/>
+    </schema>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+    </xsd:schema>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+    </xsd:schema>
+  </wsdl:types>
+  
+  <wsdl:message name="NMPStandardHeader">
+    <wsdl:part name="requestHeader" element="NMPsh:headerMessage"/>
+  </wsdl:message>
+  <wsdl:message name="NMPStandardHeaderResponse">
+    <wsdl:part name="responseHeader" element="NMPsh:headerMessageResponse"/>
+  </wsdl:message>
+  <wsdl:message name="ObtenerPreciosRapaportRequestMessage">
+    <wsdl:part name="payload" element="client:obtenerPrecios"/>
+  </wsdl:message>
+  <wsdl:message name="ObtenerPreciosRapaportResponseMessage">
+    <wsdl:part name="payload" element="client:obtenerPreciosResponse"/>
+  </wsdl:message>
+  <wsdl:message name="NMPStandardFault">
+    <wsdl:part name="PreciosFault" element="NMPsm:messageError"/>
+  </wsdl:message>
+  
+  <plnk:partnerLinkType name="ObtenerPreciosRapaport">
+    <plnk:role name="ObtenerPreciosRapaportProvider" portType="client:ObtenerPreciosRapaport"/>
+  </plnk:partnerLinkType>
+  
+  <wsdl:portType name="ObtenerPreciosRapaport">
+    <wsdl:operation name="obtenerprecios">
+      <wsdl:input message="client:ObtenerPreciosRapaportRequestMessage"/>
+      <wsdl:output message="client:ObtenerPreciosRapaportResponseMessage"/>
+      <wsdl:fault message="client:NMPStandardFault" name="PreciosFault"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ObtenerPreciosRapaportBinding" type="client:ObtenerPreciosRapaport">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="obtenerprecios">
+      <soap:operation style="document" soapAction="obtenerprecios"/>
+      <wsdl:input>
+        <soap:header message="client:NMPStandardHeader" part="requestHeader" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:header message="client:NMPStandardHeaderResponse" part="responseHeader" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="PreciosFault">
+        <soap:fault name="Fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="obtenerpreciosrapaport_client_ep">
+    <wsdl:port name="ObtenerPreciosRapaport_pt" binding="client:ObtenerPreciosRapaportBinding">
+      <soap:address location="http://10.30.3.15:8001/soa-infra/services/OPP_PREN/ObtenerPrecios/obtenerpreciosrapaport_client_ep"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

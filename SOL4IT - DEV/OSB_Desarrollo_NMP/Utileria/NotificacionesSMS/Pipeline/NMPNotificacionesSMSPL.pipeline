@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="Utileria/NotificacionesSMS/Resources/WSDL/NMPNotificacionesSMSSvcWSDL"/>
+            <con:binding>
+                <con:name>NotificaionesSMSBinding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Services/NMPNotificacionesSMS</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:logging enabled="false" level="debug"/>
+            <oper:reporting>false</oper:reporting>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:pipeline type="request" name="request-N3f579cff.N218ed528.0.15a6c5ab5b6.N7fff">
+            <con:stage name="StageValidacion" id="_StageId-N3f579cff.N218ed528.0.15a6c5ab5b6.N7f93">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="NMPsh" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPNotificacionesSMS"/>
+                    <con1:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCodigo"/>
+                    <con1:varNsDecl prefix="nmp2" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPNotificacionesSMS"/>
+                </con:context>
+                <con:actions>
+                    <con2:replace varName="header" contents-only="true">
+                        <con1:id>_ActionId-N3f579cff.N6484e521.0.15a6cb1968d.N7fcd</con1:id>
+                        <con1:disabled>true</con1:disabled>
+                        <con2:expr>
+                            <con1:xqueryTransform>
+                                <con1:resource ref="Common/XQ/TRHeadersRest"/>
+                                <con1:param name="inbound">
+                                    <con1:path>$inbound</con1:path>
+                                </con1:param>
+                                <con1:param name="requestHeader">
+                                    <con1:path>$header</con1:path>
+                                </con1:param>
+                            </con1:xqueryTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con2:validate xmlns:con4="http://www.bea.com/wli/sb/stages/publish/config" xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+                        <con1:comment>valida el headerMessage de los XSD comunes de NMP</con1:comment>
+                        <con1:id>_ActionId-N3f579cff.N218ed528.0.15a6c5ab5b6.N7f92</con1:id>
+                        <con2:schema ref="Common/XSD/NMPStandardHeader"/>
+                        <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con2:schemaElement>
+                        <con2:varName>header</con2:varName>
+                        <con2:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./NMPsh:headerMessage</con:xpathText>
+                        </con2:location>
+                        <con2:resultVarName/>
+                    </con2:validate>
+                    <con:validate xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/pipeline/config" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+                        <con1:id>_ActionId-N3f579cff.N218ed528.0.15a6c5ab5b6.N7f91</con1:id>
+                        <con3:schema ref="Utileria/NotificacionesSMS/Resources/Schemas/NMPNotificacionesSMSXSD"/>
+                        <con3:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPNotificacionesSMS">nmp:validarCodigoSMSRequest</con3:schemaElement>
+                        <con:varName>body</con:varName>
+                        <con:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./nmp:validarCodigoSMSRequest</con:xpathText>
+                        </con:location>
+                        <con3:resultVarName/>
+                    </con:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f579cff.N218ed528.0.15a6c5ab5b6.N7f5f" name="Stage1">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPNotificacionesSMS"/>
+                    <con1:userNsDecl prefix="NMPsh" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-N3f579cff.N218ed528.0.15a6c5ab5b6.N7f58</con1:id>
+                        <con2:case id="_BranchId-N3f579cff.N218ed528.0.15a6c5ab5b6.N7f57">
+                            <con2:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$header/NMPsh:headerMessage/NMPsh:idConsumidor= '17'</con:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace varName="body" contents-only="true">
+                                    <con1:id>_ActionId-N3f579cff.N218ed528.0.15a6c5ab5b6.N7f21</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con1:xsltTransform>
+                                            <con1:resource ref="Utileria/NotificacionesSMS/Resources/Transformations/TrValidarCodigoSMSToMIDASValidarCodigoSMSRes"/>
+                                            <con1:input>$body/nmp:validarCodigoSMSRequest</con1:input>
+                                        </con1:xsltTransform>
+                                    </con2:expr>
+                                </con2:replace>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:case id="_BranchId-N3f579cff.N218ed528.0.15a6c5ab5b6.N7f55">
+                            <con2:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$header/NMPsh:headerMessage/NMPsh:idConsumidor= '19'</con:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:wsCallout>
+                                    <con1:id>_ActionId-N3f579cff.N218ed528.0.15a6c5ab5b6.N7f1e</con1:id>
+                                    <con2:service ref="Utileria/NotificacionesSMS/BusinessServices/CRMNotificacionesSMSBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                    <con2:operation>ValidaCodigo</con2:operation>
+                                    <con2:request>
+                                        <con2:body wrapped="false">validarCodigoSMSRequest</con2:body>
+                                        <con2:header/>
+                                    </con2:request>
+                                    <con2:response>
+                                        <con2:body wrapped="false">validarCodigoSMSResponse</con2:body>
+                                        <con2:header/>
+                                    </con2:response>
+                                    <con2:requestTransform>
+                                        <con2:assign varName="validarCodigoSMSRequest">
+                                            <con1:id>_ActionId-N3f579cff.N218ed528.0.15a6c5ab5b6.N7f1b</con1:id>
+                                            <con2:expr>
+                                                <con1:xsltTransform>
+                                                    <con1:resource ref="Utileria/NotificacionesSMS/Resources/Transformations/TrValidarCodigoSMSToCRMValidarCodigoSMSReq"/>
+                                                    <con1:input>$body/nmp:validarCodigoSMSRequest</con1:input>
+                                                </con1:xsltTransform>
+                                            </con2:expr>
+                                        </con2:assign>
+                                    </con2:requestTransform>
+                                    <con2:responseTransform>
+                                        <con2:replace varName="body" contents-only="true">
+                                            <con1:id>_ActionId-N3f579cff.N218ed528.0.15a6c5ab5b6.N7f18</con1:id>
+                                            <con2:location>
+                                                <con1:xpathText>.</con1:xpathText>
+                                            </con2:location>
+                                            <con2:expr>
+                                                <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                                    <con:resource ref="Utileria/NotificacionesSMS/Resources/Transformations/TrCRMValidarCodigoSMSToValidarCodigoSMSRes"/>
+                                                    <con:input>$validarCodigoSMSResponse</con:input>
+                                                </con:xsltTransform>
+                                            </con2:expr>
+                                        </con2:replace>
+                                    </con2:responseTransform>
+                                </con2:wsCallout>
+                            </con2:actions>
+                        </con2:case>
+                    </con2:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f579cff.N218ed528.0.15a6c5ab5b6.N7ffe">
+            <con:stage id="_StageId-N3f579cff.N218ed528.0.15a6c5ab5b6.N7ffc" name="Stage1">
+                <con:context/>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="PipelinePairNode1">
+                <con:request>request-N3f579cff.N218ed528.0.15a6c5ab5b6.N7fff</con:request>
+                <con:response>response-N3f579cff.N218ed528.0.15a6c5ab5b6.N7ffe</con:response>
+            </con:pipeline-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

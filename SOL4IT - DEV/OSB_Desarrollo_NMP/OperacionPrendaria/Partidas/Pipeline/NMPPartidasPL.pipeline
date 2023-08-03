@@ -1,0 +1,1682 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con3="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con4="http://www.bea.com/wli/sb/stages/publish/config" xmlns:con5="http://www.bea.com/wli/sb/stages/logging/config">
+    <con:coreEntry>
+        <con:description/>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="OperacionPrendaria/Partidas/Resources/WSDLs/NMPPartidasSvcWSDL"/>
+            <con:binding>
+                <con:name>PartidasBinding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Servicios/NMPPartidas</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations>
+            <oper:tracingEnabled>true</oper:tracingEnabled>
+            <oper:logging enabled="false" level="debug"/>
+            <oper:monitoring enabled="true" level="pipeline" aggregationInterval="5"/>
+            <oper:reporting>false</oper:reporting>
+        </oper:operations>
+    </con:coreEntry>
+    <con:router errorHandler="_onErrorHandler-3708010327031629053-b5d49be.14dbb932212.-7f33" xmlns:ser="http://www.bea.com/wli/sb/services">
+        <con:pipeline name="_onErrorHandler-3708010327031629053-b5d49be.14dbb932212.-7f33" type="error">
+            <con:stage name="StageErrorHandler">
+                <con:context>
+                    <con1:userNsDecl prefix="con" namespace="http://www.bea.com/wli/sb/context"/>
+                    <con1:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                    <con1:userNsDecl prefix="nmp2" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente"/>
+                    <con1:userNsDecl prefix="ns1" namespace="urn:mx.com.nmp.midas"/>
+                    <con1:userNsDecl prefix="NMPAuto" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal"/>
+                    <con1:userNsDecl prefix="ex" namespace="http://exception.midas.nmp.com.mx"/>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal"/>
+                    <con1:varNsDecl prefix="nmp3" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-af004be.3b6e7a43.0.15cf552feaf.N787a</con1:id>
+                        <con2:case id="_BranchId-af004be.3b6e7a43.0.15cf552feaf.N7879">
+                            <con2:condition>
+                                <con1:xqueryText>$operacion='validarContrato' or $operacion='obtenerPartidasCliente' or $operacion='notificarDetallePartida' or $operacion='consultarPartidasFolio'</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:ifThenElse>
+                                    <con1:id>_ActionId-af10c31.46c01acf.0.15de1f090e5.N7d28</con1:id>
+                                    <con2:case id="_BranchId-af10c31.46c01acf.0.15de1f090e5.N7d27">
+                                        <con2:condition>
+                                            <con1:xqueryText>$operacion='obtenerPartidasCliente'</con1:xqueryText>
+                                        </con2:condition>
+                                        <con2:actions>
+                                            <con5:report>
+                                                <con1:id>_ActionId-af10c31.46c01acf.0.15de1f090e5.N7d23</con1:id>
+                                                <con5:expr>
+                                                    <con1:xqueryText>$body_tmp</con1:xqueryText>
+                                                </con5:expr>
+                                                <con5:labels>
+                                                    <con5:key>obtenerPartidasCliente Req GUID</con5:key>
+                                                    <con5:varName>body_tmp</con5:varName>
+                                                    <con5:value>
+                                                        <con1:xpathText>./nmp3:obtenerPartidasClienteRequest/nmp3:trazabilidad/nmp3:GUID</con1:xpathText>
+                                                    </con5:value>
+                                                </con5:labels>
+                                                <con5:labels>
+                                                    <con5:key>numCliente</con5:key>
+                                                    <con5:varName>body_tmp</con5:varName>
+                                                    <con5:value>
+                                                        <con1:xpathText>./nmp3:obtenerPartidasClienteRequest/nmp3:idCliente</con1:xpathText>
+                                                    </con5:value>
+                                                </con5:labels>
+                                            </con5:report>
+                                            <con5:report>
+                                                <con1:id>_ActionId-af10c31.46c01acf.0.15de1f090e5.N7d20</con1:id>
+                                                <con5:expr>
+                                                    <con1:xqueryText>$fault</con1:xqueryText>
+                                                </con5:expr>
+                                                <con5:labels>
+                                                    <con5:key>obtenerPartidasCliente Fault GUID</con5:key>
+                                                    <con5:varName>body_tmp</con5:varName>
+                                                    <con5:value>
+                                                        <con1:xpathText>./nmp3:obtenerPartidasClienteRequest/nmp3:trazabilidad/nmp3:GUID</con1:xpathText>
+                                                    </con5:value>
+                                                </con5:labels>
+                                                <con5:labels>
+                                                    <con5:key>numCliente</con5:key>
+                                                    <con5:varName>body_tmp</con5:varName>
+                                                    <con5:value>
+                                                        <con1:xpathText>./nmp3:obtenerPartidasClienteRequest/nmp3:idCliente</con1:xpathText>
+                                                    </con5:value>
+                                                </con5:labels>
+                                            </con5:report>
+                                        </con2:actions>
+                                    </con2:case>
+                                    <con2:case id="_BranchId-af10c31.46c01acf.0.15de1f090e5.N7d1e">
+                                        <con2:condition>
+                                            <con1:xqueryText>$operacion='consultarPartidasFolio'</con1:xqueryText>
+                                        </con2:condition>
+                                        <con2:actions>
+                                            <con5:report>
+                                                <con1:id>_ActionId-af10c31.46c01acf.0.15de1f090e5.N7cea</con1:id>
+                                                <con5:expr>
+                                                    <con1:xqueryText>$body_tmp</con1:xqueryText>
+                                                </con5:expr>
+                                                <con5:labels>
+                                                    <con5:key>consultarPartidasFolio Req Folio</con5:key>
+                                                    <con5:varName>body_tmp</con5:varName>
+                                                    <con5:value>
+                                                        <con1:xpathText>./nmp3:consultarPartidasFolioRequest/nmp3:folios/nmp3:folio[1]</con1:xpathText>
+                                                    </con5:value>
+                                                </con5:labels>
+                                            </con5:report>
+                                            <con5:report>
+                                                <con1:id>_ActionId-af10c31.46c01acf.0.15de1f090e5.N7ce7</con1:id>
+                                                <con5:expr>
+                                                    <con1:xqueryText>$fault</con1:xqueryText>
+                                                </con5:expr>
+                                                <con5:labels>
+                                                    <con5:key>consultarPartidasFolio Fault Folio</con5:key>
+                                                    <con5:varName>body_tmp</con5:varName>
+                                                    <con5:value>
+                                                        <con1:xpathText>./nmp3:consultarPartidasFolioRequest/nmp3:folios/nmp3:folio[1]</con1:xpathText>
+                                                    </con5:value>
+                                                </con5:labels>
+                                            </con5:report>
+                                        </con2:actions>
+                                    </con2:case>
+                                    <con2:case id="_BranchId-af10c31.46c01acf.0.15de1f090e5.N7ce5">
+                                        <con2:condition>
+                                            <con1:xqueryText>$operacion='notificarDetallePartida'</con1:xqueryText>
+                                        </con2:condition>
+                                        <con2:actions>
+                                            <con5:report>
+                                                <con1:id>_ActionId-af10c31.46c01acf.0.15de1f090e5.N7cb1</con1:id>
+                                                <con5:expr>
+                                                    <con1:xqueryText>$body_tmp</con1:xqueryText>
+                                                </con5:expr>
+                                                <con5:labels>
+                                                    <con5:key>notificarDetallePartida Req GUID</con5:key>
+                                                    <con5:varName>body_tmp</con5:varName>
+                                                    <con5:value>
+                                                        <con1:xpathText>./nmp3:notificarDetallePartidasRequest/nmp3:trazabilidad/nmp3:GUID</con1:xpathText>
+                                                    </con5:value>
+                                                </con5:labels>
+                                                <con5:labels>
+                                                    <con5:key>Folio</con5:key>
+                                                    <con5:varName>body_tmp</con5:varName>
+                                                    <con5:value>
+                                                        <con1:xpathText>./nmp3:notificarDetallePartidasRequest/nmp3:partidas/nmp3:partida[1]/nmp3:prenda/nmp3:folio</con1:xpathText>
+                                                    </con5:value>
+                                                </con5:labels>
+                                            </con5:report>
+                                            <con5:report>
+                                                <con1:id>_ActionId-af10c31.46c01acf.0.15de1f090e5.N7cae</con1:id>
+                                                <con5:expr>
+                                                    <con1:xqueryText>$fault</con1:xqueryText>
+                                                </con5:expr>
+                                                <con5:labels>
+                                                    <con5:key>notificarDetallePartida Fault GUID</con5:key>
+                                                    <con5:varName>body_tmp</con5:varName>
+                                                    <con5:value>
+                                                        <con1:xpathText>./nmp3:notificarDetallePartidasRequest/nmp3:trazabilidad/nmp3:GUID</con1:xpathText>
+                                                    </con5:value>
+                                                </con5:labels>
+                                                <con5:labels>
+                                                    <con5:key>Folio</con5:key>
+                                                    <con5:varName>body_tmp</con5:varName>
+                                                    <con5:value>
+                                                        <con1:xpathText>./nmp3:notificarDetallePartidasRequest/nmp3:partidas/nmp3:partida[1]/nmp3:prenda/nmp3:folio</con1:xpathText>
+                                                    </con5:value>
+                                                </con5:labels>
+                                            </con5:report>
+                                        </con2:actions>
+                                    </con2:case>
+                                    <con2:default>
+                                        <con1:report xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                                            <con5:id xmlns:con5="http://www.bea.com/wli/sb/stages/config">_ActionId-af10c31.54e14b43.0.15d1db89a49.N7308</con5:id>
+                                            <con1:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault</con:xqueryText>
+                                            </con1:expr>
+                                        </con1:report>
+                                    </con2:default>
+                                </con2:ifThenElse>
+                                <con2:assign varName="body">
+                                    <con1:id>_ActionId-af10c31.54e14b43.0.15d1db89a49.N727e</con1:id>
+                                    <con2:expr>
+                                        <con1:xsltTransform>
+                                            <con1:resource ref="OperacionPrendaria/Partidas/Resources/Transformations/TrPartidasFaultV2"/>
+                                            <con1:input>$fault</con1:input>
+                                            <con1:param name="serviceName">
+                                                <con1:path>$serviceName</con1:path>
+                                            </con1:param>
+                                        </con1:xsltTransform>
+                                    </con2:expr>
+                                </con2:assign>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default>
+                            <con2:delete varName="header">
+                                <con1:id>_ActionId-N53effe5c.N17485e42.0.159b304b94a.N7f9b</con1:id>
+                            </con2:delete>
+                            <con1:report xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-3708010327031629053-b5d49be.14dbb932212.-7f31</con2:id>
+                                <con1:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault</con:xqueryText>
+                                </con1:expr>
+                                <con1:labels>
+                                    <con1:key>errorAutorizacion</con1:key>
+                                    <con1:varName>fault</con1:varName>
+                                    <con1:value>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                    </con1:value>
+                                </con1:labels>
+                            </con1:report>
+                            <con4:replace varName="body" contents-only="true" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                                <con2:id>_ActionId-N53effe5c.N17485e42.0.159b304b94a.N7f98</con2:id>
+                                <con1:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="OperacionPrendaria/Partidas/Resources/Transformations/TRPartidasFault"/>
+                                        <con2:input>$fault</con2:input>
+                                        <con2:param name="AppError">
+                                            <con2:path>fn:concat("(",$body//*:faultstring,")")</con2:path>
+                                        </con2:param>
+                                    </con2:xsltTransform>
+                                </con1:expr>
+                            </con4:replace>
+                        </con2:default>
+                    </con2:ifThenElse>
+                    <con2:reply isError="true" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                        <con2:id>_ActionId-N53effe5c.N17485e42.0.159b304b94a.N7f95</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af100e2.1465741d.0.15c4048c867.N7f9e">
+            <con:stage id="_StageId-af100e2.1465741d.0.15c4048c867.N7f9c" name="StageValidarContratoRequest">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+                </con:context>
+                <con:actions>
+                    <con2:validate>
+                        <con1:id>_ActionId-af00458.N4d99fa0a.0.15c643aa20e.N7ded</con1:id>
+                        <con2:schema ref="OperacionPrendaria/Partidas/Resources/Schemas/NMPPartidasSvcXSD"/>
+                        <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas">nmp:validarContratoClienteRequest</con2:schemaElement>
+                        <con2:varName>body</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./nmp:validarContratoClienteRequest</con1:xpathText>
+                        </con2:location>
+                    </con2:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-af00458.N4d99fa0a.0.15c643aa20e.N7dec" name="StageConsultaFiltros">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+                    <con1:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-af00458.N4d99fa0a.0.15c643aa20e.N7de9</con1:id>
+                        <con2:service ref="OperacionPrendaria/Partidas/Business Services/NMPFiltrosConsultaCreditoDBBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>consultarFiltrosConsultaCreditos</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">consultarFiltrosRequest</con2:body>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">consultarFiltrosResponse</con2:body>
+                        </con2:response>
+                        <con2:requestTransform>
+                            <con2:assign varName="consultarFiltrosRequest">
+                                <con1:id>_ActionId-af00458.N4d99fa0a.0.15c643aa20e.N7de6</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText><![CDATA[<con:consultarFiltrosConsultaCreditoRequest xmlns:con="http://servicios.montedepiedad.com.mx/NMP/Schema/ConsultaCreditosFiltros">
+    <con:idConsulta>4</con:idConsulta>
+     <con:idOrigen>{$header/nmph:headerMessage/nmph:idConsumidor/text()}</con:idOrigen>
+</con:consultarFiltrosConsultaCreditoRequest>]]></con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:assign varName="serviceName">
+                                <con1:id>_ActionId-af10c31.3de42731.0.15d9a4249c7.N7ff2</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText>'ConsultarFiltrosCredito(DB)'</con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                        </con2:requestTransform>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-af00458.N4d99fa0a.0.15c643aa20e.N7de5" name="StageValidaContratoCliente">
+                <con:context/>
+                <con:actions>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-af00458.N4d99fa0a.0.15c643aa20e.N7de2</con1:id>
+                        <con2:service ref="OperacionPrendaria/Partidas/Business Services/MIDASConsultaCreditosBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>validarClientePorCredito</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">validarCreditoClienteReq</con2:body>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">validarCreditoClienteRes</con2:body>
+                        </con2:response>
+                        <con2:requestTransform>
+                            <con2:assign varName="validarCreditoClienteReq">
+                                <con1:id>_ActionId-af00458.N4d99fa0a.0.15c643aa20e.N7ddf</con1:id>
+                                <con2:expr>
+                                    <con1:xsltTransform>
+                                        <con1:resource ref="OperacionPrendaria/Partidas/Resources/Transformations/TrValidaFolioClienteToMIDASValidarCredito"/>
+                                        <con1:input>$body</con1:input>
+                                        <con1:param name="filtros">
+                                            <con1:path>$consultarFiltrosResponse</con1:path>
+                                        </con1:param>
+                                    </con1:xsltTransform>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:assign varName="serviceName">
+                                <con1:id>_ActionId-af10c31.3de42731.0.15d9a4249c7.N7fef</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText>'validarContrato(MIDAS)'</con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                        </con2:requestTransform>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode1_response" type="response"/>
+        <con:pipeline type="error" name="error-N53efff72.N3d81c97d.0.159ad8e86d1.N75b7">
+            <con:stage id="_StageId-N53efff72.N3d81c97d.0.159ad8e86d1.N75b6" name="StageErrorHandler" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                <con:context/>
+                <con:actions>
+                    <con1:delete varName="header" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N53efff72.N3d81c97d.0.159ad8e86d1.N75b5</con2:id>
+                    </con1:delete>
+                    <con1:replace varName="body" contents-only="true" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N53efff72.N3d81c97d.0.159ad8e86d1.N75b4</con2:id>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="OperacionPrendaria/Partidas/Resources/Transformations/TRPartidasFault"/>
+                                <con2:input>$fault</con2:input>
+                                <con2:param name="AppError">
+                                    <con2:path>'(Validacion de Body Request)'</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con2:reply isError="true">
+                        <con2:id>_ActionId-N53efff72.N3d81c97d.0.159ad8e86d1.N75b3</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N53efff72.N3d81c97d.0.159ad8e86d1.N76a5">
+            <con:stage id="_StageId-N53efff72.N3d81c97d.0.159ad8e86d1.N7638" name="StageErrorHandler" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                <con:context/>
+                <con:actions>
+                    <con1:delete varName="header" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N53efff72.N3d81c97d.0.159ad8e86d1.N7637</con2:id>
+                    </con1:delete>
+                    <con1:replace varName="body" contents-only="true" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N53efff72.N3d81c97d.0.159ad8e86d1.N7636</con2:id>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="OperacionPrendaria/Partidas/Resources/Transformations/TRPartidasFault"/>
+                                <con2:input>$fault</con2:input>
+                                <con2:param name="AppError">
+                                    <con2:path>'(Validacion de Header Request)'</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con2:reply isError="true">
+                        <con2:id>_ActionId-N53efff72.N3d81c97d.0.159ad8e86d1.N7635</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af100e2.1465741d.0.15c4048c867.N7f68">
+            <con:stage id="_StageId-af100e2.1465741d.0.15c4048c867.N7f66" name="StageObtenerPartidasClienteResponse">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+                    <con1:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="body">
+                        <con1:id>_ActionId-af00458.N4d99fa0a.0.15c643aa20e.N7c53</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionPrendaria/Partidas/Resources/Transformations/TrMIDASObtenerCreditosResToNMPObtCreditosRes"/>
+                                <con1:input>$obtenerCreditosResponse</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:rename varName="body">
+                        <con1:id>_ActionId-af00458.N4d99fa0a.0.15c643aa20e.N7c8f</con1:id>
+                        <con2:location>
+                            <con1:xpathText>./nmp:obtenerPartidasClienteResponse//*</con1:xpathText>
+                        </con2:location>
+                        <con2:namespace>http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas</con2:namespace>
+                    </con2:rename>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-af10021.6bfc6c29.0.15cd231f6b3.N7ff5" name="StagePublicarMensajes">
+                <con:context>
+                    <con1:userNsDecl prefix="urn" namespace="urn:mx.com.nmp.midas"/>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+                    <con1:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:userNsDecl prefix="mcred" namespace="http://nmpconsultacreditos.schema.nmp.servicios.montedepiedad.com.mx"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-af10088.N6c7317d1.0.15d52d5bcf3.N7c65</con1:id>
+                        <con2:case id="_BranchId-af10088.N6c7317d1.0.15d52d5bcf3.N7c64">
+                            <con2:condition>
+                                <con1:xqueryText>$header/nmph:headerMessage/nmph:idConsumidor='25'</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:insert varName="header">
+                                    <con1:id>_ActionId-af10c31.6cbe0384.0.15d75deca21.N7cb0</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>./nmph:headerMessage</con1:xpathText>
+                                    </con2:location>
+                                    <con2:where>before</con2:where>
+                                    <con2:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body_req/nmp:obtenerPartidasClienteRequest/nmp:trazabilidad</con:xqueryText>
+                                    </con2:expr>
+                                </con2:insert>
+                                <con4:route>
+                                    <con1:id>_ActionId-af10021.6bfc6c29.0.15cd231f6b3.N7dea</con1:id>
+                                    <con4:service ref="OperacionPrendaria/Partidas/Business Services/NMPPublicarMensajesQueueOSBBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                    <con4:operation>publicarPartidasClienteQueue</con4:operation>
+                                    <con4:outboundTransform>
+                                        <con2:routing-options>
+                                            <con1:id>_ActionId-af10c31.N78b5a8b1.0.15d85190c0a.N7f95</con1:id>
+                                            <con2:mode>request</con2:mode>
+                                            <con2:qualityOfService>best-effort</con2:qualityOfService>
+                                            <con2:retryCount>0</con2:retryCount>
+                                        </con2:routing-options>
+                                    </con4:outboundTransform>
+                                </con4:route>
+                                <con2:assign varName="body">
+                                    <con1:id>_ActionId-af10088.N6c7317d1.0.15d52d5bcf3.N7e22</con1:id>
+                                    <con2:expr>
+                                        <con1:xsltTransform>
+                                            <con1:resource ref="OperacionPrendaria/Partidas/Resources/Transformations/TrMIDASObtCreditosResToNMPObtCreditosResMiMonte"/>
+                                            <con1:input>$obtenerCreditosResponse</con1:input>
+                                        </con1:xsltTransform>
+                                    </con2:expr>
+                                </con2:assign>
+                                <con2:assign varName="serviceName">
+                                    <con1:id>_ActionId-af10c31.46c01acf.0.15de1f090e5.N7d69</con1:id>
+                                    <con2:expr>
+                                        <con1:xqueryText>'PublicarPartidaQUEUE(OSB)'</con1:xqueryText>
+                                    </con2:expr>
+                                </con2:assign>
+                                <con1:reply>
+                                    <con1:id>_ActionId-af10c31.N78b5a8b1.0.15d85190c0a.N7f2e</con1:id>
+                                </con1:reply>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default/>
+                    </con2:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairGetPartidaDetalle_request" type="request">
+            <con:stage id="_StageId-af100b8.N6d6bbe94.0.1598e155643.N7c3d" name="StageValidaBody" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:env="http://www.bea.com/wli/config/env" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                <con:context>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con2:userNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+                </con:context>
+                <con:actions>
+                    <con1:validate xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-af100b8.N6d6bbe94.0.1598e155643.N7a5d</con2:id>
+                        <con4:schema ref="OperacionPrendaria/Partidas/Resources/Schemas/NMPPartidasSvcXSD"/>
+                        <con4:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas">nmp:getPartidaDetalleRequest</con4:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./nmp1:getPartidaDetalleRequest</con:xpathText>
+                        </con1:location>
+                        <con4:resultVarName/>
+                    </con1:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage name="StageRequest">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="NMPsh" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:userNsDecl prefix="NMPsm" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-a1e030f.N2a94e5f5.10.15ab99a833f.N7fff</con1:id>
+                        <con2:case>
+                            <con2:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$header/NMPsh:headerMessage/NMPsh:idConsumidor= '19'</con:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con1:wsCallout xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N2a94e5f5.9.15ab8eb0d2c.N7ffb</con2:id>
+                                    <con1:service ref="OperacionPrendaria/Partidas/Business Services/MIDASDetallePartidaBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                    <con1:operation>getDetallePartida</con1:operation>
+                                    <con1:request>
+                                        <con1:body wrapped="false">getDetallePartidaReq</con1:body>
+                                        <con1:header/>
+                                    </con1:request>
+                                    <con1:response>
+                                        <con1:body wrapped="false">getDetallePartidaRes</con1:body>
+                                        <con1:header/>
+                                    </con1:response>
+                                    <con1:requestTransform>
+                                        <con1:assign varName="getDetallePartidaReq">
+                                            <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N2a94e5f5.9.15ab8eb0d2c.N7ffa</con2:id>
+                                            <con1:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(fn:concat("&lt;urn:getDetallePartida xmlns:urn='urn:mx.com.nmp.midas'>
+         &lt;urn:folio>",$body/nmp:getPartidaDetalleRequest/nmp:folioPartida,"&lt;/urn:folio>
+         &lt;/urn:getDetallePartida>"))</con:xqueryText>
+                                            </con1:expr>
+                                        </con1:assign>
+                                    </con1:requestTransform>
+                                    <con1:responseTransform>
+                                        <con1:replace varName="body" contents-only="true">
+                                            <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N2a94e5f5.12.15aba3cf4b9.N7fef</con2:id>
+                                            <con1:expr>
+                                                <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                                    <con:resource ref="OperacionPrendaria/Partidas/Resources/Transformations/TRDetallePartidaWsdlToGetPartidaDetalleProyeccion"/>
+                                                    <con:input>$getDetallePartidaRes</con:input>
+                                                </con:xsltTransform>
+                                            </con1:expr>
+                                        </con1:replace>
+                                    </con1:responseTransform>
+                                </con1:wsCallout>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default>
+                            <con1:wsCallout xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N2a94e5f5.9.15ab8eb0d2c.N7ff9</con2:id>
+                                <con1:service ref="OperacionPrendaria/Partidas/Business Services/MIDASDetallePartidaBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                <con1:operation>getDetallePartida</con1:operation>
+                                <con1:request>
+                                    <con1:body wrapped="false">getDetallePartidaReq</con1:body>
+                                    <con1:header/>
+                                </con1:request>
+                                <con1:response>
+                                    <con1:body wrapped="false">getDetallePartidaRes</con1:body>
+                                    <con1:header/>
+                                </con1:response>
+                                <con1:requestTransform>
+                                    <con1:assign varName="getDetallePartidaReq">
+                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N2a94e5f5.9.15ab8eb0d2c.N7ff8</con2:id>
+                                        <con1:expr>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(fn:concat("&lt;urn:getDetallePartida xmlns:urn='urn:mx.com.nmp.midas'>
+         &lt;urn:folio>",$body/nmp:getPartidaDetalleRequest/nmp:folioPartida,"&lt;/urn:folio>
+         &lt;/urn:getDetallePartida>"))</con:xqueryText>
+                                        </con1:expr>
+                                    </con1:assign>
+                                </con1:requestTransform>
+                                <con1:responseTransform>
+                                    <con1:replace varName="body" contents-only="true">
+                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N2a94e5f5.b.15ab8ed6018.N7ff8</con2:id>
+                                        <con1:expr>
+                                            <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                                <con:resource ref="OperacionPrendaria/Partidas/Resources/Transformations/TRDetallePartidaWsdlToGetPartidaDetalle"/>
+                                                <con:input>$getDetallePartidaRes</con:input>
+                                            </con:xsltTransform>
+                                        </con1:expr>
+                                    </con1:replace>
+                                </con1:responseTransform>
+                            </con1:wsCallout>
+                        </con2:default>
+                    </con2:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af100e2.1465741d.0.15c4048c867.N7f69">
+            <con:stage id="_StageId-af00458.N4d99fa0a.0.15c643aa20e.N7c96" name="StageValidacion">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+                </con:context>
+                <con:actions>
+                    <con2:validate>
+                        <con1:id>_ActionId-af00458.N4d99fa0a.0.15c643aa20e.N7c92</con1:id>
+                        <con2:schema ref="OperacionPrendaria/Partidas/Resources/Schemas/NMPPartidasSvcXSD"/>
+                        <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas">nmp:obtenerPartidasClienteRequest</con2:schemaElement>
+                        <con2:varName>body</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./nmp:obtenerPartidasClienteRequest</con1:xpathText>
+                        </con2:location>
+                        <con2:resultVarName/>
+                    </con2:validate>
+                    <con2:assign varName="body_req">
+                        <con1:id>_ActionId-a1e030f.Nbf794df.1.15d8085784f.N8000</con1:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-af00458.N4d99fa0a.0.15c643aa20e.N7d38" name="StageConsultaFiltros">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+                    <con1:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:userNsDecl prefix="ccf" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/ConsultaCreditosFiltros"/>
+                </con:context>
+                <con:actions>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-af00458.N4d99fa0a.0.15c643aa20e.N7d37</con1:id>
+                        <con2:service ref="OperacionPrendaria/Partidas/Business Services/NMPFiltrosConsultaCreditoDBBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>consultarFiltrosConsultaCreditos</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">consultarFiltrosRequest</con2:body>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">consultarFiltrosResponse</con2:body>
+                        </con2:response>
+                        <con2:requestTransform>
+                            <con2:assign varName="serviceName">
+                                <con1:id>_ActionId-af10c31.54e14b43.0.15d1db89a49.N72cc</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText>'ConsultarFiltros(DB)'</con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:assign varName="consultarFiltrosRequest">
+                                <con1:id>_ActionId-af00458.N4d99fa0a.0.15c643aa20e.N7d36</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText><![CDATA[<con:consultarFiltrosConsultaCreditoRequest xmlns:con="http://servicios.montedepiedad.com.mx/NMP/Schema/ConsultaCreditosFiltros">
+    <con:idConsulta>{$body/nmp:obtenerPartidasClienteRequest/nmp:criterios/nmp:criterioBoleta/text()}</con:idConsulta>
+     <con:idOrigen>{$header/nmph:headerMessage/nmph:idConsumidor/text()}</con:idOrigen>
+</con:consultarFiltrosConsultaCreditoRequest>]]></con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                        </con2:requestTransform>
+                        <con2:responseTransform>
+                            <con2:ifThenElse>
+                                <con1:id>_ActionId-af10c31.54e14b43.0.15d1db89a49.N72c4</con1:id>
+                                <con2:case id="_BranchId-af10c31.54e14b43.0.15d1db89a49.N72c3">
+                                    <con2:condition>
+                                        <con1:xqueryText>$consultarFiltrosResponse/ccf:NmpConsultasCat</con1:xqueryText>
+                                    </con2:condition>
+                                    <con2:actions/>
+                                </con2:case>
+                                <con2:default>
+                                    <con2:Error>
+                                        <con1:id>_ActionId-af10c31.54e14b43.0.15d1db89a49.N72c0</con1:id>
+                                        <con2:errCode>NMP-101</con2:errCode>
+                                    </con2:Error>
+                                </con2:default>
+                            </con2:ifThenElse>
+                        </con2:responseTransform>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-af00458.N4d99fa0a.0.15c643aa20e.N7ccc" name="StageObtenerCreditosCliente">
+                <con:context>
+                    <con1:userNsDecl prefix="urn" namespace="urn:mx.com.nmp.midas"/>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+                    <con1:userNsDecl prefix="mcred" namespace="http://nmpconsultacreditos.schema.nmp.servicios.montedepiedad.com.mx"/>
+                </con:context>
+                <con:actions>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-af00458.N4d99fa0a.0.15c643aa20e.N7ccb</con1:id>
+                        <con2:service ref="OperacionPrendaria/Partidas/Business Services/MIDASConsultaCreditosBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>obtenerCreditosPorCliente</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="true">obtenerCreditosRequest</con2:body>
+                            <con2:header>headerM</con2:header>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="true">obtenerCreditosResponse</con2:body>
+                        </con2:response>
+                        <con2:requestTransform>
+                            <con2:assign varName="headerM">
+                                <con1:id>_ActionId-a1f1734.26e5ca12.0.15d633068eb.N7ffe</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText><![CDATA[<soap-env:Header>
+    <urn:URLCallback>{$body/nmp:obtenerPartidasClienteRequest/nmp:trazabilidad/nmp:urlCallBack/text()}</urn:URLCallback>
+    <urn:GUID>{$body/nmp:obtenerPartidasClienteRequest/nmp:trazabilidad/nmp:GUID/text()}</urn:GUID>
+</soap-env:Header>]]></con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:assign varName="serviceName">
+                                <con1:id>_ActionId-af10c31.54e14b43.0.15d1db89a49.N72bd</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText>'ObtenerClienteCredito(MIDAS)'</con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:assign varName="obtenerCreditosRequest">
+                                <con1:id>_ActionId-af00458.N4d99fa0a.0.15c643aa20e.N7cca</con1:id>
+                                <con2:expr>
+                                    <con1:xsltTransform>
+                                        <con1:resource ref="OperacionPrendaria/Partidas/Resources/Transformations/TrObtenerCreditosClienteToMIDASObtenerCreditos"/>
+                                        <con1:input>$body</con1:input>
+                                        <con1:param name="filtros">
+                                            <con1:path>$consultarFiltrosResponse</con1:path>
+                                        </con1:param>
+                                    </con1:xsltTransform>
+                                </con2:expr>
+                            </con2:assign>
+                        </con2:requestTransform>
+                        <con2:responseTransform>
+                            <con2:ifThenElse>
+                                <con1:id>_ActionId-af10c31.54e14b43.0.15d1db89a49.N72b6</con1:id>
+                                <con2:case id="_BranchId-af10c31.54e14b43.0.15d1db89a49.N72b5">
+                                    <con2:condition>
+                                        <con1:xqueryText>$obtenerCreditosResponse/urn:obtenerCreditosPorClienteResponse/urn:creditosCliente/mcred:DetalleCreditoResponseType</con1:xqueryText>
+                                    </con2:condition>
+                                    <con2:actions/>
+                                </con2:case>
+                                <con2:default>
+                                    <con2:ifThenElse>
+                                        <con1:id>_ActionId-af10088.N6c7317d1.0.15d52d5bcf3.N7f96</con1:id>
+                                        <con2:case id="_BranchId-af10088.N6c7317d1.0.15d52d5bcf3.N7f95">
+                                            <con2:condition>
+                                                <con1:xqueryText>$body/nmp:obtenerPartidasClienteRequest/nmp:criterios/nmp:criterioBoleta='1'</con1:xqueryText>
+                                            </con2:condition>
+                                            <con2:actions>
+                                                <con2:Error>
+                                                    <con1:id>_ActionId-af10c31.54e14b43.0.15d1db89a49.N7281</con1:id>
+                                                    <con2:errCode>NMP-102</con2:errCode>
+                                                </con2:Error>
+                                            </con2:actions>
+                                        </con2:case>
+                                        <con2:case id="_BranchId-af10088.N6c7317d1.0.15d52d5bcf3.N7f92">
+                                            <con2:condition>
+                                                <con1:xqueryText>$body/nmp:obtenerPartidasClienteRequest/nmp:criterios/nmp:criterioBoleta='2'</con1:xqueryText>
+                                            </con2:condition>
+                                            <con2:actions>
+                                                <con2:Error>
+                                                    <con1:id>_ActionId-af10088.N6c7317d1.0.15d52d5bcf3.N7f5e</con1:id>
+                                                    <con2:errCode>NMP-103</con2:errCode>
+                                                </con2:Error>
+                                            </con2:actions>
+                                        </con2:case>
+                                        <con2:case id="_BranchId-af10088.N6c7317d1.0.15d52d5bcf3.N7f5c">
+                                            <con2:condition>
+                                                <con1:xqueryText>$body/nmp:obtenerPartidasClienteRequest/nmp:criterios/nmp:criterioBoleta='3'</con1:xqueryText>
+                                            </con2:condition>
+                                            <con2:actions>
+                                                <con2:Error>
+                                                    <con1:id>_ActionId-af10088.N6c7317d1.0.15d52d5bcf3.N7f28</con1:id>
+                                                    <con2:errCode>NMP-104</con2:errCode>
+                                                </con2:Error>
+                                            </con2:actions>
+                                        </con2:case>
+                                    </con2:ifThenElse>
+                                </con2:default>
+                            </con2:ifThenElse>
+                        </con2:responseTransform>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af100e2.1465741d.0.15c4048c867.N7efe">
+            <con:stage id="_StageId-af100e2.1465741d.0.15c4048c867.N7efc" name="StageConsultarFolioResponse">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="body">
+                        <con1:id>_ActionId-af00458.N4d99fa0a.0.15c643aa20e.N7b16</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionPrendaria/Partidas/Resources/Transformations/TrMIDASObtenerFolioResToNMPObtFoliosRes"/>
+                                <con1:input>$obtenerFoliosResponse</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:rename varName="body">
+                        <con1:id>_ActionId-af00458.N4d99fa0a.0.15c643aa20e.N7b13</con1:id>
+                        <con2:location>
+                            <con1:xpathText>./nmp:consultarPartidasFolioResponse//*</con1:xpathText>
+                        </con2:location>
+                        <con2:namespace>http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas</con2:namespace>
+                    </con2:rename>
+                    <con2:assign varName="guid">
+                        <con1:id>_ActionId-af10c31.54e14b43.0.15d1db89a49.N715b</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>fn-bea:uuid()</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-af10c31.54e14b43.0.15d1db89a49.N71a5" name="StageObtenerMontos">
+                <con:context>
+                    <con1:userNsDecl prefix="urn" namespace="urn:mx.com.nmp.midas"/>
+                    <con1:userNsDecl prefix="cc" namespace="http://nmpconsultacreditos.schema.nmp.servicios.montedepiedad.com.mx"/>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+                    <con1:userNsDecl prefix="dat" namespace="http://nmp.com.mx/ms/pagos/motorformulas/ws/formulas/datatypes/"/>
+                </con:context>
+                <con:actions>
+                    <con2:foreach>
+                        <con1:id>_ActionId-af10c31.54e14b43.0.15d1db89a49.N71a2</con1:id>
+                        <con2:variable>body</con2:variable>
+                        <con2:expression>
+                            <con1:xpathText>./nmp:consultarPartidasFolioResponse/nmp:partidas/nmp:partida</con1:xpathText>
+                        </con2:expression>
+                        <con2:value-variable>partida</con2:value-variable>
+                        <con2:index-variable>indiceP</con2:index-variable>
+                        <con2:total-variable>contadorP</con2:total-variable>
+                        <con2:actions>
+                            <con2:wsCallout>
+                                <con1:id>_ActionId-af10c31.54e14b43.0.15d1db89a49.N720f</con1:id>
+                                <con2:service ref="OperacionPrendaria/Partidas/Business Services/MIDASCalendarioSucursalBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                <con2:operation>obtenerDiasInhabilesSucursal</con2:operation>
+                                <con2:request>
+                                    <con2:body wrapped="false">diasInhabilesRequest</con2:body>
+                                </con2:request>
+                                <con2:response>
+                                    <con2:body wrapped="false">diasInhabilesResponse</con2:body>
+                                </con2:response>
+                                <con2:requestTransform>
+                                    <con2:assign varName="diasInhabilesRequest">
+                                        <con1:id>_ActionId-af10c31.54e14b43.0.15d1db89a49.N720e</con1:id>
+                                        <con2:expr>
+                                            <con1:xqueryText><![CDATA[<urn:obtenerDiasInhabilesSucursal xmlns:urn="urn:mx.com.nmp.midas">
+    <urn:request xmlns:cal="http://nmpcalendariosucursal.schema.nmp.servicios.montedepiedad.com.mx" xmlns:nmp1="http://nmputil.schema.nmp.servicios.montedepiedad.com.mx">      
+        <cal:idSucursal>{$partida/nmp:prenda/nmp:sucursal/text()}</cal:idSucursal>       
+        <cal:rangoFecha>           
+            <nmp1:fechaFin>{$partida/nmp:condiciones/nmp:fechaComercializacion/text()}</nmp1:fechaFin>           
+            <nmp1:fechaInicio>{$partida/nmp:condiciones/nmp:fechaIngreso/text()}</nmp1:fechaInicio>
+        </cal:rangoFecha>
+    </urn:request>
+</urn:obtenerDiasInhabilesSucursal>]]></con1:xqueryText>
+                                        </con2:expr>
+                                    </con2:assign>
+                                    <con2:assign varName="serviceName">
+                                        <con1:id>_ActionId-af10c31.46c01acf.0.15de1f090e5.N7d62</con1:id>
+                                        <con2:expr>
+                                            <con1:xqueryText>'ConsultarFiltros(DB)'</con1:xqueryText>
+                                        </con2:expr>
+                                    </con2:assign>
+                                </con2:requestTransform>
+                                <con2:responseTransform>
+                                    <con2:assign varName="headerMF">
+                                        <con1:id>_ActionId-af10c31.54e14b43.0.15d1db89a49.N7158</con1:id>
+                                        <con2:expr>
+                                            <con1:xqueryText>&lt;soapenv:Header xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+      &lt;dat:GUID xmlns:dat="http://nmp.com.mx/ms/pagos/motorformulas/ws/formulas/datatypes/">{$guid}&lt;/dat:GUID>
+&lt;/soapenv:Header></con1:xqueryText>
+                                        </con2:expr>
+                                    </con2:assign>
+                                    <con2:assign varName="operacionesMontos">
+                                        <con1:id>_ActionId-af10c31.54e14b43.0.15d1db89a49.N7152</con1:id>
+                                        <con2:expr>
+                                            <con1:xqueryText>&lt;nmp:operaciones  xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas">
+&lt;/nmp:operaciones></con1:xqueryText>
+                                        </con2:expr>
+                                    </con2:assign>
+                                </con2:responseTransform>
+                            </con2:wsCallout>
+                            <con2:foreach>
+                                <con1:id>_ActionId-af10c31.54e14b43.0.15d1db89a49.N7163</con1:id>
+                                <con2:variable>partida</con2:variable>
+                                <con2:expression>
+                                    <con1:xpathText>./nmp:operaciones/nmp:operacion</con1:xpathText>
+                                </con2:expression>
+                                <con2:value-variable>operacion</con2:value-variable>
+                                <con2:index-variable>indiceO</con2:index-variable>
+                                <con2:total-variable>contadorO</con2:total-variable>
+                                <con2:actions>
+                                    <con2:wsCallout>
+                                        <con1:id>_ActionId-af10c31.54e14b43.0.15d1db89a49.N7277</con1:id>
+                                        <con2:service ref="OperacionPrendaria/Partidas/Business Services/BMIXMotorFormulasBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                        <con2:operation>resolverFormula</con2:operation>
+                                        <con2:request>
+                                            <con2:body wrapped="false">resolverFormulaReq</con2:body>
+                                            <con2:header>headerMF</con2:header>
+                                        </con2:request>
+                                        <con2:response>
+                                            <con2:body wrapped="false">resolverFormulaRes</con2:body>
+                                        </con2:response>
+                                        <con2:requestTransform>
+                                            <con2:assign varName="resolverFormulaReq">
+                                                <con1:id>_ActionId-af10c31.54e14b43.0.15d1db89a49.N719c</con1:id>
+                                                <con2:expr>
+                                                    <con1:xsltTransform>
+                                                        <con1:resource ref="OperacionPrendaria/Partidas/Resources/Transformations/TrConsultarFoliosToMotorFormulas"/>
+                                                        <con1:input>$partida</con1:input>
+                                                        <con1:param name="dias">
+                                                            <con1:path>$diasInhabilesResponse</con1:path>
+                                                        </con1:param>
+                                                        <con1:param name="operacion">
+                                                            <con1:path>$operacion/nmp:tipoOperacion</con1:path>
+                                                        </con1:param>
+                                                    </con1:xsltTransform>
+                                                </con2:expr>
+                                            </con2:assign>
+                                            <con2:assign varName="serviceName">
+                                                <con1:id>_ActionId-af10c31.46c01acf.0.15de1f090e5.N7d60</con1:id>
+                                                <con2:expr>
+                                                    <con1:xqueryText>'MotorFormulas(SBLUE)'</con1:xqueryText>
+                                                </con2:expr>
+                                            </con2:assign>
+                                        </con2:requestTransform>
+                                        <con2:responseTransform>
+                                            <con2:insert varName="operacionesMontos">
+                                                <con1:id>_ActionId-af10c31.54e14b43.0.15d1db89a49.N7148</con1:id>
+                                                <con2:where>last-child</con2:where>
+                                                <con2:expr>
+                                                    <con1:xqueryText>$resolverFormulaRes</con1:xqueryText>
+                                                </con2:expr>
+                                            </con2:insert>
+                                        </con2:responseTransform>
+                                    </con2:wsCallout>
+                                </con2:actions>
+                            </con2:foreach>
+                        </con2:actions>
+                    </con2:foreach>
+                    <con2:assign varName="body">
+                        <con1:id>_ActionId-af10c31.54e14b43.0.15d1db89a49.N714b</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionPrendaria/Partidas/Resources/Transformations/TrMIDASObtenerFolioResToNMPObtFoliosResMontos"/>
+                                <con1:input>$body</con1:input>
+                                <con1:param name="operacionesMontos">
+                                    <con1:path>$operacionesMontos</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairGetPartidasCliente_request" type="request">
+            <con:stage id="_StageId-af100b8.N6d6bbe94.0.1598e155643.N7c85" name="StageValidaBody" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:env="http://www.bea.com/wli/config/env" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                <con:context>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con2:userNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+                </con:context>
+                <con:actions>
+                    <con1:validate xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-af100b8.N6d6bbe94.0.1598e155643.N7a60</con2:id>
+                        <con4:schema ref="OperacionPrendaria/Partidas/Resources/Schemas/NMPPartidasSvcXSD"/>
+                        <con4:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas">nmp:getPartidasClienteRequest</con4:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con2:xpathText>./nmp1:getPartidasClienteRequest</con2:xpathText>
+                        </con1:location>
+                    </con1:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage name="stageRequest">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+                </con:context>
+                <con:actions>
+                    <con1:wsCallout xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-3708010327031629053-b5d49be.14dbb932212.-7f0f</con2:id>
+                        <con1:service ref="OperacionPrendaria/Partidas/Business Services/MIDASConsultaPartidasBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>getPartidasPorCliente</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">getPartidasPorClienteReq</con1:body>
+                            <con1:header/>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">getPartidasPorClienteRes</con1:body>
+                            <con1:header/>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:assign varName="getPartidasPorClienteReq">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-3708010327031629053-b5d49be.14dbb932212.-7f10</con2:id>
+                                <con1:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(fn:concat("&lt;urn:getPartidasPorCliente xmlns:urn='urn:mx.com.nmp.midas'>
+         &lt;urn:cliente>",$body/nmp:getPartidasClienteRequest/nmp:idCliente,"&lt;/urn:cliente>
+ &lt;/urn:getPartidasPorCliente>"))</con:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:requestTransform>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N53efff72.N3d81c97d.0.159ad8e86d1.N7362">
+            <con:stage id="_StageId-N53efff72.N3d81c97d.0.159ad8e86d1.N72f5" name="StageErrorHandler" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                <con:context/>
+                <con:actions>
+                    <con1:delete varName="header" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N53efff72.N3d81c97d.0.159ad8e86d1.N72f4</con2:id>
+                    </con1:delete>
+                    <con1:replace varName="body" contents-only="true" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N53efff72.N3d81c97d.0.159ad8e86d1.N72f3</con2:id>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="OperacionPrendaria/Partidas/Resources/Transformations/TRPartidasFault"/>
+                                <con2:input>$fault</con2:input>
+                                <con2:param name="AppError">
+                                    <con2:path>fn:concat("(",$body//*:faultstring,")")</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con2:reply isError="true">
+                        <con2:id>_ActionId-N53efff72.N3d81c97d.0.159ad8e86d1.N72f2</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af100e2.1465741d.0.15c4048c867.N7f33">
+            <con:stage id="_StageId-af100e2.1465741d.0.15c4048c867.N7f31" name="StageNotificarDetallePartidaResponse">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+                </con:context>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-af00458.N4d99fa0a.0.15c643aa20e.N7e54</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xqueryText><![CDATA[<nmp:notificarDetallePartidasResponse xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas">
+        <nmp:codigo>0</nmp:codigo>
+        <nmp:descripcion>Notificación enviada exitosamente</nmp:descripcion>
+    </nmp:notificarDetallePartidasResponse>]]></con1:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairGetPartidaDetalle_response" type="response">
+            <con:stage name="StageResponse">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+                </con:context>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af100e2.1465741d.0.15c4048c867.N7f9d">
+            <con:stage id="_StageId-af100e2.1465741d.0.15c4048c867.N7f9b" name="StageValidarContratoResponse">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+                    <con1:userNsDecl prefix="urn" namespace="urn:mx.com.nmp.midas"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-af00458.N4d99fa0a.0.15c643aa20e.N7dd8</con1:id>
+                        <con2:case id="_BranchId-af00458.N4d99fa0a.0.15c643aa20e.N7dd7">
+                            <con2:condition>
+                                <con1:xqueryText>$validarCreditoClienteRes/urn:clienteValido='true'</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace varName="body" contents-only="true">
+                                    <con1:id>_ActionId-af100e2.1465741d.0.15c4048c867.N7dcc</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con1:xqueryText><![CDATA[<nmp:validarContratoClienteResponse xmlns:nmp1="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage">    
+	    <nmp1:codigo>0</nmp1:codigo>
+	    <nmp1:descripcion>Contrato valido</nmp1:descripcion>
+</nmp:validarContratoClienteResponse>]]></con1:xqueryText>
+                                    </con2:expr>
+                                </con2:replace>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default>
+                            <con2:replace varName="body" contents-only="true">
+                                <con1:id>_ActionId-af00458.N4d99fa0a.0.15c643aa20e.N7da2</con1:id>
+                                <con2:location>
+                                    <con1:xpathText>.</con1:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con1:xqueryText><![CDATA[<nmp:validarContratoClienteResponse xmlns:nmp1="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage">    
+	    <nmp1:codigo>1</nmp1:codigo>
+	    <nmp1:descripcion>El contranto no pudo ser validado</nmp1:descripcion>
+</nmp:validarContratoClienteResponse>]]></con1:xqueryText>
+                                </con2:expr>
+                            </con2:replace>
+                        </con2:default>
+                    </con2:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af100e2.1465741d.0.15c4048c867.N7f34">
+            <con:stage id="_StageId-af100e2.1465741d.0.15c4048c867.N7f32" name="StageNotificarDetallePartidaRequest">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+                    <con1:userNsDecl prefix="nmpm" namespace="http://servicios.montedepiedad.com.mx/NMP/SchemaNXSD/NMPPartidasMontos"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="notificarMontosPortal">
+                        <con1:id>_ActionId-af10c31.6cbe0384.0.15d75deca21.N7cad</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionPrendaria/Partidas/Resources/Transformations/TrNotificaDetallePartidaToNotificaMontosPortal"/>
+                                <con1:input>$body</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:nxsdTranslation>
+                        <con1:id>_ActionId-af10c31.6cbe0384.0.15d75deca21.N7caa</con1:id>
+                        <con2:type>XML-To-Native</con2:type>
+                        <con2:sourceExpr>
+                            <con1:xqueryText>$notificarMontosPortal</con1:xqueryText>
+                        </con2:sourceExpr>
+                        <con2:nxsd ref="OperacionPrendaria/Partidas/Resources/Schemas/NMPPartidaClientePortalNXSD"/>
+                        <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/SchemaNXSD/NMPPartidasMontos">nmp:notificarMontosCreditosRequest</con2:schemaElement>
+                        <con2:assign-variable>notificarMontosJson</con2:assign-variable>
+                        <con2:enforceSchemaOrder>false</con2:enforceSchemaOrder>
+                    </con2:nxsdTranslation>
+                    <con2:assign varName="notificarMontosJson">
+                        <con1:id>_ActionId-af10c31.6cbe0384.0.15d75deca21.N7c9e</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>fn-bea:binary-to-text($notificarMontosJson,'UTF-8')</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-af10c31.46c01acf.0.15de1f090e5.N7fe7" name="StageNotificaFront" errorHandler="error-af10c31.46c01acf.0.15de1f090e5.N7fb2">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+                    <con1:userNsDecl prefix="nmpm" namespace="http://servicios.montedepiedad.com.mx/NMP/SchemaNXSD/NMPPartidasMontos"/>
+                </con:context>
+                <con:actions>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-af10c31.6cbe0384.0.15d75deca21.N7ca7</con1:id>
+                        <con2:service ref="OperacionPrendaria/Partidas/Business Services/MiMonteCreditosBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:request>
+                            <con2:payload wrapped="false">notificarMontosJson</con2:payload>
+                        </con2:request>
+                        <con2:response>
+                            <con2:payload wrapped="false">notificarMontosResJson</con2:payload>
+                        </con2:response>
+                        <con2:requestTransform>
+                            <con5:assign varName="serviceName" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con5="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con2:id>_ActionId-af10c31.3de42731.0.15d9a4249c7.N7e25</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText>'NotificarMontos(FRONT)'</con2:xqueryText>
+                                </con1:expr>
+                            </con5:assign>
+                            <con2:transport-headers>
+                                <con1:id>_ActionId-af10c31.N78b5a8b1.0.15d85190c0a.N7ffe</con1:id>
+                                <con2:header-set>outbound-request</con2:header-set>
+                                <con2:header value="expression" name="Content-Type">
+                                    <con1:xqueryText>'application/json'</con1:xqueryText>
+                                </con2:header>
+                            </con2:transport-headers>
+                            <con2:routing-options>
+                                <con1:id>_ActionId-af10c31.6cbe0384.0.15d75deca21.N7ca1</con1:id>
+                                <con2:uriExpr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/nmp:notificarDetallePartidasRequest/nmp:trazabilidad/nmp:urlCallBack/text()</con:xqueryText>
+                                </con2:uriExpr>
+                                <con2:restOptions>
+                                    <con2:verb>POST</con2:verb>
+                                    <con2:accept>application/json</con2:accept>
+                                </con2:restOptions>
+                            </con2:routing-options>
+                        </con2:requestTransform>
+                        <con2:responseTransform>
+                            <con2:nxsdTranslation>
+                                <con1:id>_ActionId-af10c31.3de42731.0.15d9a4249c7.N7f02</con1:id>
+                                <con2:type>Native-To-XML</con2:type>
+                                <con2:sourceExpr>
+                                    <con1:xqueryText>$notificarMontosResJson</con1:xqueryText>
+                                </con2:sourceExpr>
+                                <con2:nxsd ref="OperacionPrendaria/Partidas/Resources/Schemas/NMPPartidaClientePortalNXSD"/>
+                                <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/SchemaNXSD/NMPPartidasMontos">nmp:notificarMontosCreditosResponse</con2:schemaElement>
+                                <con2:assign-variable>notificarMontosResXML</con2:assign-variable>
+                                <con2:enforceSchemaOrder>false</con2:enforceSchemaOrder>
+                            </con2:nxsdTranslation>
+                            <con2:ifThenElse>
+                                <con1:id>_ActionId-af10c31.3de42731.0.15d9a4249c7.N7e8c</con1:id>
+                                <con2:case id="_BranchId-af10c31.3de42731.0.15d9a4249c7.N7e8b">
+                                    <con2:condition>
+                                        <con1:xqueryText>$notificarMontosResXML/nmpm:respuesta/nmpm:codigo='1'</con1:xqueryText>
+                                    </con2:condition>
+                                    <con2:actions>
+                                        <con5:assign varName="serviceName" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con5="http://www.bea.com/wli/sb/stages/transform/config">
+                                            <con2:id>_ActionId-af10c31.3de42731.0.15d9a4249c7.N7df1</con2:id>
+                                            <con1:expr>
+                                                <con2:xqueryText>concat($serviceName,' - ',$notificarMontosResXML/nmpm:respuesta/nmpm:mensaje)</con2:xqueryText>
+                                            </con1:expr>
+                                        </con5:assign>
+                                        <con5:Error xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con5="http://www.bea.com/wli/sb/stages/transform/config">
+                                            <con2:id>_ActionId-af10c31.3de42731.0.15d9a4249c7.N7dee</con2:id>
+                                            <con1:errCode>NMP-100</con1:errCode>
+                                            <con1:message>Error en el Servicio</con1:message>
+                                        </con5:Error>
+                                    </con2:actions>
+                                </con2:case>
+                            </con2:ifThenElse>
+                        </con2:responseTransform>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N53efff72.N3d81c97d.0.159ad8e86d1.N770f">
+            <con:stage id="_StageId-N53efff72.N3d81c97d.0.159ad8e86d1.N770d" name="StageSalidaObtenerTotalPartidas">
+                <con:context>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+                </con:context>
+                <con:actions>
+                    <con3:replace varName="header" contents-only="true" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con4:id xmlns:con4="http://www.bea.com/wli/sb/stages/config">_ActionId-N53efff72.N3d81c97d.0.159ad8e86d1.N7254</con4:id>
+                        <con2:expr>
+                            <con4:xqueryText xmlns:con4="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("<nmp:headerMessageResponse xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader'>
+         <nmp:usuario>",$headerTmp//*:usuario,"</nmp:usuario>
+         <nmp:idConsumidor>",$headerTmp//*:idConsumidor,"</nmp:idConsumidor>
+         <nmp:idDestino>",$headerTmp//*:idDestino,"</nmp:idDestino>
+		 <nmp:codigoRespuesta>0</nmp:codigoRespuesta>
+		 <nmp:descripcionRespuesta>OK</nmp:descripcionRespuesta>
+      </nmp:headerMessageResponse>"))]]></con4:xqueryText>
+                        </con2:expr>
+                    </con3:replace>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N53efff72.N3d81c97d.0.159ad8e86d1.N72bc</con1:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(fn:concat("&lt;nmp1:obtenerExistenciaResponse xmlns:nmp1='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas'>
+   
+        &lt;nmp1:numeroDePartidas>",$body/*:obtenerExistenciaMidasResponse/*:existenciaMidasResponseType/*:numeroDePartidas/text(),"&lt;/nmp1:numeroDePartidas>
+
+&lt;/nmp1:obtenerExistenciaResponse>"))</con:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode1_request" type="request">
+            <con:stage id="_StageId-af10036.N6a868bc6.0.15a4e39eab7.N7f9b" name="StageValidarHeader">
+                <con:context>
+                    <con1:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:userNsDecl prefix="vsr" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo"/>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="operacion">
+                        <con1:id>_ActionId-af004be.3b6e7a43.0.15cf552feaf.N7883</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$inbound/ctx:service/ctx:operation</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-af10c31.46c01acf.0.15de1f090e5.N7ffa</con1:id>
+                        <con2:case id="_BranchId-af10c31.46c01acf.0.15de1f090e5.N7ff9">
+                            <con2:condition>
+                                <con1:xqueryText>$operacion='getPartidasCliente' or $operacion='getPartidaDetalle'</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions/>
+                        </con2:case>
+                        <con2:default>
+                            <con2:assign varName="serviceName">
+                                <con1:id>_ActionId-af10c31.54e14b43.0.15d1db89a49.N72cf</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText>$inbound/ctx:service/ctx:operation</con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:assign varName="headerSOAP12">
+                                <con1:id>_ActionId-a1e030f.N2a94e5f5.11.15ab9a52454.N7ff8</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText>$header</con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:assign varName="body_tmp">
+                                <con1:id>_ActionId-af10c31.46c01acf.0.15de1f090e5.N7fe4</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText>$body</con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:ifThenElse>
+                                <con1:id>_ActionId-a1e030f.N2a94e5f5.11.15ab9a52454.N7ff7</con1:id>
+                                <con2:case id="_BranchId-af10036.N6a868bc6.0.15a4e39eab7.N7f8f">
+                                    <con2:condition>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:local-name($header/nmph:headerMessage)=''</con:xqueryText>
+                                    </con2:condition>
+                                    <con2:actions>
+                                        <con2:assign varName="header">
+                                            <con1:id>_ActionId-a1e030f.N2a94e5f5.11.15ab9a52454.N7ff6</con1:id>
+                                            <con2:expr>
+                                                <con1:xsltTransform>
+                                                    <con1:resource ref="Common/XSLT/TrInboundToHeaderNMP"/>
+                                                    <con1:input>$inbound</con1:input>
+                                                </con1:xsltTransform>
+                                            </con2:expr>
+                                        </con2:assign>
+                                    </con2:actions>
+                                </con2:case>
+                            </con2:ifThenElse>
+                            <con2:validate>
+                                <con1:id>_ActionId-a1e030f.N2a94e5f5.11.15ab9a52454.N7ff5</con1:id>
+                                <con2:schema ref="Common/XSD/NMPStandardHeader"/>
+                                <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con2:schemaElement>
+                                <con2:varName>header</con2:varName>
+                                <con2:location>
+                                    <con1:xpathText>./nmph:headerMessage</con1:xpathText>
+                                </con2:location>
+                                <con2:resultVarName/>
+                            </con2:validate>
+                        </con2:default>
+                    </con2:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af100e2.1465741d.0.15c4048c867.N7eff">
+            <con:stage id="_StageId-af00458.N4d99fa0a.0.15c643aa20e.N7bea" name="StageValidacion">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+                </con:context>
+                <con:actions>
+                    <con2:validate>
+                        <con1:id>_ActionId-af00458.N4d99fa0a.0.15c643aa20e.N7be9</con1:id>
+                        <con2:schema ref="OperacionPrendaria/Partidas/Resources/Schemas/NMPPartidasSvcXSD"/>
+                        <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas">nmp:consultarPartidasFolioRequest</con2:schemaElement>
+                        <con2:varName>body</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./nmp:consultarPartidasFolioRequest</con1:xpathText>
+                        </con2:location>
+                    </con2:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-af10021.6bfc6c29.0.15cd231f6b3.N7bc7" name="StageConsultaFiltros">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+                    <con1:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-af10021.6bfc6c29.0.15cd231f6b3.N7bc6</con1:id>
+                        <con2:service ref="OperacionPrendaria/Partidas/Business Services/NMPFiltrosConsultaCreditoDBBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>consultarFiltrosConsultaCreditos</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">consultarFiltrosRequest</con2:body>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">consultarFiltrosResponse</con2:body>
+                        </con2:response>
+                        <con2:requestTransform>
+                            <con2:assign varName="consultarFiltrosRequest">
+                                <con1:id>_ActionId-af10021.6bfc6c29.0.15cd231f6b3.N7bc5</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText><![CDATA[<con:consultarFiltrosConsultaCreditoRequest xmlns:con="http://servicios.montedepiedad.com.mx/NMP/Schema/ConsultaCreditosFiltros">
+    <con:idConsulta>5</con:idConsulta>
+     <con:idOrigen>{$header/nmph:headerMessage/nmph:idConsumidor/text()}</con:idOrigen>
+</con:consultarFiltrosConsultaCreditoRequest>]]></con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:assign varName="serviceName">
+                                <con1:id>_ActionId-af10c31.46c01acf.0.15de1f090e5.N7d66</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText>'ConsultarFiltros(DB)'</con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                        </con2:requestTransform>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-af00458.N4d99fa0a.0.15c643aa20e.N7b1b" name="StagePartidasFolio">
+                <con:context>
+                    <con1:userNsDecl prefix="urn" namespace="urn:mx.com.nmp.midas"/>
+                    <con1:userNsDecl prefix="mcc" namespace="http://nmpconsultacreditos.schema.nmp.servicios.montedepiedad.com.mx"/>
+                </con:context>
+                <con:actions>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-af00458.N4d99fa0a.0.15c643aa20e.N7b1a</con1:id>
+                        <con2:service ref="OperacionPrendaria/Partidas/Business Services/MIDASConsultaCreditosBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>obtenerCreditosPorFolios</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">obtenerFoliosRequest</con2:body>
+                            <con2:header>headerM</con2:header>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">obtenerFoliosResponse</con2:body>
+                        </con2:response>
+                        <con2:requestTransform>
+                            <con2:assign varName="headerM">
+                                <con1:id>_ActionId-a1f1734.26e5ca12.0.15d633068eb.N7fca</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText>&lt;soap-env:Header>   
+    &lt;urn:GUID>{fn-bea:uuid()}&lt;/urn:GUID>
+&lt;/soap-env:Header></con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:assign varName="obtenerFoliosRequest">
+                                <con1:id>_ActionId-af00458.N4d99fa0a.0.15c643aa20e.N7b19</con1:id>
+                                <con2:expr>
+                                    <con1:xsltTransform>
+                                        <con1:resource ref="OperacionPrendaria/Partidas/Resources/Transformations/TrConsultarFoliosClienteToMIDASObtenerCreditosFolio"/>
+                                        <con1:input>$body</con1:input>
+                                        <con1:param name="filtros">
+                                            <con1:path>$consultarFiltrosResponse</con1:path>
+                                        </con1:param>
+                                    </con1:xsltTransform>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:assign varName="serviceName">
+                                <con1:id>_ActionId-af10c31.46c01acf.0.15de1f090e5.N7d64</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText>'ConsultarFiltros(DB)'</con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                        </con2:requestTransform>
+                        <con2:responseTransform>
+                            <con2:ifThenElse>
+                                <con1:id>_ActionId-af10c31.3de42731.0.15d9a4249c7.N76c1</con1:id>
+                                <con2:case id="_BranchId-af10c31.3de42731.0.15d9a4249c7.N76c0">
+                                    <con2:condition>
+                                        <con1:xqueryText>$obtenerFoliosResponse/urn:creditosFolios/mcc:DetalleCreditoResponseType</con1:xqueryText>
+                                    </con2:condition>
+                                    <con2:actions/>
+                                </con2:case>
+                                <con2:default>
+                                    <con2:Error>
+                                        <con1:id>_ActionId-af10c31.3de42731.0.15d9a4249c7.N76bd</con1:id>
+                                        <con2:errCode>NMP-105</con2:errCode>
+                                        <con2:message>No existe el folio</con2:message>
+                                    </con2:Error>
+                                </con2:default>
+                            </con2:ifThenElse>
+                        </con2:responseTransform>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N53efff72.N3d81c97d.0.159ad8e86d1.N7710">
+            <con:stage id="_StageId-N53efff72.N3d81c97d.0.159ad8e86d1.N770e" name="StageValidaHeader" errorHandler="error-N53efff72.N3d81c97d.0.159ad8e86d1.N76a5">
+                <con:context>
+                    <con1:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-a1e030f.N5cf659db.b.15a2a08a656.N8000</con1:id>
+                        <con2:case>
+                            <con2:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:local-name($header/*)=''</con:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:assign varName="header">
+                                    <con1:id>_ActionId-a1e030f.N5cf659db.9.15a2a00bdf1.N7fff</con1:id>
+                                    <con2:expr>
+                                        <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                            <con:resource ref="Common/XSLT/TrInboundToHeaderNMP"/>
+                                            <con:input>$inbound</con:input>
+                                        </con:xsltTransform>
+                                    </con2:expr>
+                                </con2:assign>
+                            </con2:actions>
+                        </con2:case>
+                    </con2:ifThenElse>
+                    <con2:validate>
+                        <con1:id>_ActionId-a1e030f.N5cf659db.b.15a2a08a656.N7fff</con1:id>
+                        <con2:schema ref="Common/XSD/NMPStandardHeader"/>
+                        <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con2:schemaElement>
+                        <con2:varName>header</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./*</con1:xpathText>
+                        </con2:location>
+                        <con2:resultVarName/>
+                    </con2:validate>
+                    <con4:assign varName="headerTmp" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N53efff72.N3d81c97d.0.159ad8e86d1.N76d7</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$header</con:xqueryText>
+                        </con1:expr>
+                    </con4:assign>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N53efff72.N3d81c97d.0.159ad8e86d1.N75ba" name="StageValidaBody" errorHandler="error-N53efff72.N3d81c97d.0.159ad8e86d1.N75b7">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+                </con:context>
+                <con:actions>
+                    <con2:validate>
+                        <con1:id>_ActionId-N53efff72.N3d81c97d.0.159ad8e86d1.N75b9</con1:id>
+                        <con2:schema ref="OperacionPrendaria/Partidas/Resources/Schemas/NMPPartidasSvcXSD"/>
+                        <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas">nmp:obtenerExistencia</con2:schemaElement>
+                        <con2:varName>body</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./nmp:obtenerExistencia</con1:xpathText>
+                        </con2:location>
+                        <con2:resultVarName/>
+                    </con2:validate>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairGetPartidasCliente_response" type="response">
+            <con:stage name="stageResponse">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-3708010327031629053-b5d49be.14dbb932212.-7f0c</con2:id>
+                        <con1:expr>
+                            <con4:xsltTransform xmlns:con4="http://www.bea.com/wli/sb/stages/config">
+                                <con4:resource ref="OperacionPrendaria/Partidas/Resources/Transformations/TRConsultaPartidasWsdlToGetPartidasClienteRes"/>
+                                <con4:input>$getPartidasPorClienteRes</con4:input>
+                            </con4:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-af10c31.46c01acf.0.15de1f090e5.N7fb2">
+            <con:stage id="_StageId-af10c31.46c01acf.0.15de1f090e5.N7fb1" name="StageError">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+                    <con1:userNsDecl prefix="nmpsm" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                </con:context>
+                <con:actions>
+                    <con1:report xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con6:id xmlns:con6="http://www.bea.com/wli/sb/stages/config">_ActionId-af10c31.46c01acf.0.15de1f090e5.N7f7d</con6:id>
+                        <con1:expr>
+                            <con6:xqueryText xmlns:con6="http://www.bea.com/wli/sb/stages/config">$body_tmp</con6:xqueryText>
+                        </con1:expr>
+                        <con1:labels>
+                            <con1:key>notificaDetalle Req GUID</con1:key>
+                            <con1:varName>body_tmp</con1:varName>
+                            <con1:value>
+                                <con6:xpathText xmlns:con6="http://www.bea.com/wli/sb/stages/config">./nmp:notificarDetallePartidasRequest/nmp:trazabilidad/nmp:GUID</con6:xpathText>
+                            </con1:value>
+                        </con1:labels>
+                        <con1:labels>
+                            <con1:key>Folio</con1:key>
+                            <con1:varName>body_tmp</con1:varName>
+                            <con1:value>
+                                <con6:xpathText xmlns:con6="http://www.bea.com/wli/sb/stages/config">./nmp:notificarDetallePartidasRequest/nmp:partidas/nmp:partida[1]/nmp:prenda/nmp:folio</con6:xpathText>
+                            </con1:value>
+                        </con1:labels>
+                    </con1:report>
+                    <con1:report xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con6:id xmlns:con6="http://www.bea.com/wli/sb/stages/config">_ActionId-af10c31.46c01acf.0.15de1f090e5.N7f6f</con6:id>
+                        <con1:expr>
+                            <con6:xqueryText xmlns:con6="http://www.bea.com/wli/sb/stages/config">$fault</con6:xqueryText>
+                        </con1:expr>
+                        <con1:labels>
+                            <con1:key>notificaDetalle Req GUID</con1:key>
+                            <con1:varName>body_tmp</con1:varName>
+                            <con1:value>
+                                <con6:xpathText xmlns:con6="http://www.bea.com/wli/sb/stages/config">./nmp:notificarDetallePartidasRequest/nmp:trazabilidad/nmp:GUID</con6:xpathText>
+                            </con1:value>
+                        </con1:labels>
+                        <con1:labels>
+                            <con1:key>Folio</con1:key>
+                            <con1:varName>body_tmp</con1:varName>
+                            <con1:value>
+                                <con6:xpathText xmlns:con6="http://www.bea.com/wli/sb/stages/config">./nmp:notificarDetallePartidasRequest/nmp:partidas/nmp:partida[1]/nmp:prenda/nmp:folio</con6:xpathText>
+                            </con1:value>
+                        </con1:labels>
+                    </con1:report>
+                    <con2:assign varName="body">
+                        <con1:id>_ActionId-af10c31.46c01acf.0.15de1f090e5.N7f7a</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionPrendaria/Partidas/Resources/Transformations/TrPartidasFaultV2"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="serviceName">
+                                    <con1:path>$serviceName</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-af10c31.46c01acf.0.15de1f090e5.N7f75</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xqueryText><![CDATA[<nmp:notificarDetallePartidasResponse xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas">
+        <nmp:codigo>{$body/soap-env:Fault/detail/nmpsm:messageError/nmpsm:codigoError/text()}</nmp:codigo>
+        <nmp:descripcion>{$body/soap-env:Fault/detail/nmpsm:messageError/nmpsm:descripcionError/text()}</nmp:descripcion>
+    </nmp:notificarDetallePartidasResponse>]]></con1:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply>
+                        <con1:id>_ActionId-af10c31.46c01acf.0.15de1f090e5.N7f72</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="PipelinePairNode1">
+                <con:request>PipelinePairNode1_request</con:request>
+                <con:response>PipelinePairNode1_response</con:response>
+            </con:pipeline-node>
+            <con:branch-node type="operation" name="BranchNode">
+                <con:branch-table>
+                    <con:branch name="getPartidasCliente">
+                        <con:operator>equals</con:operator>
+                        <con:value>getPartidasCliente</con:value>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairGetPartidasCliente">
+                                <con:comment/>
+                                <con:request>PipelinePairGetPartidasCliente_request</con:request>
+                                <con:response>PipelinePairGetPartidasCliente_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="getPartidaDetalle">
+                        <con:operator>equals</con:operator>
+                        <con:value>getPartidaDetalle</con:value>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairGetPartidaDetalle">
+                                <con:comment/>
+                                <con:request>PipelinePairGetPartidaDetalle_request</con:request>
+                                <con:response>PipelinePairGetPartidaDetalle_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="obtenerTotalPartidas">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairObtenerTotalPartidas">
+                                <con:request>request-N53efff72.N3d81c97d.0.159ad8e86d1.N7710</con:request>
+                                <con:response>response-N53efff72.N3d81c97d.0.159ad8e86d1.N770f</con:response>
+                            </con:pipeline-node>
+                            <con:route-node name="RouteToMidas" error-handler="error-N53efff72.N3d81c97d.0.159ad8e86d1.N7362">
+                                <con:context>
+                                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+                                </con:context>
+                                <con:actions>
+                                    <con3:route>
+                                        <con1:id>_ActionId-N53efff72.N3d81c97d.0.159ad8e86d1.N73f8</con1:id>
+                                        <con3:service ref="OperacionPrendaria/Partidas/Business Services/MIDASExistenciaMidasBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                        <con3:operation>obtenerExistenciaMidas</con3:operation>
+                                        <con3:outboundTransform>
+                                            <con2:replace varName="body" contents-only="true">
+                                                <con1:id>_ActionId-N53efff72.N3d81c97d.0.159ad8e86d1.N73c5</con1:id>
+                                                <con2:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("<urn:obtenerExistenciaMidas xmlns:urn='urn:mx.com.nmp.midas'>
+    <urn:cliente xmlns:nmp='http://nmpexistenciamidas.schema.nmp.servicios.montedepiedad.com.mx'>
+        <nmp:cliente>",$body//*:cliente/text(),"</nmp:cliente>
+        <nmp:tipoExistencia>",$body//*:tipoExistencia,"</nmp:tipoExistencia>
+    </urn:cliente>
+</urn:obtenerExistenciaMidas>"))]]></con:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con3:outboundTransform>
+                                        <con3:responseTransform/>
+                                    </con3:route>
+                                </con:actions>
+                            </con:route-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="validarContrato">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairValidarContrato">
+                                <con:request>request-af100e2.1465741d.0.15c4048c867.N7f9e</con:request>
+                                <con:response>response-af100e2.1465741d.0.15c4048c867.N7f9d</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="obtenerPartidasCliente">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairObtenerPartidasCliente">
+                                <con:request>request-af100e2.1465741d.0.15c4048c867.N7f69</con:request>
+                                <con:response>response-af100e2.1465741d.0.15c4048c867.N7f68</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="notificarDetallePartida">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairNotificarDetallePartida">
+                                <con:request>request-af100e2.1465741d.0.15c4048c867.N7f34</con:request>
+                                <con:response>response-af100e2.1465741d.0.15c4048c867.N7f33</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="consultarPartidasFolio">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairConsultarPartidasFolio">
+                                <con:request>request-af100e2.1465741d.0.15c4048c867.N7eff</con:request>
+                                <con:response>response-af100e2.1465741d.0.15c4048c867.N7efe</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

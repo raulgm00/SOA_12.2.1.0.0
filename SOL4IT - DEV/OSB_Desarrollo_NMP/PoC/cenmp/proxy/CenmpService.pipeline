@@ -1,0 +1,632 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+    <con:coreEntry>
+        <con:description>CenmpService Servicio de operaciones de CENMP.</con:description>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con2:wsdl ref="PoC/cenmp/resources/wsdl/NmpProxy" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con="http://www.bea.com/wli/sb/stages/routing/config" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:con4="http://www.bea.com/wli/sb/services/bindings/config" xmlns:env="http://www.bea.com/wli/config/env" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con2="http://www.bea.com/wli/sb/pipeline/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config"/>
+            <con:binding>
+                <con:name>NMPBinding</con:name>
+                <con:namespace>http://xmlns.montepiedad.com.mx/nmp/cenmp</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations>
+            <oper:logging enabled="false" level="debug"/>
+            <oper:monitoring enabled="false" level="pipeline" aggregationInterval="10"/>
+            <oper:reporting>false</oper:reporting>
+        </oper:operations>
+        <con:pageAttachments isEnabled="false"/>
+        <con:transactions isRequired="false" sameTxForResponse="false"/>
+    </con:coreEntry>
+    <con2:router xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:con="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/pipeline/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+        <con:pipeline name="PipelinePairRegistrarSocio_request" type="request" xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+            <con:stage name="RegistrarSocioRequeststage">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="cen" namespace="http://xmlns.montepiedad.com.mx/nmp/cenmp"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="bodyRegistrarSocioIn" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8591310386188509306-78a0c8ec.1449ac40213.-7fd5</con2:id>
+                        <con1:expr>
+                            <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="PoC/cenmp/resources/xsl/RegistrarSocio_in"/>
+                                <con:input>$body/cen:RegistrarSocioRequest</con:input>
+                            </con:xsltTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="false" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8591310386188509306-78a0c8ec.1449ac40213.-7fd4</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./cen:RegistrarSocioRequest</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$bodyRegistrarSocioIn</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairObtenerCursosSocioTec_request" type="request" xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+            <con:stage name="ObtenerCursosSocioTecRequest">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="cen" namespace="http://xmlns.montepiedad.com.mx/nmp/cenmp"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="bodyObtenerCursosSocioTecIn" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-9009613213273343124--1a7bd4c6.144ca86f7af.-7fec</con2:id>
+                        <con1:expr>
+                            <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="PoC/cenmp/resources/xsl/ObtenerCursosSocioTecIn"/>
+                                <con:input>$body/cen:ObtenerCursosSocioTecRequest</con:input>
+                            </con:xsltTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="false" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-9009613213273343124--1a7bd4c6.144ca86f7af.-7fea</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./cen:ObtenerCursosSocioTecRequest</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$bodyObtenerCursosSocioTecIn</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairCancelarInscripcion_response" type="response" xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+            <con:stage name="CancelarInscripcionResponseStage">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://xmlns.oracle.com/nmpApp/WSCancelarInscripcion/CancelarInscripcionBPELProcess"/>
+                    <con1:varNsDecl prefix="cen" namespace="http://xmlns.montepiedad.com.mx/nmp/cenmp"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="bodyCancelarInscripcionOut" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-1130305975548199180--7e0be41a.145f1f3baf7.-7f62</con2:id>
+                        <con1:expr>
+                            <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="PoC/cenmp/resources/xsl/CancelarInscripcionOut"/>
+                                <con:input>$body/nmp:processResponse</con:input>
+                            </con:xsltTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="false" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-1130305975548199180--7e0be41a.145f1f3baf7.-7f60</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./nmp:processResponse</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$bodyCancelarInscripcionOut</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairRegistrarSocio_response" type="response" xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+            <con:stage name="RegistrarSocioResponsestage">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://xmlns.oracle.com/nmpApp/WSRegistrarSocio/RegistrarSocioBPELProcess"/>
+                    <con1:varNsDecl prefix="cen" namespace="http://xmlns.montepiedad.com.mx/nmp/cenmp"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="bodyRegistrarSocioOut" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8591310386188509306-78a0c8ec.1449ac40213.-7fd1</con2:id>
+                        <con1:expr>
+                            <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="PoC/cenmp/resources/xsl/RegistrarSocio_out"/>
+                                <con:input>$body/nmp:processResponse</con:input>
+                            </con:xsltTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="false" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8591310386188509306-78a0c8ec.1449ac40213.-7fd0</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./nmp:processResponse</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$bodyRegistrarSocioOut</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairObtenerOfertaTEC_response" type="response" xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+            <con:stage name="ObtenerOfertaTECResponseStage">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="client" namespace="http://xmlns.oracle.com/nmpApp/WSObtenerOfertaTEC/ObtenerOfertaTECBPELProcess"/>
+                    <con1:varNsDecl prefix="cen" namespace="http://xmlns.montepiedad.com.mx/nmp/cenmp"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="bodyObtenerOfertaTECResponseOut" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8591310386188509306-78a0c8ec.1449ac40213.-7fc2</con2:id>
+                        <con1:expr>
+                            <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="PoC/cenmp/resources/xsl/ObtenerOfertaTEC_out"/>
+                                <con:input>$body/client:processResponse</con:input>
+                            </con:xsltTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="false" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8591310386188509306-78a0c8ec.1449ac40213.-7fc1</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./client:processResponse</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$bodyObtenerOfertaTECResponseOut</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairCancelarInscripcion_request" type="request" xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+            <con:stage name="CancelarInscripcionRequestStage">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="cen" namespace="http://xmlns.montepiedad.com.mx/nmp/cenmp"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="bodyCancelarInscripcionIn" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-1130305975548199180--7e0be41a.145f1f3baf7.-7f67</con2:id>
+                        <con1:expr>
+                            <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="PoC/cenmp/resources/xsl/CancelarInscripcionIn"/>
+                                <con:input>$body/cen:CancelarInscripcionRequest</con:input>
+                            </con:xsltTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="false" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-1130305975548199180--7e0be41a.145f1f3baf7.-7f65</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./cen:CancelarInscripcionRequest</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$bodyCancelarInscripcionIn</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairInscribir_response" type="response" xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+            <con:stage name="InscribirResponsestage">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://xmlns.oracle.com/nmpApp/WSInscribir/InscribirBPELProcess"/>
+                    <con1:varNsDecl prefix="cen" namespace="http://xmlns.montepiedad.com.mx/nmp/cenmp"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="bodyInscribirOut" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8591310386188509306-78a0c8ec.1449ac40213.-7fd3</con2:id>
+                        <con1:expr>
+                            <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="PoC/cenmp/resources/xsl/Inscribir_out"/>
+                                <con:input>$body/nmp:processResponse</con:input>
+                            </con:xsltTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="false" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8591310386188509306-78a0c8ec.1449ac40213.-7fd2</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./nmp:processResponse</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$bodyInscribirOut</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairObtenerCursosSocioTec_response" type="response" xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+            <con:stage name="ObtenerCursosSocioTecResponse">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://xmlns.oracle.com/nmpApp/WSObtenerCursosSocioTec/ObtenerCursosSocioTecBPELProcess"/>
+                    <con1:varNsDecl prefix="cen" namespace="http://xmlns.montepiedad.com.mx/nmp/cenmp"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="bodyObtenerCursosSocioTecOut" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-9009613213273343124--1a7bd4c6.144ca86f7af.-7fe9</con2:id>
+                        <con1:expr>
+                            <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="PoC/cenmp/resources/xsl/ObtenerCursosSocioTecOut"/>
+                                <con:input>$body/nmp:processResponse</con:input>
+                            </con:xsltTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="false" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-9009613213273343124--1a7bd4c6.144ca86f7af.-7fe8</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./nmp:processResponse</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$bodyObtenerCursosSocioTecOut</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairObtenerOfertaTEC_request" type="request" xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+            <con:stage name="ObtenerOfertaTECRequestStage">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="cen" namespace="http://xmlns.montepiedad.com.mx/nmp/cenmp"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="bodyObtenerOfertaTECRequestIn" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8591310386188509306-78a0c8ec.1449ac40213.-7fc5</con2:id>
+                        <con1:expr>
+                            <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="PoC/cenmp/resources/xsl/ObtenerOfertaTEC_in"/>
+                                <con:input>$body/cen:ObtenerOfertaTECRequest</con:input>
+                            </con:xsltTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="false" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8591310386188509306-78a0c8ec.1449ac40213.-7fc3</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./cen:ObtenerOfertaTECRequest</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$bodyObtenerOfertaTECRequestIn</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairInscribir_request" type="request" xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+            <con:stage name="InscribirRequeststage">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="cen" namespace="http://xmlns.montepiedad.com.mx/nmp/cenmp"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="bodyInscribirIn" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8591310386188509306-78a0c8ec.1449ac40213.-7fd7</con2:id>
+                        <con1:expr>
+                            <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="PoC/cenmp/resources/xsl/Inscribir_in"/>
+                                <con:input>$body/cen:InscribirRequest</con:input>
+                            </con:xsltTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="false" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8591310386188509306-78a0c8ec.1449ac40213.-7fd6</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./cen:InscribirRequest</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$bodyInscribirIn</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con2:pipeline type="error" name="_onErrorHandler-3402764724195534372-4ff21856.1469d45c0cb.-7d78">
+            <con2:stage name="errorSincronizarCursoRia">
+                <con2:context>
+                    <con1:varNsDecl namespace="http://nmp.com/CommonDataModel/1.0/Common" prefix="com"/>
+                </con2:context>
+                <con2:actions>
+                    <con3:assign varName="error">
+                        <con1:id>_ActionId-3402764724195534372-4ff21856.1469d45c0cb.-7d76</con1:id>
+                        <con3:expr>
+                            <con1:xqueryText><![CDATA[<com:ResultNotification>
+	<com:Code>ERROR</com:Code>
+	<com:Description>Error General</com:Description>
+	<com:ErrorCode>E000</com:ErrorCode>
+	<com:DetailDescription>{string($fault/ctx:code)} - {string($fault/ctx:reason)}</com:DetailDescription>
+</com:ResultNotification>]]></con1:xqueryText>
+                        </con3:expr>
+                    </con3:assign>
+                    <con3:replace varName="body">
+                        <con1:id>_ActionId-3402764724195534372-4ff21856.1469d45c0cb.-7d74</con1:id>
+                        <con3:location>
+                            <con1:xpathText>./*</con1:xpathText>
+                        </con3:location>
+                        <con3:expr>
+                            <con1:xqueryText>$error</con1:xqueryText>
+                        </con3:expr>
+                    </con3:replace>
+                    <con1:reply>
+                        <con1:id>_ActionId-3402764724195534372-4ff21856.1469d45c0cb.-7d26</con1:id>
+                    </con1:reply>
+                </con2:actions>
+            </con2:stage>
+        </con2:pipeline>
+        <con2:pipeline type="error" name="_onErrorHandler-3947131425890215653--36daef80.146c644b5a6.-7fe2">
+            <con2:stage name="errorSyncVentasDiarias">
+                <con2:context>
+                    <con1:varNsDecl namespace="http://nmp.com/CommonDataModel/1.0/Common" prefix="com"/>
+                </con2:context>
+                <con2:actions>
+                    <con3:assign varName="error">
+                        <con1:id>_ActionId-3947131425890215653--36daef80.146c644b5a6.-7fc8</con1:id>
+                        <con3:expr>
+                            <con1:xqueryText><![CDATA[<com:ResultNotification>
+	<com:Code>ERROR</com:Code>
+	<com:Description>Error General</com:Description>
+	<com:ErrorCode>E000</com:ErrorCode>
+	<com:DetailDescription>{string($fault/ctx:errorCode)} - {string($fault/ctx:reason)}</com:DetailDescription>
+</com:ResultNotification>]]></con1:xqueryText>
+                        </con3:expr>
+                    </con3:assign>
+                    <con3:replace varName="body">
+                        <con1:id>_ActionId-3947131425890215653--36daef80.146c644b5a6.-7faf</con1:id>
+                        <con3:location>
+                            <con1:xpathText>./*</con1:xpathText>
+                        </con3:location>
+                        <con3:expr>
+                            <con1:xqueryText>$error</con1:xqueryText>
+                        </con3:expr>
+                    </con3:replace>
+                    <con1:reply>
+                        <con1:id>_ActionId-3947131425890215653--36daef80.146c644b5a6.-7f97</con1:id>
+                    </con1:reply>
+                </con2:actions>
+            </con2:stage>
+        </con2:pipeline>
+        <con2:pipeline type="error" name="_onErrorHandler-2967762490447882171-62ae1978.14fde7a3f01.-7f54">
+            <con2:stage name="errorRegistroCita">
+                <con2:context>
+                    <con1:varNsDecl namespace="http://nmp.com/CommonDataModel/1.0/Common" prefix="com"/>
+                </con2:context>
+                <con2:actions>
+                    <con3:assign varName="error">
+                        <con1:id>_ActionId-2967762490447882171-62ae1978.14fde7a3f01.-7f53</con1:id>
+                        <con3:expr>
+                            <con1:xqueryText><![CDATA[<com:ResultNotification>
+	<com:Code>ERROR</com:Code>
+	<com:Description>Error General</com:Description>
+	<com:ErrorCode>E000</com:ErrorCode>
+	<com:DetailDescription>{string($fault/ctx:errorCode)} - {string($fault/ctx:reason)}</com:DetailDescription>
+</com:ResultNotification>]]></con1:xqueryText>
+                        </con3:expr>
+                    </con3:assign>
+                    <con3:replace varName="body">
+                        <con1:id>_ActionId-2967762490447882171-62ae1978.14fde7a3f01.-7f52</con1:id>
+                        <con3:location>
+                            <con1:xpathText>./*</con1:xpathText>
+                        </con3:location>
+                        <con3:expr>
+                            <con1:xqueryText>$error</con1:xqueryText>
+                        </con3:expr>
+                    </con3:replace>
+                    <con1:reply>
+                        <con1:id>_ActionId-2967762490447882171-62ae1978.14fde7a3f01.-7f51</con1:id>
+                    </con1:reply>
+                </con2:actions>
+            </con2:stage>
+        </con2:pipeline>
+        <con2:pipeline type="error" name="_onErrorHandler-2967762490447882171-62ae1978.14fde7a3f01.-7eae">
+            <con2:stage name="errorInscribir">
+                <con2:context>
+                    <con1:varNsDecl namespace="http://nmp.com/CommonDataModel/1.0/Common" prefix="com"/>
+                    <con1:varNsDecl namespace="http://xmlns.montepiedad.com.mx/nmp/cenmp" prefix="cen"/>
+                </con2:context>
+                <con2:actions>
+                    <con3:assign varName="error">
+                        <con1:id>_ActionId-2967762490447882171-62ae1978.14fde7a3f01.-7e3b</con1:id>
+                        <con3:expr>
+                            <con1:xqueryText><![CDATA[<cen:InscribirResponse>
+	<cen:IdInscripcion>-1</cen:IdInscripcion>
+	<cen:StatusInscripcion>ERROR</cen:StatusInscripcion>	
+	<cen:ErrorCode>{string($fault/ctx:errorCode)}</cen:ErrorCode>
+	<cen:ErrorDetail>{string($fault/ctx:reason)} - {$fault/ctx:details}</cen:ErrorDetail>
+</cen:InscribirResponse>]]></con1:xqueryText>
+                        </con3:expr>
+                    </con3:assign>
+                    <con3:replace varName="body">
+                        <con1:id>_ActionId-2967762490447882171-62ae1978.14fde7a3f01.-7e3a</con1:id>
+                        <con3:location>
+                            <con1:xpathText>./*</con1:xpathText>
+                        </con3:location>
+                        <con3:expr>
+                            <con1:xqueryText>$error</con1:xqueryText>
+                        </con3:expr>
+                    </con3:replace>
+                    <con1:reply>
+                        <con1:id>_ActionId-2967762490447882171-62ae1978.14fde7a3f01.-7e39</con1:id>
+                    </con1:reply>
+                </con2:actions>
+            </con2:stage>
+        </con2:pipeline>
+        <con:flow xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+            <con:branch-node type="operation" name="Branch">
+                <con:comment/>
+                <con:branch-table>
+                    <con:branch name="RegistrarSocio">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairRegistrarSocio">
+                                <con:comment/>
+                                <con:request>PipelinePairRegistrarSocio_request</con:request>
+                                <con:response>PipelinePairRegistrarSocio_response</con:response>
+                            </con:pipeline-node>
+                            <con:route-node name="RouteRegistrarSocio">
+                                <con:comment/>
+                                <con:context/>
+                                <con:actions>
+                                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8591310386188509306-78a0c8ec.1449ac40213.-7fdf</con2:id>
+                                        <con1:service ref="PoC/cenmp/service/bsRegistrarSocio" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                        <con1:operation>process</con1:operation>
+                                        <con1:outboundTransform/>
+                                        <con1:responseTransform/>
+                                    </con1:route>
+                                </con:actions>
+                            </con:route-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="Inscribir">
+                        <con:operator>equals</con:operator>
+                        <con:value>Inscribir</con:value>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairInscribir">
+                                <con:comment/>
+                                <con:request>PipelinePairInscribir_request</con:request>
+                                <con:response>PipelinePairInscribir_response</con:response>
+                            </con:pipeline-node>
+                            <con:route-node name="RouteInscribir" error-handler="_onErrorHandler-2967762490447882171-62ae1978.14fde7a3f01.-7eae">
+                                <con:comment/>
+                                <con:context>
+                                    <con1:varNsDecl namespace="http://xmlns.montepiedad.com.mx/nmp/cenmp" prefix="cen"/>
+                                </con:context>
+                                <con:actions>
+                                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8591310386188509306-78a0c8ec.1449ac40213.-7fde</con2:id>
+                                        <con1:service ref="PoC/cenmp/service/bsInscribir" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                        <con1:operation>process</con1:operation>
+                                        <con1:outboundTransform>
+                                            <con3:validate>
+                                                <con4:id xmlns:con4="http://www.bea.com/wli/sb/stages/config">_ActionId-2967762490447882171-62ae1978.14fde7a3f01.-7e1c</con4:id>
+                                                <con3:schema ref="PoC/cenmp/resources/xsd/InscribirBPELProcess"/>
+                                                <con3:schemaElement xmlns:ins="http://xmlns.oracle.com/nmpApp/WSInscribir/InscribirBPELProcess">ins:process</con3:schemaElement>
+                                                <con3:varName>body</con3:varName>
+                                                <con3:location>
+                                                    <con4:xpathText xmlns:con4="http://www.bea.com/wli/sb/stages/config">./*</con4:xpathText>
+                                                </con3:location>
+                                            </con3:validate>
+                                        </con1:outboundTransform>
+                                        <con1:responseTransform/>
+                                    </con1:route>
+                                </con:actions>
+                            </con:route-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="ObtenerOfertaTEC">
+                        <con:operator>equals</con:operator>
+                        <con:value>ObtenerOfertaTEC</con:value>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairObtenerOfertaTEC">
+                                <con:comment/>
+                                <con:request>PipelinePairObtenerOfertaTEC_request</con:request>
+                                <con:response>PipelinePairObtenerOfertaTEC_response</con:response>
+                            </con:pipeline-node>
+                            <con:route-node name="RouteObtenerOfertaTEC">
+                                <con:comment/>
+                                <con:context/>
+                                <con:actions>
+                                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-8591310386188509306-78a0c8ec.1449ac40213.-7fc6</con2:id>
+                                        <con1:service ref="PoC/cenmp/service/bsObtenerOfertaTEC" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                        <con1:operation>process</con1:operation>
+                                        <con1:outboundTransform/>
+                                        <con1:responseTransform/>
+                                    </con1:route>
+                                </con:actions>
+                            </con:route-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="ObtenerCursosSocioTec">
+                        <con:operator>equals</con:operator>
+                        <con:value>ObtenerCursosSocioTec</con:value>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairObtenerCursosSocioTec">
+                                <con:comment/>
+                                <con:request>PipelinePairObtenerCursosSocioTec_request</con:request>
+                                <con:response>PipelinePairObtenerCursosSocioTec_response</con:response>
+                            </con:pipeline-node>
+                            <con:route-node name="RouteObtenerCursosSocioTec">
+                                <con:comment/>
+                                <con:context/>
+                                <con:actions>
+                                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-9009613213273343124--1a7bd4c6.144ca86f7af.-7fee</con2:id>
+                                        <con1:service ref="PoC/cenmp/service/bsObtenerCursosSocioTec" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                        <con1:operation>process</con1:operation>
+                                        <con1:outboundTransform/>
+                                        <con1:responseTransform/>
+                                    </con1:route>
+                                </con:actions>
+                            </con:route-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="CancelarInscripcion">
+                        <con:operator>equals</con:operator>
+                        <con:value>CancelarInscripcion</con:value>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairCancelarInscripcion">
+                                <con:comment/>
+                                <con:request>PipelinePairCancelarInscripcion_request</con:request>
+                                <con:response>PipelinePairCancelarInscripcion_response</con:response>
+                            </con:pipeline-node>
+                            <con:route-node name="RouteCancelarInscripcion">
+                                <con:comment/>
+                                <con:context/>
+                                <con:actions>
+                                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-1130305975548199180--7e0be41a.145f1f3baf7.-7f68</con2:id>
+                                        <con1:service ref="PoC/cenmp/service/bsCancelarInscripcion" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                        <con1:operation>process</con1:operation>
+                                        <con1:outboundTransform/>
+                                        <con1:responseTransform/>
+                                    </con1:route>
+                                </con:actions>
+                            </con:route-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="SincronizarCursosRia">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:route-node name="RouteNodeSyncCursosRia" error-handler="_onErrorHandler-3402764724195534372-4ff21856.1469d45c0cb.-7d78">
+                                <con:context/>
+                                <con:actions>
+                                    <con4:route xmlns:con4="http://www.bea.com/wli/sb/stages/routing/config">
+                                        <con1:id>_ActionId-3402764724195534372-4ff21856.1469d45c0cb.-7d79</con1:id>
+                                        <con4:service ref="PoC/cenmp/service/bsSyncCoursesFromRia" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                        <con4:operation>process</con4:operation>
+                                        <con4:outboundTransform/>
+                                        <con4:responseTransform/>
+                                    </con4:route>
+                                </con:actions>
+                            </con:route-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="SincronizarVentasDiarias">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:route-node name="RouteNodeSyncVentasDirias" error-handler="_onErrorHandler-3947131425890215653--36daef80.146c644b5a6.-7fe2">
+                                <con:context/>
+                                <con:actions>
+                                    <con4:route xmlns:con4="http://www.bea.com/wli/sb/stages/routing/config">
+                                        <con1:id>_ActionId-3947131425890215653--36daef80.146c644b5a6.-7fe3</con1:id>
+                                        <con4:service ref="PoC/cenmp/service/bsSyncDailySales" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                        <con4:operation>process</con4:operation>
+                                        <con4:outboundTransform/>
+                                        <con4:responseTransform/>
+                                    </con4:route>
+                                </con:actions>
+                            </con:route-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="RegistrarCita">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:route-node name="RouteNodRegistroCita" error-handler="_onErrorHandler-2967762490447882171-62ae1978.14fde7a3f01.-7f54">
+                                <con:context/>
+                                <con:actions>
+                                    <con4:route xmlns:con4="http://www.bea.com/wli/sb/stages/routing/config">
+                                        <con1:id>_ActionId-2967762490447882171-62ae1978.14fde7a3f01.-7f55</con1:id>
+                                        <con4:service ref="PoC/cenmp/service/bsRegisterAppointment" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                        <con4:operation>process</con4:operation>
+                                        <con4:outboundTransform/>
+                                        <con4:responseTransform/>
+                                    </con4:route>
+                                </con:actions>
+                            </con:route-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con2:router>
+</con:pipelineEntry>

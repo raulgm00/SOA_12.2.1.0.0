@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/routing/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="PoC/AutosSinResguardo/StartBpm/Resources/WSDL/AutosSinResguardoPrc"/>
+            <con:binding>
+                <con:name>AutosSinResguardoPrcBinding</con:name>
+                <con:namespace>http://xmlns.oracle.com/bpmn/bpmnProcess/AutosSinResguardoPrc</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:tracingEnabled>true</oper:tracingEnabled>
+            <oper:monitoring enabled="true" level="service" aggregationInterval="10"/>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:pipeline type="request" name="request-af10c87.N16797560.0.1562cb161d8.N7ffb">
+            <con:stage id="_StageId-af10c87.N16797560.0.1562cb161d8.N7ff9" name="Stage1">
+                <con:context/>
+                <con:actions>
+                    <con1:assign varName="body_tmp">
+                        <con2:id>_ActionId-af10c87.N16797560.0.1562cb161d8.N7ff5</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af10c87.N16797560.0.1562cb161d8.N7ffa">
+            <con:stage id="_StageId-af10c87.N16797560.0.1562cb161d8.N7ff8" name="Stage1">
+                <con:context/>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="PipelinePairNode1">
+                <con:request>request-af10c87.N16797560.0.1562cb161d8.N7ffb</con:request>
+                <con:response>response-af10c87.N16797560.0.1562cb161d8.N7ffa</con:response>
+            </con:pipeline-node>
+            <con:route-node name="RouteNode1">
+                <con:context/>
+                <con:actions>
+                    <con3:route>
+                        <con2:id>_ActionId-af10c87.N16797560.0.1562cb161d8.N7ffc</con2:id>
+                        <con3:service ref="PoC/AutosSinResguardo/StartBpm/Business Services/IniciaBpmBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con3:operation passThrough="true"/>
+                        <con3:outboundTransform/>
+                        <con3:responseTransform/>
+                    </con3:route>
+                </con:actions>
+            </con:route-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

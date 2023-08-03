@@ -1,0 +1,494 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer
+
+  Created: Tue Jan 10 11:59:36 CST 2017
+  Author:  Sol4IT Mexico
+  Type: BPEL 2.0 Process
+  Purpose: Empty BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="OrdenesPagoBPEL"
+               targetNamespace="http://xmlns.oracle.com/GestionOrdenPagoApp/OrdenesPagoPrj/OrdenesPagoBPEL"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/GestionOrdenPagoApp/OrdenesPagoPrj/OrdenesPagoBPEL"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+               xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ns1="http://oracle.com/sca/soapservice/GestionOrdenPagoApp/OrdenesPagoPrj/OrdenesPagoService"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ess="http://xmlns.oracle.com/scheduler" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:ns3="http://qualitas.com.mx/comunes/objetosComunes/v1/"
+         xmlns:ns2="http://qualitas.com.mx/Comunes/OrdenesPago/v1/" xmlns:ui="http://xmlns.oracle.com/soa/designer"
+         xmlns:ns4="http://xmlns.oracle.com/pcbpel/adapter/db/GestionOrdenPagoApp/OrdenesPagoPrj/selectNumOrdenDB"
+         xmlns:ns5="http://xmlns.oracle.com/pcbpel/adapter/db/selectNumOrdenDB"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:ns6="http://qualitas.com.mx/Comunes/gestionOrdenPagoBPEL/v1/"
+         xmlns:ns7="http://qualitas.com.mx/Comunes/gestionOrdenPagoSchema/v1/"
+         xmlns:ns8="http://xmlns.oracle.com/pcbpel/adapter/db/GestionOrdenPagoApp/OrdenesPagoPrj/spObtenerDatosOrden"
+         xmlns:ns9="http://xmlns.oracle.com/pcbpel/adapter/db/sp/spObtenerDatosOrden"
+         xmlns:ns10="http://ws.gpa.qualitas.mx/"
+         xmlns:ns11="http://xmlns.oracle.com/pcbpel/adapter/db/Application1/OrdenesPagoPrj/DBDocumento"
+         xmlns:ns12="http://xmlns.oracle.com/pcbpel/adapter/db/top/DBDocumento"
+         xmlns:ns13="http://xmlns.oracle.com/pcbpel/adapter/db/DBDocumento"
+         xmlns:ns14="http://xmlns.oracle.com/GestionArchivoProrrateo/GestionArchivoProrrateoPrj/GestionArchivoProrrateoBPEL"
+         xmlns:ns15="http://qualitas.com.mx/Comunes/Prorrateo/gestionArchivoProrrateo/v1/" xml:id="id_1"
+         xmlns:ns16="http://qualitas.com.mx/Comunes/Prorrateo/ordenPagoProrrateo/v1/"
+         xmlns:ns17="http://xmlns.oracle.com/pcbpel/adapter/db/GPAIntegration/DBTemplate/ImporteDB"
+         xmlns:ns18="http://xmlns.oracle.com/pcbpel/adapter/db/top/ImporteDB"
+         xmlns:ns19="http://xmlns.oracle.com/pcbpel/adapter/db/QualitasGPABus/SolicitudesBDQry/SolicitudDataSvc"
+         xmlns:ns20="http://xmlns.oracle.com/pcbpel/adapter/db/top/SolicitudDataSvc">
+
+  <!--
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC
+     Set of activities coordinating the flow of messages across the
+     services integrated within this business process
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <import namespace="http://qualitas.com.mx/Comunes/OrdenesPago/v1/" location="../Schemas/OrdenesPago.xsd"
+          importType="http://www.w3.org/2001/XMLSchema" xml:id="id_224"/>
+  <import namespace="http://qualitas.com.mx/Comunes/Prorrateo/ordenPagoProrrateo/v1/"
+          location="../Schemas/ordenPagoProrrateo.xsd" importType="http://www.w3.org/2001/XMLSchema" xml:id="id_169"/>
+  <import namespace="http://oracle.com/sca/soapservice/GestionOrdenPagoApp/OrdenesPagoPrj/OrdenesPagoService"
+          location="../WSDLs/OrdenesPagoService.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"
+          ui:processWSDL="true" xml:id="id_2"/>
+  <partnerLinks xml:id="id_3">
+    <partnerLink name="OrdenesPagoService" partnerLinkType="ns1:OrdenesPagoService" myRole="OrdenesPagoBPELPortType"
+                 xml:id="id_4"/>
+    <partnerLink name="selectNumOrdenDB" partnerLinkType="ns4:selectNumOrdenDB_plt"
+                 partnerRole="selectNumOrdenDB_role" xml:id="id_5"/>
+    <partnerLink name="spObtenerDatosOrden" partnerLinkType="ns8:spObtenerDatosOrden_plt"
+                 partnerRole="spObtenerDatosOrden_role" xml:id="id_7"/>
+    <partnerLink name="consultaProrrateoService" partnerLinkType="ns14:GestionArchivoProrrateoBPEL"
+                 partnerRole="gestionArchivoProrrateoBPEL" xml:id="id_10"/>
+    <partnerLink name="ParsingDocService" partnerLinkType="ns10:ParsingDocService" partnerRole="ProrrateoSvc"
+                 xml:id="id_190"/>
+    <partnerLink name="ImportesPXY" partnerLinkType="ns17:ImporteDB_plt" partnerRole="ImporteDB_role" xml:id="id_204"/>
+    <partnerLink name="GestionOrdenPago" partnerLinkType="ns6:GestionOrdenPagoBEPL"
+                 partnerRole="gestionOrdenPagoBPELPortType" xml:id="id_256"/>
+    <partnerLink name="SolicitudDataSvcPxy" partnerLinkType="ns19:SolicitudDataSvc_plt"
+                 partnerRole="SolicitudDataSvc_role" xml:id="id_257"/>
+  </partnerLinks>
+  <variables xml:id="id_11">
+    <variable name="ConsultarOrdenPago_InputVariable" messageType="ns1:consultarOrdenPagoBPELRequestMessage"
+              xml:id="id_12"/>
+    <variable name="ConsultarOrdenPago_OutputVariable" messageType="ns1:consultarOrdenPagoBPELResponseMessage"
+              xml:id="id_13"/>
+    <variable name="GenerarOrdenPago_InputVariable" messageType="ns1:generarOrdenPagoBPELRequestMessage"
+              xml:id="id_14"/>
+    <variable name="GenerarOrdenPago_OutputVariable" messageType="ns1:generarOrdenPagoBPELResponseMessage"
+              xml:id="id_15"/>
+    <variable name="SelectNumOrdenDB_InputVariable" messageType="ns4:selectNumOrdenDBInput_msg" xml:id="id_16"/>
+    <variable name="SelectNumOrdenDB_OutputVariable" messageType="ns4:selectNumOrdenDBOutputCollection_msg"
+              xml:id="id_17"/>
+    <variable name="GestionPago_consultarOrdenPago_InputVariable"
+              messageType="ns6:consultarOrdenPagoBPELRequestMessage" xml:id="id_18"/>
+    <variable name="GestionPago_consultarOrdenPago_OutputVariable"
+              messageType="ns6:consultarOrdenPagoBPELResponseMessage" xml:id="id_19"/>
+    <variable name="Invoke_spObtenerDatosOrden_InputVariable" messageType="ns8:args_in_msg" xml:id="id_20"/>
+    <variable name="Invoke_spObtenerDatosOrden_OutputVariable" messageType="ns8:args_out_msg" xml:id="id_21"/>
+    <variable name="Invoke_GenerarOrdenPago_InputVariable" messageType="ns6:guardarOrdenPagoBPELRequestMessage"
+              xml:id="id_22"/>
+    <variable name="Invoke_GenerarOrdenPago_OutputVariable" messageType="ns6:guardarOrdenPagoBPELResponseMessage"
+              xml:id="id_23"/>
+    <variable name="InvGuardarOrd_InputVariable" messageType="ns6:guardarOrdenPagoBPELRequestMessage" xml:id="id_26"/>
+    <variable name="InvGuardarOrd_OutputVariable" messageType="ns6:guardarOrdenPagoBPELResponseMessage" xml:id="id_27"/>
+    <variable name="invProrrateoService_InputVariable" messageType="ns14:obtenerArchivoProrrateoBPELRequestMessage"
+              xml:id="id_28"/>
+    <variable name="invProrrateoService_OutputVariable" messageType="ns14:obtenerArchivoProrrateoBPELResponseMessage"
+              xml:id="id_29"/>
+    <variable name="Inv_ParsinDoc_InVar" messageType="ns10:parse" xml:id="id_192"/>
+    <variable name="Inv_ParsinDoc_OutVar" messageType="ns10:parseResponse" xml:id="id_193"/>
+    <variable name="Inv_Importes_InVar" messageType="ns17:ImporteDBSelect_inputParameters" xml:id="id_206"/>
+    <variable name="Inv_Importes_OutVar" messageType="ns17:Gpa002ImportesCollection_msg" xml:id="id_207"/>
+    <variable name="Inv_Parsing_parse_InputVariable" messageType="ns10:parse" xml:id="id_213"/>
+    <variable name="Inv_Parsing_parse_OutputVariable" messageType="ns10:parseResponse" xml:id="id_214"/>
+    <variable name="InvSolicitudDataSvcPxy_InputVariable" messageType="ns19:selectByPrimaryKey_inputParameters"
+              xml:id="id_275"/>
+    <variable name="InvSolicitudDataSvcPxy_OutputVariable" messageType="ns19:Gpa001SolicitudCollection_msg"
+              xml:id="id_276"/>
+    <variable name="Invoke_GenerarOrdenPagoVPD_InputVariable" messageType="ns6:guardarOrdenPagoBPELRequestMessage"
+              xml:id="id_298"/>
+    <variable name="Invoke_GenerarOrdenPagoVPD_OutputVariable" messageType="ns6:guardarOrdenPagoBPELResponseMessage"
+              xml:id="id_299"/>
+  </variables>
+  <sequence name="main" xml:id="id_30">
+    <pick name="Pick1" createInstance="yes" xml:id="id_31">
+      <onMessage partnerLink="OrdenesPagoService" variable="ConsultarOrdenPago_InputVariable"
+                 portType="ns1:OrdenesPagoBPELPortType" operation="consultarOrdenPago" xml:id="id_32">
+        <sequence name="Sequence1" xml:id="id_33">
+          <scope name="Scope1" xml:id="id_34">
+            <faultHandlers xml:id="id_35">
+              <catchAll xml:id="id_36">
+                <sequence name="Sequence4" xml:id="id_37">
+                  <assign name="AssignErrorBD" xml:id="id_38">
+                    <copy xml:id="id_39">
+                      <from xml:id="id_40">1</from>
+                      <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_41">$ConsultarOrdenPago_OutputVariable.consultarOrdenPagoRes/ns2:OperationResponse/ns3:codigoRespuesta</to>
+                    </copy>
+                    <copy xml:id="id_42">
+                      <from xml:id="id_43">"Error de Base de Datos"</from>
+                      <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_44">$ConsultarOrdenPago_OutputVariable.consultarOrdenPagoRes/ns2:OperationResponse/ns3:descripcionRespuesta</to>
+                    </copy>
+                  </assign>
+                  <reply name="Reply3" partnerLink="OrdenesPagoService" variable="ConsultarOrdenPago_OutputVariable"
+                         portType="ns1:OrdenesPagoBPELPortType" operation="consultarOrdenPago" xml:id="id_45"/>
+                  <exit name="Exit1" xml:id="id_46"/>
+                </sequence>
+              </catchAll>
+            </faultHandlers>
+            <sequence xml:id="id_47">
+              <assign name="AssignIdSolicitud" xml:id="id_48">
+                <copy xml:id="id_49">
+                  <from xml:id="id_50">$ConsultarOrdenPago_InputVariable.consultarOrdenPagoReq/ns2:Input/ns2:id_solicitud</from>
+                  <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_51">$SelectNumOrdenDB_InputVariable.selectNumOrdenDBInput_msg/ns5:idSolicitud</to>
+                </copy>
+              </assign>
+              <invoke name="Invoke_NumOrden" bpelx:invokeAsDetail="no" partnerLink="selectNumOrdenDB"
+                      portType="ns4:selectNumOrdenDB_ptt" operation="selectNumOrdenDB"
+                      inputVariable="SelectNumOrdenDB_InputVariable" outputVariable="SelectNumOrdenDB_OutputVariable"
+                      xml:id="id_52"/>
+            </sequence>
+          </scope>
+          <if name="If1" xml:id="id_53">
+            <documentation xml:id="id_54">
+              <![CDATA[SeEncontroOP]]>
+            </documentation>
+            <condition xml:id="id_55">$SelectNumOrdenDB_OutputVariable.selectNumOrdenDBOutputCollection/ns5:selectNumOrdenDBOutput/ns5:NUM_ORDEN != ""</condition>
+            <sequence xml:id="id_56">
+              <scope name="Scope2" xml:id="id_57">
+                <faultHandlers xml:id="id_58">
+                  <catchAll xml:id="id_59">
+                    <assign name="AssignErrorInvGestionOP" xml:id="id_60">
+                      <copy xml:id="id_61">
+                        <from xml:id="id_62">1</from>
+                        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_63">$ConsultarOrdenPago_OutputVariable.consultarOrdenPagoRes/ns2:OperationResponse/ns3:codigoRespuesta</to>
+                      </copy>
+                      <copy xml:id="id_64">
+                        <from xml:id="id_65">"Error al invocar servicio GestionOrdenPago"</from>
+                        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_66">$ConsultarOrdenPago_OutputVariable.consultarOrdenPagoRes/ns2:OperationResponse/ns3:descripcionRespuesta</to>
+                      </copy>
+                    </assign>
+                  </catchAll>
+                </faultHandlers>
+                <sequence xml:id="id_67">
+                  <assign name="AssignNumOP" xml:id="id_68">
+                    <copy xml:id="id_69">
+                      <from xml:id="id_70">$SelectNumOrdenDB_OutputVariable.selectNumOrdenDBOutputCollection/ns5:selectNumOrdenDBOutput/ns5:NUM_ORDEN</from>
+                      <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_71">$GestionPago_consultarOrdenPago_InputVariable.consultarOrdenPagoReq/ns7:Input/ns7:numOrdenPago</to>
+                    </copy>
+                  </assign>
+                  <invoke name="Invoke_GestionPago" partnerLink="GestionOrdenPago"
+                          portType="ns6:gestionOrdenPagoBPELPortType" operation="consultarOrdenPago"
+                          inputVariable="GestionPago_consultarOrdenPago_InputVariable"
+                          outputVariable="GestionPago_consultarOrdenPago_OutputVariable" bpelx:invokeAsDetail="no"
+                          xml:id="id_72"/>
+                  <assign name="TransRespConsultaOP" xml:id="id_73">
+                    <bpelx:annotation xml:id="id_74">
+                      <bpelx:pattern patternName="bpelx:transformation" xml:id="id_75"></bpelx:pattern>
+                    </bpelx:annotation>
+                    <copy xml:id="id_76">
+                      <from xml:id="id_77">ora:doXSLTransformForDoc("../Transformations/TransRespConsultaOP.xsl", $GestionPago_consultarOrdenPago_OutputVariable.consultarOrdenPagoRes)</from>
+                      <to variable="ConsultarOrdenPago_OutputVariable" part="consultarOrdenPagoRes" xml:id="id_78"/>
+                    </copy>
+                  </assign>
+                </sequence>
+              </scope>
+            </sequence>
+            <else xml:id="id_79">
+              <assign name="AssignNoEnontroOP" xml:id="id_80">
+                <copy xml:id="id_81">
+                  <from xml:id="id_82">1</from>
+                  <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_83">$ConsultarOrdenPago_OutputVariable.consultarOrdenPagoRes/ns2:OperationResponse/ns3:codigoRespuesta</to>
+                </copy>
+                <copy xml:id="id_84">
+                  <from xml:id="id_85">"Error, no se encontro Orden de Pago"</from>
+                  <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_86">$ConsultarOrdenPago_OutputVariable.consultarOrdenPagoRes/ns2:OperationResponse/ns3:descripcionRespuesta</to>
+                </copy>
+              </assign>
+            </else>
+          </if>
+          <reply name="ReplyConsultaOP" partnerLink="OrdenesPagoService" variable="ConsultarOrdenPago_OutputVariable"
+                 portType="ns1:OrdenesPagoBPELPortType" operation="consultarOrdenPago" xml:id="id_87"/>
+        </sequence>
+      </onMessage>
+      <onMessage partnerLink="OrdenesPagoService" variable="GenerarOrdenPago_InputVariable"
+                 portType="ns1:OrdenesPagoBPELPortType" operation="generarOrdenPago" xml:id="id_88"><sequence name="Sequence2"
+                                                                                               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+                                                                                                              xml:id="id_89">
+          <assign name="AssignSolicitud" xml:id="id_90">
+            <copy xml:id="id_91">
+              <from xml:id="id_92">$GenerarOrdenPago_InputVariable.generarOrdenPagoReq/ns2:Input/ns2:id_solicitud</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_93">$invProrrateoService_InputVariable.obtenerArchivoReq/ns15:Input/ns15:id_solicitud</to>
+            </copy>
+            <copy xml:id="id_277">
+              <from xml:id="id_278">$GenerarOrdenPago_InputVariable.generarOrdenPagoReq/ns2:Input/ns2:id_solicitud</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_279">$InvSolicitudDataSvcPxy_InputVariable.selectByPrimaryKey_inputParameters/ns20:idSolicitud</to>
+            </copy>
+          </assign>
+          <invoke name="InvSolicitudDataSvcPxy" xml:id="id_274" partnerLink="SolicitudDataSvcPxy"
+                  portType="ns19:SolicitudDataSvc_ptt" operation="selectByPrimaryKey"
+                  inputVariable="InvSolicitudDataSvcPxy_InputVariable"
+                  outputVariable="InvSolicitudDataSvcPxy_OutputVariable" bpelx:invokeAsDetail="no"/>
+          <if name="IfTipoServicio" xml:id="id_280">
+            <condition xml:id="id_282">$InvSolicitudDataSvcPxy_OutputVariable.Gpa001SolicitudCollection/ns20:Gpa001Solicitud/ns20:idTpSolicitud = 1</condition>
+            <sequence xml:id="id_283">
+              <if name="IfComparaSubTpSolic" xml:id="id_95">
+                <condition xml:id="id_96">contains($InvSolicitudDataSvcPxy_OutputVariable.Gpa001SolicitudCollection/ns20:Gpa001Solicitud/ns20:idSubtpSolic,'3') or contains($InvSolicitudDataSvcPxy_OutputVariable.Gpa001SolicitudCollection/ns20:Gpa001Solicitud/ns20:idSubtpSolic,'8') or contains($InvSolicitudDataSvcPxy_OutputVariable.Gpa001SolicitudCollection/ns20:Gpa001Solicitud/ns20:idSubtpSolic,'9') or contains($InvSolicitudDataSvcPxy_OutputVariable.Gpa001SolicitudCollection/ns20:Gpa001Solicitud/ns20:idSubtpSolic,'10')</condition>
+                <sequence xml:id="id_97">
+                  <sequence name="Sequence9" xml:id="id_145">
+                    <scope name="Scope5" xml:id="id_167">
+                      <variables xml:id="id_225">
+                        <variable name="idSolicitud" element="ns16:ordenPagProrrateoRequest" xml:id="id_226">
+                          <from variable="GenerarOrdenPago_InputVariable" part="generarOrdenPagoReq" xml:id="id_230"><query xml:id="id_231">ns2:Input/ns2:id_solicitud</query></from>
+                        </variable>
+                      </variables>
+                      <sequence xml:id="id_168">
+                        <invoke name="invProrrateoService" partnerLink="consultaProrrateoService"
+                                portType="ns14:gestionArchivoProrrateoBPEL" operation="obtenerArchivoProrrateo"
+                                inputVariable="invProrrateoService_InputVariable"
+                                outputVariable="invProrrateoService_OutputVariable" bpelx:invokeAsDetail="no"
+                                xml:id="id_94"/>
+                        <assign name="AssigN_Archivo" xml:id="id_194">
+                          <copy xml:id="id_241">
+                            <from xml:id="id_242">$invProrrateoService_OutputVariable.obtenerArchivoRes/ns15:resultDataResponse/ns15:archivoProrrateo</from>
+                            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_243">$Inv_Parsing_parse_InputVariable.data</to>
+                          </copy>
+                          <copy xml:id="id_250">
+                            <from xml:id="id_251">$GenerarOrdenPago_InputVariable.generarOrdenPagoReq/ns2:Input/ns2:id_solicitud</from>
+                            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_252">$idSolicitud</to>
+                          </copy>
+                        </assign>
+                        <invoke name="Inv_Parsing" xml:id="id_212" bpelx:invokeAsDetail="no"
+                                partnerLink="ParsingDocService" portType="ns10:ProrrateoSvc" operation="parse"
+                                inputVariable="Inv_Parsing_parse_InputVariable"
+                                outputVariable="Inv_Parsing_parse_OutputVariable"/>
+                        <if name="IFParseExitoso" xml:id="id_460">
+                          <documentation xml:id="id_464">
+                            <![CDATA[Exitoso]]>
+                          </documentation>
+                          <condition xml:id="id_463">contains($Inv_ParsinDoc_OutVar.Prorrateo/result,'1')</condition>
+                          <sequence xml:id="id_462">
+                            <assign name="Assign_Imp" xml:id="id_208">
+                              <copy xml:id="id_253">
+                                <from xml:id="id_254">$idSolicitud</from>
+                                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_255">$Inv_Importes_InVar.ImporteDBSelect_inputParameters/ns18:pSolicitud</to>
+                              </copy>
+                            </assign>
+                            <invoke name="Inv_Importes" xml:id="id_205" bpelx:invokeAsDetail="no"
+                                    partnerLink="ImportesPXY" portType="ns17:ImporteDB_ptt" operation="ImporteDBSelect"
+                                    inputVariable="Inv_Importes_InVar" outputVariable="Inv_Importes_OutVar"/>
+                            <assign name="TransOP" xml:id="id_235">
+                              <bpelx:annotation xml:id="id_236">
+                                <bpelx:pattern patternName="bpelx:transformation" xml:id="id_237"></bpelx:pattern>
+                              </bpelx:annotation>
+                              <copy xml:id="id_238">
+                                <from xml:id="id_239">ora:doXSLTransformForDoc("../Transformations/TransOP.xsl", $GenerarOrdenPago_InputVariable.generarOrdenPagoReq, "Inv_Importes_OutVar.Gpa002ImportesCollection", $Inv_Importes_OutVar.Gpa002ImportesCollection, "Inv_Parsing_parse_OutputVariable.Prorrateo", $Inv_Parsing_parse_OutputVariable.Prorrateo)</from>
+                                <to xml:id="id_240" variable="InvGuardarOrd_InputVariable" part="guardarArchivoReq"/>
+                              </copy>
+                            </assign>
+                            <invoke name="InvGuardarOrden" partnerLink="GestionOrdenPago"
+                                    portType="ns6:gestionOrdenPagoBPELPortType" operation="guardanOrdenPago"
+                                    inputVariable="InvGuardarOrd_InputVariable"
+                                    outputVariable="InvGuardarOrd_OutputVariable"
+                                    xmlns:bpelx="http://schemas.oracle.com/bpel/extension" xml:id="id_161"
+                                    bpelx:invokeAsDetail="no"/>
+                            <assign name="AssigneCode" xml:id="id_162">
+                              <copy xml:id="id_184">
+                                <from xml:id="id_185">$InvGuardarOrd_OutputVariable.guardarArchivoRes/ns7:OperationResponse/ns3:descripcionRespuesta</from>
+                                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_186">$GenerarOrdenPago_OutputVariable.generarOrdenPagoRes/ns2:OperationResponse/ns3:descripcionRespuesta</to>
+                              </copy>
+                              <copy xml:id="id_187">
+                                <from xml:id="id_188">$InvGuardarOrd_OutputVariable.guardarArchivoRes/ns7:OperationResponse/ns3:codigoRespuesta</from>
+                                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_189">$GenerarOrdenPago_OutputVariable.generarOrdenPagoRes/ns2:OperationResponse/ns3:codigoRespuesta</to>
+                              </copy>
+                            </assign>
+                          </sequence>
+                          <else xml:id="id_461">
+                            <documentation xml:id="id_465">
+                              <![CDATA[Excepcion]]>
+                            </documentation><sequence name="Sequence12" xml:id="id_470"><assign name="AssignIdSolicitudGenerarOP"
+                                                                                                xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+                                                                                                xml:id="id_466">
+      <copy xml:id="id_467">
+         <from xml:id="id_468">$GenerarOrdenPago_InputVariable.generarOrdenPagoReq/ns2:Input/ns2:id_solicitud</from>
+         <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_469">$Invoke_spObtenerDatosOrden_InputVariable.InputParameters/ns9:A_IDSOL</to>
+      </copy>
+   </assign><invoke name="Inv_SPObtenerDatosOrden" bpelx:invokeAsDetail="no" partnerLink="spObtenerDatosOrden"
+                    portType="ns8:spObtenerDatosOrden_ptt" operation="spObtenerDatosOrden"
+                    inputVariable="Invoke_spObtenerDatosOrden_InputVariable"
+                    outputVariable="Invoke_spObtenerDatosOrden_OutputVariable"
+                    xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+                    xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xml:id="id_471"/><assign name="TRGenOPExcepcion"
+                                                                                                              xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+                                                                                                              xml:id="id_472">
+      <bpelx:annotation xmlns:bpelx="http://schemas.oracle.com/bpel/extension" xml:id="id_473">
+         <bpelx:pattern patternName="bpelx:transformation" xml:id="id_474"></bpelx:pattern>
+      </bpelx:annotation>
+      <copy xml:id="id_475">
+         <from xml:id="id_476">ora:doXSLTransformForDoc("../Transformations/TransGenerarOP_V2.xsl", $Invoke_spObtenerDatosOrden_OutputVariable.OutputParameters, "InvSolicitudDataSvcPxy_OutputVariable.Gpa001SolicitudCollection", $InvSolicitudDataSvcPxy_OutputVariable.Gpa001SolicitudCollection, "GenerarOrdenPago_InputVariable.generarOrdenPagoReq", $GenerarOrdenPago_InputVariable.generarOrdenPagoReq)</from>
+         <to variable="Invoke_GenerarOrdenPago_InputVariable" part="guardarArchivoReq" xml:id="id_477"/>
+      </copy>
+   </assign><invoke name="Invoke_GenerarOrdenPago" bpelx:invokeAsDetail="no" partnerLink="GestionOrdenPago"
+                    portType="ns6:gestionOrdenPagoBPELPortType" operation="guardanOrdenPago"
+                    inputVariable="Invoke_GenerarOrdenPago_InputVariable"
+                    outputVariable="Invoke_GenerarOrdenPago_OutputVariable"
+                    xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+                    xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xml:id="id_478"/><assign name="AssignRespGenerarOP"
+                                                                                                              xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+                                                                                                              xml:id="id_479">
+      <copy xml:id="id_480">
+         <from xml:id="id_481">$Invoke_GenerarOrdenPago_OutputVariable.guardarArchivoRes/ns7:OperationResponse/ns3:codigoRespuesta</from>
+         <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_482">$GenerarOrdenPago_OutputVariable.generarOrdenPagoRes/ns2:OperationResponse/ns3:codigoRespuesta</to>
+      </copy>
+      <copy xml:id="id_483">
+         <from xml:id="id_484">$Invoke_GenerarOrdenPago_OutputVariable.guardarArchivoRes/ns7:OperationResponse/ns3:descripcionRespuesta</from>
+         <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_485">$GenerarOrdenPago_OutputVariable.generarOrdenPagoRes/ns2:OperationResponse/ns3:descripcionRespuesta</to>
+      </copy>
+   </assign></sequence></else>
+                        </if>
+                      </sequence>
+                    </scope>
+                  </sequence>
+                </sequence>
+                <else xml:id="id_459">
+                  <sequence xml:id="id_457">
+                    <scope name="Scope3" xml:id="id_98">
+                      <faultHandlers xml:id="id_99">
+                        <catchAll xml:id="id_100">
+                          <sequence name="Sequence7" xml:id="id_101">
+                            <assign name="AssignErrorInvGenerar" xml:id="id_102">
+                              <copy xml:id="id_103">
+                                <from xml:id="id_104">1</from>
+                                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_105">$GenerarOrdenPago_OutputVariable.generarOrdenPagoRes/ns2:OperationResponse/ns3:codigoRespuesta</to>
+                              </copy>
+                              <copy xml:id="id_106">
+                                <from xml:id="id_107">"Error al obtener datos para generar la Orden de Compra"</from>
+                                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_108">$GenerarOrdenPago_OutputVariable.generarOrdenPagoRes/ns2:OperationResponse/ns3:descripcionRespuesta</to>
+                              </copy>
+                            </assign>
+                            <reply name="Reply4" partnerLink="OrdenesPagoService"
+                                   variable="GenerarOrdenPago_OutputVariable" portType="ns1:OrdenesPagoBPELPortType"
+                                   operation="generarOrdenPago" xml:id="id_109"/>
+                            <exit name="Exit2" xml:id="id_110"/>
+                          </sequence>
+                        </catchAll>
+                      </faultHandlers>
+                      <sequence xml:id="id_111">
+                        <assign name="AssignIdSolicitudGenerarOP" xml:id="id_112">
+                          <copy xml:id="id_113">
+                            <from xml:id="id_114">$GenerarOrdenPago_InputVariable.generarOrdenPagoReq/ns2:Input/ns2:id_solicitud</from>
+                            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_115">$Invoke_spObtenerDatosOrden_InputVariable.InputParameters/ns9:A_IDSOL</to>
+                          </copy>
+                        </assign>
+                        <invoke name="Invoke_ObtenerDatosOrden" bpelx:invokeAsDetail="no"
+                                partnerLink="spObtenerDatosOrden" portType="ns8:spObtenerDatosOrden_ptt"
+                                operation="spObtenerDatosOrden" inputVariable="Invoke_spObtenerDatosOrden_InputVariable"
+                                outputVariable="Invoke_spObtenerDatosOrden_OutputVariable"
+                                xmlns:bpelx="http://schemas.oracle.com/bpel/extension" xml:id="id_116"/>
+                      </sequence>
+                    </scope>
+                    <scope name="Scope4" xml:id="id_117">
+                      <faultHandlers xml:id="id_118">
+                        <catchAll xml:id="id_119">
+                          <sequence name="Sequence8" xml:id="id_120">
+                            <assign name="AssignErrorInvGestionOP" xml:id="id_121">
+                              <copy xml:id="id_122">
+                                <from xml:id="id_123">1</from>
+                                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_124">$GenerarOrdenPago_OutputVariable.generarOrdenPagoRes/ns2:OperationResponse/ns3:codigoRespuesta</to>
+                              </copy>
+                              <copy xml:id="id_125">
+                                <from xml:id="id_126">"Error al invocar servicio GestionOrdenCompra"</from>
+                                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_127">$GenerarOrdenPago_OutputVariable.generarOrdenPagoRes/ns2:OperationResponse/ns3:descripcionRespuesta</to>
+                              </copy>
+                            </assign>
+                          </sequence>
+                        </catchAll>
+                      </faultHandlers>
+                      <sequence xml:id="id_128">
+                        <assign name="TransGenerarOP" xml:id="id_129">
+                          <bpelx:annotation xmlns:bpelx="http://schemas.oracle.com/bpel/extension" xml:id="id_130">
+                            <bpelx:pattern patternName="bpelx:transformation" xml:id="id_131"></bpelx:pattern>
+                          </bpelx:annotation>
+                          <copy xml:id="id_132">
+                            <from xml:id="id_133">ora:doXSLTransformForDoc("../Transformations/TransGenerarOP_V2.xsl", $Invoke_spObtenerDatosOrden_OutputVariable.OutputParameters, "InvSolicitudDataSvcPxy_OutputVariable.Gpa001SolicitudCollection", $InvSolicitudDataSvcPxy_OutputVariable.Gpa001SolicitudCollection, "GenerarOrdenPago_InputVariable.generarOrdenPagoReq", $GenerarOrdenPago_InputVariable.generarOrdenPagoReq)</from>
+                            <to variable="Invoke_GenerarOrdenPago_InputVariable" part="guardarArchivoReq"
+                                xml:id="id_134"/>
+                          </copy>
+                        </assign>
+                        <invoke name="Invoke_GenerarOrdenPago" bpelx:invokeAsDetail="no" partnerLink="GestionOrdenPago"
+                                portType="ns6:gestionOrdenPagoBPELPortType" operation="guardanOrdenPago"
+                                inputVariable="Invoke_GenerarOrdenPago_InputVariable"
+                                outputVariable="Invoke_GenerarOrdenPago_OutputVariable"
+                                xmlns:bpelx="http://schemas.oracle.com/bpel/extension" xml:id="id_135"/>
+                        <assign name="AssignRespGenerarOP" xml:id="id_136">
+                          <copy xml:id="id_137">
+                            <from xml:id="id_138">$Invoke_GenerarOrdenPago_OutputVariable.guardarArchivoRes/ns7:OperationResponse/ns3:codigoRespuesta</from>
+                            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_139">$GenerarOrdenPago_OutputVariable.generarOrdenPagoRes/ns2:OperationResponse/ns3:codigoRespuesta</to>
+                          </copy>
+                          <copy xml:id="id_140">
+                            <from xml:id="id_141">$Invoke_GenerarOrdenPago_OutputVariable.guardarArchivoRes/ns7:OperationResponse/ns3:descripcionRespuesta</from>
+                            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_142">$GenerarOrdenPago_OutputVariable.generarOrdenPagoRes/ns2:OperationResponse/ns3:descripcionRespuesta</to>
+                          </copy>
+                        </assign>
+                      </sequence>
+                    </scope>
+                  </sequence>
+                </else>
+              </if>
+            </sequence>
+            <else xml:id="id_281">
+              <sequence name="Sequence10" xml:id="id_290">
+                <assign name="DiscriminaSolicitud" xml:id="id_291">
+                  <bpelx:annotation xml:id="id_292">
+                    <bpelx:pattern patternName="bpelx:transformation" xml:id="id_293"></bpelx:pattern>
+                  </bpelx:annotation>
+                  <copy xml:id="id_294">
+                    <from xml:id="id_295">ora:doXSLTransformForDoc("../Transformations/DiscriminaSolicitud_1.xsl", $InvSolicitudDataSvcPxy_OutputVariable.Gpa001SolicitudCollection)</from>
+                    <to xml:id="id_296" variable="InvSolicitudDataSvcPxy_OutputVariable"
+                        part="Gpa001SolicitudCollection"/>
+                  </copy>
+                </assign>
+                <assign name="TransGeneraOPVcd" xml:id="id_284">
+                  <bpelx:annotation xml:id="id_285">
+                    <bpelx:pattern patternName="bpelx:transformation" xml:id="id_286"></bpelx:pattern>
+                  </bpelx:annotation>
+                  <copy xml:id="id_287">
+                    <from xml:id="id_288">ora:doXSLTransformForDoc("../Transformations/TransOPViatiComp.xsl", $InvSolicitudDataSvcPxy_OutputVariable.Gpa001SolicitudCollection)</from>
+                    <to xml:id="id_289" variable="Invoke_GenerarOrdenPago_InputVariable" part="guardarArchivoReq"/>
+                  </copy>
+                </assign>
+                <invoke name="Invoke_GenerarOrdenPagoVPD" xml:id="id_297"
+                        partnerLink="GestionOrdenPago" portType="ns6:gestionOrdenPagoBPELPortType"
+                        operation="guardanOrdenPago"
+                        inputVariable="Invoke_GenerarOrdenPago_InputVariable"
+                        outputVariable="Invoke_GenerarOrdenPagoVPD_OutputVariable" bpelx:invokeAsDetail="no"/>
+                <assign name="AssingRespuestaOPVcd" xml:id="id_300">
+                  <copy xml:id="id_307">
+                    <from xml:id="id_308">$Invoke_GenerarOrdenPagoVPD_OutputVariable.guardarArchivoRes/ns7:OperationResponse/ns3:codigoRespuesta</from>
+                    <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_309">$GenerarOrdenPago_OutputVariable.generarOrdenPagoRes/ns2:OperationResponse/ns3:codigoRespuesta</to>
+                  </copy>
+                  <copy xml:id="id_310">
+                    <from xml:id="id_311">$Invoke_GenerarOrdenPagoVPD_OutputVariable.guardarArchivoRes/ns7:OperationResponse/ns3:descripcionRespuesta</from>
+                    <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_312">$GenerarOrdenPago_OutputVariable.generarOrdenPagoRes/ns2:OperationResponse/ns3:descripcionRespuesta</to>
+                  </copy>
+                </assign>
+              </sequence>
+            </else>
+          </if>
+      <reply name="Reply2" partnerLink="OrdenesPagoService" variable="GenerarOrdenPago_OutputVariable"
+             portType="ns1:OrdenesPagoBPELPortType" operation="generarOrdenPago" xml:id="id_166"/>
+   </sequence></onMessage>
+    </pick>
+  </sequence>
+</process>

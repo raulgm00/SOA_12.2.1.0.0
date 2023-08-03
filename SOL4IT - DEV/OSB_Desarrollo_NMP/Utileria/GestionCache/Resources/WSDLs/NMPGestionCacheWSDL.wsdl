@@ -1,0 +1,211 @@
+<definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Services/GestionCache" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Services/GestionCache" xmlns:gc="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCache" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <types>
+    <xsd:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Services/GestionCache/types" elementFormDefault="qualified"/>
+  </types>
+  <types>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCache" schemaLocation="../Schemas/NMPGestionCacheXSD.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+    </xsd:schema>
+  </types>
+  <message name="generarLlaveRequest">
+    <part name="req" element="gc:generarLlaveRequest"/>
+  </message>
+  <message name="generarLlaveResponse">
+    <part name="res" element="gc:generarLlaveResponse"/>
+  </message>
+  <message name="consultarLlaveRequest">
+    <part name="req" element="gc:consultarLlaveRequest"/>
+  </message>
+  <message name="consultarLlaveResponse">
+    <part name="res" element="gc:consultarLlaveResponse"/>
+  </message>
+  <message name="listarLlavesRequest">
+    <part name="req" element="gc:listarLlavesRequest"/>
+  </message>
+  <message name="listarLlavesResponse">
+    <part name="res" element="gc:listarLlavesResponse"/>
+  </message>
+  <message name="removerLlaveRequest">
+    <part name="req" element="gc:removerLlaveRequest"/>
+  </message>
+  <message name="removerLlaveResponse">
+    <part name="res" element="gc:removerLlaveResponse"/>
+  </message>
+  <message name="depurarCacheRequest">
+    <part name="req" element="gc:depurarCacheRequest"/>
+  </message>
+  <message name="depurarCacheResponse">
+    <part name="res" element="gc:depurarCacheResponse"/>
+  </message>
+  <message name="NMPHeaderRequest">
+    <part name="requestHeader" element="NMPsh:headerMessage"/>
+  </message>
+  <message name="gestionCacheFault">
+    <part name="fault" element="NMPsm:messageError"/>
+  </message>
+  <portType name="GestionCachePT">
+    <operation name="generarLlave">
+      <input message="tns:generarLlaveRequest"/>
+      <output message="tns:generarLlaveResponse"/>
+      <fault message="tns:gestionCacheFault" name="gestionCacheFault"/>
+    </operation>
+    <operation name="consultarLlave">
+      <input message="tns:consultarLlaveRequest"/>
+      <output message="tns:consultarLlaveResponse"/>
+      <fault message="tns:generarLlaveRequest" name="gestionCacheFault"/>
+    </operation>
+    <operation name="listarLlaves">
+      <input message="tns:listarLlavesRequest"/>
+      <output message="tns:listarLlavesResponse"/>
+      <fault name="gestionCacheFault" message="tns:gestionCacheFault"/>
+    </operation>
+    <operation name="removerLlave">
+      <input message="tns:removerLlaveRequest"/>
+      <output message="tns:removerLlaveResponse"/>
+      <fault message="tns:gestionCacheFault" name="gestionCacheFault"/>
+    </operation>
+    <operation name="depurarCache">
+      <input message="tns:depurarCacheRequest"/>
+      <output message="tns:depurarCacheResponse"/>
+      <fault message="tns:gestionCacheFault" name="gestionCacheFault"/>
+    </operation>
+  </portType>
+  <binding name="GestionCachePTSOAP11Binding" type="tns:GestionCachePT">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="generarLlave">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/GestionCache/generarLlave"/>
+      <input>
+        <soap:body use="literal" parts="req"/>
+        <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="res"/>
+      </output>
+      <fault name="gestionCacheFault">
+        <soap:fault name="gestionCacheFault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="consultarLlave">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/GestionCache/consultarLlave"/>
+      <input>
+        <soap:body use="literal" parts="req"/>
+        <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="res"/>
+      </output>
+      <fault name="gestionCacheFault">
+        <soap:fault name="gestionCacheFault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="listarLlaves">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/GestionCache/listarLlaves"/>
+      <input>
+        <soap:body use="literal" parts="req"/>
+        <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="res"/>
+      </output>
+      <fault name="gestionCacheFault">
+        <soap:fault name="gestionCacheFault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="removerLlave">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/GestionCache/removerLlave"/>
+      <input>
+        <soap:body use="literal" parts="req"/>
+        <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="res"/>
+      </output>
+      <fault name="gestionCacheFault">
+        <soap:fault name="gestionCacheFault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="depurarCache">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/GestionCache/depurarCache"/>
+      <input>
+        <soap:body use="literal" parts="req"/>
+        <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="res"/>
+      </output>
+      <fault name="gestionCacheFault">
+        <soap:fault name="gestionCacheFault" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+  <binding name="GestionCachePTSOAP12Binding" type="tns:GestionCachePT">
+    <soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="generarLlave">
+      <soap12:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/GestionCache/generarLlave"/>
+      <input>
+        <soap12:body use="literal" parts="req"/>
+        <soap12:header message="tns:NMPHeaderRequest" use="literal" part="requestHeader"/>
+      </input>
+      <output>
+        <soap12:body use="literal" parts="res"/>
+      </output>
+      <fault name="gestionCacheFault">
+        <soap12:fault name="gestionCacheFault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="consultarLlave">
+      <soap12:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/GestionCache/consultarLlave"/>
+      <input>
+        <soap12:body use="literal" parts="req"/>
+        <soap12:header message="tns:NMPHeaderRequest" use="literal" part="requestHeader"/>
+      </input>
+      <output>
+        <soap12:body use="literal" parts="res"/>
+      </output>
+      <fault name="gestionCacheFault">
+        <soap12:fault name="gestionCacheFault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="listarLlaves">
+      <soap12:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/GestionCache/listarLlaves"/>
+      <input>
+        <soap12:body use="literal" parts="req"/>
+        <soap12:header message="tns:NMPHeaderRequest" use="literal" part="requestHeader"/>
+      </input>
+      <output>
+        <soap12:body use="literal" parts="res"/>
+      </output>
+      <fault name="gestionCacheFault">
+        <soap12:fault name="gestionCacheFault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="removerLlave">
+      <soap12:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/GestionCache/removerLlave"/>
+      <input>
+        <soap12:body use="literal" parts="req"/>
+        <soap12:header message="tns:NMPHeaderRequest" use="literal" part="requestHeader"/>
+      </input>
+      <output>
+        <soap12:body use="literal" parts="res"/>
+      </output>
+      <fault name="gestionCacheFault">
+        <soap12:fault name="gestionCacheFault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="depurarCache">
+      <soap12:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/GestionCache/depurarCache"/>
+      <input>
+        <soap12:body use="literal" parts="req"/>
+        <soap12:header message="tns:NMPHeaderRequest" use="literal" part="requestHeader"/>
+      </input>
+      <output>
+        <soap12:body use="literal" parts="res"/>
+      </output>
+      <fault name="gestionCacheFault">
+        <soap12:fault name="gestionCacheFault" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+</definitions>

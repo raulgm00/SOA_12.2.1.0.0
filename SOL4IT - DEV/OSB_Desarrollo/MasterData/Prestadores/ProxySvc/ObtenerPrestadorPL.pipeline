@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:wsdl ref="MasterData/Prestadores/Resources/ObtenerPrestadorWSDL"/>
+            <con:binding>
+                <con:name>ObtenerPrestadorBPELBindingSOAP</con:name>
+                <con:namespace>http://xmlns.oracle.com/ObtenerPrestadorApp/ObtenerPrestadorPrj/ObtenerPrestadorBPEL</con:namespace>
+            </con:binding>
+        </con:binding>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:pipeline name="_onErrorHandler-N3f57fff6.N153e140a.4.159d29f0893.N7ffd" type="error">
+            <con:stage name="stage1">
+                <con:context>
+                    <con1:varNsDecl prefix="obt" namespace="http://xmlns.oracle.com/ObtenerPrestadorApp/ObtenerPrestadorPrj/ObtenerPrestadorBPEL" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-b320018.33d06e72.1a.159d694ff10.N7ff3</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat('<obt:processResponse xmlns:obt="http://xmlns.oracle.com/ObtenerPrestadorApp/ObtenerPrestadorPrj/ObtenerPrestadorBPEL">
+         <obt:numeroPrestador></obt:numeroPrestador>
+         <obt:nombrePrestador></obt:nombrePrestador>
+         <obt:rfc></obt:rfc>
+         <obt:estatus>',$respConsultaEntidad//return/Status/text(),'</obt:estatus>
+
+         <obt:cveTipoPersona></obt:cveTipoPersona>
+
+         <obt:tipoPersona></obt:tipoPersona>
+
+         <obt:cveEntidad></obt:cveEntidad>
+
+         <obt:entidad></obt:entidad>
+
+         <obt:cveNacionalidad></obt:cveNacionalidad>
+
+         <obt:nacionalidad></obt:nacionalidad>
+         <obt:OperationResponse xmlns:v1="http://qualitas.com.mx/comunes/objetosComunes/v1/">
+
+            <v1:listaErrores>
+
+               <v1:error idMotivo="" descripcion=""></v1:error>
+            </v1:listaErrores>
+            <v1:codigoOperacionoper></v1:codigoOperacionoper>
+            <v1:codigoRespuesta>0</v1:codigoRespuesta>
+            <v1:descripcionRespuesta>NO SE ENCONTRÓ PRESTADOR</v1:descripcionRespuesta>
+            <v1:tiempoRespuesta></v1:tiempoRespuesta>
+            <v1:fecha></v1:fecha>
+         </obt:OperationResponse>
+      </obt:processResponse>'
+))]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:reply isError="false" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+                        <con1:id>_ActionId-b320018.33d06e72.24.159dd01c0a1.N8000</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="_onErrorHandler-b320018.33d06e72.21.159dc6b3b45.N7ffd" type="error">
+            <con:stage name="stage1">
+                <con:context>
+                    <con1:varNsDecl prefix="obt" namespace="http://xmlns.oracle.com/ObtenerPrestadorApp/ObtenerPrestadorPrj/ObtenerPrestadorBPEL" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-b320018.33d06e72.16.159d5962b88.N7ff4</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat('<obt:processResponse xmlns:obt="http://xmlns.oracle.com/ObtenerPrestadorApp/ObtenerPrestadorPrj/ObtenerPrestadorBPEL">
+         <obt:numeroPrestador></obt:numeroPrestador>
+         <obt:nombrePrestador></obt:nombrePrestador>
+         <obt:rfc>',$respConsultaEntidad//return/rfc/text(),'</obt:rfc>
+         <obt:estatus>',$respConsultaEntidad//return/Status/text(),'</obt:estatus>
+
+         <obt:cveTipoPersona></obt:cveTipoPersona>
+
+         <obt:tipoPersona></obt:tipoPersona>
+
+         <obt:cveEntidad></obt:cveEntidad>
+
+         <obt:entidad></obt:entidad>
+
+         <obt:cveNacionalidad></obt:cveNacionalidad>
+
+         <obt:nacionalidad></obt:nacionalidad>
+         <obt:OperationResponse xmlns:v1="http://qualitas.com.mx/comunes/objetosComunes/v1/">
+
+            <v1:listaErrores>
+
+               <v1:error idMotivo="" descripcion=""></v1:error>
+            </v1:listaErrores>
+            <v1:codigoOperacionoper></v1:codigoOperacionoper>
+            <v1:codigoRespuesta>0</v1:codigoRespuesta>
+            <v1:descripcionRespuesta>NO SE ENCONTRÓ PRESTADOR</v1:descripcionRespuesta>
+            <v1:tiempoRespuesta></v1:tiempoRespuesta>
+            <v1:fecha></v1:fecha>
+         </obt:OperationResponse>
+      </obt:processResponse>'
+))]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:reply isError="false" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+                        <con1:id>_ActionId-b320018.33d06e72.16.159d5962b88.N7ff3</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode1_response" type="response">
+            <con:stage name="stage1" errorHandler="_onErrorHandler-b320018.33d06e72.21.159dc6b3b45.N7ffd">
+                <con:context>
+                    <con1:userNsDecl prefix="db" namespace="http://xmlns.oracle.com/pcbpel/adapter/db/ConsultaEntidadDB" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="obt" namespace="http://xmlns.oracle.com/ObtenerPrestadorApp/ObtenerPrestadorPrj/ObtenerPrestadorBPEL" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-b320018.33d06e72.17.159d5998e4f.N7ffc</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(fn:concat('&lt;db:ConsultaEntidadDBInput  xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/ConsultaEntidadDB">
+&lt;db:cveEntidad>',$respConsultaEntidad//return/claveEstado/text(),'&lt;/db:cveEntidad>
+&lt;/db:ConsultaEntidadDBInput>'))</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-b320018.33d06e72.12.159d53e5bb4.N7ffc</con2:id>
+                        <con1:service ref="MasterData/Prestadores/BusinessSvc/ConsultaEntidadBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                        <con1:operation>ConsultaEntidadDB</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="true">body</con1:body>
+                            <con1:header/>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="true">resDescEntidad</con1:body>
+                            <con1:header/>
+                        </con1:response>
+                        <con1:requestTransform/>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                    <con1:assign varName="RFC">
+                        <con2:id>_ActionId-b320018.33d06e72.4b.159f0bbf256.N8000</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:replace($respConsultaEntidad//return/rfc/text(),"-","")</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-b320018.33d06e72.12.159d53e5bb4.N7ffd</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat('<obt:processResponse xmlns:obt="http://xmlns.oracle.com/ObtenerPrestadorApp/ObtenerPrestadorPrj/ObtenerPrestadorBPEL">
+         <obt:numeroPrestador>',$respConsultaEntidad//return/claveProveedor/text(),'</obt:numeroPrestador>
+         <obt:nombrePrestador>',$respConsultaEntidad//return/descProveedor/text(),'</obt:nombrePrestador>
+         <obt:rfc>',$RFC,'</obt:rfc>
+         <obt:estatus>',$respConsultaEntidad//return/Status/text(),'</obt:estatus>
+
+         <obt:cveTipoPersona>',$respConsultaEntidad//return/tipoPersona/text(),'</obt:cveTipoPersona>
+
+         <obt:tipoPersona>',$respConsultaEntidad//return/descTipoPersona/text(),'</obt:tipoPersona>
+
+         <obt:cveEntidad>',$respConsultaEntidad//return/claveEstado/text(),'</obt:cveEntidad>
+
+         <obt:entidad>',$resDescEntidad//db:ConsultaEntidadDBOutput[1]/db:DESC_ENTIDAD/text(),'</obt:entidad>
+
+         <obt:cveNacionalidad></obt:cveNacionalidad>
+
+         <obt:nacionalidad></obt:nacionalidad>
+         <obt:OperationResponse xmlns:v1="http://qualitas.com.mx/comunes/objetosComunes/v1/">
+
+            <v1:listaErrores>
+
+               <v1:error idMotivo="" descripcion=""></v1:error>
+            </v1:listaErrores>
+            <v1:codigoOperacionoper></v1:codigoOperacionoper>
+            <v1:codigoRespuesta>0</v1:codigoRespuesta>
+            <v1:descripcionRespuesta>EJECUCION EXITOSA</v1:descripcionRespuesta>
+            <v1:tiempoRespuesta></v1:tiempoRespuesta>
+            <v1:fecha></v1:fecha>
+         </obt:OperationResponse>
+      </obt:processResponse>'
+))]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-N5601ba3a.N71e684bc.3.159d704f4f4.N8000</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/obt:processResponse/obt:cveEntidad &lt;= 32000</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id>_ActionId-N5601ba3a.N71e684bc.4.159d7085ddf.N8000</con2:id>
+                                    <con1:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./obt:processResponse/obt:cveNacionalidad</con:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">1</con:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id>_ActionId-N5601ba3a.N71e684bc.5.159d70a21df.N8000</con2:id>
+                                    <con1:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./obt:processResponse/obt:nacionalidad</con:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">"MEXICANA"</con:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/obt:processResponse/obt:cveEntidad >= 33000</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id>_ActionId-b320018.33d06e72.16.159d5962b88.N7ff6</con2:id>
+                                    <con1:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./obt:processResponse/obt:cveNacionalidad</con:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">2</con:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id>_ActionId-b320018.33d06e72.23.159dc88214c.N8000</con2:id>
+                                    <con1:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./obt:processResponse/obt:nacionalidad</con:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">"EXTRANJERA"</con:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode1_request" type="request">
+            <con:stage name="stage1">
+                <con:context>
+                    <con1:varNsDecl prefix="obt" namespace="http://xmlns.oracle.com/ObtenerPrestadorApp/ObtenerPrestadorPrj/ObtenerPrestadorBPEL" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="body_tmp">
+                        <con2:id>_ActionId-b320018.33d06e72.1b.159d6bb83f7.N8000</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-N53efe1fa.3599a660.0.15aba45ee69.N7fa1</con2:id>
+                        <con1:case id="_BranchId-N53efe1fa.3599a660.0.15aba45ee69.N7fa0">
+                            <con1:condition>
+                                <con2:xqueryText>string-length(string($body/obt:process/obt:numeroPrestador/text())) = 1</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:assign varName="idPresatdor">
+                                    <con2:id>_ActionId-N53efe1fa.3599a660.0.15aba45ee69.N7f97</con2:id>
+                                    <con1:expr>
+                                        <con2:xqueryText>fn:concat('0000',$body/obt:process/obt:numeroPrestador/text())</con2:xqueryText>
+                                    </con1:expr>
+                                </con1:assign>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case id="_BranchId-N53efe1fa.3599a660.0.15aba45ee69.N7f9e">
+                            <con1:condition>
+                                <con2:xqueryText>string-length(string($body/obt:process/obt:numeroPrestador/text())) = 2</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:assign varName="idPresatdor">
+                                    <con2:id>_ActionId-N53efe1fa.3599a660.0.15aba45ee69.N7f94</con2:id>
+                                    <con1:expr>
+                                        <con2:xqueryText>fn:concat('000',$body/obt:process/obt:numeroPrestador/text())</con2:xqueryText>
+                                    </con1:expr>
+                                </con1:assign>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case id="_BranchId-N53efe1fa.3599a660.0.15aba45ee69.N7f9c">
+                            <con1:condition>
+                                <con2:xqueryText>string-length(string($body/obt:process/obt:numeroPrestador/text())) = 3</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:assign varName="idPresatdor">
+                                    <con2:id>_ActionId-N53efe1fa.3599a660.0.15aba45ee69.N7f91</con2:id>
+                                    <con1:expr>
+                                        <con2:xqueryText>fn:concat('00',$body/obt:process/obt:numeroPrestador/text())</con2:xqueryText>
+                                    </con1:expr>
+                                </con1:assign>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case id="_BranchId-N53efe1fa.3599a660.0.15aba45ee69.N7f9a">
+                            <con1:condition>
+                                <con2:xqueryText>string-length(string($body/obt:process/obt:numeroPrestador/text())) = 4</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:assign varName="idPresatdor">
+                                    <con2:id>_ActionId-N53efe1fa.3599a660.0.15aba45ee69.N7f8e</con2:id>
+                                    <con1:expr>
+                                        <con2:xqueryText>fn:concat('0',$body/obt:process/obt:numeroPrestador/text())</con2:xqueryText>
+                                    </con1:expr>
+                                </con1:assign>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:default>
+                            <con1:assign varName="idPresatdor">
+                                <con2:id>_ActionId-N53efe1fa.3599a660.0.15aba45ee69.N7f8b</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText>$body/obt:process/obt:numeroPrestador/text()</con2:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:default>
+                    </con1:ifThenElse>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-b320018.33d06e72.16.159d5962b88.N7ffe</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat('<web:getRegistros xmlns:web="http://webservices.wscatalogos.qualitas.com/">
+                <tabla>MPRES</tabla>
+         <columnas>claveProveedor</columnas>
+         <columnas>Status</columnas>                                   
+         <columnas>descProveedor</columnas>
+         <columnas>rfc</columnas>
+         <columnas>claveEstado</columnas>    
+         <columnas>descTipoPersona</columnas>                       
+         <columnas>tipoPersona</columnas>    
+		<parametros>
+			<campo>claveProveedor</campo>
+			<operador>=</operador>
+			<valores>',$idPresatdor,'</valores>
+			</parametros>
+      </web:getRegistros>'))]]></con2:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="PipelinePairNode1">
+                <con:request>PipelinePairNode1_request</con:request>
+                <con:response>PipelinePairNode1_response</con:response>
+            </con:pipeline-node>
+            <con:route-node name="RouteNode1" error-handler="_onErrorHandler-N3f57fff6.N153e140a.4.159d29f0893.N7ffd">
+                <con:context>
+                    <con1:varNsDecl prefix="obt" namespace="http://xmlns.oracle.com/ObtenerPrestadorApp/ObtenerPrestadorPrj/ObtenerPrestadorBPEL" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                        <con2:id>_ActionId-N3f57fff6.N153e140a.1.159d28c6b51.N8000</con2:id>
+                        <con1:service ref="Operational/SISE/BusinessSvc/ERPCatalogsBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                        <con1:operation>getRegistros</con1:operation>
+                        <con1:outboundTransform/>
+                        <con1:responseTransform>
+                            <con2:assign varName="respConsultaEntidad" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.16.159d5962b88.N7ffd</con3:id>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                        </con1:responseTransform>
+                    </con1:route>
+                </con:actions>
+            </con:route-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

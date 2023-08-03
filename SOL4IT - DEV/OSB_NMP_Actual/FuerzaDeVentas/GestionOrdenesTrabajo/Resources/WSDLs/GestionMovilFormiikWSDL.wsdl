@@ -1,0 +1,61 @@
+<definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:GMR="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <types>
+    <xsd:schema>
+      <xsd:import schemaLocation="../Schemas/GestionMovilFormiikRestElementosXSD.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST"/>
+    </xsd:schema>
+  </types>
+  <message name="SendWorkOrderToClientRequestMessage">
+    <part name="part" element="GMR:Response"/>
+  </message>
+  <message name="SendWorkOrderToClientResponseMessage">
+    <part name="part" element="GMR:SendWorkOrderToClientResponse"/>
+  </message>
+  <message name="FlexibleUpdateWorkOrderRequestMessage">
+    <part name="part" element="GMR:FlexibleUpdateWorkOrderRequest"/>
+  </message>
+  <message name="FlexibleUpdateWorkOrderResponseMessage">
+    <part name="part" element="GMR:FlexibleUpdateWorkOrderResponse"/>
+  </message>
+  <message name="FlexibleUpdateWorkOrderFaultMessage">
+    <part name="part" element="GMR:FlexibleUpdateWorkOrderFault"/>
+  </message>
+  <message name="SendWorkOrderToClientFaultMessage">
+    <part name="part" element="GMR:SendWorkOrderToClientFault"/>
+  </message>
+  <portType name="GestionMovilREST_ptt">
+    <operation name="SendWorkOrderToClient">
+      <input message="GMR:SendWorkOrderToClientRequestMessage"/>
+      <output message="GMR:SendWorkOrderToClientResponseMessage"/>
+      <fault name="fault" message="GMR:SendWorkOrderToClientFaultMessage"/>
+    </operation>
+    <operation name="FlexibleUpdateWorkOrder">
+      <input message="GMR:FlexibleUpdateWorkOrderRequestMessage"/>
+      <output message="GMR:FlexibleUpdateWorkOrderResponseMessage"/>
+      <fault name="fault" message="GMR:FlexibleUpdateWorkOrderFaultMessage"/>
+    </operation>
+  </portType>
+  <service name="GestionMovilREST_ptt">
+    <port name="GestionMovilREST_pttPort" binding="GMR:GestionMovilRESTBinding"/>
+  </service>
+  <binding name="GestionMovilRESTBinding" type="GMR:GestionMovilREST_ptt">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="SendWorkOrderToClient">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST/SendWorkOrderToClient"/>
+      <input>
+        <soap:body use="literal" parts="part"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="part"/>
+      </output>
+    </operation>
+    <operation name="FlexibleUpdateWorkOrder">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST/FlexibleUpdateWorkOrder"/>
+      <input>
+        <soap:body use="literal" parts="part"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="part"/>
+      </output>
+    </operation>
+  </binding>
+</definitions>

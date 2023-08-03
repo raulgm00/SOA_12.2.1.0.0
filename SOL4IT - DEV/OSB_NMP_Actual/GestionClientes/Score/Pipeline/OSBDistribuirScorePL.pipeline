@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+    <con:coreEntry>
+        <con:description>Pipeline secundario del servicio Score, para realiza el intercambio de informacion de la calificación de los clientes con el CRM</con:description>
+        <con:binding type="Mixed" xsi:type="con:MixedBindingType">
+            <con:request type="XML">
+                <con2:schema ref="GestionClientes/Score/Resources/Schemas/NMPScoreSvcXSD" element="updateScoreRequest" xmlns:con2="http://www.bea.com/wli/sb/typesystem/config" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config" xmlns:con3="http://www.bea.com/wli/sb/stages/config" xmlns:con5="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con4="http://www.bea.com/wli/sb/stages/publish/config" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:con6="http://www.bea.com/wli/sb/stages/logging/config" xmlns:jms="http://www.bea.com/wli/sb/transports/jms" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:con1="http://www.bea.com/wli/sb/pipeline/config"/>
+            </con:request>
+        </con:binding>
+        <oper:operations>
+            <oper:tracingEnabled>true</oper:tracingEnabled>
+            <oper:logging enabled="false" level="debug"/>
+            <oper:monitoring enabled="true" level="action" aggregationInterval="1440"/>
+            <oper:reporting>false</oper:reporting>
+        </oper:operations>
+    </con:coreEntry>
+    <con1:router errorHandler="_onErrorHandler-1507740987522041119--78ba50b1.144c170fc83.-7d96" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:con="http://www.bea.com/wli/sb/typesystem/config" xmlns:con1="http://www.bea.com/wli/sb/pipeline/config" xmlns:jms="http://www.bea.com/wli/sb/transports/jms" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con3="http://www.bea.com/wli/sb/stages/config" xmlns:con4="http://www.bea.com/wli/sb/stages/publish/config" xmlns:con5="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con6="http://www.bea.com/wli/sb/stages/logging/config">
+        <con1:pipeline type="error" name="_onErrorHandler-3338159823323623829--328c17c2.144b2a713db.-7cba">
+            <con1:stage name="stageComunicationErrorHandler">
+                <con1:comment>Manejador de excepciones generadas durante la gestión del intercambio de calificaciones con el CRM</con1:comment>
+                <con1:context>
+                    <con3:varNsDecl namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente" prefix="nmp"/>
+                </con1:context>
+                <con1:actions>
+                    <con2:ifThenElse>
+                        <con3:comment>Manejar los errores por timeout o de aplicación</con3:comment>
+                        <con3:id>_ActionId-3338159823323623829--328c17c2.144b2a713db.-7ca0</con3:id>
+                        <con2:case>
+                            <con2:condition>
+                                <con3:xqueryText>$fault/ctx:errorCode = 'OSB-380002'</con3:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con4:route>
+                                    <con3:comment>Enviar a recurso JMS las peticiones que por timeout no se pudieron enviar al CRM</con3:comment>
+                                    <con3:id>_ActionId-2003236901794755165--580b7fc3.144b7a60f1d.-7f81</con3:id>
+                                    <con4:service ref="GestionClientes/Score/Business Services/OSBEnviarScoreToQueueTimeOutBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                    <con4:outboundTransform>
+                                        <con2:routing-options>
+                                            <con3:comment>Utilizar el mécanismo de Excatly-One para el envío al recurso JMS</con3:comment>
+                                            <con3:id>_ActionId-2003236901794755165--580b7fc3.144b7a60f1d.-7f80</con3:id>
+                                            <con2:qualityOfService>exactly-once</con2:qualityOfService>
+                                        </con2:routing-options>
+                                        <con2:replace contents-only="true" varName="body">
+                                            <con3:comment>Obtener el respaldo de la calificación que no se pudo enviar al CRM por error de timeout, para depositarse en recurso JMS</con3:comment>
+                                            <con3:id>_ActionId-2003236901794755165--580b7fc3.144b7a60f1d.-7e12</con3:id>
+                                            <con2:location>
+                                                <con3:xpathText>.</con3:xpathText>
+                                            </con2:location>
+                                            <con2:expr>
+                                                <con3:xqueryText>$updateScoreEventCRMReq</con3:xqueryText>
+                                            </con2:expr>
+                                        </con2:replace>
+                                    </con4:outboundTransform>
+                                </con4:route>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default>
+                            <con4:route>
+                                <con3:comment>Enviar a recurso JMS las peticiones que por error de aplicación no se pudieron enviar al CRM</con3:comment>
+                                <con3:id>_ActionId-5970722424403970006--11939bb9.144b70ca5a5.-7f08</con3:id>
+                                <con4:service ref="GestionClientes/Score/Business Services/OSBEnviarScoreToQueueErrorBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                <con4:outboundTransform>
+                                    <con2:routing-options>
+                                        <con3:comment>Utilizar el mécanismo de Excatly-One para el envío al recurso JMS</con3:comment>
+                                        <con3:id>_ActionId-5970722424403970006--11939bb9.144b70ca5a5.-7ef4</con3:id>
+                                        <con2:qualityOfService>exactly-once</con2:qualityOfService>
+                                    </con2:routing-options>
+                                    <con2:replace contents-only="true" varName="body">
+                                        <con3:comment>Obtener el respaldo de la calificación que no se pudo enviar al CRM por error de aplicación, para depositarse en recurso JMS</con3:comment>
+                                        <con3:id>_ActionId-2003236901794755165--580b7fc3.144b7a60f1d.-7e4c</con3:id>
+                                        <con2:location>
+                                            <con3:xpathText>.</con3:xpathText>
+                                        </con2:location>
+                                        <con2:expr>
+                                            <con3:xqueryText>$updateScoreEventCRMReq</con3:xqueryText>
+                                        </con2:expr>
+                                    </con2:replace>
+                                </con4:outboundTransform>
+                            </con4:route>
+                        </con2:default>
+                    </con2:ifThenElse>
+                    <con3:resume>
+                        <con3:comment>Continuar con la ejecución una vez que se ha manejado el error producido en el procesamiento de las calificaciones</con3:comment>
+                        <con3:id>_ActionId-1507740987522041119--78ba50b1.144c170fc83.-7d61</con3:id>
+                    </con3:resume>
+                </con1:actions>
+            </con1:stage>
+        </con1:pipeline>
+        <con1:pipeline type="error" name="_onErrorHandler-1507740987522041119--78ba50b1.144c170fc83.-7d96">
+            <con1:stage name="stageGeneralErrorHandler">
+                <con1:comment>Manejo de excepciones que no se hayan podido tratar en los manejadores internos</con1:comment>
+                <con1:context>
+                    <con3:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente"/>
+                </con1:context>
+                <con1:actions>
+                    <con4:route>
+                        <con3:comment>Envío de peticiones a recurso JMS por una excepción no manejada</con3:comment>
+                        <con3:id>_ActionId-N3f57c7ff.26f2faa2.0.1533da3c6c6.N7f96</con3:id>
+                        <con4:service ref="GestionClientes/Score/Business Services/OSBEnviarScoreToQueueErrorBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con4:outboundTransform>
+                            <con2:routing-options>
+                                <con3:comment>El mécanismo para el envío al JMS es Exactly-One</con3:comment>
+                                <con3:id>_ActionId-N3f57c7ff.26f2faa2.0.1533da3c6c6.N7f95</con3:id>
+                                <con2:qualityOfService>exactly-once</con2:qualityOfService>
+                            </con2:routing-options>
+                            <con2:replace contents-only="true" varName="body">
+                                <con3:comment>Obtener el respaldo de la calificación para depositarse en recurso JMS, después de haber sugido un error en los manejadores internos</con3:comment>
+                                <con3:id>_ActionId-N3f57c7ff.26f2faa2.0.1533da3c6c6.N7f94</con3:id>
+                                <con2:location>
+                                    <con3:xpathText>.</con3:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con3:xqueryText>$updateScoreEventCRMReq</con3:xqueryText>
+                                </con2:expr>
+                            </con2:replace>
+                        </con4:outboundTransform>
+                    </con4:route>
+                    <con3:resume>
+                        <con3:comment>Continuar con la ejecución una vez que se ha manejado el error producido en el procesamiento de las calificaciones</con3:comment>
+                        <con3:id>_ActionId-1507740987522041119--78ba50b1.144c170fc83.-7d4e</con3:id>
+                    </con3:resume>
+                </con1:actions>
+            </con1:stage>
+        </con1:pipeline>
+        <con1:flow>
+            <con1:route-node name="RouteToCrm" error-handler="_onErrorHandler-3338159823323623829--328c17c2.144b2a713db.-7cba">
+                <con1:comment>Procesar y gestionar el envío de las calificaciones hacia el CRM</con1:comment>
+                <con1:context>
+                    <con3:userNsDecl prefix="can" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/CanonicalModel"/>
+                    <con3:userNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal"/>
+                    <con3:varNsDecl namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente" prefix="nmp"/>
+                    <con:variable name="updateScoreEventCRMReq" path="$updateScoreEventCRMReq" asChild="false">
+                        <con:schema ref="GestionClientes/Score/Resources/Schemas/NMPScoreSvcXSD" element="updateScoreRequest"/>
+                    </con:variable>
+                </con1:context>
+                <con1:actions>
+                    <con5:route>
+                        <con3:comment>Gestionar el envío de la calificación de los clientes al CRM</con3:comment>
+                        <con3:id>_ActionId-3338159823323623829--328c17c2.144b2a713db.-7d0f</con3:id>
+                        <con5:service ref="GestionClientes/Score/Business Services/OSBEnviarScoreToCrmBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con5:operation>Scoring</con5:operation>
+                        <con5:outboundTransform>
+                            <con6:log>
+                                <con3:comment>Registrar en el el log para monitoreo las calificaciones que se están procesando y enviando al CRM</con3:comment>
+                                <con3:id>_ActionId-a1e52b9.Nf72e2bf.17.1537b24393b.N8000</con3:id>
+                                <con6:logLevel>error</con6:logLevel>
+                                <con6:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                                </con6:expr>
+                                <con6:message>ScoreToCRM:</con6:message>
+                            </con6:log>
+                            <con2:assign varName="updateScoreEventCRMReq">
+                                <con3:comment>Generar estructura requerida para el intercambio de calificaciones con el WS del CRM. El resultado de la transformación es almacenado en una variable auxiliar</con3:comment>
+                                <con3:id>_ActionId-5970722424403970006--11939bb9.144b70ca5a5.-7da1</con3:id>
+                                <con2:expr>
+                                    <con:xqueryTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                        <con:resource ref="GestionClientes/Score/Resources/Transformations/TRScoreEstructuraCrm"/>
+                                        <con:param name="updateScoreRequest">
+                                            <con:path>$body/*</con:path>
+                                        </con:param>
+                                    </con:xqueryTransform>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:javaCallout varName="numeroHash">
+                                <con3:comment>Generar un identificador único para la calificación enviada al CRM</con3:comment>
+                                <con3:id>_ActionId-1931505025210085916-567c8270.14a590e88a8.-7fb4</con3:id>
+                                <con2:location/>
+                                <con2:archive ref="Common/JAR/HashNumberJAR"/>
+                                <con2:className>servicios.montepiedad.com.mx.hashNumber</con2:className>
+                                <con2:method>public static java.lang.String generarHash(java.lang.String)</con2:method>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:concat($body/nmp:updateScoreRequest/nmp:idCliente, fn:current-dateTime())</con:xqueryText>
+                                </con2:expr>
+                                <con2:return-param-as-ref>false</con2:return-param-as-ref>
+                            </con2:javaCallout>
+                            <con2:replace contents-only="true" varName="body">
+                                <con3:comment>Asignar a la variable body la petición para el envío de una calificación al CRM</con3:comment>
+                                <con3:id>_ActionId-3338159823323623829--328c17c2.144b2a713db.-7cbb</con3:id>
+                                <con2:location>
+                                    <con3:xpathText>.</con3:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con3:xqueryText>$updateScoreEventCRMReq</con3:xqueryText>
+                                </con2:expr>
+                            </con2:replace>
+                            <con2:replace varName="body" contents-only="true">
+                                <con3:comment>Agregar el identificador a la petición para el envío de la calificación</con3:comment>
+                                <con3:id>_ActionId-1931505025210085916-567c8270.14a590e88a8.-7f94</con3:id>
+                                <con2:location>
+                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./nmp1:Scoring/nmp1:score/can:Hash</con:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$numeroHash</con:xqueryText>
+                                </con2:expr>
+                            </con2:replace>
+                        </con5:outboundTransform>
+                        <con5:responseTransform>
+                            <con6:log>
+                                <con3:comment>Registrar en el el log para monitoreo la respuesta obtenida después de haber enviado una calificación al CRM</con3:comment>
+                                <con3:id>_ActionId-a1e041d.N6fa7e44f.2.15431d859e1.N8000</con3:id>
+                                <con6:logLevel>error</con6:logLevel>
+                                <con6:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                                </con6:expr>
+                                <con6:message>ScoreToCRM Response:</con6:message>
+                            </con6:log>
+                        </con5:responseTransform>
+                    </con5:route>
+                </con1:actions>
+            </con1:route-node>
+        </con1:flow>
+    </con1:router>
+    <aler:alertRules xsi:nil="true" xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert"/>
+</con:pipelineEntry>

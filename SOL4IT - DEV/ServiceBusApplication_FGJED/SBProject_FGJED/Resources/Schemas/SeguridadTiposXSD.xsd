@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:seg="http://mx.gob.edomex.fgjem.entidades.seguridad"
+            xmlns:org="http://mx.gob.edomex.fgjem.entidades.organizacion"
+            targetNamespace="http://mx.gob.edomex.fgjem.entidades.seguridad" elementFormDefault="qualified">
+  <xsd:import schemaLocation="OrganizacionTiposXSD.xsd"
+              namespace="http://mx.gob.edomex.fgjem.entidades.organizacion"/>
+  <xsd:complexType name="CategoriaMenuType">
+    <xsd:sequence>
+      <xsd:element name="nombre" type="xsd:string"/>
+      <xsd:element name="tipo" type="xsd:string"/>
+      <xsd:element name="funcionabilidad" type="seg:Funcionabilidad"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="Funcionabilidad">
+    <xsd:sequence>
+      <xsd:element name="nombre" type="xsd:string"/>
+      <xsd:element name="tipo" type="xsd:string"/>
+      <xsd:element name="accionCasoUso" type="seg:AccionesCasoUsoType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="AccionesCasoUsoType">
+    <xsd:sequence>
+      <xsd:element name="nombre" type="xsd:string"/>
+      <xsd:element name="tipo" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="PermisoAccionesCasoUsoType">
+    <xsd:sequence>
+      <xsd:element name="nombre" type="xsd:string"/>
+      <xsd:element name="tipo" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="PermisoFuncionalidadType">
+    <xsd:sequence>
+      <xsd:element name="nombre" type="xsd:string"/>
+      <xsd:element name="tipo" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="PerfilType">
+    <xsd:sequence>
+      <xsd:element name="nombre" type="xsd:string"/>
+      <xsd:element name="tipo" type="xsd:string"/>
+      <xsd:element name="permisoAccionesCasoUso" type="seg:PermisoAccionesCasoUsoType"/>
+      <xsd:element name="permisoFuncionalidad" type="seg:PermisoFuncionalidadType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="RolPerfilType">
+    <xsd:sequence>
+      <xsd:element name="listaPerfiles" minOccurs="1" type="seg:PerfilType" maxOccurs="unbounded"/>
+      <xsd:element name="listaRoles" type="org:RolType" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>

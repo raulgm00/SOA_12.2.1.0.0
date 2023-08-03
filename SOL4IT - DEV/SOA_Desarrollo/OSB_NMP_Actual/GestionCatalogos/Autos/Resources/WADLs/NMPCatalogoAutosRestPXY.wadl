@@ -1,0 +1,104 @@
+<application xmlns:soa="http://www.oracle.com/soa/rest" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:NMPca="http://servicios.montepiedad.com.mx/NMP/Schema/CatalogoAutos" xmlns="http://wadl.dev.java.net/2009/02">
+    <doc title="NMPCatalogoAutosRestPXY">RestService</doc>
+    <grammars>
+        <xsd:schema>
+            <xsd:import namespace="http://servicios.montepiedad.com.mx/NMP/Schema/CatalogoAutos" schemaLocation="../Schemas/NMPCatalogoAutosXSD.xsd"/>
+        </xsd:schema>
+        <xsd:schema>
+            <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+        </xsd:schema>
+        <xsd:schema>
+            <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+        </xsd:schema>
+    </grammars>
+    <resources>
+        <resource path="/SubMarca">
+            <method name="GET" soa:wsdlOperation="obtenerSubMarcas">
+                <request soa:paramElement="pns:obtenerSubMarcaRequest" xmlns:pns="http://servicios.montepiedad.com.mx/NMP/Schema/CatalogoAutos">
+                    <param name="idMarca" style="query" soa:expression="$msg.obtenerSubMarcasRequest/NMPca:idMarca" type="xsd:long" default=""/>
+                </request>
+                <response status="200">
+                    <!--representation mediaType="application/xml" element="cns:obtenerSubMarcasResponse" xmlns:cns="http://servicios.montepiedad.com.mx/NMP/Schema/CatalogoAutos"/-->
+                    <representation mediaType="application/json" element="cns:obtenerSubMarcasResponse" xmlns:cns="http://servicios.montepiedad.com.mx/NMP/Schema/CatalogoAutos"/>
+                </response>
+                <response status="500" soa:wsdlFaultName="Fault">
+                    <representation mediaType="application/json" element="cns:messageError" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                </response>
+            </method>
+        </resource>
+        <resource path="/Marca">
+            <method name="GET" soa:wsdlOperation="obtenerMarcas">
+                <request soa:paramElement="pns:obtenerMarcasRequest" xmlns:pns="http://servicios.montepiedad.com.mx/NMP/Schema/CatalogoAutos">
+                    <!--param name="obtenerMarcasRequest" style="query" soa:expression="$msg.obtenerMarcasRequest" type="xsd:anyType"/-->
+                </request>
+                <response status="200">
+                    <representation mediaType="application/json" element="cns:obtenerMarcasResponse" xmlns:cns="http://servicios.montepiedad.com.mx/NMP/Schema/CatalogoAutos"/>
+                </response>
+                <response status="500" soa:wsdlFaultName="Fault">
+                    <representation mediaType="application/json" element="cns:messageError" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                </response>
+            </method>
+        </resource>
+        <resource path="/Modelo">
+            <method name="GET" soa:wsdlOperation="obtenerModelos">
+                <request soa:paramElement="pns:obtenerModelosRequest" xmlns:pns="http://servicios.montepiedad.com.mx/NMP/Schema/CatalogoAutos">
+                    <param name="idMarca" style="query" soa:expression="$msg.obtenerModelosRequest/NMPca:idMarca" type="xsd:long" default=""/>
+                    <param name="idSubMarca" style="query" soa:expression="$msg.obtenerModelosRequest/NMPca:idSubMarca" type="xsd:long" default=""/>
+                </request>
+                <response status="200">
+                    <representation mediaType="application/json" element="cns:obtenerModelosResponse" xmlns:cns="http://servicios.montepiedad.com.mx/NMP/Schema/CatalogoAutos"/>
+                </response>
+                <response status="500" soa:wsdlFaultName="Fault">
+                    <representation mediaType="application/json" element="cns:messageError" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                </response>
+            </method>
+        </resource>
+        <resource path="/Version">
+            <method name="GET" soa:wsdlOperation="obtenerVersiones">
+                <request soa:paramElement="pns:obtenerVersionesRequest" xmlns:pns="http://servicios.montepiedad.com.mx/NMP/Schema/CatalogoAutos">
+                    <param name="idMarca" style="query" soa:expression="$msg.obtenerVersionesRequest/NMPca:idMarca" type="xsd:long" default=""/>
+                    <param name="idSubMarca" style="query" soa:expression="$msg.obtenerVersionesRequest/NMPca:idSubMarca" type="xsd:long" default=""/>
+                    <param name="idModelo" style="query" soa:expression="$msg.obtenerVersionesRequest/NMPca:idModelo" type="xsd:long" default=""/>
+                </request>
+                <response status="200">
+                    <representation mediaType="application/json" element="cns:obtenerVersionesResponse" xmlns:cns="http://servicios.montepiedad.com.mx/NMP/Schema/CatalogoAutos"/>
+                </response>
+                <response status="500" soa:wsdlFaultName="Fault">
+                    <representation mediaType="application/json" element="cns:messageError" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                </response>
+            </method>
+        </resource>
+        <resource path="/Complemento">
+            <method name="GET" soa:wsdlOperation="obtenerComplementos">
+                <request soa:paramElement="pns:obtenerComplementosRequest" xmlns:pns="http://servicios.montepiedad.com.mx/NMP/Schema/CatalogoAutos">
+                    <param name="idMarca" style="query" soa:expression="$msg.obtenerComplementosRequest/NMPca:idMarca" type="xsd:long" default=""/>
+                    <param name="idSubMarca" style="query" soa:expression="$msg.obtenerComplementosRequest/NMPca:idSubMarca" type="xsd:long" default=""/>
+                    <param name="idModelo" style="query" soa:expression="$msg.obtenerComplementosRequest/NMPca:idModelo" type="xsd:long" default=""/>
+                    <param name="idVersion" style="query" soa:expression="$msg.obtenerComplementosRequest/NMPca:idVersion" type="xsd:long" default=""/>
+                </request>
+                <response status="200">
+                    <representation mediaType="application/json" element="cns:obtenerComplementosResponse" xmlns:cns="http://servicios.montepiedad.com.mx/NMP/Schema/CatalogoAutos"/>
+                </response>
+                <response status="500" soa:wsdlFaultName="Fault">
+                    <representation mediaType="application/json" element="cns:messageError" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                </response>
+            </method>
+        </resource>
+        <resource path="/Kilometraje">
+            <method name="GET" soa:wsdlOperation="obtenerKilometrajes">
+                <request soa:paramElement="pns:ObtenerKilometrajeRequest" xmlns:pns="http://servicios.montepiedad.com.mx/NMP/Schema/CatalogoAutos">
+                    <param name="idMarca" style="query" soa:expression="$msg.ObtenerKilometrajeRequest/NMPca:idMarca" type="xsd:long" default=""/>
+                    <param name="idSubMarca" style="query" soa:expression="$msg.ObtenerKilometrajeRequest/NMPca:idSubMarca" type="xsd:long" default=""/>
+                    <param name="idModelo" style="query" soa:expression="$msg.ObtenerKilometrajeRequest/NMPca:idModelo" type="xsd:long" default=""/>
+                    <param name="idVersion" style="query" soa:expression="$msg.ObtenerKilometrajeRequest/NMPca:idVersion" type="xsd:long" default=""/>
+                </request>
+                <response status="200">
+                    <representation mediaType="application/json" element="cns:ObtenerKilometrajeResponse" xmlns:cns="http://servicios.montepiedad.com.mx/NMP/Schema/CatalogoAutos"/>
+                </response>
+                <response status="500" soa:wsdlFaultName="Fault">
+                    <representation mediaType="application/json" element="cns:messageError" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                </response>
+            </method>
+        </resource>
+    </resources>
+</application>

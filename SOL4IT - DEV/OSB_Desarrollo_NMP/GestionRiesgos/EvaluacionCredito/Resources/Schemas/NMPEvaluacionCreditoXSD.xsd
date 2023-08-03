@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:EvalCred="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito"
+            targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito"
+            elementFormDefault="qualified">
+  <xsd:complexType name="cuentaCreditoType">
+    <xsd:sequence>
+      <xsd:element name="FechaActualizo" type="xsd:date" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="usuarioReporto" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="numeroCuenta" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="tipoResponsabilidadCuenta" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="tipoCuenta" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="tipoContrato" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="claveMoneda" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="montoAvaluao" type="xsd:long" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="numeroPagos" type="xsd:int" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="frecuenciaPagos" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="montoPagar" type="xsd:long" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="fechaAperturaCuenta" type="xsd:date" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="fechaUltimoPago" type="xsd:date" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="fechaCierreCuenta" type="xsd:date" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="fechaReportoCuenta" type="xsd:date" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="saldoActual" type="xsd:long" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="limiteCredito" type="xsd:long" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="saldoVencido" type="xsd:long" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="pagosVencidos" type="xsd:int" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="puntualidadPagoActual" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="totalPagosReportados" type="xsd:int" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="totalPagosCalificadosMOP2" type="xsd:int" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="totalPagosCalificadosMOP3" type="xsd:int" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="totalPagosCalificadosMOP4" type="xsd:int" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="totalPagosCalificadosMOP5" type="xsd:int" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="montoSaldoPuntualidadHistoricaMasAlta" type="xsd:long" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="fechaPuntualidadPagoHistoricaMasAlto" type="xsd:date" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="puntualidadPagoHistoricaMasAlto" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="montoUltimoPago" type="xsd:long" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="calificacionBuroType">
+    <xsd:sequence>
+      <xsd:element name="valorCalificacion" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="codigoError" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="clienteNmpType">
+    <xsd:sequence>
+      <xsd:element name="idCliente" type="xsd:long" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="fechaEvaluacion" type="xsd:date" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="probabilidadIncumplimiento" type="xsd:decimal" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="siva" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="cuentasCreditosType">
+    <xsd:sequence>
+      <xsd:element name="cuenta" type="EvalCred:cuentaCreditoType" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="consultaBuroType">
+    <xsd:sequence>
+      <xsd:element name="totalConsultasEfectuadas" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="calificacion" type="EvalCred:calificacionBuroType" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="cuentas" type="EvalCred:cuentasCreditosType" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="valorarRiesgoRequestType">
+    <xsd:sequence>
+      <xsd:element name="cliente" type="EvalCred:clienteNmpType" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="buroCredito" type="EvalCred:consultaBuroType" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="valorarRiesgoResponseType">
+    <xsd:sequence>
+      <xsd:element name="resultado" maxOccurs="1" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="valorarRiesgoRequest" type="EvalCred:valorarRiesgoRequestType"/>
+  <xsd:element name="valorarRiesgoResponse" type="EvalCred:valorarRiesgoResponseType"/>
+</xsd:schema>

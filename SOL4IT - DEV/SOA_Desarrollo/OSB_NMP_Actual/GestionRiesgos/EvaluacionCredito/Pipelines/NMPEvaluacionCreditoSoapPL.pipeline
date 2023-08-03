@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="GestionRiesgos/EvaluacionCredito/Resources/WSDLs/NMPEvaluacionCreditoSvcWSDL"/>
+            <con:binding>
+                <con:name>EvaluacionCreditoBinding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Services/NMPCredito</con:namespace>
+            </con:binding>
+        </con:binding>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:pipeline type="error" name="error-N3f57c7ff.8270b5d.0.15acfaa838d.N7d70">
+            <con:stage id="_StageId-N3f57c7ff.8270b5d.0.15acfaa838d.N7d6f" name="StageErrorHandlerPeticion">
+                <con:context/>
+                <con:actions>
+                    <con2:replace contents-only="true" varName="body">
+                        <con1:id>_ActionId-N3f57c7ff.8270b5d.0.15acfaa838d.N7bdb</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionRiesgos/EvaluacionCredito/Resources/Transformations/TREvaluacionCreditoFault"/>
+                                <con1:input>$fault</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57c7ff.8270b5d.0.15acfaa838d.N7ba7</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.8270b5d.0.15acfaa838d.N7ad7">
+            <con:stage id="_StageId-N3f57c7ff.8270b5d.0.15acfaa838d.N7ad6" name="StageErrorHandlerPeticion">
+                <con:context/>
+                <con:actions>
+                    <con2:replace contents-only="true" varName="body">
+                        <con1:id>_ActionId-N3f57c7ff.8270b5d.0.15acfaa838d.N7ad5</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionRiesgos/EvaluacionCredito/Resources/Transformations/TREvaluacionCreditoFault"/>
+                                <con1:input>$fault</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57c7ff.8270b5d.0.15acfaa838d.N7ad4</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.8270b5d.0.15acfaa838d.N7f6b">
+            <con:stage id="_StageId-N3f57c7ff.8270b5d.0.15acfaa838d.N7f69" name="StageRespuestaServicio">
+                <con:context/>
+                <con:actions>
+                    <con1:reply>
+                        <con1:id>_ActionId-N3f57c7ff.8270b5d.0.15acfaa838d.N7d3c</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.8270b5d.0.15acfaa838d.N7f6c">
+            <con:stage id="_StageId-N3f57c7ff.8270b5d.0.15acfaa838d.N7f6a" name="StageValidarCabecera" errorHandler="error-N3f57c7ff.8270b5d.0.15acfaa838d.N7da3">
+                <con:context>
+                    <con1:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito"/>
+                </con:context>
+                <con:actions>
+                    <con2:validate>
+                        <con1:id>_ActionId-N3f57c7ff.8270b5d.0.15acfaa838d.N7e40</con1:id>
+                        <con2:schema ref="Common/XSD/NMPStandardHeader"/>
+                        <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con2:schemaElement>
+                        <con2:varName>header</con2:varName>
+                        <con2:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./*:headerMessage</con:xpathText>
+                        </con2:location>
+                        <con2:resultVarName/>
+                    </con2:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57c7ff.8270b5d.0.15acfaa838d.N7e73" name="StageValidacionPeticion" errorHandler="error-N3f57c7ff.8270b5d.0.15acfaa838d.N7d70">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito"/>
+                </con:context>
+                <con:actions>
+                    <con2:validate>
+                        <con1:id>_ActionId-N3f57c7ff.8270b5d.0.15acfaa838d.N7dd5</con1:id>
+                        <con2:schema ref="GestionRiesgos/EvaluacionCredito/Resources/Schemas/NMPEvaluacionCreditoXSD"/>
+                        <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito">nmp:valorRiesgoRequest</con2:schemaElement>
+                        <con2:varName>body</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./nmp:valorRiesgoRequest</con1:xpathText>
+                        </con2:location>
+                    </con2:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57c7ff.8270b5d.0.15acfaa838d.N7b74" name="StageInvocarBRM" errorHandler="error-N3f57c7ff.8270b5d.0.15acfaa838d.N7ad7">
+                <con:context/>
+                <con:actions>
+                    <con2:replace contents-only="true" varName="body">
+                        <con1:id>_ActionId-N3f57c7ff.8270b5d.0.15acfaa838d.N7aa1</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xqueryText>fn-bea:inlinedXML(fn:concat('&lt;valorRiesgoResponse xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito">',
+                              '&lt;nmp:resultado>', 'Aprobado' ,'&lt;/nmp:resultado>',
+                            '&lt;/valorRiesgoResponse>'))</con1:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.8270b5d.0.15acfaa838d.N7da3">
+            <con:stage id="_StageId-N3f57c7ff.8270b5d.0.15acfaa838d.N7da2" name="StageErrorHandlerCabecera">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito"/>
+                </con:context>
+                <con:actions>
+                    <con2:replace contents-only="true" varName="body">
+                        <con1:id>_ActionId-N3f57c7ff.8270b5d.0.15acfaa838d.N7c43</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionRiesgos/EvaluacionCredito/Resources/Transformations/TREvaluacionCreditoFault"/>
+                                <con1:input>$fault</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57c7ff.8270b5d.0.15acfaa838d.N7c10</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:branch-node type="operation" id="_FlowId-N3f57c7ff.8270b5d.0.15acfaa838d.N7fcf" name="BranchNodeOperacionEvaluacionCredito">
+                <con:context/>
+                <con:branch-table>
+                    <con:branch name="valorarRiesgo">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="Pipeline Pair Node1">
+                                <con:request>request-N3f57c7ff.8270b5d.0.15acfaa838d.N7f6c</con:request>
+                                <con:response>response-N3f57c7ff.8270b5d.0.15acfaa838d.N7f6b</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

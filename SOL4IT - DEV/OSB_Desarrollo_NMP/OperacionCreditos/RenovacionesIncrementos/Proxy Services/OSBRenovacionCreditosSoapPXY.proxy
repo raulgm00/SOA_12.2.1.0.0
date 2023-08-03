@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ser:proxyServiceEntry xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:con="http://www.bea.com/wli/sb/services/security/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oper="http://xmlns.oracle.com/servicebus/proxy/operations" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env">
+    <ser:coreEntry isAutoPublish="false">
+        <ser:description>Servicio de orquestación para el procesamiento de evaluación de cuentas prospecto a una renovación o incremento en su línea de crédito</ser:description>
+        <ser:binding type="SOAP" xsi:type="con:SoapBindingType" isSoap12="false" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config">
+            <con:wsdl ref="OperacionCreditos/RenovacionesIncrementos/Resources/WSDLs/OSBRenovacionCreditosWSDL"/>
+            <con:port>
+                <con:name>evaluacionCredito_pttPort</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Services/Osb/EvaluacionCredito</con:namespace>
+            </con:port>
+            <con:selector type="SOAP body"/>
+        </ser:binding>
+        <oper:operations enabled="true">
+            <oper:monitoring enabled="true" aggregationInterval="10"/>
+        </oper:operations>
+        <ser:ws-policy>
+            <ser:binding-mode>no-policies</ser:binding-mode>
+        </ser:ws-policy>
+        <ser:invoke ref="OperacionCreditos/RenovacionesIncrementos/Pipelines/OsbEvaluacionCreditosPL" xsi:type="con:PipelineRef" xmlns:con="http://www.bea.com/wli/sb/pipeline/config"/>
+        <ser:xqConfiguration>
+            <ser:snippetVersion>1.0</ser:snippetVersion>
+        </ser:xqConfiguration>
+    </ser:coreEntry>
+    <ser:endpointConfig>
+        <tran:provider-id>http</tran:provider-id>
+        <tran:inbound>true</tran:inbound>
+        <tran:URI>
+            <env:value>/OsbRenovacionTopUp/OsbEvaluaionCreditosPXY</env:value>
+        </tran:URI>
+        <tran:inbound-properties/>
+        <tran:provider-specific xsi:type="http:HttpEndPointConfiguration" xmlns:http="http://www.bea.com/wli/sb/transports/http">
+            <http:inbound-properties/>
+        </tran:provider-specific>
+    </ser:endpointConfig>
+    <aler:alertRules xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert">
+        <aler:alertRule enabled="true" name="timeout_warning">
+            <aler:description>Alert for timeout warning. When the service timeout is more than 5 seconds.</aler:description>
+            <aler:frequency>once-until-conditions-clear</aler:frequency>
+            <aler:severity>warning</aler:severity>
+            <aler:stopProcessing>false</aler:stopProcessing>
+            <aler:condition aggregation-interval="10">
+                <con1:logicalExpr logical-operator="and" xmlns:con1="http://xmlns.oracle.com/servicebus/monitoring/alert/condition">
+                    <con1:monCondExpr>
+                        <con1:function>average</con1:function>
+                        <con1:lhs>Transport.response-time</con1:lhs>
+                        <con1:operator>></con1:operator>
+                        <con1:rhs>10000</con1:rhs>
+                    </con1:monCondExpr>
+                    <con1:monCondExpr>
+                        <con1:function>average</con1:function>
+                        <con1:lhs>Transport.response-time</con1:lhs>
+                        <con1:operator>&lt;</con1:operator>
+                        <con1:rhs>15000</con1:rhs>
+                    </con1:monCondExpr>
+                </con1:logicalExpr>
+            </aler:condition>
+            <aler:alertDestination ref="OperacionCreditos/RenovacionesIncrementos/Resources/Alerts/OsbRenovacionAlert"/>
+            <aler:summary>Alert for timeout warning</aler:summary>
+        </aler:alertRule>
+        <aler:alertRule enabled="true" name="timeout_critical">
+            <aler:description>Alert for timeout critical. When the service timeout is more than 15 seconds.</aler:description>
+            <aler:frequency>once-until-conditions-clear</aler:frequency>
+            <aler:severity>critical</aler:severity>
+            <aler:stopProcessing>false</aler:stopProcessing>
+            <aler:condition aggregation-interval="10">
+                <con1:logicalExpr logical-operator="or" xmlns:con1="http://xmlns.oracle.com/servicebus/monitoring/alert/condition">
+                    <con1:monCondExpr>
+                        <con1:function>average</con1:function>
+                        <con1:lhs>Transport.response-time</con1:lhs>
+                        <con1:operator>=</con1:operator>
+                        <con1:rhs>15000</con1:rhs>
+                    </con1:monCondExpr>
+                    <con1:logicalExpr logical-operator="and">
+                        <con1:monCondExpr>
+                            <con1:function>average</con1:function>
+                            <con1:lhs>Transport.response-time</con1:lhs>
+                            <con1:operator>></con1:operator>
+                            <con1:rhs>15000</con1:rhs>
+                        </con1:monCondExpr>
+                        <con1:monCondExpr>
+                            <con1:function>average</con1:function>
+                            <con1:lhs>Transport.response-time</con1:lhs>
+                            <con1:operator>&lt;</con1:operator>
+                            <con1:rhs>20000</con1:rhs>
+                        </con1:monCondExpr>
+                    </con1:logicalExpr>
+                </con1:logicalExpr>
+            </aler:condition>
+            <aler:alertDestination ref="OperacionCreditos/RenovacionesIncrementos/Resources/Alerts/OsbRenovacionAlert"/>
+            <aler:summary>Alert for timeout critical.</aler:summary>
+        </aler:alertRule>
+        <aler:alertRule enabled="true" name="timeout_fatal">
+            <aler:description>Alert for timeout fatal. When the service timeout is more than 20 seconds.</aler:description>
+            <aler:frequency>once-until-conditions-clear</aler:frequency>
+            <aler:severity>fatal</aler:severity>
+            <aler:stopProcessing>false</aler:stopProcessing>
+            <aler:condition aggregation-interval="10">
+                <con1:logicalExpr logical-operator="or" xmlns:con1="http://xmlns.oracle.com/servicebus/monitoring/alert/condition">
+                    <con1:monCondExpr>
+                        <con1:function>average</con1:function>
+                        <con1:lhs>Transport.response-time</con1:lhs>
+                        <con1:operator>></con1:operator>
+                        <con1:rhs>20000</con1:rhs>
+                    </con1:monCondExpr>
+                    <con1:monCondExpr>
+                        <con1:function>average</con1:function>
+                        <con1:lhs>Transport.response-time</con1:lhs>
+                        <con1:operator>=</con1:operator>
+                        <con1:rhs>20000</con1:rhs>
+                    </con1:monCondExpr>
+                </con1:logicalExpr>
+            </aler:condition>
+            <aler:alertDestination ref="OperacionCreditos/RenovacionesIncrementos/Resources/Alerts/OsbRenovacionAlert"/>
+            <aler:summary>Alert for timeout fatal</aler:summary>
+        </aler:alertRule>
+    </aler:alertRules>
+</ser:proxyServiceEntry>

@@ -1,0 +1,1818 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con4="http://www.bea.com/wli/sb/stages/alert/config">
+    <con:coreEntry>
+        <con:description>recepcionGestion: Envia las campañas de cobranza que seran gestionadas a formiik (Movil) y a CRM
+notificaResultado: En esta operación se recibe el resultado de la gestion movil, subiendo las fotos tomadas desde el movil Open Text y notificando el resultado a MC y CRM.
+actualizarGestion: Actualiza información financiera en el Movil (formiik)
+revocarGestion: se revoca la gestión del movil cuando el cliente ya pago, esto con la finalidad de que el gestor no visite al cliente para el cobro.</con:description>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="OperacionCreditos/Cobranza/Resources/WSDLs/NMPGestionCobranzaWSDL"/>
+            <con:binding>
+                <con:name>GestionCobranzaSOAP11Binding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Service/GestionCobranza</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:tracingEnabled>true</oper:tracingEnabled>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router errorHandler="_onErrorHandler-a1e030f.54426365.6.152add2fc46.N8000">
+        <con:pipeline type="response" name="response-N3f57c7ff.6b0b1472.0.15647ebbe48.N7e7d">
+            <con:stage id="_StageId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7c08" name="StageResponse">
+                <con:comment/>
+                <con:context>
+                    <con2:userNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza"/>
+                    <con2:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con1:rename varName="header">
+                        <con2:id>_ActionId-N3f57c7ff.N598cb1f1.0.1568fccc062.N7fc1</con2:id>
+                        <con1:location>
+                            <con2:xpathText>./nmph:headerMessage</con2:xpathText>
+                        </con1:location>
+                        <con1:localname>headerMessageResponse</con1:localname>
+                    </con1:rename>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-N3f57c7ff.N598cb1f1.0.1568fccc062.N7f82</con2:id>
+                        <con1:case id="_BranchId-N3f57c7ff.N598cb1f1.0.1568fccc062.N7f81">
+                            <con1:condition>
+                                <con2:xqueryText>$respuesta/text()=''</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:Error>
+                                    <con2:id>_ActionId-N3f57c7ff.N598cb1f1.0.1568fccc062.N7f80</con2:id>
+                                    <con1:errCode>OSB-001</con1:errCode>
+                                    <con1:message>Sin acción a realizar</con1:message>
+                                </con1:Error>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:default>
+                            <con1:assign varName="body">
+                                <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7b9d</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText>$respuesta</con2:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:default>
+                    </con1:ifThenElse>
+                    <con3:report>
+                        <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7c02</con2:id>
+                        <con3:expr>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>RevocarCbz Response idContrato</con3:key>
+                            <con3:varName>cliente</con3:varName>
+                            <con3:value>
+                                <con2:xpathText>./ges:idContrato</con2:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                        <con3:labels>
+                            <con3:key>id</con3:key>
+                            <con3:varName>idExternal</con3:varName>
+                            <con3:value>
+                                <con2:xpathText>.</con2:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.482bf732.0.152652196c2.N7f64">
+            <con:stage id="_StageId-N3f57c7ff.N4f3941.0.152f048656a.N7edc" name="StageValidacion">
+                <con:context>
+                    <con2:userNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza"/>
+                    <con2:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="cliente">
+                        <con2:id>_ActionId-N3f57c7ff.N4f3941.0.152f048656a.N7ed8</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$body/ges:recepcionGestionRequest/ges:Cobranza/ges:cliente</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="idExternal">
+                        <con2:id>_ActionId-N3f57c7ff.N17f5e2b4.0.15353abf496.N7ee6</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>fn-bea:inlinedXML(fn:concat('&lt;id>',$body/ges:recepcionGestionRequest/@idExternal,'&lt;/id>'))</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con3:report>
+                        <con2:id>_ActionId-N3f57c7ff.N4f3941.0.152f048656a.N7edb</con2:id>
+                        <con3:expr>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>GesCbz Request ID</con3:key>
+                            <con3:varName>idExternal</con3:varName>
+                            <con3:value>
+                                <con2:xpathText>.</con2:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                        <con3:labels>
+                            <con3:key>idContrato</con3:key>
+                            <con3:varName>cliente</con3:varName>
+                            <con3:value>
+                                <con2:xpathText>./ges:idContrato</con2:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                    <con1:validate>
+                        <con2:id>_ActionId-N3f57c7ff.N4f3941.0.152f048656a.N7ed5</con2:id>
+                        <con1:schema ref="OperacionCreditos/Cobranza/Resources/Schemas/NMPGestionCobranzaXSD"/>
+                        <con1:schemaElement xmlns:ges="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza">ges:recepcionGestionRequest</con1:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con2:xpathText>./ges:recepcionGestionRequest</con2:xpathText>
+                        </con1:location>
+                    </con1:validate>
+                    <con1:validate>
+                        <con2:id>_ActionId-N3f57c7ff.N7c3c55e8.0.1531eaa0942.N7f4b</con2:id>
+                        <con1:schema ref="Common/XSD/NMPStandardHeader"/>
+                        <con1:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con1:schemaElement>
+                        <con1:varName>header</con1:varName>
+                        <con1:location>
+                            <con2:xpathText>./nmph:headerMessage</con2:xpathText>
+                        </con1:location>
+                    </con1:validate>
+                    <con1:assign varName="respuesta">
+                        <con2:id>_ActionId-N3f57c7ff.N58366fa6.0.153380146e7.N7ffe</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>'S/A'</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="operacion">
+                        <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7ee5</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$inbound/ctx:service/ctx:operation</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="destinoNMP">
+                        <con2:id>_ActionId-N3f57c7ff.N33df6d1d.0.15830686b40.N7ffe</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>dvm:lookup("OperacionCreditos/Cobranza/Resources/DVMs/OSBEnrutaDestinoGestionCbz", "idDestino",$header/nmph:headerMessage/nmph:idDestino, "destinoNMP", "null")</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57c7ff.482bf732.0.152652196c2.N7f62" name="StageRecepcionOrdenes">
+                <con:comment/>
+                <con:context>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con2:userNsDecl prefix="temp" namespace="http://tempuri.org/"/>
+                    <con2:userNsDecl prefix="crmDC" namespace="http://schemas.datacontract.org/2004/07/Nmp.Crm.Servicios.DataContracts"/>
+                    <con2:varNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza"/>
+                </con:context>
+                <con:actions>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-N3f57c7ff.N4f3941.0.152f048656a.N7dba</con2:id>
+                        <con1:case id="_BranchId-N3f57c7ff.N4f3941.0.152f048656a.N7db9">
+                            <con1:condition>
+                                <con2:xqueryText>$destinoNMP='1' or $destinoNMP='3'</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:wsCallout>
+                                    <con2:id>_ActionId-a1e030f.N29ad687d.23.1527ed6cd3a.N8000</con2:id>
+                                    <con1:service ref="FuerzaDeVentas/GestionOrdenesTrabajo/Proxy Services/CRMServicioOrdenesPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                    <con1:operation>RecepcionOrdenes</con1:operation>
+                                    <con1:request>
+                                        <con1:body wrapped="false">RecepcionOrdenesRequest</con1:body>
+                                        <con1:header>header</con1:header>
+                                    </con1:request>
+                                    <con1:response>
+                                        <con1:body wrapped="false">RecepcionOrdenesResponse</con1:body>
+                                    </con1:response>
+                                    <con1:requestTransform>
+                                        <con1:assign varName="sistema">
+                                            <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7ef9</con2:id>
+                                            <con1:expr>
+                                                <con2:xqueryText>'CRM - RecepcionOrdenes: '</con2:xqueryText>
+                                            </con1:expr>
+                                        </con1:assign>
+                                        <con1:assign varName="RecepcionOrdenesRequest">
+                                            <con2:id>_ActionId-a1e030f.N29ad687d.24.1527ee6f0cd.N8000</con2:id>
+                                            <con1:expr>
+                                                <con2:xsltTransform>
+                                                    <con2:resource ref="OperacionCreditos/Cobranza/Resources/Transformations/TrRecepcionGestionCbzToCrmRecepcionOrdenReq"/>
+                                                    <con2:input>$body/ges:recepcionGestionRequest</con2:input>
+                                                </con2:xsltTransform>
+                                            </con1:expr>
+                                        </con1:assign>
+                                        <con3:report>
+                                            <con2:id>_ActionId-N3f57c7ff.N4f3941.0.152f048656a.N7e9d</con2:id>
+                                            <con3:expr>
+                                                <con2:xqueryText>$RecepcionOrdenesRequest</con2:xqueryText>
+                                            </con3:expr>
+                                            <con3:labels>
+                                                <con3:key>CRM-RecepOrden Request idContrato</con3:key>
+                                                <con3:varName>cliente</con3:varName>
+                                                <con3:value>
+                                                    <con2:xpathText>./ges:idContrato</con2:xpathText>
+                                                </con3:value>
+                                            </con3:labels>
+                                            <con3:labels>
+                                                <con3:key>id</con3:key>
+                                                <con3:varName>idExternal</con3:varName>
+                                                <con3:value>
+                                                    <con2:xpathText>.</con2:xpathText>
+                                                </con3:value>
+                                            </con3:labels>
+                                        </con3:report>
+                                    </con1:requestTransform>
+                                    <con1:responseTransform>
+                                        <con3:report>
+                                            <con2:id>_ActionId-N3f57c7ff.N4f3941.0.152f048656a.N7ea0</con2:id>
+                                            <con3:expr>
+                                                <con2:xqueryText>$RecepcionOrdenesResponse</con2:xqueryText>
+                                            </con3:expr>
+                                            <con3:labels>
+                                                <con3:key>CRM-RecepOrden Response idContrato</con3:key>
+                                                <con3:varName>cliente</con3:varName>
+                                                <con3:value>
+                                                    <con2:xpathText>./ges:idContrato</con2:xpathText>
+                                                </con3:value>
+                                            </con3:labels>
+                                            <con3:labels>
+                                                <con3:key>id</con3:key>
+                                                <con3:varName>idExternal</con3:varName>
+                                                <con3:value>
+                                                    <con2:xpathText>.</con2:xpathText>
+                                                </con3:value>
+                                            </con3:labels>
+                                        </con3:report>
+                                        <con1:assign varName="respuesta">
+                                            <con2:id>_ActionId-N3f57c7ff.N58366fa6.0.153380146e7.N7ff5</con2:id>
+                                            <con1:expr>
+                                                <con2:xqueryText>fn:concat('CRM: ',$RecepcionOrdenesResponse/temp:RecepcionOrdenesResult/crmDC:Mensaje)</con2:xqueryText>
+                                            </con1:expr>
+                                        </con1:assign>
+                                    </con1:responseTransform>
+                                </con1:wsCallout>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+            <con:stage name="StageAddWorkOrderFormik">
+                <con:comment/>
+                <con:context>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con2:userNsDecl prefix="ges1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilTipos"/>
+                    <con2:userNsDecl prefix="tem" namespace="http://tempuri.org/"/>
+                    <con2:varNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza"/>
+                </con:context>
+                <con:actions>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-N3f57c7ff.N4f3941.0.152f048656a.N7d49</con2:id>
+                        <con1:case id="_BranchId-N3f57c7ff.N4f3941.0.152f048656a.N7d48">
+                            <con1:condition>
+                                <con2:xqueryText>$destinoNMP='2' or $destinoNMP='3'</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:wsCallout>
+                                    <con2:id>_ActionId-a1e030f.N29ad687d.32.15280e40fba.N7fff</con2:id>
+                                    <con1:service ref="FuerzaDeVentas/Citas/Business Services/FORMIIKBackEndBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                    <con1:operation>AddWorkOrdersXMLId</con1:operation>
+                                    <con1:request>
+                                        <con1:body wrapped="false">AddWorkOdersXMLIdRequest</con1:body>
+                                        <con1:header/>
+                                    </con1:request>
+                                    <con1:response>
+                                        <con1:body wrapped="false">AddWorkOdersXMLIdResponse</con1:body>
+                                        <con1:header/>
+                                    </con1:response>
+                                    <con1:requestTransform>
+                                        <con1:assign varName="sistema">
+                                            <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7ef6</con2:id>
+                                            <con1:expr>
+                                                <con2:xqueryText>'Formiik - AddWorkOrderXMLId: '</con2:xqueryText>
+                                            </con1:expr>
+                                        </con1:assign>
+                                        <con1:assign varName="TransformFormik">
+                                            <con2:id>_ActionId-a1e030f.N3a69f128.6.1528e894a09.N8000</con2:id>
+                                            <con1:expr>
+                                                <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                                    <con:resource ref="OperacionCreditos/Cobranza/Resources/Transformations/TrRecepcionGestionCbzToFormiikWOReq"/>
+                                                    <con:input>$body/ges:recepcionGestionRequest</con:input>
+                                                </con:xsltTransform>
+                                            </con1:expr>
+                                        </con1:assign>
+                                        <con1:assign varName="fotosTablaHtml">
+                                            <con2:id>_ActionId-N3f57c7ff.N4f3941.0.152f048656a.N7e9a</con2:id>
+                                            <con1:expr>
+                                                <con2:xsltTransform>
+                                                    <con2:resource ref="OperacionCreditos/Cobranza/Resources/Transformations/TrRecepcionGestionCbzToTablaFotosHtml"/>
+                                                    <con2:input>$body/ges:recepcionGestionRequest/ges:Cobranza/ges:resultadoGestion/ges:fotos</con2:input>
+                                                </con2:xsltTransform>
+                                            </con1:expr>
+                                        </con1:assign>
+                                        <con1:replace varName="TransformFormik" contents-only="true">
+                                            <con2:id>_ActionId-N3f57c7ff.N4f3941.0.152f048656a.N7e95</con2:id>
+                                            <con1:location>
+                                                <con2:xpathText>./NewOrder/parametros/parametro[@llave='Documento']/@valor</con2:xpathText>
+                                            </con1:location>
+                                            <con1:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:replace(fn-bea:serialize($fotosTablaHtml),'&amp;amp;amp;','&amp;amp;')</con:xqueryText>
+                                            </con1:expr>
+                                        </con1:replace>
+                                        <con1:assign varName="AddWorkOdersXMLIdRequest">
+                                            <con2:id>_ActionId-a1e030f.34944d31.6.152b2d41656.N7fff</con2:id>
+                                            <con1:expr>
+                                                <con2:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat('<tem:AddWorkOrdersXMLId xmlns:tem="http://tempuri.org/">
+    <tem:clientId>',$body/ges:recepcionGestionRequest/@idCliente,'</tem:clientId>
+    <tem:productId>',$body/ges:recepcionGestionRequest/@idProducto,'</tem:productId>
+    <tem:workOrders></tem:workOrders>
+</tem:AddWorkOrdersXMLId>
+'))]]></con2:xqueryText>
+                                            </con1:expr>
+                                        </con1:assign>
+                                        <con1:replace varName="AddWorkOdersXMLIdRequest" contents-only="true">
+                                            <con2:id>_ActionId-a1e030f.54426365.1.152ad271c94.N8000</con2:id>
+                                            <con1:location>
+                                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./tem:workOrders</con:xpathText>
+                                            </con1:location>
+                                            <con1:expr>
+                                                <con2:xqueryText>fn-bea:serialize($TransformFormik)</con2:xqueryText>
+                                            </con1:expr>
+                                        </con1:replace>
+                                        <con3:report>
+                                            <con2:id>_ActionId-N3f57c7ff.N4f3941.0.152f048656a.N7e92</con2:id>
+                                            <con3:expr>
+                                                <con2:xqueryText>$AddWorkOdersXMLIdRequest</con2:xqueryText>
+                                            </con3:expr>
+                                            <con3:labels>
+                                                <con3:key>WorkOrder Request idContrato</con3:key>
+                                                <con3:varName>cliente</con3:varName>
+                                                <con3:value>
+                                                    <con2:xpathText>./ges:idContrato</con2:xpathText>
+                                                </con3:value>
+                                            </con3:labels>
+                                            <con3:labels>
+                                                <con3:key>id</con3:key>
+                                                <con3:varName>idExternal</con3:varName>
+                                                <con3:value>
+                                                    <con2:xpathText>.</con2:xpathText>
+                                                </con3:value>
+                                            </con3:labels>
+                                        </con3:report>
+                                    </con1:requestTransform>
+                                    <con1:responseTransform>
+                                        <con3:report>
+                                            <con2:id>_ActionId-N3f57c7ff.N4f3941.0.152f048656a.N7e5e</con2:id>
+                                            <con3:expr>
+                                                <con2:xqueryText>$AddWorkOdersXMLIdResponse</con2:xqueryText>
+                                            </con3:expr>
+                                            <con3:labels>
+                                                <con3:key>WorkOrder Response idContrato</con3:key>
+                                                <con3:varName>cliente</con3:varName>
+                                                <con3:value>
+                                                    <con2:xpathText>./ges:idContrato</con2:xpathText>
+                                                </con3:value>
+                                            </con3:labels>
+                                            <con3:labels>
+                                                <con3:key>id</con3:key>
+                                                <con3:varName>idExternal</con3:varName>
+                                                <con3:value>
+                                                    <con2:xpathText>.</con2:xpathText>
+                                                </con3:value>
+                                            </con3:labels>
+                                        </con3:report>
+                                        <con1:assign varName="respuesta">
+                                            <con2:id>_ActionId-N3f57c7ff.N58366fa6.0.153380146e7.N7ffb</con2:id>
+                                            <con1:expr>
+                                                <con2:xqueryText>fn:concat('Formiik: ',$AddWorkOdersXMLIdResponse/tem:AddWorkOrdersXMLIdResult/text())</con2:xqueryText>
+                                            </con1:expr>
+                                        </con1:assign>
+                                    </con1:responseTransform>
+                                </con1:wsCallout>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode1_response" type="response">
+            <con:stage id="_StageId-N3f57c7ff.N64cf42e0.0.152c1ed6db3.N7ebd" name="StageResponse">
+                <con:context>
+                    <con2:userNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="body">
+                        <con2:id>_ActionId-N3f57c7ff.N64cf42e0.0.152c1ed6db3.N7eb7</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$respuesta</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con3:report>
+                        <con2:id>_ActionId-N3f57c7ff.N4f3941.0.152f048656a.N7ee2</con2:id>
+                        <con3:expr>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>NotifGestion Response idContrato</con3:key>
+                            <con3:varName>cliente</con3:varName>
+                            <con3:value>
+                                <con2:xpathText>./ges:idContrato</con2:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                        <con3:labels>
+                            <con3:key>id</con3:key>
+                            <con3:varName>idExternal</con3:varName>
+                            <con3:value>
+                                <con2:xpathText>.</con2:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.N77a8e526.0.152cda630e0.N7eca">
+            <con:stage id="_StageId-N3f57c7ff.N77a8e526.0.152cda630e0.N7ec9" name="StageFaultAlmacenaDocto">
+                <con:context>
+                    <con2:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                    <con2:userNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="respuestaSvc">
+                        <con2:id>_ActionId-N3f57c7ff.N58366fa6.0.153380146e7.N7f0c</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat('<ges:respuesta xmlns:ges="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza">
+    <ges:sistemaDestino>OT</ges:sistemaDestino>
+    <ges:resultado>ERROR</ges:resultado>
+    <ges:descripcion>',fn:normalize-space($fault/ctx:details/con1:ReceivedFaultDetail/con1:faultstring),'</ges:descripcion>
+</ges:respuesta>'))]]></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:insert varName="respuesta">
+                        <con2:id>_ActionId-N3f57c7ff.N58366fa6.0.153380146e7.N7efb</con2:id>
+                        <con1:location>
+                            <con2:xpathText>./ges:notificaGestionCobranzaResponse</con2:xpathText>
+                        </con1:location>
+                        <con1:where>last-child</con1:where>
+                        <con1:expr>
+                            <con2:xqueryText>$respuestaSvc</con2:xqueryText>
+                        </con1:expr>
+                    </con1:insert>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode1_request" type="request">
+            <con:stage id="_StageId-N3f57c7ff.N4f3941.0.152f048656a.N7eea" name="StageValidacion">
+                <con:context>
+                    <con2:userNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="cliente">
+                        <con2:comment>Variable usada los reportes del OSB, el key reportado es Numero de credito</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N4f3941.0.152f048656a.N7edf</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$body/ges:notificaGestionCobranzaRequest/ges:Cobranza/ges:cliente</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="idExternal">
+                        <con2:id>_ActionId-N3f57c7ff.N17f5e2b4.0.15353abf496.N7ee3</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>fn-bea:inlinedXML(fn:concat('&lt;id>',$body/ges:notificaGestionCobranzaRequest/@ExternalId,'&lt;/id>'))</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con3:report>
+                        <con2:id>_ActionId-N3f57c7ff.N4f3941.0.152f048656a.N7ee9</con2:id>
+                        <con3:expr>
+                            <con2:xqueryText>$body/ges:notificaGestionCobranzaRequest/ges:Cobranza/ges:cliente</con2:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>NotifGestion Request idContrato</con3:key>
+                            <con3:varName>cliente</con3:varName>
+                            <con3:value>
+                                <con2:xpathText>./ges:idContrato</con2:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                        <con3:labels>
+                            <con3:key>id</con3:key>
+                            <con3:varName>idExternal</con3:varName>
+                            <con3:value>
+                                <con2:xpathText>.</con2:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                    <con1:validate>
+                        <con2:id>_ActionId-N3f57c7ff.N4f3941.0.152f048656a.N7ee6</con2:id>
+                        <con2:disabled>true</con2:disabled>
+                        <con1:schema ref="OperacionCreditos/Cobranza/Resources/Schemas/NMPGestionCobranzaXSD"/>
+                        <con1:schemaElement xmlns:ges="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza">ges:notificaGestionCobranzaRequest</con1:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con2:xpathText>./ges:notificaGestionCobranzaRequest</con2:xpathText>
+                        </con1:location>
+                        <con1:resultVarName/>
+                    </con1:validate>
+                    <con1:validate>
+                        <con2:id>_ActionId-N3f57c7ff.N7c3c55e8.0.1531eaa0942.N7f4e</con2:id>
+                        <con1:schema ref="Common/XSD/NMPStandardHeader"/>
+                        <con1:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con1:schemaElement>
+                        <con1:varName>header</con1:varName>
+                        <con1:location>
+                            <con2:xpathText>./*</con2:xpathText>
+                        </con1:location>
+                    </con1:validate>
+                    <con1:assign varName="respuesta">
+                        <con2:id>_ActionId-N3f57c7ff.N58366fa6.0.153380146e7.N7f06</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>&lt;soapenv:Body xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+    &lt;ges:notificaGestionCobranzaResponse xmlns:ges="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza">       
+    &lt;/ges:notificaGestionCobranzaResponse>
+&lt;/soapenv:Body></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57c7ff.N64cf42e0.0.152c1ed6db3.N8000" name="StageAlmacenaDoctoOT" errorHandler="error-N3f57c7ff.N77a8e526.0.152cda630e0.N7eca">
+                <con:context>
+                    <con2:userNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza"/>
+                    <con2:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con2:userNsDecl prefix="open" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc"/>
+                </con:context>
+                <con:actions>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-N3f57c7ff.N7c3c55e8.0.1531eaa0942.N7fc6</con2:id>
+                        <con1:case id="_BranchId-N3f57c7ff.N7c3c55e8.0.1531eaa0942.N7fc5">
+                            <con1:condition>
+                                <con2:xqueryText>fn:count($body/ges:notificaGestionCobranzaRequest/ges:Cobranza/ges:resultadoGestion/ges:documentos/ges:documento)>0</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:wsCallout>
+                                    <con2:id>_ActionId-N3f57c7ff.N64cf42e0.0.152c1ed6db3.N7ffd</con2:id>
+                                    <con1:service ref="Utileria/AdminDocumentos/ProxyServices/OTAdminDocumentosPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                    <con1:operation>almacenaDocumento</con1:operation>
+                                    <con1:request>
+                                        <con1:body wrapped="false">almacenaDocRequest</con1:body>
+                                        <con1:header>header</con1:header>
+                                    </con1:request>
+                                    <con1:response>
+                                        <con1:body wrapped="false">almacenaDocResponse</con1:body>
+                                        <con1:header/>
+                                    </con1:response>
+                                    <con1:requestTransform>
+                                        <con1:assign varName="almacenaDocRequest">
+                                            <con2:id>_ActionId-N3f57c7ff.N64cf42e0.0.152c1ed6db3.N7ffa</con2:id>
+                                            <con1:expr>
+                                                <con2:xsltTransform>
+                                                    <con2:resource ref="OperacionCreditos/Cobranza/Resources/Transformations/TrNotifResultadoCbzToOTAlmacenaDoctoReq"/>
+                                                    <con2:input>$body/ges:notificaGestionCobranzaRequest</con2:input>
+                                                    <con2:param name="header">
+                                                        <con2:path>$header</con2:path>
+                                                    </con2:param>
+                                                </con2:xsltTransform>
+                                            </con1:expr>
+                                        </con1:assign>
+                                        <con1:ifThenElse>
+                                            <con2:id>_ActionId-N3f57c7ff.N77a8e526.0.152cda630e0.N7f39</con2:id>
+                                            <con1:case id="_BranchId-N3f57c7ff.N77a8e526.0.152cda630e0.N7f38">
+                                                <con1:condition>
+                                                    <con2:xqueryText>$header/nmph:headerMessage/nmph:idConsumidor='FORMIIK'</con2:xqueryText>
+                                                </con1:condition>
+                                                <con1:actions>
+                                                    <con1:foreach>
+                                                        <con2:id>_ActionId-N3f57c7ff.N77a8e526.0.152cda630e0.N7efe</con2:id>
+                                                        <con1:variable>body</con1:variable>
+                                                        <con1:expression>
+                                                            <con2:xpathText>./ges:notificaGestionCobranzaRequest/ges:Cobranza/ges:resultadoGestion/ges:documentos/ges:documento</con2:xpathText>
+                                                        </con1:expression>
+                                                        <con1:value-variable>documento</con1:value-variable>
+                                                        <con1:index-variable>indice</con1:index-variable>
+                                                        <con1:total-variable>contador</con1:total-variable>
+                                                        <con1:actions>
+                                                            <con1:assign varName="size">
+                                                                <con2:id>_ActionId-N3f57c7ff.N77a8e526.0.152cda630e0.N7f04</con2:id>
+                                                                <con1:expr>
+                                                                    <con2:xqueryTransform>
+                                                                        <con2:resource ref="Utileria/AdminDocumentos/Resources/Transformations/OTOperacionesXQ"/>
+                                                                        <con2:param name="funcion">
+                                                                            <con2:path>'getFileSize'</con2:path>
+                                                                        </con2:param>
+                                                                        <con2:param name="param1">
+                                                                            <con2:path>$documento/ges:contenido/text()</con2:path>
+                                                                        </con2:param>
+                                                                    </con2:xqueryTransform>
+                                                                </con1:expr>
+                                                            </con1:assign>
+                                                            <con1:replace varName="almacenaDocRequest" contents-only="true">
+                                                                <con2:id>_ActionId-N3f57c7ff.N77a8e526.0.152cda630e0.N7f01</con2:id>
+                                                                <con1:location>
+                                                                    <con2:xpathText>./open:documentos[$indice]/open:documento/open:size</con2:xpathText>
+                                                                </con1:location>
+                                                                <con1:expr>
+                                                                    <con2:xqueryText>$size/text()</con2:xqueryText>
+                                                                </con1:expr>
+                                                            </con1:replace>
+                                                        </con1:actions>
+                                                    </con1:foreach>
+                                                </con1:actions>
+                                            </con1:case>
+                                        </con1:ifThenElse>
+                                    </con1:requestTransform>
+                                    <con1:responseTransform>
+                                        <con3:report>
+                                            <con2:id>_ActionId-N3f57c7ff.N4f3941.0.152f048656a.N7ffe</con2:id>
+                                            <con3:expr>
+                                                <con2:xqueryText>$almacenaDocResponse</con2:xqueryText>
+                                            </con3:expr>
+                                            <con3:labels>
+                                                <con3:key>OT-AlmDocto Response idContrato</con3:key>
+                                                <con3:varName>cliente</con3:varName>
+                                                <con3:value>
+                                                    <con2:xpathText>./ges:idContrato</con2:xpathText>
+                                                </con3:value>
+                                            </con3:labels>
+                                            <con3:labels>
+                                                <con3:key>id</con3:key>
+                                                <con3:varName>idExternal</con3:varName>
+                                                <con3:value>
+                                                    <con2:xpathText>.</con2:xpathText>
+                                                </con3:value>
+                                            </con3:labels>
+                                        </con3:report>
+                                        <con1:assign varName="documentosMc">
+                                            <con2:id>_ActionId-N3f57c7ff.N64cf42e0.0.152c1ed6db3.N7ff2</con2:id>
+                                            <con1:expr>
+                                                <con2:xsltTransform>
+                                                    <con2:resource ref="OperacionCreditos/Cobranza/Resources/Transformations/TrNotifResultadoCbzToMCDocumentos"/>
+                                                    <con2:input>$almacenaDocResponse</con2:input>
+                                                </con2:xsltTransform>
+                                            </con1:expr>
+                                        </con1:assign>
+                                        <con1:foreach>
+                                            <con2:id>_ActionId-N3f57c7ff.N58366fa6.0.153380146e7.N7f4d</con2:id>
+                                            <con1:variable>almacenaDocResponse</con1:variable>
+                                            <con1:expression>
+                                                <con2:xpathText>./open:documentos</con2:xpathText>
+                                            </con1:expression>
+                                            <con1:value-variable>documento</con1:value-variable>
+                                            <con1:index-variable>indice</con1:index-variable>
+                                            <con1:total-variable>contador</con1:total-variable>
+                                            <con1:actions>
+                                                <con1:assign varName="respuestaSvc">
+                                                    <con2:id>_ActionId-N3f57c7ff.N58366fa6.0.153380146e7.N7f4a</con2:id>
+                                                    <con1:expr>
+                                                        <con2:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat('<ges:respuesta xmlns:ges="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza">
+    <ges:sistemaDestino>OT</ges:sistemaDestino>
+    <ges:resultado>',$documento/open:estado,'</ges:resultado>
+    <ges:descripcion>',$documento/open:nombreDocumento,': ',$documento/open:descripcion,'</ges:descripcion>
+</ges:respuesta>'))]]></con2:xqueryText>
+                                                    </con1:expr>
+                                                </con1:assign>
+                                                <con1:insert varName="respuesta">
+                                                    <con2:id>_ActionId-N3f57c7ff.N58366fa6.0.153380146e7.N7f03</con2:id>
+                                                    <con1:location>
+                                                        <con2:xpathText>./ges:notificaGestionCobranzaResponse</con2:xpathText>
+                                                    </con1:location>
+                                                    <con1:where>last-child</con1:where>
+                                                    <con1:expr>
+                                                        <con2:xqueryText>$respuestaSvc</con2:xqueryText>
+                                                    </con1:expr>
+                                                </con1:insert>
+                                            </con1:actions>
+                                        </con1:foreach>
+                                        <con1:ifThenElse>
+                                            <con2:id>_ActionId-N3f57c7ff.N17f5e2b4.0.15353abf496.N7dca</con2:id>
+                                            <con1:case id="_BranchId-N3f57c7ff.N17f5e2b4.0.15353abf496.N7dc9">
+                                                <con1:condition>
+                                                    <con2:xqueryText>fn:count($almacenaDocResponse/open:documentos[./open:estado='ERROR'])>0</con2:xqueryText>
+                                                </con1:condition>
+                                                <con1:actions>
+                                                    <con1:Error>
+                                                        <con2:id>_ActionId-N3f57c7ff.N17f5e2b4.0.15353abf496.N7cca</con2:id>
+                                                        <con1:errCode>OSB-382500</con1:errCode>
+                                                        <con1:message>Error en servicio Open Text</con1:message>
+                                                    </con1:Error>
+                                                </con1:actions>
+                                            </con1:case>
+                                        </con1:ifThenElse>
+                                    </con1:responseTransform>
+                                </con1:wsCallout>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+            <con:stage name="stageRecibeDatosMC" errorHandler="error-N3f57c7ff.N77a8e526.0.152cda630e0.N7e94">
+                <con:comment/>
+                <con:context>
+                    <con2:userNsDecl prefix="ges1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza"/>
+                    <con2:userNsDecl prefix="tem" namespace="http://tempuri.org/"/>
+                    <con2:varNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza"/>
+                </con:context>
+                <con:actions>
+                    <con:assign varName="RecibeDatosRequest" xmlns:con="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.54426365.4.152adc3d04d.N8000</con1:id>
+                        <con:expr>
+                            <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="OperacionCreditos/Cobranza/Resources/Transformations/TrNotifResultadoCbzToMCRecibeDatosReq"/>
+                                <con:input>$body/ges1:notificaGestionCobranzaRequest</con:input>
+                            </con:xsltTransform>
+                        </con:expr>
+                    </con:assign>
+                    <con:wsCallout xmlns:con="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.54426365.5.152adc6b706.N8000</con1:id>
+                        <con:service ref="OperacionCreditos/Cobranza/Business Services/MCGestionCobranzaBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con:operation>recibe_datos</con:operation>
+                        <con:request>
+                            <con:body wrapped="false">RecibeDatosRequest</con:body>
+                            <con:header/>
+                        </con:request>
+                        <con:response>
+                            <con:body wrapped="false">RecibeDatosResponse</con:body>
+                            <con:header/>
+                        </con:response>
+                        <con:requestTransform>
+                            <con:insert varName="RecibeDatosRequest">
+                                <con2:id>_ActionId-N3f57c7ff.N64cf42e0.0.152c1ed6db3.N7fef</con2:id>
+                                <con:location>
+                                    <con2:xpathText>./tem:LONGITUD_Y_LONGITUD</con2:xpathText>
+                                </con:location>
+                                <con:where>after</con:where>
+                                <con:expr>
+                                    <con2:xqueryText>$documentosMc/*</con2:xqueryText>
+                                </con:expr>
+                            </con:insert>
+                            <con3:report xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+                                <con2:id>_ActionId-N3f57c7ff.N7c3c55e8.0.1531eaa0942.N7f85</con2:id>
+                                <con3:expr>
+                                    <con2:xqueryText>$RecibeDatosRequest</con2:xqueryText>
+                                </con3:expr>
+                                <con3:labels>
+                                    <con3:key>MC-RecibeDatos Request idContrato</con3:key>
+                                    <con3:varName>cliente</con3:varName>
+                                    <con3:value>
+                                        <con2:xpathText>./ges:idContrato</con2:xpathText>
+                                    </con3:value>
+                                </con3:labels>
+                                <con3:labels>
+                                    <con3:key>id</con3:key>
+                                    <con3:varName>idExternal</con3:varName>
+                                    <con3:value>
+                                        <con2:xpathText>.</con2:xpathText>
+                                    </con3:value>
+                                </con3:labels>
+                            </con3:report>
+                        </con:requestTransform>
+                        <con:responseTransform>
+                            <con3:report xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+                                <con2:id>_ActionId-N3f57c7ff.N4f3941.0.152f048656a.N7f90</con2:id>
+                                <con3:expr>
+                                    <con2:xqueryText>$RecibeDatosResponse</con2:xqueryText>
+                                </con3:expr>
+                                <con3:labels>
+                                    <con3:key>MC-RecibeDatos Response idContrato</con3:key>
+                                    <con3:varName>cliente</con3:varName>
+                                    <con3:value>
+                                        <con2:xpathText>./ges:idContrato</con2:xpathText>
+                                    </con3:value>
+                                </con3:labels>
+                                <con3:labels>
+                                    <con3:key>id</con3:key>
+                                    <con3:varName>idExternal</con3:varName>
+                                    <con3:value>
+                                        <con2:xpathText>.</con2:xpathText>
+                                    </con3:value>
+                                </con3:labels>
+                            </con3:report>
+                            <con1:assign varName="respuestaSvc" xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+                                <con2:id>_ActionId-N3f57c7ff.N58366fa6.0.153380146e7.N7f16</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat('<ges:respuesta xmlns:ges="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza">
+    <ges:sistemaDestino>MC</ges:sistemaDestino>
+    <ges:resultado>OK</ges:resultado>
+    <ges:descripcion>',$RecibeDatosResponse/tem:recibe_datosResult,'</ges:descripcion>
+</ges:respuesta>'))]]></con2:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                            <con1:insert varName="respuesta" xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+                                <con2:id>_ActionId-N3f57c7ff.N58366fa6.0.153380146e7.N7ef9</con2:id>
+                                <con1:location>
+                                    <con2:xpathText>./ges:notificaGestionCobranzaResponse</con2:xpathText>
+                                </con1:location>
+                                <con1:where>last-child</con1:where>
+                                <con1:expr>
+                                    <con2:xqueryText>$respuestaSvc</con2:xqueryText>
+                                </con1:expr>
+                            </con1:insert>
+                        </con:responseTransform>
+                    </con:wsCallout>
+                </con:actions>
+            </con:stage>
+            <con:stage name="stageRecepcionGestionCRM" errorHandler="error-N3f57c7ff.N64cf42e0.0.152c1ed6db3.N7e85">
+                <con:comment/>
+                <con:context>
+                    <con2:userNsDecl prefix="crmbsDC" namespace="http://schemas.datacontract.org/2004/07/Nmp.Crm.BusinessEntity.DataContract"/>
+                    <con2:userNsDecl prefix="temp" namespace="http://tempuri.org/"/>
+                    <con2:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con2:userNsDecl prefix="crmDC" namespace="http://schemas.datacontract.org/2004/07/Nmp.Crm.Servicios.DataContracts"/>
+                    <con2:userNsDecl prefix="crmBT" namespace="http://schemas.datacontract.org/2004/07/NMP.MRT.BusinessTypes"/>
+                    <con2:varNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="RecepcionGestionesRequest">
+                        <con2:id>_ActionId-a1e030f.34944d31.7.152b2d86c34.N8000</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText><![CDATA[<temp:RecepcionGestiones>
+    <temp:request>
+        <crmbsDC:CartaId>{string($body/ges:notificaGestionCobranzaRequest/@ExternalId)}</crmbsDC:CartaId>
+        <crmbsDC:CategoriaInteraccion>{$body/ges:notificaGestionCobranzaRequest/ges:Cobranza/ges:resultadoGestion/ges:accion/text()}</crmbsDC:CategoriaInteraccion>
+        <!--Optional>
+        <nmp:FechaReinserccion></nmp:FechaReinserccion-->       
+        <crmbsDC:Notas>{$body/ges:notificaGestionCobranzaRequest/ges:Cobranza/ges:resultadoGestion/ges:comentarios/text()}</crmbsDC:Notas>
+        <crmbsDC:ResultadoInteraccion>{$body/ges:notificaGestionCobranzaRequest/ges:Cobranza/ges:resultadoGestion/ges:gestionCobranza/text()}</crmbsDC:ResultadoInteraccion>
+    </temp:request>
+</temp:RecepcionGestiones>]]></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-a1e030f.34944d31.6.152b2d41656.N8000</con2:id>
+                        <con1:service ref="FuerzaDeVentas/GestionOrdenesTrabajo/Business Services/CRMGestionesBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>RecepcionGestiones</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">RecepcionGestionesRequest</con1:body>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">RecepcionGestionesResponse</con1:body>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con3:report>
+                                <con2:id>_ActionId-N3f57c7ff.N7c3c55e8.0.1531eaa0942.N7f51</con2:id>
+                                <con3:expr>
+                                    <con2:xqueryText>$RecepcionGestionesRequest</con2:xqueryText>
+                                </con3:expr>
+                                <con3:labels>
+                                    <con3:key>CRM-RecepGestion Request idContrato</con3:key>
+                                    <con3:varName>cliente</con3:varName>
+                                    <con3:value>
+                                        <con2:xpathText>./ges:idContrato</con2:xpathText>
+                                    </con3:value>
+                                </con3:labels>
+                                <con3:labels>
+                                    <con3:key>id</con3:key>
+                                    <con3:varName>idExternal</con3:varName>
+                                    <con3:value>
+                                        <con2:xpathText>.</con2:xpathText>
+                                    </con3:value>
+                                </con3:labels>
+                            </con3:report>
+                            <con3:assign varName="fuenteDatosCRM" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:tran="http://www.bea.com/wli/sb/transports">
+                                <con2:id>_ActionId-N3f57c7ff.7e2ca8a7.0.158214a54e5.N7d27</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText>dvm:lookup("Common/DVM/NMPFuenteDatosCRM", "idDestinoOSB",$header/nmph:headerMessage/nmph:idDestino, "fuenteDatosCRM", "null")</con2:xqueryText>
+                                </con1:expr>
+                            </con3:assign>
+                            <con3:ifThenElse xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:tran="http://www.bea.com/wli/sb/transports">
+                                <con2:id>_ActionId-N3f57c7ff.7e2ca8a7.0.158214a54e5.N7d29</con2:id>
+                                <con3:case id="_BranchId-N3f57c7ff.7e2ca8a7.0.158214a54e5.N7d28">
+                                    <con3:condition>
+                                        <con2:xqueryText>$fuenteDatosCRM!='null'</con2:xqueryText>
+                                    </con3:condition>
+                                    <con3:actions>
+                                        <con3:insert varName="RecepcionGestionesRequest">
+                                            <con2:id>_ActionId-N3f57c7ff.7e2ca8a7.0.158214a54e5.N7d26</con2:id>
+                                            <con3:location>
+                                                <con2:xpathText>./temp:request/crmbsDC:CategoriaInteraccion</con2:xpathText>
+                                            </con3:location>
+                                            <con3:where>after</con3:where>
+                                            <con3:expr>
+                                                <con2:xqueryText>&lt;crmbsDC:FuenteDato>{$fuenteDatosCRM}&lt;/crmbsDC:FuenteDato></con2:xqueryText>
+                                            </con3:expr>
+                                        </con3:insert>
+                                    </con3:actions>
+                                </con3:case>
+                            </con3:ifThenElse>
+                        </con1:requestTransform>
+                        <con1:responseTransform>
+                            <con3:report>
+                                <con2:id>_ActionId-N3f57c7ff.N4f3941.0.152f048656a.N7f21</con2:id>
+                                <con3:expr>
+                                    <con2:xqueryText>$RecepcionGestionesResponse</con2:xqueryText>
+                                </con3:expr>
+                                <con3:labels>
+                                    <con3:key>CRM-RecepGestion Response idContrato</con3:key>
+                                    <con3:varName>cliente</con3:varName>
+                                    <con3:value>
+                                        <con2:xpathText>./ges:idContrato</con2:xpathText>
+                                    </con3:value>
+                                </con3:labels>
+                                <con3:labels>
+                                    <con3:key>id</con3:key>
+                                    <con3:varName>idExternal</con3:varName>
+                                    <con3:value>
+                                        <con2:xpathText>.</con2:xpathText>
+                                    </con3:value>
+                                </con3:labels>
+                            </con3:report>
+                            <con1:assign varName="respuestaSvc">
+                                <con2:id>_ActionId-N3f57c7ff.N58366fa6.0.153380146e7.N7f12</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat('<ges:respuesta xmlns:ges="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza">
+    <ges:sistemaDestino>CRM</ges:sistemaDestino>
+    <ges:resultado>OK</ges:resultado>
+    <ges:descripcion>',$RecepcionGestionesResponse/temp:RecepcionOrdenesResult/crmDC:Mensaje,'</ges:descripcion>
+</ges:respuesta>'))]]></con2:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                            <con1:insert varName="respuesta">
+                                <con2:id>_ActionId-N3f57c7ff.N58366fa6.0.153380146e7.N7ef7</con2:id>
+                                <con1:location>
+                                    <con2:xpathText>./ges:notificaGestionCobranzaResponse</con2:xpathText>
+                                </con1:location>
+                                <con1:where>last-child</con1:where>
+                                <con1:expr>
+                                    <con2:xqueryText>$respuestaSvc</con2:xqueryText>
+                                </con1:expr>
+                            </con1:insert>
+                        </con1:responseTransform>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.6b0b1472.0.15647ebbe48.N7a7b">
+            <con:stage id="_StageId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7a7a" name="StageResponse">
+                <con:comment/>
+                <con:context>
+                    <con2:userNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="body">
+                        <con2:id>_ActionId-N3f57c7ff.N3ef93975.0.1566af23d85.N7fc1</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$respuesta</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con3:report>
+                        <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7a79</con2:id>
+                        <con3:expr>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>actualizarCbz Response idContrato</con3:key>
+                            <con3:varName>cliente</con3:varName>
+                            <con3:value>
+                                <con2:xpathText>./ges:idContrato</con2:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                        <con3:labels>
+                            <con3:key>id</con3:key>
+                            <con3:varName>idExternal</con3:varName>
+                            <con3:value>
+                                <con2:xpathText>.</con2:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="_onErrorHandler-a1e030f.54426365.6.152add2fc46.N8000" type="error">
+            <con:stage name="stageFault">
+                <con:context>
+                    <con2:userNsDecl prefix="nmpsm" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                    <con2:varNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="header">
+                        <con2:id>_ActionId-N3f57c7ff.N77a8e526.0.152cda630e0.N7f40</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>&lt;soap:Header xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+&lt;/soap:Header></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="body">
+                        <con2:id>_ActionId-a1e030f.54426365.8.152add41d5d.N8000</con2:id>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="OperacionCreditos/Cobranza/Resources/Transformations/TrFaultsGestionCobranza"/>
+                                <con2:input>$fault</con2:input>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7ee8</con2:id>
+                        <con1:location>
+                            <con2:xpathText>./soap-env:Fault/detail/nmpsm:messageError/nmpsm:descripcionError</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xqueryText>fn:concat($sistema,$body/soap-env:Fault/detail/nmpsm:messageError/nmpsm:descripcionError)</con2:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7eee</con2:id>
+                        <con2:disabled>true</con2:disabled>
+                        <con1:case id="_BranchId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7eed">
+                            <con1:condition>
+                                <con2:xqueryText>$operacion='recepcionGestion'</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions/>
+                        </con1:case>
+                        <con1:default/>
+                    </con1:ifThenElse>
+                    <con3:report>
+                        <con2:id>_ActionId-N3f57c7ff.N4f3941.0.152f048656a.N7e2a</con2:id>
+                        <con3:expr>
+                            <con2:xqueryText>$fault</con2:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>Fault idContrato</con3:key>
+                            <con3:varName>cliente</con3:varName>
+                            <con3:value>
+                                <con2:xpathText>./ges:idContrato</con2:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                        <con3:labels>
+                            <con3:key>id</con3:key>
+                            <con3:varName>idExternal</con3:varName>
+                            <con3:value>
+                                <con2:xpathText>.</con2:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                    <con2:reply isError="true">
+                        <con2:id>_ActionId-a1e030f.54426365.7.152add33966.N8000</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.N64cf42e0.0.152c1ed6db3.N7e85">
+            <con:stage id="_StageId-N3f57c7ff.N64cf42e0.0.152c1ed6db3.N7e84" name="StageFaultCRM">
+                <con:context>
+                    <con2:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                    <con2:userNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza"/>
+                </con:context>
+                <con:actions>
+                    <con3:report>
+                        <con2:id>_ActionId-N3f57c7ff.N4f3941.0.152f048656a.N7eed</con2:id>
+                        <con3:expr>
+                            <con2:xqueryText>$fault</con2:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>CRM-RecepGestion Fault idContrato</con3:key>
+                            <con3:varName>cliente</con3:varName>
+                            <con3:value>
+                                <con2:xpathText>./ges:idContrato</con2:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                        <con3:labels>
+                            <con3:key>id</con3:key>
+                            <con3:varName>idExternal</con3:varName>
+                            <con3:value>
+                                <con2:xpathText>.</con2:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                    <con1:assign varName="respuestaSvc">
+                        <con2:id>_ActionId-N3f57c7ff.N58366fa6.0.153380146e7.N7f09</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat('<ges:respuesta xmlns:ges="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza">
+    <ges:sistemaDestino>CRM</ges:sistemaDestino>
+    <ges:resultado>ERROR</ges:resultado>
+    <ges:descripcion>',fn:normalize-space($fault/ctx:details/con1:ReceivedFaultDetail/con1:faultstring),'</ges:descripcion>
+</ges:respuesta>'))]]></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:insert varName="respuesta">
+                        <con2:id>_ActionId-N3f57c7ff.N58366fa6.0.153380146e7.N7efd</con2:id>
+                        <con1:location>
+                            <con2:xpathText>./ges:notificaGestionCobranzaResponse</con2:xpathText>
+                        </con1:location>
+                        <con1:where>last-child</con1:where>
+                        <con1:expr>
+                            <con2:xqueryText>$respuestaSvc</con2:xqueryText>
+                        </con1:expr>
+                    </con1:insert>
+                    <con4:alert>
+                        <con2:id>_ActionId-N3f57c7ff.N17f5e2b4.0.15353abf496.N7e36</con2:id>
+                        <con4:destination ref="OperacionCreditos/Cobranza/Resources/Alerts/CRMGestionCobranzaAlert"/>
+                        <con4:description>DEV -Modelo Cobranza - Error en Recepcion Gestion CRM</con4:description>
+                        <con4:severity>warning</con4:severity>
+                        <con4:payload>
+                            <con2:xsltTransform>
+                                <con2:resource ref="OperacionCreditos/Cobranza/Resources/Transformations/TrAsignaErrorServicioToCorreoAlerta"/>
+                                <con2:input>$RecepcionGestionesRequest</con2:input>
+                                <con2:param name="error">
+                                    <con2:path>$fault</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con4:payload>
+                    </con4:alert>
+                    <con2:resume>
+                        <con2:id>_ActionId-N3f57c7ff.N64cf42e0.0.152c1ed6db3.N7e81</con2:id>
+                    </con2:resume>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.6b0b1472.0.15647ebbe48.N7a99">
+            <con:stage id="_StageId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7a98" name="StageValidacion">
+                <con:context>
+                    <con2:userNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza"/>
+                    <con2:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="cliente">
+                        <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7a97</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$body/ges:actualizarGestionRequest/ges:gestion/ges:cliente</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="idExternal">
+                        <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7a96</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>fn-bea:inlinedXML(fn:concat('&lt;id>',$body/ges:actualizarGestionRequest/ges:gestion/@idExternal,'&lt;/id>'))</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con3:report>
+                        <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7a95</con2:id>
+                        <con3:expr>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>ActualizarCbz Request ID</con3:key>
+                            <con3:varName>idExternal</con3:varName>
+                            <con3:value>
+                                <con2:xpathText>.</con2:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                        <con3:labels>
+                            <con3:key>idContrato</con3:key>
+                            <con3:varName>cliente</con3:varName>
+                            <con3:value>
+                                <con2:xpathText>./ges:idContrato</con2:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                    <con1:validate>
+                        <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7a94</con2:id>
+                        <con1:schema ref="OperacionCreditos/Cobranza/Resources/Schemas/NMPGestionCobranzaXSD"/>
+                        <con1:schemaElement xmlns:ges="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza">ges:actualizarGestionRequest</con1:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con2:xpathText>./ges:actualizarGestionRequest</con2:xpathText>
+                        </con1:location>
+                    </con1:validate>
+                    <con1:validate>
+                        <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7a93</con2:id>
+                        <con1:schema ref="Common/XSD/NMPStandardHeader"/>
+                        <con1:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con1:schemaElement>
+                        <con1:varName>header</con1:varName>
+                        <con1:location>
+                            <con2:xpathText>./nmph:headerMessage</con2:xpathText>
+                        </con1:location>
+                    </con1:validate>
+                    <con1:assign varName="respuesta">
+                        <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7a91</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>&lt;soapenv:Body xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+    &lt;ges:actualizarGestionResponse xmlns:ges="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza">
+     &lt;/ges:actualizarGestionResponse>
+&lt;/soapenv:Body></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                </con:actions>
+            </con:stage>
+            <con:stage name="StageUpdateWorkOrderFormik" id="_StageId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7a87">
+                <con:comment/>
+                <con:context>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con2:userNsDecl prefix="ges1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilTipos"/>
+                    <con2:userNsDecl prefix="tem" namespace="http://tempuri.org/"/>
+                    <con2:varNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza"/>
+                </con:context>
+                <con:actions>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7a84</con2:id>
+                        <con1:service ref="GestionIdentidades/Formiik/Business Services/FormiikBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>UpdateWorkOrdersXMLId</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">updateWorkOrderRequest</con1:body>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">updateWorkOrderRequest</con1:body>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:assign varName="sistema">
+                                <con2:id>_ActionId-N3f57c7ff.N598cb1f1.0.1568fccc062.N7ff8</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText>'Formiik - UpdateWO: '</con2:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                            <con1:assign varName="TransformFormik">
+                                <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7a82</con2:id>
+                                <con1:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="OperacionCreditos/Cobranza/Resources/Transformations/TrActualizaGestionToFormiikActualizaWOReq"/>
+                                        <con2:input>$body/ges:actualizarGestionRequest</con2:input>
+                                    </con2:xsltTransform>
+                                </con1:expr>
+                            </con1:assign>
+                            <con1:assign varName="TransformFormik">
+                                <con2:id>_ActionId-N3f57c7ff.N598cb1f1.0.1568fccc062.N7ffb</con2:id>
+                                <con1:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="OperacionCreditos/Cobranza/Resources/Transformations/TrRemueveParametrosVacios"/>
+                                        <con2:input>$TransformFormik</con2:input>
+                                    </con2:xsltTransform>
+                                </con1:expr>
+                            </con1:assign>
+                            <con1:assign varName="updateWorkOrderRequest">
+                                <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7a81</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText><![CDATA[<tem:AddWorkOrdersXMLId xmlns:tem="http://tempuri.org/">
+    <tem:clientId>{$body/ges:actualizarGestionRequest/ges:gestion/@idCliente}</tem:clientId>
+    <tem:productId>{$body/ges:actualizarGestionRequest/ges:gestion/@idProducto}</tem:productId>
+    <tem:workOrders></tem:workOrders>
+</tem:AddWorkOrdersXMLId>]]></con2:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                            <con1:replace varName="updateWorkOrderRequest" contents-only="true">
+                                <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7a80</con2:id>
+                                <con1:location>
+                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./tem:workOrders</con:xpathText>
+                                </con1:location>
+                                <con1:expr>
+                                    <con2:xqueryText>fn-bea:serialize($TransformFormik)</con2:xqueryText>
+                                </con1:expr>
+                            </con1:replace>
+                            <con3:report>
+                                <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7a7f</con2:id>
+                                <con3:expr>
+                                    <con2:xqueryText>$updateWorkOrderRequest</con2:xqueryText>
+                                </con3:expr>
+                                <con3:labels>
+                                    <con3:key>FORMIIK UpdateWO Request idContrato</con3:key>
+                                    <con3:varName>cliente</con3:varName>
+                                    <con3:value>
+                                        <con2:xpathText>./ges:idContrato</con2:xpathText>
+                                    </con3:value>
+                                </con3:labels>
+                                <con3:labels>
+                                    <con3:key>id</con3:key>
+                                    <con3:varName>idExternal</con3:varName>
+                                    <con3:value>
+                                        <con2:xpathText>.</con2:xpathText>
+                                    </con3:value>
+                                </con3:labels>
+                            </con3:report>
+                        </con1:requestTransform>
+                        <con1:responseTransform>
+                            <con3:report>
+                                <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7a7e</con2:id>
+                                <con3:expr>
+                                    <con2:xqueryText>$updateWorkOrderResponse</con2:xqueryText>
+                                </con3:expr>
+                                <con3:labels>
+                                    <con3:key>FORMIIK updateWO Response idContrato</con3:key>
+                                    <con3:varName>cliente</con3:varName>
+                                    <con3:value>
+                                        <con2:xpathText>./ges:idContrato</con2:xpathText>
+                                    </con3:value>
+                                </con3:labels>
+                                <con3:labels>
+                                    <con3:key>id</con3:key>
+                                    <con3:varName>idExternal</con3:varName>
+                                    <con3:value>
+                                        <con2:xpathText>.</con2:xpathText>
+                                    </con3:value>
+                                </con3:labels>
+                            </con3:report>
+                            <con1:insert varName="respuesta">
+                                <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7a7c</con2:id>
+                                <con1:location>
+                                    <con2:xpathText>./ges:actualizarGestionResponse</con2:xpathText>
+                                </con1:location>
+                                <con1:where>last-child</con1:where>
+                                <con1:expr>
+                                    <con2:xqueryText><![CDATA[<ges:respuesta xmlns:ges="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza">
+  <ges:sistemaDestino>FORMIIK</ges:sistemaDestino>
+  <ges:resultado>OK</ges:resultado>
+  <ges:descripcion>{$cancelWorkOrderResponse/tem:UpdateWorkOrdersXMLIdResult/text()}</ges:descripcion>
+</ges:respuesta>]]></con2:xqueryText>
+                                </con1:expr>
+                            </con1:insert>
+                        </con1:responseTransform>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.482bf732.0.152652196c2.N7f63">
+            <con:stage id="_StageId-N3f57c7ff.482bf732.0.152652196c2.N7f61" name="StageResponse">
+                <con:comment/>
+                <con:context>
+                    <con2:userNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="body">
+                        <con2:id>_ActionId-N3f57c7ff.482bf732.0.152652196c2.N7f5e</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText><![CDATA[<soapenv:Body xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+    <ges:recepcionGestionResponse
+        xmlns:ges="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza">
+        <ges:resultado>OK</ges:resultado>
+        <ges:descripcion>Success</ges:descripcion>
+    </ges:recepcionGestionResponse>
+</soapenv:Body>]]></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-N3f57c7ff.N58366fa6.0.153380146e7.N7fb8</con2:id>
+                        <con1:case id="_BranchId-N3f57c7ff.N58366fa6.0.153380146e7.N7fb7">
+                            <con1:condition>
+                                <con2:xqueryText>$respuesta='S/A'</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:Error>
+                                    <con2:id>_ActionId-N3f57c7ff.N58366fa6.0.153380146e7.N7ff2</con2:id>
+                                    <con1:errCode>OSB-001</con1:errCode>
+                                    <con1:message>Sin acción a realizar</con1:message>
+                                </con1:Error>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:default>
+                            <con1:replace varName="body" contents-only="true">
+                                <con2:id>_ActionId-N3f57c7ff.N58366fa6.0.153380146e7.N7ff8</con2:id>
+                                <con1:location>
+                                    <con2:xpathText>./ges:recepcionGestionResponse/ges:descripcion</con2:xpathText>
+                                </con1:location>
+                                <con1:expr>
+                                    <con2:xqueryText>$respuesta</con2:xqueryText>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:default>
+                    </con1:ifThenElse>
+                    <con3:report>
+                        <con2:id>_ActionId-N3f57c7ff.N4f3941.0.152f048656a.N7e26</con2:id>
+                        <con3:expr>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>GesCbz Response idContrato</con3:key>
+                            <con3:varName>cliente</con3:varName>
+                            <con3:value>
+                                <con2:xpathText>./ges:idContrato</con2:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                        <con3:labels>
+                            <con3:key>id</con3:key>
+                            <con3:varName>idExternal</con3:varName>
+                            <con3:value>
+                                <con2:xpathText>.</con2:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.6b0b1472.0.15647ebbe48.N7e7e">
+            <con:stage id="_StageId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7e7c" name="StageValidacion">
+                <con:context>
+                    <con2:userNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza"/>
+                    <con2:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="cliente">
+                        <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7e44</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$body/ges:revocarGestionRequest/ges:gestion/ges:cliente</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="idExternal">
+                        <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7e47</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>&lt;id>{$body/ges:revocarGestionRequest/ges:gestion/ges:orden[1]/ges:idExternal}&lt;/id></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con3:report>
+                        <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7e3d</con2:id>
+                        <con3:expr>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>RevocarCbz Request ID</con3:key>
+                            <con3:varName>idExternal</con3:varName>
+                            <con3:value>
+                                <con2:xpathText>.</con2:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                        <con3:labels>
+                            <con3:key>idContrato</con3:key>
+                            <con3:varName>cliente</con3:varName>
+                            <con3:value>
+                                <con2:xpathText>./ges:idContrato</con2:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                    <con1:validate>
+                        <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7e3a</con2:id>
+                        <con1:schema ref="OperacionCreditos/Cobranza/Resources/Schemas/NMPGestionCobranzaXSD"/>
+                        <con1:schemaElement xmlns:ges="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza">ges:revocarGestionRequest</con1:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con2:xpathText>./ges:revocarGestionRequest</con2:xpathText>
+                        </con1:location>
+                    </con1:validate>
+                    <con1:validate>
+                        <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7e37</con2:id>
+                        <con1:schema ref="Common/XSD/NMPStandardHeader"/>
+                        <con1:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con1:schemaElement>
+                        <con1:varName>header</con1:varName>
+                        <con1:location>
+                            <con2:xpathText>./nmph:headerMessage</con2:xpathText>
+                        </con1:location>
+                    </con1:validate>
+                    <con1:assign varName="respuesta">
+                        <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7cb9</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>&lt;soapenv:Body xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+    &lt;ges:revocarGestionResponse xmlns:ges="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza">
+     &lt;/ges:revocarGestionResponse>
+&lt;/soapenv:Body></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="destinoNMP">
+                        <con2:id>_ActionId-N3f57c7ff.2b2d2f6a.0.15830c42a06.N7ffe</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>dvm:lookup("OperacionCreditos/Cobranza/Resources/DVMs/OSBEnrutaDestinoGestionCbz", "idDestino",$header/nmph:headerMessage/nmph:idDestino, "destinoNMP", "null")</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7d78" name="StageRecepcionOrdenesCRM">
+                <con:comment/>
+                <con:context>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con2:userNsDecl prefix="temp" namespace="http://tempuri.org/"/>
+                    <con2:userNsDecl prefix="crmDC" namespace="http://schemas.datacontract.org/2004/07/Nmp.Crm.Servicios.DataContracts"/>
+                    <con2:varNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza"/>
+                </con:context>
+                <con:actions>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7d77</con2:id>
+                        <con1:case id="_BranchId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7d76">
+                            <con1:condition>
+                                <con2:xqueryText>$destinoNMP='1' or $destinoNMP='3'</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:wsCallout>
+                                    <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7d75</con2:id>
+                                    <con1:service ref="FuerzaDeVentas/GestionOrdenesTrabajo/Proxy Services/CRMServicioOrdenesPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                    <con1:operation>RecepcionOrdenes</con1:operation>
+                                    <con1:request>
+                                        <con1:body wrapped="false">RecepcionOrdenesRequest</con1:body>
+                                        <con1:header>header</con1:header>
+                                    </con1:request>
+                                    <con1:response>
+                                        <con1:body wrapped="false">RecepcionOrdenesResponse</con1:body>
+                                    </con1:response>
+                                    <con1:requestTransform>
+                                        <con1:assign varName="sistema">
+                                            <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7d74</con2:id>
+                                            <con1:expr>
+                                                <con2:xqueryText>'CRM - RecepcionOrdenes: '</con2:xqueryText>
+                                            </con1:expr>
+                                        </con1:assign>
+                                        <con1:assign varName="RecepcionOrdenesRequest">
+                                            <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7d73</con2:id>
+                                            <con1:expr>
+                                                <con2:xsltTransform>
+                                                    <con2:resource ref="OperacionCreditos/Cobranza/Resources/Transformations/TrRevocarGestionToCRMRecepcionOrdenReq"/>
+                                                    <con2:input>$body/ges:revocarGestionRequest</con2:input>
+                                                </con2:xsltTransform>
+                                            </con1:expr>
+                                        </con1:assign>
+                                        <con3:report>
+                                            <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7d72</con2:id>
+                                            <con3:expr>
+                                                <con2:xqueryText>$RecepcionOrdenesRequest</con2:xqueryText>
+                                            </con3:expr>
+                                            <con3:labels>
+                                                <con3:key>CRM-RecepOrden Request idContrato</con3:key>
+                                                <con3:varName>cliente</con3:varName>
+                                                <con3:value>
+                                                    <con2:xpathText>./ges:idContrato</con2:xpathText>
+                                                </con3:value>
+                                            </con3:labels>
+                                            <con3:labels>
+                                                <con3:key>id</con3:key>
+                                                <con3:varName>idExternal</con3:varName>
+                                                <con3:value>
+                                                    <con2:xpathText>.</con2:xpathText>
+                                                </con3:value>
+                                            </con3:labels>
+                                        </con3:report>
+                                    </con1:requestTransform>
+                                    <con1:responseTransform>
+                                        <con3:report>
+                                            <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7d71</con2:id>
+                                            <con3:expr>
+                                                <con2:xqueryText>$RecepcionOrdenesResponse</con2:xqueryText>
+                                            </con3:expr>
+                                            <con3:labels>
+                                                <con3:key>CRM-RecepOrden Response idContrato</con3:key>
+                                                <con3:varName>cliente</con3:varName>
+                                                <con3:value>
+                                                    <con2:xpathText>./ges:idContrato</con2:xpathText>
+                                                </con3:value>
+                                            </con3:labels>
+                                            <con3:labels>
+                                                <con3:key>id</con3:key>
+                                                <con3:varName>idExternal</con3:varName>
+                                                <con3:value>
+                                                    <con2:xpathText>.</con2:xpathText>
+                                                </con3:value>
+                                            </con3:labels>
+                                        </con3:report>
+                                        <con1:insert varName="respuesta">
+                                            <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7cb6</con2:id>
+                                            <con1:location>
+                                                <con2:xpathText>./ges:revocarGestionResponse</con2:xpathText>
+                                            </con1:location>
+                                            <con1:where>last-child</con1:where>
+                                            <con1:expr>
+                                                <con2:xqueryText><![CDATA[<ges:respuesta xmlns:ges="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza">
+  <ges:sistemaDestino>CRM</ges:sistemaDestino>
+  <ges:resultado>OK</ges:resultado>
+  <ges:descripcion>{$RecepcionOrdenesResponse/temp:RecepcionOrdenesResult/crmDC:Mensaje/text()}</ges:descripcion>
+</ges:respuesta>]]></con2:xqueryText>
+                                            </con1:expr>
+                                        </con1:insert>
+                                    </con1:responseTransform>
+                                </con1:wsCallout>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+            <con:stage name="StageCancelWorkOrderFormik" id="_StageId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7cc8">
+                <con:comment/>
+                <con:context>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con2:userNsDecl prefix="ges1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilTipos"/>
+                    <con2:userNsDecl prefix="tem" namespace="http://tempuri.org/"/>
+                    <con2:varNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza"/>
+                </con:context>
+                <con:actions>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7cc7</con2:id>
+                        <con1:case id="_BranchId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7cc6">
+                            <con1:condition>
+                                <con2:xqueryText>$destinoNMP='2' or $destinoNMP='3'</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:wsCallout>
+                                    <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7cc5</con2:id>
+                                    <con1:service ref="GestionIdentidades/Formiik/Business Services/FormiikBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                    <con1:operation>CancelWorkOrdersXMLId</con1:operation>
+                                    <con1:request>
+                                        <con1:body wrapped="false">cancelWorkOrderRequest</con1:body>
+                                    </con1:request>
+                                    <con1:response>
+                                        <con1:body wrapped="false">cancelWorkOrderResponse</con1:body>
+                                    </con1:response>
+                                    <con1:requestTransform>
+                                        <con1:assign varName="sistema">
+                                            <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7cc4</con2:id>
+                                            <con1:expr>
+                                                <con2:xqueryText>'Formiik - AddWorkOrderXMLId: '</con2:xqueryText>
+                                            </con1:expr>
+                                        </con1:assign>
+                                        <con1:assign varName="TransformFormik">
+                                            <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7cc3</con2:id>
+                                            <con1:expr>
+                                                <con2:xsltTransform>
+                                                    <con2:resource ref="OperacionCreditos/Cobranza/Resources/Transformations/TrRevocarGestionToFormiikCancelWOReq"/>
+                                                    <con2:input>$body/ges:revocarGestionRequest</con2:input>
+                                                </con2:xsltTransform>
+                                            </con1:expr>
+                                        </con1:assign>
+                                        <con1:assign varName="cancelWorkOrderRequest">
+                                            <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7cc0</con2:id>
+                                            <con1:expr>
+                                                <con2:xqueryText><![CDATA[<tem:AddWorkOrdersXMLId xmlns:tem="http://tempuri.org/">
+    <tem:clientId>{$body/ges:revocarGestionRequest/ges:gestion/@idCliente}</tem:clientId>
+    <tem:productId>{$body/ges:revocarGestionRequest/ges:gestion/@idProducto}</tem:productId>
+    <tem:cancelOrders></tem:cancelOrders>
+</tem:AddWorkOrdersXMLId>]]></con2:xqueryText>
+                                            </con1:expr>
+                                        </con1:assign>
+                                        <con1:replace varName="cancelWorkOrderRequest" contents-only="true">
+                                            <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7cbf</con2:id>
+                                            <con1:location>
+                                                <con2:xpathText>./tem:cancelOrders</con2:xpathText>
+                                            </con1:location>
+                                            <con1:expr>
+                                                <con2:xqueryText>fn-bea:serialize($TransformFormik)</con2:xqueryText>
+                                            </con1:expr>
+                                        </con1:replace>
+                                        <con3:report>
+                                            <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7cbe</con2:id>
+                                            <con3:expr>
+                                                <con2:xqueryText>$cancelWorkOrderRequest</con2:xqueryText>
+                                            </con3:expr>
+                                            <con3:labels>
+                                                <con3:key>FORMIIK-CancelWO Request idContrato</con3:key>
+                                                <con3:varName>cliente</con3:varName>
+                                                <con3:value>
+                                                    <con2:xpathText>./ges:idContrato</con2:xpathText>
+                                                </con3:value>
+                                            </con3:labels>
+                                            <con3:labels>
+                                                <con3:key>id</con3:key>
+                                                <con3:varName>idExternal</con3:varName>
+                                                <con3:value>
+                                                    <con2:xpathText>.</con2:xpathText>
+                                                </con3:value>
+                                            </con3:labels>
+                                        </con3:report>
+                                    </con1:requestTransform>
+                                    <con1:responseTransform>
+                                        <con3:report>
+                                            <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7cbd</con2:id>
+                                            <con3:expr>
+                                                <con2:xqueryText>$cancelWorkOrderResponse</con2:xqueryText>
+                                            </con3:expr>
+                                            <con3:labels>
+                                                <con3:key>FORMIIK CancelWO Response idContrato</con3:key>
+                                                <con3:varName>cliente</con3:varName>
+                                                <con3:value>
+                                                    <con2:xpathText>./ges:idContrato</con2:xpathText>
+                                                </con3:value>
+                                            </con3:labels>
+                                            <con3:labels>
+                                                <con3:key>id</con3:key>
+                                                <con3:varName>idExternal</con3:varName>
+                                                <con3:value>
+                                                    <con2:xpathText>.</con2:xpathText>
+                                                </con3:value>
+                                            </con3:labels>
+                                        </con3:report>
+                                        <con1:insert varName="respuesta">
+                                            <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7cb3</con2:id>
+                                            <con1:location>
+                                                <con2:xpathText>./ges:revocaGestionResponse</con2:xpathText>
+                                            </con1:location>
+                                            <con1:where>last-child</con1:where>
+                                            <con1:expr>
+                                                <con2:xqueryText><![CDATA[<ges:respuesta xmlns:ges="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza">
+  <ges:sistemaDestino>FORMIIK</ges:sistemaDestino>
+  <ges:resultado>OK</ges:resultado>
+  <ges:descripcion>{$cancelWorkOrderResponse/tem:CancelWorkOrdersXMLIdResult/text()}</ges:descripcion>
+</ges:respuesta>]]></con2:xqueryText>
+                                            </con1:expr>
+                                        </con1:insert>
+                                    </con1:responseTransform>
+                                </con1:wsCallout>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.N77a8e526.0.152cda630e0.N7e94">
+            <con:stage id="_StageId-N3f57c7ff.N77a8e526.0.152cda630e0.N7e93" name="StageFaultRecibeDatosMC">
+                <con:context>
+                    <con2:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                    <con2:userNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza"/>
+                </con:context>
+                <con:actions>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-N3f57c7ff.N4db823d5.0.156bd3fbadc.N7fc9</con2:id>
+                        <con1:case id="_BranchId-N3f57c7ff.N4db823d5.0.156bd3fbadc.N7fc8">
+                            <con1:condition>
+                                <con2:xqueryText>$fault/ctx:details/con1:ReceivedFaultDetail/con1:faultstring</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:assign varName="respuestaSvc">
+                                    <con2:id>_ActionId-N3f57c7ff.N58366fa6.0.153380146e7.N7f0f</con2:id>
+                                    <con1:expr>
+                                        <con2:xqueryText><![CDATA[<ges:respuesta xmlns:ges="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza">
+    <ges:sistemaDestino>MC</ges:sistemaDestino>
+    <ges:resultado>ERROR</ges:resultado>
+    <ges:descripcion>{fn:normalize-space($fault/ctx:details/con1:ReceivedFaultDetail/con1:faultstring)}</ges:descripcion>
+</ges:respuesta>]]></con2:xqueryText>
+                                    </con1:expr>
+                                </con1:assign>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:default>
+                            <con1:assign varName="respuestaSvc">
+                                <con2:id>_ActionId-N3f57c7ff.N4db823d5.0.156bd3fbadc.N7f93</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText><![CDATA[<ges:respuesta xmlns:ges="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza">
+    <ges:sistemaDestino>MC</ges:sistemaDestino>
+    <ges:resultado>ERROR</ges:resultado>
+    <ges:descripcion>{fn:normalize-space($fault/ctx:reason)}</ges:descripcion>
+</ges:respuesta>]]></con2:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:default>
+                    </con1:ifThenElse>
+                    <con3:report>
+                        <con2:id>_ActionId-N3f57c7ff.N4f3941.0.152f048656a.N7f58</con2:id>
+                        <con3:expr>
+                            <con2:xqueryText>$fault</con2:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>MC-RecibeDatos Fault idContrato</con3:key>
+                            <con3:varName>cliente</con3:varName>
+                            <con3:value>
+                                <con2:xpathText>./ges:idContrato</con2:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                        <con3:labels>
+                            <con3:key>id</con3:key>
+                            <con3:varName>idExternal</con3:varName>
+                            <con3:value>
+                                <con2:xpathText>.</con2:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                    <con1:insert varName="respuesta">
+                        <con2:id>_ActionId-N3f57c7ff.N58366fa6.0.153380146e7.N7eff</con2:id>
+                        <con1:location>
+                            <con2:xpathText>./ges:notificaGestionCobranzaResponse</con2:xpathText>
+                        </con1:location>
+                        <con1:where>last-child</con1:where>
+                        <con1:expr>
+                            <con2:xqueryText>$respuestaSvc</con2:xqueryText>
+                        </con1:expr>
+                    </con1:insert>
+                    <con4:alert>
+                        <con2:id>_ActionId-N3f57c7ff.N17f5e2b4.0.15353abf496.N7e3c</con2:id>
+                        <con4:destination ref="OperacionCreditos/Cobranza/Resources/Alerts/MCGestionCobranzaAlert"/>
+                        <con4:description>DEV - Modelo Cobranza - Error en servicio Recibe Datos -  Master Collection</con4:description>
+                        <con4:severity>warning</con4:severity>
+                        <con4:payload>
+                            <con2:xsltTransform>
+                                <con2:resource ref="OperacionCreditos/Cobranza/Resources/Transformations/TrAsignaErrorServicioToCorreoAlerta"/>
+                                <con2:input>$RecibeDatosRequest</con2:input>
+                                <con2:param name="error">
+                                    <con2:path>$fault</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con4:payload>
+                    </con4:alert>
+                    <con2:resume>
+                        <con2:id>_ActionId-N3f57c7ff.N77a8e526.0.152cda630e0.N7e90</con2:id>
+                    </con2:resume>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:branch-node type="operation" id="_FlowId-N3f57c7ff.482bf732.0.152652196c2.N7f96" name="BranchGestionCobranza">
+                <con:context/>
+                <con:branch-table>
+                    <con:branch name="notificaResultado">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineNotificaResultado">
+                                <con:comment>El resultado de la gestión movil es notificado a Open Text, Master Collection y CRM</con:comment>
+                                <con:request>PipelinePairNode1_request</con:request>
+                                <con:response>PipelinePairNode1_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="recepcionGestion">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineRecepcionGestion">
+                                <con:request>request-N3f57c7ff.482bf732.0.152652196c2.N7f64</con:request>
+                                <con:response>response-N3f57c7ff.482bf732.0.152652196c2.N7f63</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="revocarGestion">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineRevocarGestion">
+                                <con:request>request-N3f57c7ff.6b0b1472.0.15647ebbe48.N7e7e</con:request>
+                                <con:response>response-N3f57c7ff.6b0b1472.0.15647ebbe48.N7e7d</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="actualizarGestion">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineActualizarGestion">
+                                <con:request>request-N3f57c7ff.6b0b1472.0.15647ebbe48.N7a99</con:request>
+                                <con:response>response-N3f57c7ff.6b0b1472.0.15647ebbe48.N7a7b</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+    <aler:alertRules xsi:nil="true" xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert"/>
+</con:pipelineEntry>

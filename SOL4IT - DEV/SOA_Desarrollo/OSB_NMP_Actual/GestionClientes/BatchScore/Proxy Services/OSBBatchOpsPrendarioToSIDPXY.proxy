@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ser:proxyServiceEntry xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:oper="http://xmlns.oracle.com/servicebus/proxy/operations" xmlns:oper1="http://xmlns.oracle.com/servicebus/operations" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ser:coreEntry isAutoPublish="false">
+        <ser:binding type="Mixed" xsi:type="con3:MixedBindingType" xmlns:con3="http://www.bea.com/wli/sb/services/bindings/config" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con2="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con5="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con4="http://www.bea.com/wli/sb/stages/publish/config" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:env="http://www.bea.com/wli/config/env" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+            <con3:request type="XML">
+                <con4:schema ref="OperacionPrendaria/Prestamo/Resources/Schemas/PrestamoSvcXSD" element="updatePrestamoRequest" xmlns:con4="http://www.bea.com/wli/sb/typesystem/config"/>
+            </con3:request>
+        </ser:binding>
+        <oper:operations enabled="true">
+            <oper:monitoring enabled="true" aggregationInterval="1440"/>
+        </oper:operations>
+        <ser:invoke ref="GestionClientes/BatchScore/Pipelines/OSBBatchOpsPrendarioToSIDPL" xsi:type="con:PipelineRef" xmlns:con="http://www.bea.com/wli/sb/pipeline/config"/>
+    </ser:coreEntry>
+    <ser:endpointConfig xmlns:con3="http://www.bea.com/wli/sb/typesystem/config" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con2="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con5="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con4="http://www.bea.com/wli/sb/stages/publish/config" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:env="http://www.bea.com/wli/config/env" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+        <tran:provider-id>http</tran:provider-id>
+        <tran:inbound>true</tran:inbound>
+        <tran:URI>
+            <env:value>/NMP/Integracion/Score/Proxy_Services/BatchSidOperacionPXY</env:value>
+        </tran:URI>
+        <tran:inbound-properties/>
+        <tran:all-headers>true</tran:all-headers>
+        <tran:provider-specific>
+            <http:inbound-properties/>
+        </tran:provider-specific>
+    </ser:endpointConfig>
+</ser:proxyServiceEntry>

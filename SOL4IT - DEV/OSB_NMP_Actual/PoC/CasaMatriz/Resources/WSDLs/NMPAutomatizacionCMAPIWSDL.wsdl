@@ -1,0 +1,103 @@
+<definitions name="AutomatizacionCM" targetNamespace="http://www.montepiedad.com.mx/Services/CasaMatriz/Automatizacion" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://www.montepiedad.com.mx/Services/CasaMatriz/Automatizacion" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:autCM="http://www.montepiedad.com.mx/Schemas/CasaMatriz/Automatizacion" xmlns:NPMsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:NPMsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+    <xsd:schema>
+      <xsd:import namespace="http://www.montepiedad.com.mx/Schemas/CasaMatriz/Automatizacion" schemaLocation="../Schemas/NMPAutomatizacionCMXSD.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>            
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="solicitarAmarreRequest">
+    <wsdl:part name="payload" element="autCM:solicitarAmarreRequest"/>
+  </wsdl:message>
+  <wsdl:message name="solicitarAmarreResponse">
+    <wsdl:part name="payload" element="autCM:solicitarAmarreResponse"/>
+  </wsdl:message>
+  <wsdl:message name="solicitarSalidaDepositoRequest">
+    <wsdl:part name="payload" element="autCM:solicitarSalidaDepositoRequest"/>
+  </wsdl:message>
+  <wsdl:message name="solicitarSalidaDepositoResponse">
+    <wsdl:part name="payload" element="autCM:solicitarSalidaDepositoResponse"/>
+  </wsdl:message>
+  <wsdl:message name="AutomatizacionCMFault">
+    <wsdl:part name="payload" element="NPMsm:messageError"/>
+  </wsdl:message>
+   <wsdl:message name="NMPHeaderRequest">
+    <wsdl:part name="headerReq" element="NPMsh:headerMessage"/>
+  </wsdl:message>
+   <wsdl:message name="NMPHeaderResponse">
+    <wsdl:part name="headerRes" element="NPMsh:headerMessageResponse"/>
+  </wsdl:message>
+  <wsdl:message name="notificarIngresoDepositoRequest">
+    <wsdl:part name="payload" element="autCM:notificarIngresoDepositoRequest"/>
+  </wsdl:message>
+  <wsdl:message name="notificarIngresoDepositoResponse">
+    <wsdl:part name="payload" element="autCM:notificarIngresoDepositoResponse"/>
+  </wsdl:message>
+  <wsdl:portType name="AutomatizacionCM_ptt">
+    <wsdl:operation name="solicitarAmarre">
+      <wsdl:input message="tns:solicitarAmarreRequest"/>
+      <wsdl:output message="tns:solicitarAmarreResponse"/>
+      <wsdl:fault message="tns:AutomatizacionCMFault" name="AutomatizacionCMFaultMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="solicitarSalidaDeposito">
+      <wsdl:input message="tns:solicitarSalidaDepositoRequest"/>
+      <wsdl:output message="tns:solicitarSalidaDepositoResponse"/>
+      <wsdl:fault message="tns:AutomatizacionCMFault" name="AutomatizacionCMFaultMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="notificarIngresoDeposito">
+      <wsdl:input message="tns:notificarIngresoDepositoRequest"/>
+      <wsdl:output message="tns:notificarIngresoDepositoResponse"/>
+      <wsdl:fault message="tns:AutomatizacionCMFault" name="AutomatizacionCMFaultMessage"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:service name="AutomatizacionCM">
+    <wsdl:port name="AutomatizacionCMPort" binding="tns:AutomatizacionCMBinding">
+      <soap:address location=""/>
+    </wsdl:port>
+  </wsdl:service>
+  <binding name="AutomatizacionCMBinding" type="tns:AutomatizacionCM_ptt">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="solicitarAmarre">
+      <soap:operation style="document" soapAction="http://www.montepiedad.com.mx/Services/CasaMatriz/Automatizacion/solicitarAmarre"/>
+      <input>
+        <soap:body use="literal" parts="payload"/>
+        <soap:header message="tns:NMPHeaderRequest" part="headerReq" use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="payload"/>
+        <soap:header message="tns:NMPHeaderResponse" part="headerRes" use="literal"/>
+      </output>
+      <fault name="AutomatizacionCMFaultMessage">
+        <soap:fault name="AutomatizacionCMFaultMessage" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="solicitarSalidaDeposito">
+      <soap:operation style="document" soapAction="http://www.montepiedad.com.mx/Services/CasaMatriz/Automatizacion/solicitarSalidaDeposito"/>
+      <input>
+        <soap:body use="literal" parts="payload"/>
+        <soap:header message="tns:NMPHeaderRequest" part="headerReq" use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="payload"/>
+        <soap:header message="tns:NMPHeaderResponse" part="headerRes" use="literal"/>
+      </output>
+      <fault name="AutomatizacionCMFaultMessage">
+        <soap:fault name="AutomatizacionCMFaultMessage" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="notificarIngresoDeposito">
+      <soap:operation style="document" soapAction="http://www.montepiedad.com.mx/Services/CasaMatriz/Automatizacion/notificarIngresoDeposito"/>
+      <input>
+        <soap:body use="literal" parts="payload"/>
+        <soap:header message="tns:NMPHeaderRequest" part="headerReq" use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="payload"/>
+        <soap:header message="tns:NMPHeaderResponse" part="headerRes" use="literal"/>
+      </output>
+      <fault name="AutomatizacionCMFaultMessage">
+        <soap:fault name="AutomatizacionCMFaultMessage" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+</definitions>

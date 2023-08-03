@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:wsdl ref="OperacionPrendaria/ListasPreciosRapaport/Resources/WSDLs/RAPPricesWSDL"/>
+            <con:binding>
+                <con:name>RapaportPricesSoap</con:name>
+                <con:namespace>http://technet.rapaport.com/</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:tracingEnabled>true</oper:tracingEnabled>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:pipeline name="_onErrorHandler-a1e030f.796f47d5.7.158f9f755b2.N7ffc" type="error">
+            <con:stage name="ErrorStage">
+                <con:context>
+                    <con1:userNsDecl prefix="ns2" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                    <con1:varNsDecl prefix="tec" namespace="http://technet.rapaport.com/"/>
+                </con:context>
+                <con:actions>
+                    <con1:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.796f47d5.7.158f9f755b2.N7ffb</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:contains($body//*:faultstring, 'credentials')</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.796f47d5.7.158f9f755b2.N7ffa</con2:id>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML("<ns2:MessageError xmlns:ns2='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+	<ns2:codigoError>001</ns2:codigoError>
+	<ns2:descripcionError>Invalid credentials</ns2:descripcionError>
+	<ns2:tipoError>SecurityException</ns2:tipoError>
+	<ns2:severidad>4</ns2:severidad>
+</ns2:MessageError>")]]></con:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:default>
+                            <con1:replace varName="body" contents-only="true">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.796f47d5.7.158f9f755b2.N7ff9</con2:id>
+                                <con1:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("<ns2:MessageError xmlns:ns2='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+	<ns2:codigoError>",$fault//*:errorCode,"</ns2:codigoError>
+	<ns2:descripcionError>",$fault//*:reason,"</ns2:descripcionError>
+	<ns2:tipoError>",$fault//*:node,"</ns2:tipoError>
+	<ns2:severidad>4</ns2:severidad>
+</ns2:MessageError>"))]]></con:xqueryText>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:default>
+                    </con1:ifThenElse>
+                    <con1:log xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.796f47d5.7.158f9f755b2.N7ff8</con2:id>
+                        <con1:logLevel>warning</con1:logLevel>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:concat("RAPAPORT: Error Login", $body//*:descripcionError)</con:xqueryText>
+                        </con1:expr>
+                        <con1:message/>
+                    </con1:log>
+                </con:actions>
+            </con:stage>
+            <con:stage name="SendEmailStage">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="rap" namespace="http://xmlns.oracle.com/nmp/RapaportPrices/RapaportPrices"/>
+                    <con1:varNsDecl prefix="tec" namespace="http://technet.rapaport.com/"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="tmp" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.796f47d5.7.158f9f755b2.N7ff7</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con2:replace varName="body" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con1="http://www.bea.com/wli/sb/stages/publish/config">
+                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.796f47d5.7.158f9f755b2.N7ff6</con3:id>
+                        <con2:expr>
+                            <con3:xqueryText xmlns:con3="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("<sen:Email xmlns:sen='http://servicios.montedepiedad.com.mx/NMP/Schema/SendEmail'>
+    <sen:to>",dvm:lookup('OperacionPrendaria/ListasPreciosRapaport/Resources/DVMs/EmailRapaportDVM','id','1','to_errors','not found'),"</sen:to>
+    <sen:from>",dvm:lookup('OperacionPrendaria/ListasPreciosRapaport/Resources/DVMs/EmailRapaportDVM','id','1','from','not found'),"</sen:from>
+    <sen:subject>",dvm:lookup('OperacionPrendaria/ListasPreciosRapaport/Resources/DVMs/EmailRapaportDVM','id','1','env','not found'),"-Servicio: Listas de Precios RAPAPORT (Login)</sen:subject>
+    <sen:content>",$body//*:descripcionError,"</sen:content>
+    <sen:attachments>
+    </sen:attachments>
+</sen:Email>"))]]></con3:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/publish/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.796f47d5.7.158f9f755b2.N7ff5</con2:id>
+                        <con1:service ref="Utileria/EnvioCorreoUtil/Proxy Services/SendEmailPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                        <con1:operation>process</con1:operation>
+                        <con1:outboundTransform/>
+                    </con1:route>
+                    <con2:replace varName="body" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con1="http://www.bea.com/wli/sb/stages/publish/config">
+                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.796f47d5.7.158f9f755b2.N7ff4</con3:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$tmp/*</con:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:log xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.796f47d5.14.158ff19ec67.N7fec</con2:id>
+                        <con1:logLevel>warning</con1:logLevel>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">"RAPAPORT: Email Error Rapaport (Login)"</con:xqueryText>
+                        </con1:expr>
+                        <con1:message/>
+                    </con1:log>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-a1e030f.796f47d5.7.158f9f755b2.N7ff3</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairLogin_response" type="response">
+            <con:stage name="OutputStage">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="tec" namespace="http://technet.rapaport.com/"/>
+                </con:context>
+                <con:actions>
+                    <con1:log xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.796f47d5.a.158fa1f27d6.N7ffe</con2:id>
+                        <con1:logLevel>warning</con1:logLevel>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">"RAPAPORT: OK Login"</con:xqueryText>
+                        </con1:expr>
+                        <con1:message/>
+                    </con1:log>
+                    <con1:replace varName="body" contents-only="true" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.796f47d5.a.158fa1f27d6.N7ffd</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./tec:LoginResponse</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$header//*:Ticket/text()</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="_onErrorHandler-a1e030f.796f47d5.13.158ff0bfbce.N7ffb" type="error">
+            <con:stage name="ErrorStage">
+                <con:context>
+                    <con1:userNsDecl prefix="ns2" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                    <con1:varNsDecl prefix="tec" namespace="http://technet.rapaport.com/"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.796f47d5.10.158fe7aaf27.N7ff9</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("<ns2:MessageError xmlns:ns2='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>
+	<ns2:codigoError>",$fault//*:errorCode,"</ns2:codigoError>
+	<ns2:descripcionError>",$fault//*:reason,"</ns2:descripcionError>
+	<ns2:tipoError>",$fault//*:node,"</ns2:tipoError>
+	<ns2:severidad>4</ns2:severidad>
+</ns2:MessageError>"))]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:log xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.796f47d5.d.158fa62e6e2.N7fed</con2:id>
+                        <con1:logLevel>warning</con1:logLevel>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:concat("RAPAPORT: Error GetPriceSheet", $body//*:descripcionError)</con:xqueryText>
+                        </con1:expr>
+                        <con1:message/>
+                    </con1:log>
+                </con:actions>
+            </con:stage>
+            <con:stage name="SendEmailStage">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="rap" namespace="http://xmlns.oracle.com/nmp/RapaportPrices/RapaportPrices"/>
+                    <con1:varNsDecl prefix="tec" namespace="http://technet.rapaport.com/"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="tmp" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.796f47d5.12.158fe8b3e09.N7ffc</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con2:replace varName="body" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con1="http://www.bea.com/wli/sb/stages/publish/config">
+                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.796f47d5.12.158fe8b3e09.N7ffb</con3:id>
+                        <con2:expr>
+                            <con3:xqueryText xmlns:con3="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("<sen:Email xmlns:sen='http://servicios.montedepiedad.com.mx/NMP/Schema/SendEmail'>
+    <sen:to>",dvm:lookup('OperacionPrendaria/ListasPreciosRapaport/Resources/DVMs/EmailRapaportDVM','id','1','to_errors','not found'),"</sen:to>
+    <sen:from>",dvm:lookup('OperacionPrendaria/ListasPreciosRapaport/Resources/DVMs/EmailRapaportDVM','id','1','from','not found'),"</sen:from>
+    <sen:subject>",dvm:lookup('OperacionPrendaria/ListasPreciosRapaport/Resources/DVMs/EmailRapaportDVM','id','1','env','not found'),"-Servicio: Listas de Precios RAPAPORT (GetPriceSheet)</sen:subject>
+    <sen:content>",$body//*:descripcionError,"</sen:content>
+    <sen:attachments>
+    </sen:attachments>
+</sen:Email>"))]]></con3:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/publish/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.796f47d5.12.158fe8b3e09.N7ffa</con2:id>
+                        <con1:service ref="Utileria/EnvioCorreoUtil/Proxy Services/SendEmailPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                        <con1:operation>process</con1:operation>
+                        <con1:outboundTransform/>
+                    </con1:route>
+                    <con2:replace varName="body" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con1="http://www.bea.com/wli/sb/stages/publish/config">
+                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.796f47d5.12.158fe8b3e09.N7ff9</con3:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$tmp/*</con:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:log xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.796f47d5.b.158fa25387a.N7ff6</con2:id>
+                        <con1:logLevel>warning</con1:logLevel>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">"RAPAPORT: Email Error Rapaport (GetPriceSheet)"</con:xqueryText>
+                        </con1:expr>
+                        <con1:message/>
+                    </con1:log>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-a1e030f.796f47d5.12.158fe8b3e09.N7ff8</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairGetPriceSheet_request" type="request">
+            <con:stage name="GetPriceStage" errorHandler="_onErrorHandler-a1e030f.796f47d5.13.158ff0bfbce.N7ffb">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="rap" namespace="http://xmlns.oracle.com/nmp/RapaportPrices/RapaportPrices"/>
+                    <con1:varNsDecl prefix="tec" namespace="http://technet.rapaport.com/"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="shape" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.796f47d5.f.158fe61b24b.N7ffc</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:substring-before($body//*:shape, ':')</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:log xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.796f47d5.f.158fe61b24b.N7ffd</con2:id>
+                        <con1:logLevel>warning</con1:logLevel>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:concat("RAPAPORT: Star GetPriceSheet ",$shape)</con:xqueryText>
+                        </con1:expr>
+                        <con1:message/>
+                    </con1:log>
+                    <con1:assign varName="GetPricesHeaderInput" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.796f47d5.b.158fa25387a.N7ffb</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("<soapenv:Header xmlns:soapenv='http://schemas.xmlsoap.org/soap/envelope/' xmlns:tec='http://technet.rapaport.com/'>
+	<tec:AuthenticationTicketHeader>
+		<tec:Ticket>",fn:substring-after($body//*:shape, ':'),"</tec:Ticket>
+	</tec:AuthenticationTicketHeader>
+</soapenv:Header>"))]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con:wsCallout xmlns:con="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con1:id>_ActionId-a1e030f.796f47d5.b.158fa25387a.N7ffa</con1:id>
+                        <con:service ref="OperacionPrendaria/ListasPreciosRapaport/Business Services/RAPpricesBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                        <con:operation>GetPriceSheet</con:operation>
+                        <con:request>
+                            <con:body wrapped="true">body</con:body>
+                            <con:header>GetPricesHeaderInput</con:header>
+                        </con:request>
+                        <con:response>
+                            <con:body wrapped="true">body</con:body>
+                            <con:header/>
+                        </con:response>
+                        <con:requestTransform>
+                            <con:replace varName="body" contents-only="true">
+                                <con1:id>_ActionId-a1e030f.796f47d5.8.158f9f7801d.N7ffc</con1:id>
+                                <con:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(fn:concat("&lt;tec:GetPriceSheet xmlns:tec='http://technet.rapaport.com/'>
+	&lt;tec:shape>",$shape,"&lt;/tec:shape>
+&lt;/tec:GetPriceSheet>"))</con:xqueryText>
+                                </con:expr>
+                            </con:replace>
+                        </con:requestTransform>
+                        <con:responseTransform/>
+                    </con:wsCallout>
+                    <con1:log xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.796f47d5.d.158fa62e6e2.N7fec</con2:id>
+                        <con1:logLevel>warning</con1:logLevel>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:concat("RAPAPORT: OK GetPriceSheet ",$shape)</con:xqueryText>
+                        </con1:expr>
+                        <con1:message/>
+                    </con1:log>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairLogin_request" type="request">
+            <con:stage name="LoginStage">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="rap" namespace="http://xmlns.oracle.com/nmp/RapaportPrices/RapaportPrices"/>
+                    <con1:varNsDecl prefix="tec" namespace="http://technet.rapaport.com/"/>
+                </con:context>
+                <con:actions>
+                    <con1:log xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.796f47d5.10.158fe7aaf27.N7ff8</con2:id>
+                        <con1:logLevel>warning</con1:logLevel>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">"RAPAPORT: Star Login"</con:xqueryText>
+                        </con1:expr>
+                        <con1:message/>
+                    </con1:log>
+                    <con1:assign varName="username" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.796f47d5.12.158fe8b3e09.N7ffe</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config">dvm:lookup('OperacionPrendaria/ListasPreciosRapaport/Resources/DVMs/CredencialesRapaportDVM','env','default','username','not found')</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="password" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.796f47d5.12.158fe8b3e09.N7ffd</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config">dvm:lookup('OperacionPrendaria/ListasPreciosRapaport/Resources/DVMs/CredencialesRapaportDVM','env','default','password','not found')</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairGetPriceSheet_response" type="response"/>
+        <con:flow>
+            <con:branch-node type="operation" name="BranchNode1">
+                <con:branch-table>
+                    <con:branch name="Login">
+                        <con:operator>equals</con:operator>
+                        <con:value>Login</con:value>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairLogin">
+                                <con:comment/>
+                                <con:request>PipelinePairLogin_request</con:request>
+                                <con:response>PipelinePairLogin_response</con:response>
+                            </con:pipeline-node>
+                            <con:route-node name="RouteNodeLogin" error-handler="_onErrorHandler-a1e030f.796f47d5.7.158f9f755b2.N7ffc">
+                                <con:comment/>
+                                <con:context>
+                                    <con1:userNsDecl prefix="rap" namespace="http://xmlns.oracle.com/nmp/RapaportPrices/RapaportPrices"/>
+                                    <con1:userNsDecl prefix="tec" namespace="http://technet.rapaport.com/"/>
+                                </con:context>
+                                <con:actions>
+                                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.796f47d5.7.158f9f755b2.N7ff2</con2:id>
+                                        <con1:service ref="OperacionPrendaria/ListasPreciosRapaport/Business Services/RAPpricesBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                        <con1:operation>Login</con1:operation>
+                                        <con1:outboundTransform>
+                                            <con2:replace varName="body" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.796f47d5.7.158f9f755b2.N7ff1</con3:id>
+                                                <con2:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("<tec:Login xmlns:tec='http://technet.rapaport.com/'>
+	<tec:Username>",$username,"</tec:Username>
+	<tec:Password>",$password,"</tec:Password>
+</tec:Login>"))]]></con:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con1:outboundTransform>
+                                        <con1:responseTransform/>
+                                    </con1:route>
+                                </con:actions>
+                            </con:route-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="GetPriceSheet">
+                        <con:operator>equals</con:operator>
+                        <con:value>GetPriceSheet</con:value>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairGetPriceSheet">
+                                <con:comment/>
+                                <con:request>PipelinePairGetPriceSheet_request</con:request>
+                                <con:response>PipelinePairGetPriceSheet_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+    <aler:alertRules xsi:nil="true" xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+</con:pipelineEntry>

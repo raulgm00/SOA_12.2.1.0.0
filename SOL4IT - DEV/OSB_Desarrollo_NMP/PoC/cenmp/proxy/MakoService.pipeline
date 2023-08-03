@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="PoC/cenmp/resources/wsdl/InterfaceMako" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:con4="http://www.bea.com/wli/sb/services/bindings/config" xmlns:env="http://www.bea.com/wli/config/env" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config"/>
+            <con:binding>
+                <con:name>InterfaceMakoSOAP</con:name>
+                <con:namespace>http://www.mako.com/InterfaceMako/</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations>
+            <oper:logging enabled="false" level="debug"/>
+            <oper:monitoring enabled="false" level="pipeline" aggregationInterval="10"/>
+            <oper:reporting>false</oper:reporting>
+        </oper:operations>
+    </con:coreEntry>
+    <con:router xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+        <con:pipeline type="request" name="PipelinePairNodeGetCourses_request">
+            <con:stage name="StgGetCourses">
+                <con:context>
+                    <con2:userNsDecl namespace="http://54.85.144.75/" prefix="ns1"/>
+                    <con2:varNsDecl namespace="http://nmp.com/CommonDataModel/1.0/Common" prefix="com"/>
+                </con:context>
+                <con:actions>
+                    <con3:wsCallout>
+                        <con2:id>_ActionId-2144650940358600938-65ef84cd.14727460a8f.-7fbf</con2:id>
+                        <con3:service xsi:type="ref:BusinessServiceRef" ref="PoC/cenmp/service/bsMakoNMPService" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con3:operation>obtenerOfertaCursos</con3:operation>
+                        <con3:request>
+                            <con3:body wrapped="true">request</con3:body>
+                        </con3:request>
+                        <con3:response>
+                            <con3:body wrapped="true">response</con3:body>
+                        </con3:response>
+                        <con3:requestTransform>
+                            <con3:assign varName="request">
+                                <con2:id>_ActionId-2144650940358600938-65ef84cd.14727460a8f.-7f90</con2:id>
+                                <con3:expr>
+                                    <con2:xqueryText><![CDATA[<soap-env:Body>
+   <ns:obtenerOfertaCursos xmlns:ns="http://54.85.144.75/">
+	<fechaInicio>{string($body/com:GetCoursesIM/com:InitDate)}</fechaInicio>
+	<fechaFinal>{string($body/com:GetCoursesIM/com:EndDate)}</fechaFinal>
+	<centro>{string($body/com:GetCoursesIM/com:Center)}</centro>
+   </ns:obtenerOfertaCursos>
+</soap-env:Body>]]></con2:xqueryText>
+                                </con3:expr>
+                            </con3:assign>
+                        </con3:requestTransform>
+                        <con3:responseTransform>
+                            <con3:javaCallout varName="stringMakoResult">
+                                <con2:id>_ActionId-2144650940358600938-65ef84cd.14727460a8f.-7fbb</con2:id>
+                                <con3:archive ref="PoC/cenmp/resources/jar/utilities"/>
+                                <con3:className>com.nmp.JSONConverter</con3:className>
+                                <con3:method>public static java.lang.String convertJSONtoXML(java.lang.String)</con3:method>
+                                <con3:expr>
+                                    <con2:xqueryText>string($response/ns1:obtenerOfertaCursosResponse/result)</con2:xqueryText>
+                                </con3:expr>
+                            </con3:javaCallout>
+                            <con3:assign varName="xmlMakoResult">
+                                <con2:id>_ActionId-2144650940358600938-65ef84cd.14727460a8f.-7fb9</con2:id>
+                                <con3:expr>
+                                    <con2:xqueryText>fn-bea:inlinedXML($stringMakoResult)</con2:xqueryText>
+                                </con3:expr>
+                            </con3:assign>
+                            <con3:replace varName="body">
+                                <con2:id>_ActionId-2144650940358600938-65ef84cd.14727460a8f.-7fb7</con2:id>
+                                <con3:location>
+                                    <con2:xpathText>./*</con2:xpathText>
+                                </con3:location>
+                                <con3:expr>
+                                    <con2:xqueryTransform>
+                                        <con2:resource ref="PoC/cenmp/resources/xq/Tx_GetCoursesResponse_to_Cononical"/>
+                                        <con2:param name="o">
+                                            <con2:path>$xmlMakoResult</con2:path>
+                                        </con2:param>
+                                    </con2:xqueryTransform>
+                                </con3:expr>
+                            </con3:replace>
+                            <con3:validate>
+                                <con2:id>_ActionId-2144650940358600938-65ef84cd.14727460a8f.-7fb5</con2:id>
+                                <con3:schema ref="PoC/cenmp/resources/xsd/Messages"/>
+                                <con3:schemaElement xmlns:com="http://nmp.com/CommonDataModel/1.0/Common">com:GetCoursesResponseIM</con3:schemaElement>
+                                <con3:varName>body</con3:varName>
+                                <con3:location>
+                                    <con2:xpathText>./*</con2:xpathText>
+                                </con3:location>
+                            </con3:validate>
+                        </con3:responseTransform>
+                    </con3:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="PipelinePairNodeGetCourses_response"/>
+        <con:pipeline type="request" name="PipelinePairNodeGetDailySalesReport_request">
+            <con:stage name="StgGetDailyReport">
+                <con:context>
+                    <con2:userNsDecl namespace="http://54.85.144.75/" prefix="ns1"/>
+                    <con2:varNsDecl namespace="http://nmp.com/CommonDataModel/1.0/Common" prefix="com"/>
+                </con:context>
+                <con:actions>
+                    <con3:wsCallout>
+                        <con2:id>_ActionId-2144650940358600938-65ef84cd.14727460a8f.-7f02</con2:id>
+                        <con3:service xsi:type="ref:BusinessServiceRef" ref="PoC/cenmp/service/bsMakoNMPService" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con3:operation>reporteVentasDiario</con3:operation>
+                        <con3:request>
+                            <con3:body wrapped="true">request</con3:body>
+                        </con3:request>
+                        <con3:response>
+                            <con3:body wrapped="true">response</con3:body>
+                        </con3:response>
+                        <con3:requestTransform>
+                            <con3:assign varName="request">
+                                <con2:id>_ActionId-2144650940358600938-65ef84cd.14727460a8f.-7ecc</con2:id>
+                                <con3:expr>
+                                    <con2:xqueryText><![CDATA[<soap-env:Body>
+   <ns:reporteVentasDiario xmlns:ns="http://54.85.144.75/">
+	<fechaInicio>{string($body/com:GetDailySalesReportIM/com:InitDate)}</fechaInicio>
+	<fechaFinal>{string($body/com:GetDailySalesReportIM/com:EndDate)}</fechaFinal>
+	<centro>{string($body/com:GetDailySalesReportIM/com:Center)}</centro>
+  </ns:reporteVentasDiario>
+</soap-env:Body>]]></con2:xqueryText>
+                                </con3:expr>
+                            </con3:assign>
+                        </con3:requestTransform>
+                        <con3:responseTransform>
+                            <con3:javaCallout varName="stringMakoResult">
+                                <con2:id>_ActionId-2144650940358600938-65ef84cd.14727460a8f.-7efe</con2:id>
+                                <con3:archive ref="PoC/cenmp/resources/jar/utilities"/>
+                                <con3:className>com.nmp.JSONConverter</con3:className>
+                                <con3:method>public static java.lang.String convertJSONtoXML(java.lang.String)</con3:method>
+                                <con3:expr>
+                                    <con2:xqueryText>string($response/ns1:reporteVentasDiarioResponse/result)</con2:xqueryText>
+                                </con3:expr>
+                            </con3:javaCallout>
+                            <con3:assign varName="xmlMakoResult">
+                                <con2:id>_ActionId-2144650940358600938-65ef84cd.14727460a8f.-7efc</con2:id>
+                                <con3:expr>
+                                    <con2:xqueryText>fn-bea:inlinedXML($stringMakoResult)</con2:xqueryText>
+                                </con3:expr>
+                            </con3:assign>
+                            <con3:replace varName="body">
+                                <con2:id>_ActionId-2144650940358600938-65ef84cd.14727460a8f.-7efa</con2:id>
+                                <con3:location>
+                                    <con2:xpathText>./*</con2:xpathText>
+                                </con3:location>
+                                <con3:expr>
+                                    <con2:xqueryTransform>
+                                        <con2:resource ref="PoC/cenmp/resources/xq/Tx_GetDailySaleReport_to_Cononical"/>
+                                        <con2:param name="o">
+                                            <con2:path>$xmlMakoResult</con2:path>
+                                        </con2:param>
+                                    </con2:xqueryTransform>
+                                </con3:expr>
+                            </con3:replace>
+                            <con3:validate>
+                                <con2:id>_ActionId-2144650940358600938-65ef84cd.14727460a8f.-7ef8</con2:id>
+                                <con3:schema ref="PoC/cenmp/resources/xsd/Messages"/>
+                                <con3:schemaElement xmlns:com="http://nmp.com/CommonDataModel/1.0/Common">com:GetDailySalesReportResponseIM</con3:schemaElement>
+                                <con3:varName>body</con3:varName>
+                                <con3:location>
+                                    <con2:xpathText>./*</con2:xpathText>
+                                </con3:location>
+                            </con3:validate>
+                        </con3:responseTransform>
+                    </con3:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="PipelinePairNodeGetDailySalesReport_response"/>
+        <con:flow>
+            <con:branch-node type="operation" name="BranchNode">
+                <con:context/>
+                <con:branch-table>
+                    <con:branch name="GetCourses">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairNodeGetCourses">
+                                <con:request>PipelinePairNodeGetCourses_request</con:request>
+                                <con:response>PipelinePairNodeGetCourses_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="GetDailySalesReport">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairNodeGetDailySalesReport">
+                                <con:request>PipelinePairNodeGetDailySalesReport_request</con:request>
+                                <con:response>PipelinePairNodeGetDailySalesReport_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

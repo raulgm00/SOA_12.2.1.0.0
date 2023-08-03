@@ -1,0 +1,107 @@
+<wsdl:definitions name="NMPFlujoVehiculosSinResguardoWSDL" targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Services/VehiculoSinResguardo/Flujo" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Services/VehiculoSinResguardo/Flujo" xmlns:inp1="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculoSinResguardo/Flujo" xmlns:nmph="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:smcmnsn="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage">
+    <wsdl:types>
+        <xsd:schema>
+            <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculoSinResguardo/Flujo" schemaLocation="../Schemas/NMPFlujoVehiculosSinResguardoSvcXSD.xsd"/>
+        </xsd:schema>
+        <xsd:schema>
+            <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+        </xsd:schema>
+        <xsd:schema>
+            <xsd:import schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="notificarInicioMessageRequest">
+        <wsdl:part name="request" element="inp1:notificarInicioEventoRequest"/>
+    </wsdl:message>
+    <wsdl:message name="notificarInicioMessageResponse">
+        <wsdl:part name="response" element="inp1:notificarInicioEventoResponse"/>
+    </wsdl:message>
+    <wsdl:message name="notificarFinMessageRequest">
+        <wsdl:part name="request" element="inp1:notificarFinEventoRequest"/>
+    </wsdl:message>
+    <wsdl:message name="notificarFinMessageResponse">
+        <wsdl:part name="response" element="inp1:notificarFinEventoResponse"/>
+    </wsdl:message>
+    <wsdl:message name="iniciarFlujoMessageRequest">
+        <wsdl:part name="request" element="inp1:iniciarFlujoVehiculoSinResguardoRequest"/>
+    </wsdl:message>
+    <wsdl:message name="iniciarFlujoMessageResponse">
+        <wsdl:part name="response" element="inp1:iniciarFlujoVehiculoSinResguardoResponse"/>
+    </wsdl:message>
+    <wsdl:message name="NMPStandardHeaderReq">
+        <wsdl:part name="header" element="nmph:headerMessage"/>
+    </wsdl:message>
+    <wsdl:message name="NMPStandardHeaderRes">
+        <wsdl:part name="header" element="nmph:headerMessageResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="flujoVehiculo_ptt">
+        <wsdl:operation name="iniciarFlujo">
+            <wsdl:input message="tns:iniciarFlujoMessageRequest"/>
+            <wsdl:output message="tns:iniciarFlujoMessageResponse"/>
+            <wsdl:fault name="flujoVehiculoFault" message="tns:flujoVehiculoFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="notificarInicioEvento">
+            <wsdl:input message="tns:notificarInicioMessageRequest"/>
+            <wsdl:output message="tns:notificarInicioMessageResponse"/>
+            <wsdl:fault name="flujoVehiculoFault" message="tns:flujoVehiculoFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="notificarFin">
+            <wsdl:input message="tns:notificarFinMessageRequest"/>
+            <wsdl:output message="tns:notificarFinMessageResponse"/>
+            <wsdl:fault name="flujoVehiculoFault" message="tns:flujoVehiculoFault"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="flujoVehiculo_bind" type="tns:flujoVehiculo_ptt">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="iniciarFlujo">
+            <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Scervices/VehiculoSinResguardo/Flujo/iniciarFlujo"/>
+            <wsdl:input>
+                <soap:body use="literal" parts="request"/>
+                <soap:header message="tns:NMPStandardHeaderReq" part="header" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" parts="response"/>
+                <soap:header message="tns:NMPStandardHeaderRes" part="header" use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="flujoVehiculoFault">
+                <soap:fault name="flujoVehiculoFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="notificarInicioEvento">
+            <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Scervices/VehiculoSinResguardo/Flujo/notificarInicioEvento"/>
+            <wsdl:input>
+                <soap:body use="literal" parts="request"/>
+                <soap:header message="tns:NMPStandardHeaderReq" part="header" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" parts="response"/>
+                <soap:header message="tns:NMPStandardHeaderRes" part="header" use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="flujoVehiculoFault">
+                <soap:fault name="flujoVehiculoFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="notificarFin">
+            <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Scervices/VehiculoSinResguardo/Flujo/notificarFin"/>
+            <wsdl:input>
+                <soap:body use="literal" parts="request"/>
+                <soap:header message="tns:NMPStandardHeaderReq" part="header" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" parts="response"/>
+                <soap:header message="tns:NMPStandardHeaderRes" part="header" use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="flujoVehiculoFault">
+                <soap:fault name="flujoVehiculoFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="flujoVehiculo_ptt">
+        <wsdl:port name="flujoVehiculo_pttPort" binding="tns:flujoVehiculo_bind">
+            <soap:address location="http://servicios.montedepiedad.com.mx/NMP/OperacionCredito/FlujoVehiculoSinResguardo"/>
+        </wsdl:port>
+    </wsdl:service>
+    <wsdl:message name="flujoVehiculoFault">
+        <wsdl:part name="fault" element="smcmnsn:messageError"/>
+    </wsdl:message>
+</wsdl:definitions>

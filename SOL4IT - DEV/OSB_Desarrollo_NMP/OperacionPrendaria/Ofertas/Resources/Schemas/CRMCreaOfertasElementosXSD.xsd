@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://tempuri.org/">
+  <xs:element name="Guarda">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="1" name="Ofertas" type="tns:CreaOfertasRequest"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="CreaOfertasRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Validador">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="FuenteDato" type="xs:string"/>
+          <xs:element minOccurs="1" maxOccurs="1" name="IdCliente" nillable="true" type="xs:int"/>
+          <xs:element minOccurs="0" maxOccurs="1" name="CredencialNMP" type="xs:string"/>
+          <xs:element minOccurs="0" maxOccurs="1" name="IdCampania" type="xs:string"/>
+          <xs:element minOccurs="0" maxOccurs="1" name="Partida" type="xs:string"/>
+          <xs:element minOccurs="0" maxOccurs="1" name="UsuarioValuador" type="xs:string"/>
+          <xs:element minOccurs="0" maxOccurs="1" name="DatosTransaccion" type="tns:Transaccion"/>
+          <xs:element minOccurs="0" maxOccurs="1" name="Ofertas" type="tns:ArrayOfOfertaSIVA3"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="Validador" abstract="true"/>
+  <xs:complexType name="OfertaSIVA3">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Validador">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="Identificador" type="xs:string"/>
+          <xs:element minOccurs="1" maxOccurs="1" name="FechaCreacion" nillable="true" type="xs:dateTime"/>
+          <xs:element minOccurs="1" maxOccurs="1" name="FechaModificacion" nillable="true" type="xs:dateTime"/>
+          <xs:element minOccurs="0" maxOccurs="1" name="EstadoAceptacion" type="xs:string"/>
+          <xs:element minOccurs="0" maxOccurs="1" name="Descripcion" type="xs:string"/>
+          <xs:element minOccurs="0" maxOccurs="1" name="NumeroContrato" type="xs:string"/>
+          <xs:element minOccurs="0" maxOccurs="1" name="TipoOferta" type="xs:string"/>
+          <xs:element minOccurs="0" maxOccurs="1" name="TipoProducto" type="xs:string"/>
+          <xs:element minOccurs="0" maxOccurs="1" name="Ramo" type="xs:string"/>
+          <xs:element minOccurs="0" maxOccurs="1" name="SubRamo" type="xs:string"/>
+          <xs:element minOccurs="0" maxOccurs="1" name="MontoMinimo" type="tns:montoMinimo"/>
+          <xs:element minOccurs="0" maxOccurs="1" name="MontoMaximo" type="tns:montoMaximo"/>
+          <xs:element minOccurs="0" maxOccurs="1" name="Tasa" type="tns:tasa"/>
+          <xs:element minOccurs="1" maxOccurs="1" name="CATAnual" type="xs:decimal"/>
+          <xs:element minOccurs="1" maxOccurs="1" name="CATMensual" type="xs:decimal"/>
+          <xs:element minOccurs="1" maxOccurs="1" name="CATDiario" type="xs:decimal"/>
+          <xs:element minOccurs="1" maxOccurs="1" name="PlazoRefrendo" type="xs:int"/>
+          <xs:element minOccurs="0" maxOccurs="1" name="PlazoDesempenio" type="tns:plazoDesempenio"/>
+          <xs:element minOccurs="0" maxOccurs="1" name="TipoPlazo" type="xs:string"/>
+          <xs:element minOccurs="0" maxOccurs="1" name="TotalRefrendos" type="tns:totalRefrendos"/>
+          <xs:element minOccurs="0" maxOccurs="1" name="Comentarios" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="montoMinimo">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="Hightlight" type="xs:boolean" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="montoMaximo">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="Hightlight" type="xs:boolean" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="tasa">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="Hightlight" type="xs:boolean" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="plazoDesempenio">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="Hightlight" type="xs:boolean" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="totalRefrendos">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="Hightlight" type="xs:boolean" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="Transaccion">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="IdTransaccion" type="xs:string"/>
+      <xs:element minOccurs="1" maxOccurs="1" name="Sucursal" nillable="true" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ArrayOfOfertaSIVA3">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="OfertaSIVA3" nillable="true" type="tns:OfertaSIVA3"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="GuardaResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="1" name="GuardaResult" type="tns:RespuestaOfBoolean"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="RespuestaOfBoolean">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="Codigo" type="xs:int"/>
+      <xs:element minOccurs="0" maxOccurs="1" name="Mensaje" type="xs:string"/>
+      <xs:element minOccurs="1" maxOccurs="1" name="DetalleRespuesta" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

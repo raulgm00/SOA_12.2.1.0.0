@@ -1,0 +1,58 @@
+<wsdl:definitions name="InterfaceMako" targetNamespace="http://www.mako.com/InterfaceMako/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://www.mako.com/InterfaceMako/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsd1="http://nmp.com/CommonDataModel/1.0/Common">
+	<wsdl:types>
+		<xsd:schema>
+			<xsd:import namespace="http://nmp.com/CommonDataModel/1.0/Common" schemaLocation="../xsd/Messages.xsd">
+    	</xsd:import>
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:message name="GetCoursesRequest">
+		<wsdl:part element="xsd1:GetCoursesIM" name="parameters"/>
+	</wsdl:message>
+	<wsdl:message name="GetCoursesResponse">
+		<wsdl:part element="xsd1:GetCoursesResponseIM" name="parameters"/>
+	</wsdl:message>
+	<wsdl:message name="GetDailySalesReportRequest">
+		<wsdl:part name="parameters" element="xsd1:GetDailySalesReportIM">
+  	</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="GetDailySalesReportResponse">
+		<wsdl:part name="parameters" element="xsd1:GetDailySalesReportResponseIM">
+  	</wsdl:part>
+	</wsdl:message>
+	<wsdl:portType name="InterfaceMako">
+		<wsdl:operation name="GetCourses">
+			<wsdl:input message="tns:GetCoursesRequest"/>
+			<wsdl:output message="tns:GetCoursesResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="GetDailySalesReport">
+			<wsdl:input message="tns:GetDailySalesReportRequest"/>
+			<wsdl:output message="tns:GetDailySalesReportResponse"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="InterfaceMakoSOAP" type="tns:InterfaceMako">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="GetCourses">
+			<soap:operation soapAction="http://www.mako.com/InterfaceMako/GetCourses"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetDailySalesReport">
+			<soap:operation soapAction="http://www.mako.com/InterfaceMako/GetCourses"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>		
+	</wsdl:binding>
+	<wsdl:service name="InterfaceMako">
+		<wsdl:port binding="tns:InterfaceMakoSOAP" name="InterfaceMakoSOAP">
+			<soap:address location="http://www.nmp.com/"/>
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

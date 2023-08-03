@@ -1,0 +1,80 @@
+<adapter-config name="NMPSolicitudesClienteDB" adapter="db" wsdlLocation="../WSDLs/NMPSolicitudesVsrDbWSDL.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  <connection-factory UIConnectionName="CMSolicitudesLOCALHOST" location="eis/DB/cmsolicitudesXA"/>
+  <endpoint-interaction portType="NMPSolicitudesVSRDB_ptt" operation="guardarSolicitud">
+    <interaction-spec className="oracle.tip.adapter.db.DBWriteInteractionSpec">
+      <property name="DescriptorName" value="NMPSolicitudesClienteDB.NmpSolicitudesClientesInfo"/>
+      <property name="DmlType" value="insert"/>
+      <property name="MappingsMetaDataURL" value="NMPSolicitudesClienteDB-MAP.xml"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+      <property name="DetectOmissions" value="true"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  <endpoint-interaction portType="NMPSolicitudesVSRDB_ptt" operation="actualizarSolicitud">
+    <interaction-spec className="oracle.tip.adapter.db.DBWriteInteractionSpec">
+      <property name="DescriptorName" value="NMPSolicitudesClienteDB.NmpSolicitudesClientesInfo"/>
+      <property name="DmlType" value="update"/>
+      <property name="MappingsMetaDataURL" value="NMPSolicitudesClienteDB-MAP.xml"/>
+      <property name="DetectOmissions" value="true"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  <endpoint-interaction portType="NMPSolicitudesVSRDB_ptt" operation="eliminarSolicitud">
+    <interaction-spec className="oracle.tip.adapter.db.DBWriteInteractionSpec">
+      <property name="DescriptorName" value="NMPSolicitudesClienteDB.NmpSolicitudesClientesInfo"/>
+      <property name="DmlType" value="delete"/>
+      <property name="MappingsMetaDataURL" value="NMPSolicitudesClienteDB-MAP.xml"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  <endpoint-interaction portType="NMPSolicitudesVSRDB_ptt" operation="consultarSolicitud">
+    <interaction-spec className="oracle.tip.adapter.db.DBReadInteractionSpec">
+      <property name="DescriptorName" value="NMPSolicitudesClienteDB.NmpSolicitudesClientesInfo"/>
+      <property name="QueryName" value="readObject"/>
+      <property name="MappingsMetaDataURL" value="NMPSolicitudesClienteDB-MAP.xml"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  <endpoint-interaction portType="NMPSolicitudesVSRDB_ptt" operation="asociarSolicitud">
+    <interaction-spec className="oracle.tip.adapter.db.DBWriteInteractionSpec">
+      <property name="DescriptorName" value="NMPSolicitudesClienteDB.NmpSolicitudesClientesInfo"/>
+      <property name="DmlType" value="merge"/>
+      <property name="MappingsMetaDataURL" value="NMPSolicitudesClienteDB-MAP.xml"/>
+      <property name="OptimizeMerge" value="true"/>
+      <property name="DetectOmissions" value="true"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+ <endpoint-interaction portType="NMPSolicitudesVSRDB_ptt" operation="validarVehiculo">
+    <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+      <property name="SqlString" value="select          sol.folio_tramite,   sol.num_cliente,      sol.ESTADO_SOLICITUD,         sol.id_contrato, trunc(sol.fecha_creacion)         from          NMP_SOLICITUDES_CLIENTES_INFO sol,         nmp_vehiculo_info veh         where sol.NUM_CLIENTE = veh.NUM_CLIENTE         and sol.FOLIO_TRAMITE = veh.FOLIO_TRAMITE         and veh.VIN = :vin         and sol.ESTADO_SOLICITUD in (1,2)         and nvl(:folioTramite,1) = 1         and nvl(:numCliente,1) = 1 order by sol.fecha_creacion desc"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  <endpoint-interaction portType="NMPSolicitudesVSRDB_ptt" operation="validarVehiculoActualizar">
+    <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+      <property name="SqlString" value="select          sol.folio_tramite,   sol.num_cliente,      sol.ESTADO_SOLICITUD,         sol.id_contrato, trunc(sol.fecha_creacion)      from          NMP_SOLICITUDES_CLIENTES_INFO sol,         nmp_vehiculo_info veh         where sol.NUM_CLIENTE = veh.NUM_CLIENTE         and sol.FOLIO_TRAMITE = veh.FOLIO_TRAMITE         and veh.VIN = :vin         and sol.ESTADO_SOLICITUD in (1,2)         and sol.folio_tramite not in (:folioTramite)         and sol.NUM_CLIENTE not in (:numCliente) order by sol.fecha_creacion desc"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  <endpoint-interaction portType="NMPSolicitudesVSRDB_ptt" operation="consultarSolicitudesCliente">
+    <interaction-spec className="oracle.tip.adapter.db.DBReadInteractionSpec">
+      <property name="DescriptorName" value="NMPSolicitudesClienteDB.NmpSolicitudesClientesInfo"/>
+      <property name="QueryName" value="NMPSolicitudesClienteSelect"/>
+      <property name="MappingsMetaDataURL" value="NMPSolicitudesClienteDB-MAP.xml"/>
+      <property name="ReturnSingleResultSet" value="false"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  <endpoint-interaction portType="NMPSolicitudesVSRDB_ptt" operation="validaEstadoFlujoSolicitud">
+    <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+      <property name="SqlString" value="select count(id_etapa) from NMP_ETAPAS_FLUJO_INFO where id_etapa = (select estado_flujo from nmp_solicitudes_clientes_info where NUM_CLIENTE = #numCliente and folio_tramite = #folioTramite) and id_etapa_siguiente = #estadoFlujo"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  <endpoint-interaction portType="NMPSolicitudesVSRDB_ptt" operation="consultarEstadoSolicitud">
+    <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+      <property name="SqlString" value="SELECT  NUM_CLIENTE,  FOLIO_TRAMITE,  ESTADO_SOLICITUD,  ESTADO_FLUJO,  ID_MOTIVO_RECHAZO, FECHA_CREACION FROM NMP_SOLICITUDES_CLIENTES_INFO  WHERE (NUM_CLIENTE = :numCliente) AND trunc(FECHA_CREACION) >= nvl(:fechaInicial,trunc(FECHA_CREACION)) AND trunc(FECHA_CREACION) &lt;=  nvl(:fechaFinal,trunc(FECHA_CREACION)) order by fecha_creacion desc"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+</adapter-config>

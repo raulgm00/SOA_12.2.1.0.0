@@ -1,0 +1,160 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Sun Nov 27 20:03:47 CST 2016
+  Author:  Soaint
+  Type: BPEL 2.0 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="ObtenerEmpleadoBPEL" targetNamespace="http://xmlns.oracle.com/ObtenerEmpleadoApp/ObtenerEmpleadoPrj/ObtenerEmpleadoBPEL" xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:client="http://xmlns.oracle.com/ObtenerEmpleadoApp/ObtenerEmpleadoPrj/ObtenerEmpleadoBPEL" xmlns:ora="http://schemas.oracle.com/xpath/extension" xmlns:ui="http://xmlns.oracle.com/soa/designer" xmlns:bpelx="http://schemas.oracle.com/bpel/extension" xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xml:id="id_1"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/ObtenerEmpleadoApp/ObtenerEmpleadoPrj/VwEmpleadoRHDB"
+         xmlns:ns4="http://qualitas.com.mx/comunes/objetosComunes/v1/"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/db/top/VwEmpleadoRHDB"
+         xmlns:ns3="http://qualitas.com.mx/Personas/Empleado/obtenerEmpleadoPorNumero/v1/"
+         xmlns:ns5="http://qualitas.com.mx/Personas/Empleado/v1/"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ess="http://xmlns.oracle.com/scheduler" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:ns6="http://xmlns.oracle.com/pcbpel/adapter/db/GPA_App/ObtenerEmpleadoPrj/VwEmpleadoRHDB"
+         xmlns:ns7="http://xmlns.oracle.com/pcbpel/adapter/db/VwEmpleadoRHDB">
+
+    <import ui:processWSDL="true" namespace="http://xmlns.oracle.com/ObtenerEmpleadoApp/ObtenerEmpleadoPrj/ObtenerEmpleadoBPEL" location="../WSDLs/ObtenerEmpleadoBPEL.wsdl" importType="http://schemas.xmlsoap.org/wsdl/" xml:id="id_2"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks xml:id="id_3">
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="obtenerempleadobpel_client" partnerLinkType="client:ObtenerEmpleadoBPEL" myRole="ObtenerEmpleadoBPELProvider" xml:id="id_4"/>
+    <partnerLink name="VwEmpleadoRHDB" partnerLinkType="ns6:VwEmpleadoRHDB_plt" partnerRole="VwEmpleadoRHDB_role"
+                 xml:id="id_156"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables xml:id="id_5">
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:ObtenerEmpleadoBPELRequestMessage" xml:id="id_6"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:ObtenerEmpleadoBPELResponseMessage" xml:id="id_7"/>
+    <variable name="VwEmpleadoInv_InVar" messageType="ns6:VwEmpleadoRHDBInput_msg" xml:id="id_158"/>
+    <variable name="VwEmpleadoInv_OutVar" messageType="ns6:VwEmpleadoRHDBOutputCollection_msg" xml:id="id_159"/>
+  </variables>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main" xml:id="id_8">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in ObtenerEmpleadoBPEL.wsdl) -->
+    <receive name="receiveInput" partnerLink="obtenerempleadobpel_client" portType="client:ObtenerEmpleadoBPEL" operation="process" variable="inputVariable" createInstance="yes" xml:id="id_9"/>
+    <assign name="InputDataAssign" xml:id="id_13">
+      <copy xml:id="id_160">
+        <from xml:id="id_161">$inputVariable.payload/ns3:Input/ns3:numeroEmpleado</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_162">$VwEmpleadoInv_InVar.VwEmpleadoRHDBInput_msg/ns7:numEmpleado</to>
+      </copy>
+    </assign>
+    <scope name="Scope1" xml:id="id_193">
+      <faultHandlers xml:id="id_207">
+        <catchAll xml:id="id_208">
+          <assign name="AssignError" xml:id="id_197">
+            <copy xml:id="id_198">
+              <from xml:id="id_199">1</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_200">$outputVariable.payload/ns3:OperationResponse/ns4:codigoRespuesta</to>
+            </copy>
+            <copy xml:id="id_201">
+              <from xml:id="id_202">"Ejecución fallida, no se encontraron resultados"</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_203">$outputVariable.payload/ns3:OperationResponse/ns4:descripcionRespuesta</to>
+            </copy>
+            <copy xml:id="id_204">
+              <from xml:id="id_205">ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_206">$outputVariable.payload/ns3:OperationResponse/ns4:fecha</to>
+            </copy>
+          </assign>
+        </catchAll>
+      </faultHandlers>
+      <sequence xml:id="id_194">
+        <invoke name="VwEmpleadoInv" xml:id="id_157" partnerLink="VwEmpleadoRHDB" portType="ns6:VwEmpleadoRHDB_ptt"
+                operation="VwEmpleadoRHDB" inputVariable="VwEmpleadoInv_InVar" outputVariable="VwEmpleadoInv_OutVar"
+                bpelx:invokeAsDetail="no"/>
+        <assign name="ResultData" xml:id="id_123">
+          <copy xml:id="id_163">
+            <from xml:id="id_164">$VwEmpleadoInv_OutVar.VwEmpleadoRHDBOutputCollection/ns7:VwEmpleadoRHDBOutput/ns7:NUMERO_EMPLEADO</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_165">$outputVariable.payload/ns3:obtenerEmpleadoResponse/ns5:numeroEmpleado</to>
+          </copy>
+          <copy xml:id="id_209">
+            <from xml:id="id_210">0</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_211">$outputVariable.payload/ns3:OperationResponse/ns4:codigoRespuesta</to>
+          </copy>
+          <copy xml:id="id_212">
+            <from xml:id="id_213">"Operación Exitosa"</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_214">$outputVariable.payload/ns3:OperationResponse/ns4:descripcionRespuesta</to>
+          </copy>
+          <copy xml:id="id_215">
+            <from xml:id="id_216">ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_217">$outputVariable.payload/ns3:OperationResponse/ns4:fecha</to>
+          </copy>
+          <copy xml:id="id_166">
+            <from xml:id="id_167">concat($VwEmpleadoInv_OutVar.VwEmpleadoRHDBOutputCollection/ns7:VwEmpleadoRHDBOutput/ns7:NOMBRE," ",$VwEmpleadoInv_OutVar.VwEmpleadoRHDBOutputCollection/ns7:VwEmpleadoRHDBOutput/ns7:APELLIDO_PATERNO," ",$VwEmpleadoInv_OutVar.VwEmpleadoRHDBOutputCollection/ns7:VwEmpleadoRHDBOutput/ns7:APELLIDO_MATERNO)</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_168">$outputVariable.payload/ns3:obtenerEmpleadoResponse/ns5:nombreCompleto</to>
+          </copy>
+          <copy xml:id="id_169">
+            <from xml:id="id_170">$VwEmpleadoInv_OutVar.VwEmpleadoRHDBOutputCollection/ns7:VwEmpleadoRHDBOutput/ns7:CLAVE_AREA</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_171">$outputVariable.payload/ns3:obtenerEmpleadoResponse/ns5:claveArea</to>
+          </copy>
+          <copy xml:id="id_172">
+            <from xml:id="id_173">$VwEmpleadoInv_OutVar.VwEmpleadoRHDBOutputCollection/ns7:VwEmpleadoRHDBOutput/ns7:DESC_AREA</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_174">$outputVariable.payload/ns3:obtenerEmpleadoResponse/ns5:area</to>
+          </copy>
+          <copy xml:id="id_175">
+            <from xml:id="id_176">$VwEmpleadoInv_OutVar.VwEmpleadoRHDBOutputCollection/ns7:VwEmpleadoRHDBOutput/ns7:DESC_CENTRO_COSTOS</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_177">$outputVariable.payload/ns3:obtenerEmpleadoResponse/ns5:centroCostos</to>
+          </copy>
+          <copy xml:id="id_178">
+            <from xml:id="id_179">$VwEmpleadoInv_OutVar.VwEmpleadoRHDBOutputCollection/ns7:VwEmpleadoRHDBOutput/ns7:FECHA_BAJA</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_180">$outputVariable.payload/ns3:obtenerEmpleadoResponse/ns5:fechaBaja</to>
+          </copy>
+          <copy xml:id="id_181">
+            <from xml:id="id_182">$VwEmpleadoInv_OutVar.VwEmpleadoRHDBOutputCollection/ns7:VwEmpleadoRHDBOutput/ns7:ESTATUS</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_183">$outputVariable.payload/ns3:obtenerEmpleadoResponse/ns5:estatus</to>
+          </copy>
+          <copy xml:id="id_184">
+            <from xml:id="id_185">$VwEmpleadoInv_OutVar.VwEmpleadoRHDBOutputCollection/ns7:VwEmpleadoRHDBOutput/ns7:PUESTO</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_186">$outputVariable.payload/ns3:obtenerEmpleadoResponse/ns5:clavePuesto</to>
+          </copy>
+          <copy xml:id="id_187">
+            <from xml:id="id_188">$VwEmpleadoInv_OutVar.VwEmpleadoRHDBOutputCollection/ns7:VwEmpleadoRHDBOutput/ns7:PUESTO_DESC</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_189">$outputVariable.payload/ns3:obtenerEmpleadoResponse/ns5:puesto</to>
+          </copy>
+        </assign>
+      </sequence>
+    </scope>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="obtenerempleadobpel_client" portType="client:ObtenerEmpleadoBPEL" operation="process" variable="outputVariable" xml:id="id_10"/>
+  </sequence>
+</process>

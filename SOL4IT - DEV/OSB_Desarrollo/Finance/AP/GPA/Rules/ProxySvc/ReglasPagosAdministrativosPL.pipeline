@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:wsdl ref="Finance/AP/GPA/Rules/Resources/ReglasPagosAdministrativosWSDL"/>
+            <con:binding>
+                <con:name>execute_pttBinding</con:name>
+                <con:namespace>http://xmlns.oracle.com/BPM-QUALITAS-PAGOS_ADMINISTRATIVOS/ReglasPagosAdministrativos/ReglasPagosAdministrativos</con:namespace>
+            </con:binding>
+        </con:binding>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:flow>
+            <con:route-node name="RulesGPARoute">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="asig" namespace="http://www.qualitas.com.mx/ReglasPagosAdministrativos/asignarUsuario" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="val" namespace="http://www.qualitas.com.mx/ReglasPagosAdministrativos/validarArchivoProrrateo" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.20.15a96c493b6.N7ffb</con2:id>
+                        <con1:service ref="Finance/AP/GPA/Rules/BusinessSvc/ReglasPagosAdministrativosBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                        <con1:operation passThrough="true"/>
+                        <con1:outboundTransform>
+                            <con2:log xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.13.15a8104ac0e.N7ffe</con3:id>
+                                <con3:disabled xmlns:con3="http://www.bea.com/wli/sb/stages/config">true</con3:disabled>
+                                <con2:logLevel>warning</con2:logLevel>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$operation</con:xqueryText>
+                                </con2:expr>
+                                <con2:message>*** RULES ReglasGPA Payload</con2:message>
+                            </con2:log>
+                        </con1:outboundTransform>
+                        <con1:responseTransform>
+                            <con2:log xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.4.15a65ff5583.N7ffd</con3:id>
+                                <con3:disabled xmlns:con3="http://www.bea.com/wli/sb/stages/config">true</con3:disabled>
+                                <con2:logLevel>warning</con2:logLevel>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$operation</con:xqueryText>
+                                </con2:expr>
+                                <con2:message>*** RULES ReglasGPA Response</con2:message>
+                            </con2:log>
+                        </con1:responseTransform>
+                    </con1:route>
+                </con:actions>
+            </con:route-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

@@ -1,0 +1,43 @@
+<xsd:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/ReglaRenovacionTopUp" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:NMPBrmRTP="http://servicios.montedepiedad.com.mx/NMP/Schema/ReglaRenovacionTopUp" xmlns:NMPCliente="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente" xmlns:NMPCredito="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito" xmlns:NMPOferta="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPOferta" xmlns:NMLlamada="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPLlamada">
+  <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente" schemaLocation="../../../../Common/XSD/NMPCliente.xsd"/>
+  <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito" schemaLocation="../../../../Common/XSD/NMPCredito.xsd"/>
+  <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPLlamada" schemaLocation="../../../../Common/XSD/NMPLlamada.xsd"/>
+  <xsd:complexType name="isRenovacionTopUpMessageRequest">
+    <xsd:sequence>
+      <xsd:element name="cliente" type="NMPCliente:ClienteType"/>
+      <xsd:element name="credito" type="NMPCredito:CreditoType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="isRenovacionTopUpMessageResponse">
+    <xsd:sequence>
+      <xsd:element name="oferta" type="NMPOferta:OfertaType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="isSolicitarCampanaMessageRequest">
+    <xsd:sequence>
+      <xsd:element name="idCliente" type="xsd:string"/>
+      <xsd:element name="ofertaCRM" type="NMPOferta:OfertaType"/>
+      <xsd:element name="ofertaBRM" type="NMPOferta:OfertaType"/>
+      <xsd:element name="respuestaCliente" type="NMLlamada:respuestaClienteType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="isSolicitarCampanaMessageResponse">
+    <xsd:sequence>
+      <xsd:element name="isSolicitarCampana" type="xsd:boolean"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="isRenovacionTopUpMessageRequest" type="NMPBrmRTP:isRenovacionTopUpMessageRequest"/>
+  <xsd:element name="isRenovacionTopUpMessageResponse" type="NMPBrmRTP:isRenovacionTopUpMessageResponse"/>
+  <xsd:element name="isSolicitarCampanaMessageRequest" type="NMPBrmRTP:isSolicitarCampanaMessageRequest"/>
+  <xsd:element name="isSolicitarCampanaMessageResponse" type="NMPBrmRTP:isSolicitarCampanaMessageResponse"/>
+  <xsd:element name="variablesAuxiliares">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Inc_Riesgo" type="xsd:int" minOccurs="0"/>
+        <xsd:element name="Inc_PI" type="xsd:int" minOccurs="0"/>
+        <xsd:element name="Inc_Region" type="xsd:int" minOccurs="0"/>
+        <xsd:element name="Inc_Iva" type="NMPCliente:decimalType" minOccurs="0"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>

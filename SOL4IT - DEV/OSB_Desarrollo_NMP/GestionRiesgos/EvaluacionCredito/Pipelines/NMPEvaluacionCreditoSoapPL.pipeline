@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con3="http://www.bea.com/wli/sb/typesystem/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="GestionRiesgos/EvaluacionCredito/Resources/WSDLs/NMPEvaluacionCreditoSvcWSDL"/>
+            <con:binding>
+                <con:name>EvaluacionCreditoBinding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Services/NMPCredito</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:logging enabled="false" level="debug"/>
+            <oper:reporting>false</oper:reporting>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:pipeline type="error" name="error-N3f57c7ff.8270b5d.0.15acfaa838d.N7d70">
+            <con:stage id="_StageId-N3f57c7ff.8270b5d.0.15acfaa838d.N7d6f" name="StageErrorHandlerPeticion">
+                <con:context/>
+                <con:actions>
+                    <con2:replace contents-only="true" varName="body">
+                        <con1:id>_ActionId-N3f57c7ff.8270b5d.0.15acfaa838d.N7bdb</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionRiesgos/EvaluacionCredito/Resources/Transformations/TREvaluacionCreditoFault"/>
+                                <con1:input>$fault</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57c7ff.8270b5d.0.15acfaa838d.N7ba7</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.8270b5d.0.15acfaa838d.N7ad7">
+            <con:stage id="_StageId-N3f57c7ff.8270b5d.0.15acfaa838d.N7ad6" name="StageErrorHandlerPeticion">
+                <con:context/>
+                <con:actions>
+                    <con2:replace contents-only="true" varName="body">
+                        <con1:id>_ActionId-N3f57c7ff.8270b5d.0.15acfaa838d.N7ad5</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionRiesgos/EvaluacionCredito/Resources/Transformations/TREvaluacionCreditoFault"/>
+                                <con1:input>$fault</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57c7ff.8270b5d.0.15acfaa838d.N7ad4</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.8270b5d.0.15acfaa838d.N7f6b">
+            <con:stage id="_StageId-N3f57c7ff.8270b5d.0.15acfaa838d.N7f69" name="StageRespuestaServicio">
+                <con:context/>
+                <con:actions>
+                    <con1:reply>
+                        <con1:id>_ActionId-N3f57c7ff.8270b5d.0.15acfaa838d.N7d3c</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.8270b5d.0.15acfaa838d.N7f6c">
+            <con:stage id="_StageId-N3f57c7ff.8270b5d.0.15acfaa838d.N7f6a" name="StageValidarCabecera" errorHandler="error-N3f57c7ff.8270b5d.0.15acfaa838d.N7da3">
+                <con:context>
+                    <con1:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con2:validate>
+                        <con1:id>_ActionId-N3f57c7ff.8270b5d.0.15acfaa838d.N7e40</con1:id>
+                        <con2:schema ref="Common/XSD/NMPStandardHeader"/>
+                        <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con2:schemaElement>
+                        <con2:varName>header</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./*:headerMessage</con1:xpathText>
+                        </con2:location>
+                    </con2:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57c7ff.8270b5d.0.15acfaa838d.N7e73" name="StageValidarPeticion" errorHandler="error-N3f57c7ff.8270b5d.0.15acfaa838d.N7d70">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito"/>
+                </con:context>
+                <con:actions>
+                    <con2:validate>
+                        <con1:id>_ActionId-N3f57c7ff.8270b5d.0.15acfaa838d.N7dd5</con1:id>
+                        <con2:schema ref="GestionRiesgos/EvaluacionCredito/Resources/Schemas/NMPEvaluacionCreditoXSD"/>
+                        <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito">nmp:valorarRiesgoRequest</con2:schemaElement>
+                        <con2:varName>body</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./nmp:valorarRiesgoRequest</con1:xpathText>
+                        </con2:location>
+                    </con2:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57c7ff.8270b5d.0.15acfaa838d.N7b74" name="StageInvocarBRM" errorHandler="error-N3f57c7ff.8270b5d.0.15acfaa838d.N7ad7">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito"/>
+                    <con3:variable name="resultadoEvaluacion" path="$resultadoEvaluacion">
+                        <con3:xml-schema type="string"/>
+                    </con3:variable>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="peticionClienteEvaluar">
+                        <con1:id>_ActionId-N3f57c7ff.6aea44c6.0.15b348c2364.N7fce</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$body</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:assign varName="totalCuentasEvaluar">
+                        <con1:id>_ActionId-N3f57c7ff.N1b91eff6.0.15b25f0863f.N7f07</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>fn:count($body/nmp:valorarRiesgoRequest/nmp:buroCredito/nmp:cuentas/nmp:cuenta)</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:assign varName="evaluarSiguienteCuenta">
+                        <con1:id>_ActionId-N3f57c7ff.7df9acb5.0.15b3b950d12.N7ffe</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>fn:true()</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-N3f57c7ff.28b5e23f.0.15b4408837e.N7eb6</con1:id>
+                        <con2:case id="_BranchId-N3f57c7ff.28b5e23f.0.15b4408837e.N7eb5">
+                            <con2:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">xs:int($totalCuentasEvaluar) > 0</con:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:foreach>
+                                    <con1:id>_ActionId-N3f57c7ff.N1b91eff6.0.15b25f0863f.N7f9d</con1:id>
+                                    <con2:variable>peticionClienteEvaluar</con2:variable>
+                                    <con2:expression>
+                                        <con1:xpathText>./nmp:valorarRiesgoRequest/nmp:buroCredito/nmp:cuentas/nmp:cuenta</con1:xpathText>
+                                    </con2:expression>
+                                    <con2:value-variable>cuentaEvaluar</con2:value-variable>
+                                    <con2:index-variable>indiceListaCuentas</con2:index-variable>
+                                    <con2:total-variable>totalCuentasEvaluar</con2:total-variable>
+                                    <con2:actions>
+                                        <con2:ifThenElse>
+                                            <con1:id>_ActionId-N3f57c7ff.7df9acb5.0.15b3b950d12.N7ff7</con1:id>
+                                            <con2:case id="_BranchId-N3f57c7ff.7df9acb5.0.15b3b950d12.N7ff6">
+                                                <con2:condition>
+                                                    <con1:xqueryText>xs:boolean($evaluarSiguienteCuenta) = fn:true()</con1:xqueryText>
+                                                </con2:condition>
+                                                <con2:actions>
+                                                    <con2:wsCallout>
+                                                        <con1:id>_ActionId-N3f57c7ff.N1b91eff6.0.15b25f0863f.N7f01</con1:id>
+                                                        <con2:service ref="GestionRiesgos/EvaluacionCredito/Business Services/BRMCreditoRechazadoBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                                        <con2:operation>callFunctionStateless</con2:operation>
+                                                        <con2:request>
+                                                            <con2:body wrapped="false">evaluarCuentaRequest</con2:body>
+                                                            <con2:header/>
+                                                        </con2:request>
+                                                        <con2:response>
+                                                            <con2:body wrapped="false">evaluarCuentaResponse</con2:body>
+                                                            <con2:header/>
+                                                        </con2:response>
+                                                        <con2:requestTransform>
+                                                            <con2:assign varName="evaluarCuentaRequestAux">
+                                                                <con1:id>_ActionId-N53efff27.4f97ef9a.0.15b2cceeecb.N7fce</con1:id>
+                                                                <con2:expr>
+                                                                    <con1:xqueryTransform>
+                                                                        <con1:resource ref="GestionRiesgos/EvaluacionCredito/Resources/Transformations/TRPeticionEvaluacionCuentaBrm"/>
+                                                                        <con1:param name="indiceCuentaEvaluar">
+                                                                            <con1:path>$indiceListaCuentas</con1:path>
+                                                                        </con1:param>
+                                                                        <con1:param name="peticionCliente">
+                                                                            <con1:path>$peticionClienteEvaluar/*</con1:path>
+                                                                        </con1:param>
+                                                                    </con1:xqueryTransform>
+                                                                </con2:expr>
+                                                            </con2:assign>
+                                                            <con2:assign varName="evaluarCuentaRequest">
+                                                                <con1:id>_ActionId-N53efff27.4f97ef9a.0.15b2cceeecb.N7fbe</con1:id>
+                                                                <con2:expr>
+                                                                    <con1:xqueryText>&lt;ns1:callFunctionStateless xmlns:ns1="http://xmlns.oracle.com/esCreditoRechazado/esCreditoRechazadoDecisionFunction" name="esCreditoRechazadoDecisionFunction">
+  &lt;ns1:parameterList>
+    {$evaluarCuentaRequestAux}
+  &lt;/ns1:parameterList>
+&lt;/ns1:callFunctionStateless></con1:xqueryText>
+                                                                </con2:expr>
+                                                            </con2:assign>
+                                                        </con2:requestTransform>
+                                                        <con2:responseTransform>
+                                                            <con2:ifThenElse>
+                                                                <con1:id>_ActionId-N53efff27.4f97ef9a.0.15b2cceeecb.N7fc6</con1:id>
+                                                                <con2:case id="_BranchId-N3f57c7ff.7df9acb5.0.15b3b950d12.N7fea">
+                                                                    <con2:condition>
+                                                                        <con1:xqueryText>$evaluarCuentaResponse/*:resultList/*:aplicarReglasRechazoResponse/*:resultadoEvaluacion = 'Aprobado'</con1:xqueryText>
+                                                                    </con2:condition>
+                                                                    <con2:actions>
+                                                                        <con2:assign varName="resultadoEvaluacion">
+                                                                            <con1:id>_ActionId-N3f57c7ff.13d048a2.0.15b31d46fcd.N7f9c</con1:id>
+                                                                            <con2:expr>
+                                                                                <con1:xqueryText>fn:string($evaluarCuentaResponse/*:resultList/*:aplicarReglasRechazoResponse/*:resultadoEvaluacion)</con1:xqueryText>
+                                                                            </con2:expr>
+                                                                        </con2:assign>
+                                                                    </con2:actions>
+                                                                </con2:case>
+                                                                <con2:case id="_BranchId-N53efff27.4f97ef9a.0.15b2cceeecb.N7fc5">
+                                                                    <con2:condition>
+                                                                        <con1:xqueryText>$evaluarCuentaResponse/*:resultList/*:aplicarReglasRechazoResponse/*:resultadoEvaluacion = 'Reprobado'</con1:xqueryText>
+                                                                    </con2:condition>
+                                                                    <con2:actions>
+                                                                        <con2:assign varName="evaluarSiguienteCuenta">
+                                                                            <con1:id>_ActionId-N3f57c7ff.7df9acb5.0.15b3b950d12.N7fb6</con1:id>
+                                                                            <con2:expr>
+                                                                                <con1:xqueryText>fn:false()</con1:xqueryText>
+                                                                            </con2:expr>
+                                                                        </con2:assign>
+                                                                        <con2:assign varName="resultadoEvaluacion">
+                                                                            <con1:id>_ActionId-N3f57c7ff.13d048a2.0.15b31d46fcd.N7f68</con1:id>
+                                                                            <con2:expr>
+                                                                                <con1:xqueryText>fn:string($evaluarCuentaResponse/*:resultList/*:aplicarReglasRechazoResponse/*:resultadoEvaluacion)</con1:xqueryText>
+                                                                            </con2:expr>
+                                                                        </con2:assign>
+                                                                    </con2:actions>
+                                                                </con2:case>
+                                                                <con2:case id="_BranchId-N53efff27.4f97ef9a.0.15b2cceeecb.N7f4e">
+                                                                    <con2:condition>
+                                                                        <con1:xqueryText>fn:not(exists($evaluarCuentaResponse/*:resultList/*:aplicarReglasRechazoResponse/*:resultadoEvaluacion))</con1:xqueryText>
+                                                                    </con2:condition>
+                                                                    <con2:actions>
+                                                                        <con2:assign varName="evaluarSiguienteCuenta">
+                                                                            <con1:id>_ActionId-N3f57c7ff.28b5e23f.0.15b4408837e.N7fcd</con1:id>
+                                                                            <con2:expr>
+                                                                                <con1:xqueryText>fn:false()</con1:xqueryText>
+                                                                            </con2:expr>
+                                                                        </con2:assign>
+                                                                        <con2:assign varName="resultadoEvaluacion">
+                                                                            <con1:id>_ActionId-N3f57c7ff.28b5e23f.0.15b4408837e.N7f99</con1:id>
+                                                                            <con2:expr>
+                                                                                <con1:xqueryText>'Reprobado'</con1:xqueryText>
+                                                                            </con2:expr>
+                                                                        </con2:assign>
+                                                                    </con2:actions>
+                                                                </con2:case>
+                                                            </con2:ifThenElse>
+                                                        </con2:responseTransform>
+                                                    </con2:wsCallout>
+                                                </con2:actions>
+                                            </con2:case>
+                                            <con2:default/>
+                                        </con2:ifThenElse>
+                                    </con2:actions>
+                                </con2:foreach>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default>
+                            <con2:wsCallout>
+                                <con1:id>_ActionId-N3f57c7ff.28b5e23f.0.15b4408837e.N7dd6</con1:id>
+                                <con2:service ref="GestionRiesgos/EvaluacionCredito/Business Services/BRMCreditoRechazadoBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                <con2:operation>callFunctionStateless</con2:operation>
+                                <con2:request>
+                                    <con2:body wrapped="false">evaluarCuentaRequest</con2:body>
+                                    <con2:header/>
+                                </con2:request>
+                                <con2:response>
+                                    <con2:body wrapped="false">evaluarCuentaResponse</con2:body>
+                                    <con2:header/>
+                                </con2:response>
+                                <con2:requestTransform>
+                                    <con2:assign varName="evaluarCuentaRequestAux">
+                                        <con1:id>_ActionId-N3f57c7ff.28b5e23f.0.15b4408837e.N7dd5</con1:id>
+                                        <con2:expr>
+                                            <con:xqueryTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                                <con:resource ref="GestionRiesgos/EvaluacionCredito/Resources/Transformations/TRPeticionEvaluacionCuentaBrm"/>
+                                                <con:param name="indiceCuentaEvaluar">
+                                                    <con:path>-1</con:path>
+                                                </con:param>
+                                                <con:param name="peticionCliente">
+                                                    <con:path>$peticionClienteEvaluar/*</con:path>
+                                                </con:param>
+                                            </con:xqueryTransform>
+                                        </con2:expr>
+                                    </con2:assign>
+                                    <con2:assign varName="evaluarCuentaRequest">
+                                        <con1:id>_ActionId-N3f57c7ff.28b5e23f.0.15b4408837e.N7dd4</con1:id>
+                                        <con2:expr>
+                                            <con1:xqueryText>&lt;ns1:callFunctionStateless xmlns:ns1="http://xmlns.oracle.com/esCreditoRechazado/esCreditoRechazadoDecisionFunction" name="esCreditoRechazadoDecisionFunction">
+  &lt;ns1:parameterList>
+    {$evaluarCuentaRequestAux}
+  &lt;/ns1:parameterList>
+&lt;/ns1:callFunctionStateless></con1:xqueryText>
+                                        </con2:expr>
+                                    </con2:assign>
+                                </con2:requestTransform>
+                                <con2:responseTransform>
+                                    <con2:ifThenElse>
+                                        <con1:id>_ActionId-N3f57c7ff.28b5e23f.0.15b4408837e.N7dd3</con1:id>
+                                        <con2:case id="_BranchId-N3f57c7ff.28b5e23f.0.15b4408837e.N7dcd">
+                                            <con2:condition>
+                                                <con1:xqueryText>fn:not(exists($evaluarCuentaResponse/*:resultList/*:aplicarReglasRechazoResponse/*:resultadoEvaluacion))</con1:xqueryText>
+                                            </con2:condition>
+                                            <con2:actions>
+                                                <con2:assign varName="resultadoEvaluacion">
+                                                    <con1:id>_ActionId-N3f57c7ff.28b5e23f.0.15b4408837e.N7dcb</con1:id>
+                                                    <con2:expr>
+                                                        <con1:xqueryText>'Reprobado'</con1:xqueryText>
+                                                    </con2:expr>
+                                                </con2:assign>
+                                            </con2:actions>
+                                        </con2:case>
+                                        <con2:default>
+                                            <con2:assign varName="resultadoEvaluacion">
+                                                <con1:id>_ActionId-N3f57c7ff.28b5e23f.0.15b4408837e.N7dce</con1:id>
+                                                <con2:expr>
+                                                    <con1:xqueryText>fn:string($evaluarCuentaResponse/*:resultList/*:aplicarReglasRechazoResponse/*:resultadoEvaluacion)</con1:xqueryText>
+                                                </con2:expr>
+                                            </con2:assign>
+                                        </con2:default>
+                                    </con2:ifThenElse>
+                                </con2:responseTransform>
+                            </con2:wsCallout>
+                        </con2:default>
+                    </con2:ifThenElse>
+                    <con2:replace contents-only="true" varName="body">
+                        <con1:id>_ActionId-N3f57c7ff.8270b5d.0.15acfaa838d.N7aa1</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xqueryText>fn-bea:inlinedXML(fn:concat('&lt;valorarRiesgoResponse xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito">',
+                              '&lt;nmp:resultado>', $resultadoEvaluacion ,'&lt;/nmp:resultado>',
+                            '&lt;/valorarRiesgoResponse>'))</con1:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.8270b5d.0.15acfaa838d.N7da3">
+            <con:stage id="_StageId-N3f57c7ff.8270b5d.0.15acfaa838d.N7da2" name="StageErrorHandlerCabecera">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito"/>
+                </con:context>
+                <con:actions>
+                    <con2:replace contents-only="true" varName="body">
+                        <con1:id>_ActionId-N3f57c7ff.8270b5d.0.15acfaa838d.N7c43</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionRiesgos/EvaluacionCredito/Resources/Transformations/TREvaluacionCreditoFault"/>
+                                <con1:input>$fault</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57c7ff.8270b5d.0.15acfaa838d.N7c10</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:branch-node type="operation" id="_FlowId-N3f57c7ff.8270b5d.0.15acfaa838d.N7fcf" name="BranchNodeOperacionEvaluacionCredito">
+                <con:context/>
+                <con:branch-table>
+                    <con:branch name="valorarRiesgo">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairNodeValorarRiesgo">
+                                <con:request>request-N3f57c7ff.8270b5d.0.15acfaa838d.N7f6c</con:request>
+                                <con:response>response-N3f57c7ff.8270b5d.0.15acfaa838d.N7f6b</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

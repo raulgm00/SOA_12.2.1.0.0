@@ -1,0 +1,104 @@
+<WL5G3N0:definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Service/OpenTextSvc" xmlns:WL5G3N0="http://schemas.xmlsoap.org/wsdl/" xmlns:WL5G3N1="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc" xmlns:WL5G3N2="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:WL5G3N3="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:WL5G3N4="http://servicios.montedepiedad.com.mx/NMP/Service/OpenTextSvc" xmlns:WL5G3N5="http://schemas.xmlsoap.org/wsdl/soap/">
+  <WL5G3N0:types>
+    <xsd:schema xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:op="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Service/OpenTextSvc" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc" schemaLocation="../Schemas/OpenTextXSD.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../Schemas/NMPStandardMessage.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../Schemas/NMPStandardHeader.xsd"/>
+    </xsd:schema>
+  </WL5G3N0:types>
+  <WL5G3N0:message name="almacenaDocumentoRequest">
+    <WL5G3N0:part element="WL5G3N1:almacenaDocumentoRequest" name="request"/>
+  </WL5G3N0:message>
+  <WL5G3N0:message name="almacenaDocumentoResponse">
+    <WL5G3N0:part element="WL5G3N1:almacenaDocumentoResponse" name="response"/>
+  </WL5G3N0:message>
+  <WL5G3N0:message name="almacenaDocumentoV2Request">
+    <WL5G3N0:part element="WL5G3N1:almacenaDocumentosRequest" name="response"/>
+  </WL5G3N0:message>
+  <WL5G3N0:message name="almacenaDocumentoV2Response">
+    <WL5G3N0:part element="WL5G3N1:almacenaDocumentosResponse" name="response"/>
+  </WL5G3N0:message>
+  <WL5G3N0:message name="listaDoctosRequest">
+    <WL5G3N0:part element="WL5G3N1:listaDoctosRequest" name="request"/>
+  </WL5G3N0:message>
+  <WL5G3N0:message name="listaDoctosResponse">
+    <WL5G3N0:part element="WL5G3N1:listaDoctosResponse" name="response"/>
+  </WL5G3N0:message>
+  <WL5G3N0:message name="NMPHeaderRequest">
+    <WL5G3N0:part element="WL5G3N2:headerMessage" name="header"/>
+  </WL5G3N0:message>
+  <WL5G3N0:message name="NMPHeaderResponse">
+    <WL5G3N0:part element="WL5G3N2:headerMessageResponse" name="header"/>
+  </WL5G3N0:message>
+  <WL5G3N0:message name="NMPFaultMessage">
+    <WL5G3N0:part element="WL5G3N3:messageError" name="error"/>
+  </WL5G3N0:message>
+  <WL5G3N0:portType name="OpenTextServicePType">
+    <WL5G3N0:operation name="listaDocumentos">
+      <WL5G3N0:input message="WL5G3N4:listaDoctosRequest"/>
+      <WL5G3N0:output message="WL5G3N4:listaDoctosResponse"/>
+      <WL5G3N0:fault message="WL5G3N4:NMPFaultMessage" name="Fault"/>
+    </WL5G3N0:operation>
+    <WL5G3N0:operation name="almacenaDocumento">
+      <WL5G3N0:input message="WL5G3N4:almacenaDocumentoRequest"/>
+      <WL5G3N0:output message="WL5G3N4:almacenaDocumentoResponse"/>
+      <WL5G3N0:fault message="WL5G3N4:NMPFaultMessage" name="Fault"/>
+    </WL5G3N0:operation>
+    <WL5G3N0:operation name="almacenaDocumentos">
+      <WL5G3N0:input message="WL5G3N4:almacenaDocumentoV2Request"/>
+      <WL5G3N0:output message="WL5G3N4:almacenaDocumentoV2Response"/>
+      <WL5G3N0:fault message="WL5G3N4:NMPFaultMessage" name="Fault"/>
+    </WL5G3N0:operation>
+  </WL5G3N0:portType>
+  <WL5G3N0:binding name="OpenTextServiceSOAP11Binding" type="WL5G3N4:OpenTextServicePType">
+    <WL5G3N5:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <WL5G3N0:operation name="listaDocumentos">
+      <WL5G3N5:operation soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/OpenTextSvc/listaDocumentos" style="document"/>
+      <WL5G3N0:input>
+        <WL5G3N5:body parts="request" use="literal"/>
+        <WL5G3N5:header message="WL5G3N4:NMPHeaderRequest" part="header" use="literal"/>
+      </WL5G3N0:input>
+      <WL5G3N0:output>
+        <WL5G3N5:body parts="response" use="literal"/>
+        <WL5G3N5:header message="WL5G3N4:NMPHeaderResponse" part="header" use="literal"/>
+      </WL5G3N0:output>
+      <WL5G3N0:fault name="Fault">
+        <WL5G3N5:fault name="Fault" use="literal"/>
+      </WL5G3N0:fault>
+    </WL5G3N0:operation>
+    <WL5G3N0:operation name="almacenaDocumento">
+      <WL5G3N5:operation soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/OpenTextSvc/almacenaDocumento" style="document"/>
+      <WL5G3N0:input>
+        <WL5G3N5:body parts="request" use="literal"/>
+        <WL5G3N5:header message="WL5G3N4:NMPHeaderRequest" part="header" use="literal"/>
+      </WL5G3N0:input>
+      <WL5G3N0:output>
+        <WL5G3N5:body parts="response" use="literal"/>
+        <WL5G3N5:header message="WL5G3N4:NMPHeaderResponse" part="header" use="literal"/>
+      </WL5G3N0:output>
+      <WL5G3N0:fault name="Fault">
+        <WL5G3N5:fault name="Fault" use="literal"/>
+      </WL5G3N0:fault>
+    </WL5G3N0:operation>
+    <WL5G3N0:operation name="almacenaDocumentos">
+      <WL5G3N5:operation soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/OpenTextSvc/almacenaDocumentos" style="document"/>
+      <WL5G3N0:input>
+        <WL5G3N5:body parts="response" use="literal"/>
+        <WL5G3N5:header message="WL5G3N4:NMPHeaderRequest" part="header" use="literal"/>
+      </WL5G3N0:input>
+      <WL5G3N0:output>
+        <WL5G3N5:body parts="response" use="literal"/>
+        <WL5G3N5:header message="WL5G3N4:NMPHeaderResponse" part="header" use="literal"/>
+      </WL5G3N0:output>
+      <WL5G3N0:fault name="Fault">
+        <WL5G3N5:fault name="Fault" use="literal"/>
+      </WL5G3N0:fault>
+    </WL5G3N0:operation>
+  </WL5G3N0:binding>
+  <WL5G3N0:service name="OpenTextServiceSOAP11BindingQSService">
+    <WL5G3N0:documentation>OSB Service</WL5G3N0:documentation>
+    <WL5G3N0:port binding="WL5G3N4:OpenTextServiceSOAP11Binding" name="OpenTextServiceSOAP11BindingQSPort">
+      <WL5G3N5:address location="http://10.30.3.15:8011/OP/Utileria/AdministradorDocumentos"/>
+    </WL5G3N0:port>
+  </WL5G3N0:service>
+</WL5G3N0:definitions>

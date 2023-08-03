@@ -1,0 +1,99 @@
+<definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/NMPPartidas" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Servicios/NMPPartidas" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:NMPPartidas="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:env="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <import schemaLocation="../Schemas/NMPPartidasSvcXSD.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+      <import schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+      <import schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+    </schema>
+  </wsdl:types>
+  <message name="NMPStandardHeader">
+    <part name="requestHeader" element="NMPsh:headerMessage"/>
+  </message>
+  <message name="NMPStandardHeaderResponse">
+    <part name="responseHeader" element="NMPsh:headerMessageResponse"/>
+  </message>
+  <message name="getPartidasClienteRequestMessage">
+    <part name="getPartidasClienteRequest" element="NMPPartidas:getPartidasClienteRequest"/>
+  </message>
+  <message name="getPartidasClienteResponseMessage">
+    <part name="getPartidasClienteResponse" element="NMPPartidas:getPartidasClienteResponse"/>
+  </message>
+  <message name="getPartidaDetalleRequestMessage">
+    <part name="getPartidaDetalleRequest" element="NMPPartidas:getPartidaDetalleRequest"/>
+  </message>
+  <message name="getPartidaDetalleResponseMessage">
+    <part name="getPartidaDetalleResponse" element="NMPPartidas:getPartidaDetalleResponse"/>
+  </message>
+  <wsdl:message name="obtenerTotalPartidasRequest">
+    <wsdl:part name="parameters" element="NMPPartidas:obtenerExistencia"/>
+  </wsdl:message>
+  <wsdl:message name="obtenerTotalPartidasResponse">
+    <wsdl:part name="parameters" element="NMPPartidas:obtenerExistenciaResponse"/>
+  </wsdl:message>
+  <portType name="Partidas_ptt">
+    <operation name="getPartidasCliente">
+      <input message="tns:getPartidasClienteRequestMessage"/>
+      <output message="tns:getPartidasClienteResponseMessage"/>
+      <fault message="tns:NMPStandardFault" name="PartidasFault"/>
+    </operation>
+    <operation name="getPartidaDetalle">
+      <input message="tns:getPartidaDetalleRequestMessage"/>
+      <output message="tns:getPartidaDetalleResponseMessage"/>
+      <fault message="tns:NMPStandardFault" name="PartidasFault"/>
+    </operation>
+    <operation name="obtenerTotalPartidas">
+      <input message="tns:obtenerTotalPartidasRequest"/>
+      <output message="tns:obtenerTotalPartidasResponse"/>
+      <fault message="tns:NMPStandardFault" name="PartidasFault"/>
+    </operation>
+  </portType>
+  <binding name="PartidasBinding" type="tns:Partidas_ptt">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="getPartidasCliente">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas/getPartidasCliente"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="PartidasFault">
+        <soap:fault name="PartidasFault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getPartidaDetalle">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas/getPartidaDetalle"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="PartidasFault">
+        <soap:fault name="PartidasFault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="obtenerTotalPartidas">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas/getPartidasCliente"/>
+      <input>
+        <soap:header message="tns:NMPStandardHeader" part="requestHeader" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:header message="tns:NMPStandardHeaderResponse" part="responseHeader" use="literal"/>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="PartidasFault">
+        <soap:fault name="PartidasFault" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+  <service name="Partidas_ptt">
+    <port name="Partidas_pttPort" binding="tns:PartidasBinding">
+      <soap:address location="https://10.30.315:8012/NMP/MIDAS/Partidas"/>
+    </port>
+  </service>
+  <message name="NMPStandardFault">
+    <part name="PartidasFault" element="NMPsm:messageError"/>
+  </message>
+</definitions>

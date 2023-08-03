@@ -1,0 +1,52 @@
+<application xmlns:soa="http://www.oracle.com/soa/rest" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:NMPPartidas="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas" xmlns="http://wadl.dev.java.net/2009/02">
+   <doc title="NMPpartidasRestPX">RestService</doc>
+   <grammars>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Servicios/NMPPartidas" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:env="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+      <import schemaLocation="../Schemas/NMPPartidasSvcXSD.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+      <import schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+      <import schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+    </schema>
+   </grammars>
+   <resources>
+      <resource path="/Cliente/{idCliente}">
+         <method name="GET" soa:wsdlOperation="getPartidasCliente">
+            <request soa:paramElement="pns:getPartidasClienteRequest" xmlns:pns="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas">
+               <param name="idCliente" style="template" soa:expression="$msg.getPartidasClienteRequest/NMPPartidas:idCliente" type="xsd:long"/>
+            </request>
+            <response status="200">
+               <representation mediaType="application/json" element="cns:getPartidasClienteResponse" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+            </response>
+            <response status="500" soa:wsdlFaultName="PartidasFault">
+               <representation mediaType="application/json" element="cns:messageError" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+            </response>
+         </method>
+      </resource>
+      <resource path="/folio/{folioPartida}">
+         <method name="GET" soa:wsdlOperation="getPartidaDetalle">
+            <request soa:paramElement="pns:getPartidaDetalleRequest" xmlns:pns="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas">
+               <param name="folioPartida" style="template" soa:expression="$msg.getPartidaDetalleRequest/NMPPartidas:folioPartida" type="xsd:string"/>
+            </request>
+            <response status="200">
+               <representation mediaType="application/json" element="cns:getPartidaDetalleResponse" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+            </response>
+            <response status="400" soa:wsdlFaultName="PartidasFault">
+               <representation mediaType="application/json" element="cns:messageError" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+            </response>
+         </method>
+      </resource>
+      <resource path="/totalPartida">
+         <method name="GET" soa:wsdlOperation="obtenerTotalPartidas">
+            <request soa:paramElement="pns:obtenerExistencia" xmlns:pns="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas">
+               <param name="cliente" style="query" soa:expression="$msg.parameters/NMPPartidas:cliente/NMPPartidas:cliente" type="xsd:long"/>
+               <param name="tipoExistencia" style="query" soa:expression="$msg.parameters/NMPPartidas:cliente/NMPPartidas:tipoExistencia" type="xsd:string"/>
+            </request>
+            <response status="200">
+               <representation mediaType="application/json" element="cns:obtenerExistenciaResponse" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+            </response>
+            <response status="400" soa:wsdlFaultName="PartidasFault">
+               <representation mediaType="application/json" element="cns:messageError" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+            </response>
+         </method>
+      </resource>
+   </resources>
+</application>

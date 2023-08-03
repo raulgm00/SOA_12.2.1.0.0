@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ser:proxyServiceEntry xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:oper="http://xmlns.oracle.com/servicebus/proxy/operations" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ser:coreEntry isAutoPublish="false">
+        <ser:description>Proxy utilizado para otorgar o eliminar roles.</ser:description>
+        <ser:binding type="SOAP" isSoap12="false" xsi:type="con3:SoapBindingType" xmlns:con3="http://www.bea.com/wli/sb/services/bindings/config" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:env="http://www.bea.com/wli/config/env" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+            <con3:wsdl ref="GestionIdentidades/BAM/Resources/WSDL/BAMManageAppRolesWSDL"/>
+            <con3:port>
+                <con3:name>manageAppRoles_EP</con3:name>
+                <con3:namespace>http://www.montedepiedad.com.mx/Identity/WSDL/manageAppRoles</con3:namespace>
+            </con3:port>
+            <con3:selector type="SOAP body"/>
+            <con3:WSI-compliant>false</con3:WSI-compliant>
+        </ser:binding>
+        <oper:operations enabled="true">
+            <oper:messageTracing enabled="true">
+                <oper1:detailsLevel xmlns:oper1="http://xmlns.oracle.com/servicebus/operations">terse</oper1:detailsLevel>
+                <oper1:maxSize xmlns:oper1="http://xmlns.oracle.com/servicebus/operations">8192</oper1:maxSize>
+            </oper:messageTracing>
+            <oper:monitoring enabled="true" aggregationInterval="10"/>
+        </oper:operations>
+        <ser:ws-policy xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:env="http://www.bea.com/wli/config/env" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+            <ser:binding-mode>wsdl-policy-attachments</ser:binding-mode>
+        </ser:ws-policy>
+        <ser:invoke ref="GestionIdentidades/BAM/Proxy Services/BAMManageAppRolesPXY" xsi:type="con:PipelineRef" xmlns:con="http://www.bea.com/wli/sb/pipeline/config"/>
+    </ser:coreEntry>
+    <ser:endpointConfig xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:env="http://www.bea.com/wli/config/env" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+        <tran:provider-id>http</tran:provider-id>
+        <tran:inbound>true</tran:inbound>
+        <tran:URI>
+            <env:value>/Identity/Services/manageAppRoles</env:value>
+        </tran:URI>
+        <tran:inbound-properties/>
+        <tran:all-headers>false</tran:all-headers>
+        <tran:provider-specific xsi:type="http:HttpEndPointConfiguration">
+            <http:inbound-properties/>
+        </tran:provider-specific>
+    </ser:endpointConfig>
+    <aler:alertRules xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert">
+        <aler:alertRule enabled="true" name="timeout_warning">
+            <aler:description>El servicio excedió el tiempo de espera máximo de 30 segundos.</aler:description>
+            <aler:frequency>once-until-conditions-clear</aler:frequency>
+            <aler:severity>warning</aler:severity>
+            <aler:stopProcessing>false</aler:stopProcessing>
+            <aler:condition aggregation-interval="60">
+                <con:monCondExpr xmlns:con="http://xmlns.oracle.com/servicebus/monitoring/alert/condition">
+                    <con:function>max</con:function>
+                    <con:lhs>Transport.response-time</con:lhs>
+                    <con:operator>></con:operator>
+                    <con:rhs>30000</con:rhs>
+                </con:monCondExpr>
+            </aler:condition>
+            <aler:alertDestination ref="GestionIdentidades/BAM/Resources/Alertas/BAM_Alerts"/>
+            <aler:summary>Alert for timeout warning</aler:summary>
+        </aler:alertRule>
+    </aler:alertRules>
+</ser:proxyServiceEntry>

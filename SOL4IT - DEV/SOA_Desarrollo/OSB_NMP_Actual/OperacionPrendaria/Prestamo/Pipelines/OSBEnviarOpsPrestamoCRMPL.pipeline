@@ -1,0 +1,504 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+    <con:coreEntry>
+        <con:description>Primera parte del pipeline del flujo de envio hacia el CRM. En esta fase se realiza la seleccion de las operaciones que se deben distribuir hacia el CRM, transformar en caso de encontrarse una operación de reempeno y separar de una en una para preparar para su envio al CRM</con:description>
+        <con:binding type="Mixed" xsi:type="con:MixedBindingType">
+            <con:request type="XML">
+                <con4:schema ref="OperacionPrendaria/Prestamo/Resources/Schemas/PrestamoSvcXSD" element="updatePrestamoRequest" xmlns:con4="http://www.bea.com/wli/sb/typesystem/config" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:jms="http://www.bea.com/wli/sb/transports/jms" xmlns:con1="http://www.bea.com/wli/sb/pipeline/config" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:env="http://www.bea.com/wli/config/env" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config"/>
+            </con:request>
+        </con:binding>
+        <oper:operations>
+            <oper:tracingEnabled>true</oper:tracingEnabled>
+            <oper:monitoring enabled="true" level="action" aggregationInterval="1440"/>
+            <oper:pipeline-alerting enabled="true" level="critical"/>
+        </oper:operations>
+    </con:coreEntry>
+    <con1:router errorHandler="_onErrorHandler-2011388024150326307--24dbc88d.144dc81264f.-7edc" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:con="http://www.bea.com/wli/sb/typesystem/config" xmlns:jms="http://www.bea.com/wli/sb/transports/jms" xmlns:con1="http://www.bea.com/wli/sb/pipeline/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+        <con1:pipeline type="error" name="_onErrorHandler-2011388024150326307--24dbc88d.144dc81264f.-7edc">
+            <con1:stage name="StageGeneralErrorHandler">
+                <con1:comment>Menejador generico de errores en el procesamiento de mensaje a CRM</con1:comment>
+                <con6:context xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con5="http://www.bea.com/wli/sb/typesystem/config" xmlns:con4="http://www.bea.com/wli/sb/stages/publish/config" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con6="http://www.bea.com/wli/sb/pipeline/config">
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPrestamo"/>
+                </con6:context>
+                <con6:actions xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con5="http://www.bea.com/wli/sb/typesystem/config" xmlns:con4="http://www.bea.com/wli/sb/stages/publish/config" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con6="http://www.bea.com/wli/sb/pipeline/config">
+                    <con3:replace varName="body" contents-only="true">
+                        <con1:comment>Generar error para notificar</con1:comment>
+                        <con1:id>_ActionId-a1e030f.N7d8edf5d.2f.1568546969e.N8000</con1:id>
+                        <con3:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con3:location>
+                        <con3:expr>
+                            <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="OperacionPrendaria/Prestamo/Resources/Transformations/TRPrestamoFault"/>
+                                <con:input>$fault</con:input>
+                                <con:param name="detailFault">
+                                    <con:path>$fault/ctx:reason</con:path>
+                                </con:param>
+                                <con:param name="codeFault">
+                                    <con:path>$fault/ctx:errorCode</con:path>
+                                </con:param>
+                            </con:xsltTransform>
+                        </con3:expr>
+                    </con3:replace>
+                    <con2:report>
+                        <con1:comment>Notificar que sucedio un problema para propagar el mensaje a CRMLoanOperationPXY</con1:comment>
+                        <con1:id>_ActionId-a1e030f.N7d8edf5d.30.1568548ff38.N8000</con1:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$msgId</con:xqueryText>
+                        </con2:expr>
+                        <con2:labels>
+                            <con2:key>FechaOperacion:</con2:key>
+                            <con2:varName>fechaOperacionMsg</con2:varName>
+                            <con2:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                            </con2:value>
+                        </con2:labels>
+                        <con2:labels>
+                            <con2:key>Notificacion:</con2:key>
+                            <con2:varName>body</con2:varName>
+                            <con2:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.//*:faultstring/text()</con:xpathText>
+                            </con2:value>
+                        </con2:labels>
+                    </con2:report>
+                    <con7:alert xmlns:con7="http://www.bea.com/wli/sb/stages/alert/config">
+                        <con1:comment>Generar alerta por problemas en el procesamiento o direccionamiento del mensaje</con1:comment>
+                        <con1:id>_ActionId-a1e030f.N7d8edf5d.29.1567cc9f2a3.N7ffe</con1:id>
+                        <con7:destination ref="OperacionPrendaria/Prestamo/Resources/Alerts/NMPPrestamoAlert"/>
+                        <con7:description>Problema en el envio de mensaje OSBEnviarOpPrestamoCRMSoapPXY</con7:description>
+                        <con7:severity>critical</con7:severity>
+                        <con7:payload>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con7:payload>
+                    </con7:alert>
+                    <con1:resume>
+                        <con1:comment>Generar alerta por problemas en el procesamiento o direccionamiento del mensaje</con1:comment>
+                        <con1:id>_ActionId-2011388024150326307--24dbc88d.144dc81264f.-7e6a</con1:id>
+                    </con1:resume>
+                </con6:actions>
+            </con1:stage>
+        </con1:pipeline>
+        <con1:pipeline name="PipelineEachOpLoanStatusToCRM_request" type="request">
+            <con1:stage name="StageGetMsgId">
+                <con1:comment>Almacenar Message ID del request de origen para dar trazabilidad a lo largo del procesamiento de la peticion hacia CRM</con1:comment>
+                <con1:context>
+                    <con2:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPrestamo"/>
+                </con1:context>
+                <con1:actions>
+                    <con4:assign varName="msgId" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:comment>Almacenar en variable el Message ID de la peticion de origen para dar trazabilidad a la peticion</con2:comment>
+                        <con2:id>_ActionId-a1e030f.N7d8edf5d.2b.156850ce728.N7ffe</con2:id>
+                        <con4:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$inbound/ctx:transport/ctx:request/tp:headers/jms:JMSCorrelationID/text()</con:xqueryText>
+                        </con4:expr>
+                    </con4:assign>
+                    <con4:assign varName="fechaOperacionMsg" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:comment>Almacenar en variable la fecha Operacion de la peticion de origen para reporteo en caso de fallo</con2:comment>
+                        <con2:id>_ActionId-a1e030f.N7d8edf5d.2c.15685279bf1.N7fff</con2:id>
+                        <con4:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/*:updatePrestamoRequest/*:fechaOperacion/text()</con:xqueryText>
+                        </con4:expr>
+                    </con4:assign>
+                </con1:actions>
+            </con1:stage>
+            <con6:stage name="stageSendOpLoanStatusToCRM" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con5="http://www.bea.com/wli/sb/typesystem/config" xmlns:con4="http://www.bea.com/wli/sb/stages/publish/config" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con6="http://www.bea.com/wli/sb/pipeline/config">
+                <con6:comment>Seleccion, transformacion y envio de operaciones al CRM</con6:comment>
+                <con6:context>
+                    <con1:varNsDecl namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPrestamo" prefix="nmp"/>
+                    <con1:varNsDecl namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/CanonicalModel" prefix="can"/>
+                    <con5:variable name="loanStatus" path="$loanStatus" asChild="false">
+                        <con5:schema ref="OperacionPrendaria/Prestamo/Resources/Schemas/OSBPrestamoCRM0XSD" element="SetOperacionCliente"/>
+                    </con5:variable>
+                    <con5:variable name="destinoMsg" path="$destinoMsg">
+                        <con5:xml-schema type="string"/>
+                    </con5:variable>
+                </con6:context>
+                <con6:actions>
+                    <con2:report>
+                        <con1:comment>Reportar entrada de peticion para dar trazabilidad</con1:comment>
+                        <con1:id>_ActionId-a1e030f.26a809d1.4.15344058ac2.N8000</con1:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$msgId</con:xqueryText>
+                        </con2:expr>
+                        <con2:labels>
+                            <con2:key>FechaOperacionCRM:</con2:key>
+                            <con2:varName>body</con2:varName>
+                            <con2:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.//*:fechaOperacion</con:xpathText>
+                            </con2:value>
+                        </con2:labels>
+                    </con2:report>
+                    <con3:ifThenElse>
+                        <con1:comment>Validar que el mensaje XML tiene operaciones de reempeno</con1:comment>
+                        <con1:id>_ActionId-7410793960910614060-59d5379.14ef4109d6c.-7ebd</con1:id>
+                        <con3:case>
+                            <con3:condition>
+                                <con1:xqueryText>fn:exists($body/nmp:updatePrestamoRequest/nmp:esReempeno) = fn:true() and fn:empty($body/nmp:updatePrestamoRequest/nmp:esReempeno) = fn:false()</con1:xqueryText>
+                            </con3:condition>
+                            <con3:actions>
+                                <con3:assign varName="esReempeno">
+                                    <con1:comment>Almacenar en variable que las operaciones del mensaje XML son de reempeno</con1:comment>
+                                    <con1:id>_ActionId-7410793960910614060-59d5379.14ef4109d6c.-7e0d</con1:id>
+                                    <con3:expr>
+                                        <con1:xqueryText>$body/nmp:updatePrestamoRequest/nmp:esReempeno</con1:xqueryText>
+                                    </con3:expr>
+                                </con3:assign>
+                            </con3:actions>
+                        </con3:case>
+                        <con3:default>
+                            <con3:assign varName="esReempeno">
+                                <con1:comment>Almacenar en variable que las operaciones del mensaje XML no son de reempeno</con1:comment>
+                                <con1:id>_ActionId-7410793960910614060-59d5379.14ef4109d6c.-7dd5</con1:id>
+                                <con3:expr>
+                                    <con1:xqueryText>fn:false()</con1:xqueryText>
+                                </con3:expr>
+                            </con3:assign>
+                        </con3:default>
+                    </con3:ifThenElse>
+                    <con3:assign varName="ColeccionOper">
+                        <con1:comment>Almacenar en varible el conjunto de operaciones para realizar su extraccion, transformacion y envio al CRM</con1:comment>
+                        <con1:id>_ActionId-2011388024150326307--24dbc88d.144dc81264f.-7f6f</con1:id>
+                        <con3:expr>
+                            <con1:xqueryText>$body</con1:xqueryText>
+                        </con3:expr>
+                    </con3:assign>
+                    <con3:assign varName="counterOper">
+                        <con1:comment>Almacenar en variable el total de operaciones encontradas en el mensaje XML</con1:comment>
+                        <con1:id>_ActionId-2011388024150326307--24dbc88d.144dc81264f.-7f6e</con1:id>
+                        <con3:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:count($ColeccionOper/nmp:updatePrestamoRequest/nmp:ListaOperaciones/nmp:Operacion)</con:xqueryText>
+                        </con3:expr>
+                    </con3:assign>
+                    <con3:foreach xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                        <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Por medio de un ciclo realizar la extraccion, transformacion y envio de las operaciones al CRM</con7:comment>
+                        <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-2011388024150326307--24dbc88d.144dc81264f.-7f68</con7:id>
+                        <con3:variable>ColeccionOper</con3:variable>
+                        <con3:expression>
+                            <con4:xpathText xmlns:con4="http://www.bea.com/wli/sb/stages/config">./nmp:updatePrestamoRequest/nmp:ListaOperaciones/nmp:Operacion</con4:xpathText>
+                        </con3:expression>
+                        <con3:value-variable>operacion</con3:value-variable>
+                        <con3:index-variable>indexColeccion</con3:index-variable>
+                        <con3:total-variable>counterOper</con3:total-variable>
+                        <con3:actions>
+                            <con3:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+                                <con1:comment>Verificar que la operacion extraida del mensaje XML fue identificada como de reempeno para en su caso transformarse a su equivalente y enviarse al CRM</con1:comment>
+                                <con1:id>_ActionId-7410793960910614060-59d5379.14ef4109d6c.-7db2</con1:id>
+                                <con3:case>
+                                    <con3:condition>
+                                        <con1:xqueryText>xs:boolean($esReempeno) = fn:true()</con1:xqueryText>
+                                    </con3:condition>
+                                    <con3:actions>
+                                        <con3:assign varName="operacion">
+                                            <con1:comment>Transformar operacion marcada como de reempeno</con1:comment>
+                                            <con1:id>_ActionId-2261246583819584168-662eac75.14ef551fe8d.-7f5a</con1:id>
+                                            <con3:expr>
+                                                <con:xqueryTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                                    <con:resource ref="OperacionPrendaria/Prestamo/Resources/Transformations/TROpsReempenoCrm"/>
+                                                    <con:param name="reempeno">
+                                                        <con:path>$operacion</con:path>
+                                                    </con:param>
+                                                </con:xqueryTransform>
+                                            </con3:expr>
+                                        </con3:assign>
+                                    </con3:actions>
+                                </con3:case>
+                                <con3:default/>
+                            </con3:ifThenElse>
+                            <con3:assign varName="dvm">
+                                <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Almacenar en variable DVM que contiene las reglas de distribucion de las operaciones a enviarse al CRM.</con7:comment>
+                                <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-3066310923147464624--4779f6b0.14b93bf5c94.-7e1d</con7:id>
+                                <con3:expr>
+                                    <con7:xqueryTransform xmlns:con7="http://www.bea.com/wli/sb/stages/config">
+                                        <con7:resource ref="Common/DVM/TipoOperacionDVM"/>
+                                    </con7:xqueryTransform>
+                                </con3:expr>
+                            </con3:assign>
+                            <con3:assign varName="destinoMsg">
+                                <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Obtiene del DVM TipoOperacionDVM, el destino al que se debe enviar la operacion. En este caso el mensaje debera ir a CRM, siempre y cuando el DestinoMsj sean: 1, 2, 4 o 5</con7:comment>
+                                <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-3066310923147464624--4779f6b0.14b93bf5c94.-7e04</con7:id>
+                                <con3:expr>
+                                    <con:xqueryTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                        <con:resource ref="Common/XQ/GetDvmPropertieXQ"/>
+                                        <con:param name="indexUseToSearch">
+                                            <con:path>2</con:path>
+                                        </con:param>
+                                        <con:param name="valueUseToSearch">
+                                            <con:path>xs:string($operacion/nmp:Prestamo/nmp:tipoOperacion)</con:path>
+                                        </con:param>
+                                        <con:param name="propertieIndexReturn">
+                                            <con:path>4</con:path>
+                                        </con:param>
+                                        <con:param name="dvm">
+                                            <con:path>$dvm</con:path>
+                                        </con:param>
+                                    </con:xqueryTransform>
+                                </con3:expr>
+                            </con3:assign>
+                            <con3:ifThenElse>
+                                <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Realizar el descarte de la operacion para enviarse al CRM. En caso de ser descartada se continua con la siguiente operacion, de lo contrario se continua con el procesamiento de la operacion. En este caso el mensaje debera ir a CRM siempre y cuando el DestinoMsj sean: 1, 2, 4 o 5</con7:comment>
+                                <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-3066310923147464624--4779f6b0.14b93bf5c94.-7e3f</con7:id>
+                                <con3:case>
+                                    <con3:condition>
+                                        <con7:xqueryText xmlns:con7="http://www.bea.com/wli/sb/stages/config">$destinoMsg = "1" or $destinoMsg = "2" or $destinoMsg = "4" or $destinoMsg = "5"</con7:xqueryText>
+                                    </con3:condition>
+                                    <con3:actions>
+                                        <con3:assign varName="loanStatus">
+                                            <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Transformar estructura de mensaje al requerido para enviarse al CRM</con7:comment>
+                                            <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-3066310923147464624--4779f6b0.14b93bf5c94.-7e3d</con7:id>
+                                            <con3:expr>
+                                                <con:xqueryTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                                    <con:resource ref="OperacionPrendaria/Prestamo/Resources/Transformations/TROpEstructuraCrm"/>
+                                                    <con:param name="updatePrestamoRequest">
+                                                        <con:path>$ColeccionOper/nmp:updatePrestamoRequest</con:path>
+                                                    </con:param>
+                                                    <con:param name="operacion">
+                                                        <con:path>$operacion</con:path>
+                                                    </con:param>
+                                                </con:xqueryTransform>
+                                            </con3:expr>
+                                        </con3:assign>
+                                        <con3:assign varName="idTipo">
+                                            <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Obtener del DVM TipoOperacionDVM, el ID que corresponde al codigo o abreviatura de la operacion. Este ID es reconocido en Score, SID y CRM para la misma operacion</con7:comment>
+                                            <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-3066310923147464624--4779f6b0.14b93bf5c94.-7e39</con7:id>
+                                            <con3:expr>
+                                                <con:xqueryTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                                    <con:resource ref="Common/XQ/GetDvmPropertieXQ"/>
+                                                    <con:param name="indexUseToSearch">
+                                                        <con:path>2</con:path>
+                                                    </con:param>
+                                                    <con:param name="valueUseToSearch">
+                                                        <con:path>xs:string($operacion/nmp:Prestamo/nmp:tipoOperacion)</con:path>
+                                                    </con:param>
+                                                    <con:param name="propertieIndexReturn">
+                                                        <con:path>1</con:path>
+                                                    </con:param>
+                                                    <con:param name="dvm">
+                                                        <con:path>$dvm</con:path>
+                                                    </con:param>
+                                                </con:xqueryTransform>
+                                            </con3:expr>
+                                        </con3:assign>
+                                        <con3:replace varName="loanStatus" contents-only="true">
+                                            <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Sustituir el codigo de la operacion con el ID obtenido del DVM TipoOperacionDVM</con7:comment>
+                                            <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-3066310923147464624--4779f6b0.14b93bf5c94.-7e37</con7:id>
+                                            <con3:location>
+                                                <con7:xpathText xmlns:con7="http://www.bea.com/wli/sb/stages/config">./can:loan/can:TipoOperacion</con7:xpathText>
+                                            </con3:location>
+                                            <con3:expr>
+                                                <con7:xqueryText xmlns:con7="http://www.bea.com/wli/sb/stages/config">$idTipo</con7:xqueryText>
+                                            </con3:expr>
+                                        </con3:replace>
+                                        <con3:ifThenElse>
+                                            <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Validar la existencia de una razon de rechazo en el mensaje de la operacion</con7:comment>
+                                            <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-3066310923147464624--4779f6b0.14b93bf5c94.-7e31</con7:id>
+                                            <con3:case>
+                                                <con3:condition>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:exists($loanStatus/can:loan/can:IdRazonRechazo) = fn:true()</con:xqueryText>
+                                                </con3:condition>
+                                                <con3:actions>
+                                                    <con3:assign varName="dvm2">
+                                                        <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Almacenar en variable el DVM TipoRechazoDVM</con7:comment>
+                                                        <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-3066310923147464624--4779f6b0.14b93bf5c94.-7e30</con7:id>
+                                                        <con3:expr>
+                                                            <con7:xqueryTransform xmlns:con7="http://www.bea.com/wli/sb/stages/config">
+                                                                <con7:resource ref="Common/DVM/TipoRechazoDVM"/>
+                                                            </con7:xqueryTransform>
+                                                        </con3:expr>
+                                                    </con3:assign>
+                                                    <con3:assign varName="idRazonRechazo">
+                                                        <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Obtiene del DVM TipoRechazoDVM ell ID Motivo para CRM. Este tiene relacion con el ID Motivo que del origen se esta enviando para la operacion. Este ID es reconocido en el origen y CRM para la misma razon de rechazo</con7:comment>
+                                                        <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-3066310923147464624--4779f6b0.14b93bf5c94.-7e2f</con7:id>
+                                                        <con3:expr>
+                                                            <con:xqueryTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                                                <con:resource ref="Common/XQ/GetDvmPropertieXQ"/>
+                                                                <con:param name="indexUseToSearch">
+                                                                    <con:path>1</con:path>
+                                                                </con:param>
+                                                                <con:param name="valueUseToSearch">
+                                                                    <con:path>xs:string($operacion/nmp:Prestamo/nmp:DatosRechazo/nmp:idMotivo)</con:path>
+                                                                </con:param>
+                                                                <con:param name="propertieIndexReturn">
+                                                                    <con:path>2</con:path>
+                                                                </con:param>
+                                                                <con:param name="dvm">
+                                                                    <con:path>$dvm2</con:path>
+                                                                </con:param>
+                                                            </con:xqueryTransform>
+                                                        </con3:expr>
+                                                    </con3:assign>
+                                                    <con3:replace varName="loanStatus" contents-only="true">
+                                                        <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Sustituir el ID del motivo del rechazo, enviado del origen con el ID obtenido del DVM TipoOperacionDVM para CRM</con7:comment>
+                                                        <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-3066310923147464624--4779f6b0.14b93bf5c94.-7e2e</con7:id>
+                                                        <con3:location>
+                                                            <con7:xpathText xmlns:con7="http://www.bea.com/wli/sb/stages/config">./can:loan/can:IdRazonRechazo</con7:xpathText>
+                                                        </con3:location>
+                                                        <con3:expr>
+                                                            <con7:xqueryText xmlns:con7="http://www.bea.com/wli/sb/stages/config">$idRazonRechazo</con7:xqueryText>
+                                                        </con3:expr>
+                                                    </con3:replace>
+                                                </con3:actions>
+                                            </con3:case>
+                                            <con3:default>
+                                                <con3:delete varName="loanStatus">
+                                                    <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Eliminar el IdRazonRechazo en caso de estar vacio</con7:comment>
+                                                    <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-3066310923147464624--4779f6b0.14b93bf5c94.-7e2d</con7:id>
+                                                    <con3:location>
+                                                        <con7:xpathText xmlns:con7="http://www.bea.com/wli/sb/stages/config">./can:loan/can:IdRazonRechazo</con7:xpathText>
+                                                    </con3:location>
+                                                </con3:delete>
+                                            </con3:default>
+                                        </con3:ifThenElse>
+                                        <con3:ifThenElse>
+                                            <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Cuando CRM acepte el campo TipoProducto agregar el else para eliminar el nodo que en la transformación de TrOpEstructuraCrmXQ se agregara, esto para el caso en el que venga vacio</con7:comment>
+                                            <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-3066310923147464624--4779f6b0.14b93bf5c94.-7e28</con7:id>
+                                            <con3:case>
+                                                <con3:condition>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:exists($loanStatus/can:loan/can:TipoProducto) = fn:true()</con:xqueryText>
+                                                </con3:condition>
+                                                <con3:actions>
+                                                    <con3:assign varName="dvm3">
+                                                        <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Almacenar en variable el DVM TipoProductoDVM</con7:comment>
+                                                        <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-3066310923147464624--4779f6b0.14b93bf5c94.-7e27</con7:id>
+                                                        <con3:expr>
+                                                            <con:xqueryTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                                                <con:resource ref="Common/DVM/TipoProductoDVM"/>
+                                                            </con:xqueryTransform>
+                                                        </con3:expr>
+                                                    </con3:assign>
+                                                    <con3:assign varName="tipoProducto">
+                                                        <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Obtener del DVM TipoProductoDVM, la descripcion del ID del tipo producto para CRM</con7:comment>
+                                                        <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-3066310923147464624--4779f6b0.14b93bf5c94.-7e26</con7:id>
+                                                        <con3:expr>
+                                                            <con:xqueryTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                                                <con:resource ref="Common/XQ/GetDvmPropertieXQ"/>
+                                                                <con:param name="indexUseToSearch">
+                                                                    <con:path>1</con:path>
+                                                                </con:param>
+                                                                <con:param name="valueUseToSearch">
+                                                                    <con:path>xs:string($operacion/nmp:Prestamo/nmp:TipoProducto)</con:path>
+                                                                </con:param>
+                                                                <con:param name="propertieIndexReturn">
+                                                                    <con:path>2</con:path>
+                                                                </con:param>
+                                                                <con:param name="dvm">
+                                                                    <con:path>$dvm3</con:path>
+                                                                </con:param>
+                                                            </con:xqueryTransform>
+                                                        </con3:expr>
+                                                    </con3:assign>
+                                                    <con3:replace varName="loanStatus" contents-only="true">
+                                                        <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Sustituir el valor obtenido del DVM TipoProductoDVM en el mensaje de la operacion</con7:comment>
+                                                        <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-3066310923147464624--4779f6b0.14b93bf5c94.-7e25</con7:id>
+                                                        <con3:location>
+                                                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./can:loan/can:TipoProducto</con:xpathText>
+                                                        </con3:location>
+                                                        <con3:expr>
+                                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$tipoProducto</con:xqueryText>
+                                                        </con3:expr>
+                                                    </con3:replace>
+                                                </con3:actions>
+                                            </con3:case>
+                                        </con3:ifThenElse>
+                                        <con3:javaCallout varName="numeroHash">
+                                            <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Generar un numero hash para identificar con el destino la operacion enviada</con7:comment>
+                                            <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-4696946362066881433-19b24fc9.14bc6e46669.-7e28</con7:id>
+                                            <con3:archive ref="Common/JAR/HashNumberJAR"/>
+                                            <con3:className>servicios.montepiedad.com.mx.hashNumber</con3:className>
+                                            <con3:method>public static java.lang.String generarHash(java.lang.String)</con3:method>
+                                            <con3:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:concat($loanStatus/can:loan/can:Partida, $loanStatus/can:loan/can:TipoOperacion, fn:current-time())</con:xqueryText>
+                                            </con3:expr>
+                                            <con3:return-param-as-ref>false</con3:return-param-as-ref>
+                                        </con3:javaCallout>
+                                        <con3:replace contents-only="true" varName="loanStatus">
+                                            <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Colocar el valor del numero hash generado en el mensaje de la operacion a enviar a CRM</con7:comment>
+                                            <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-4696946362066881433-19b24fc9.14bc6e46669.-7e0b</con7:id>
+                                            <con3:location>
+                                                <con7:xpathText xmlns:con7="http://www.bea.com/wli/sb/stages/config">./can:loan/can:Hash</con7:xpathText>
+                                            </con3:location>
+                                            <con3:expr>
+                                                <con7:xqueryText xmlns:con7="http://www.bea.com/wli/sb/stages/config">$numeroHash</con7:xqueryText>
+                                            </con3:expr>
+                                        </con3:replace>
+                                        <con3:ifThenElse>
+                                            <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Verificar si la operacion es un AO - Empeno con campana para enviarse a CRM</con7:comment>
+                                            <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-N3f57c7ff.N6cf863dd.0.15377a9885c.N7ff7</con7:id>
+                                            <con3:case id="_BranchId-N3f57c7ff.N6cf863dd.0.15377a9885c.N7ff6">
+                                                <con3:condition>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">(fn:exists($loanStatus/can:loan/can:IdCampana) = fn:false() and $loanStatus/can:loan/can:TipoOperacion/text() = "9")</con:xqueryText>
+                                                </con3:condition>
+                                                <con3:actions/>
+                                            </con3:case>
+                                            <con3:default>
+                                                <con4:route>
+                                                    <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Publicar mensaje a proxy service (OSBEnviarOpPrestamoCRMSoapPXY) encargado del envio de la operacion a CRM</con7:comment>
+                                                    <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-3066310923147464624--4779f6b0.14b93bf5c94.-7e21</con7:id>
+                                                    <con4:service ref="OperacionPrendaria/Prestamo/Proxy Services/OSBEnviarOpPrestamoCRMSoapPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                                    <con4:operation>SetOperacionCliente</con4:operation>
+                                                    <con4:outboundTransform>
+                                                        <con3:routing-options>
+                                                            <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Opciones de publicación exactly one y one way</con7:comment>
+                                                            <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-3066310923147464624--4779f6b0.14b93bf5c94.-7e20</con7:id>
+                                                            <con3:mode>request</con3:mode>
+                                                            <con3:qualityOfService>exactly-once</con3:qualityOfService>
+                                                        </con3:routing-options>
+                                                        <con3:replace varName="header" contents-only="true">
+                                                            <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Agregar el Message ID en el header del request de origen para tener trazabilidad</con7:comment>
+                                                            <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N7d8edf5d.27.1567c74c985.N7fff</con7:id>
+                                                            <con3:location>
+                                                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                                            </con3:location>
+                                                            <con3:expr>
+                                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(
+    fn:concat('<headerMessage xmlns="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">',
+                      '<usuario />',
+                      '<idConsumidor>', fn:data($msgId), '</idConsumidor>',
+                      '<idDestino />',
+                  '</headerMessage>'))]]></con:xqueryText>
+                                                            </con3:expr>
+                                                        </con3:replace>
+                                                        <con3:replace varName="body" contents-only="true">
+                                                            <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Sustituir el mensaje de la operacion en el body para su envio al proxy service (CRMLoanOperationPXY)</con7:comment>
+                                                            <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-3066310923147464624--4779f6b0.14b93bf5c94.-7e1f</con7:id>
+                                                            <con3:location>
+                                                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                                            </con3:location>
+                                                            <con3:expr>
+                                                                <con5:xqueryText xmlns:con5="http://www.bea.com/wli/sb/stages/config">$loanStatus</con5:xqueryText>
+                                                            </con3:expr>
+                                                        </con3:replace>
+                                                    </con4:outboundTransform>
+                                                </con4:route>
+                                            </con3:default>
+                                        </con3:ifThenElse>
+                                    </con3:actions>
+                                </con3:case>
+                                <con3:default/>
+                            </con3:ifThenElse>
+                        </con3:actions>
+                    </con3:foreach>
+                </con6:actions>
+            </con6:stage>
+        </con1:pipeline>
+        <con1:pipeline name="PipelineEachOpLoanStatusToCRM_response" type="response">
+            <con1:stage name="StageAckResponse">
+                <con1:comment>Generar ACK</con1:comment>
+                <con1:context/>
+                <con1:actions>
+                    <con2:reply isError="false">
+                        <con2:comment>Generar un replay una vez que se comunico el error</con2:comment>
+                        <con2:id>_ActionId-a1e030f.N7d8edf5d.2b.156850ce728.N7ffd</con2:id>
+                    </con2:reply>
+                </con1:actions>
+            </con1:stage>
+        </con1:pipeline>
+        <con1:flow>
+            <con1:pipeline-node name="PipelineEachOpLoanStatusToCRM">
+                <con1:comment>Procesamiento de operaciones contenidas en mensaje XML para envio al CRM</con1:comment>
+                <con1:request>PipelineEachOpLoanStatusToCRM_request</con1:request>
+                <con1:response>PipelineEachOpLoanStatusToCRM_response</con1:response>
+            </con1:pipeline-node>
+        </con1:flow>
+    </con1:router>
+    <aler:alertRules xsi:nil="true" xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert"/>
+</con:pipelineEntry>

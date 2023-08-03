@@ -1,0 +1,767 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="FuerzaDeVentas/Citas/Resources/WSDLs/NMPCitasSvcWSDL"/>
+            <con:binding>
+                <con:name>CitasBinding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCitas</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:logging enabled="false" level="debug"/>
+            <oper:monitoring enabled="true" level="action" aggregationInterval="5"/>
+            <oper:reporting>false</oper:reporting>
+            <oper:pipeline-alerting enabled="false" level="normal"/>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router errorHandler="error-N53e1fd0e.N2dea3070.0.15122608620.N7f8e">
+        <con:pipeline type="response" name="response-N53e1fe3b.5ae18383.0.150ba0ec123.N7fc3">
+            <con:stage id="_StageId-N53e1fe3b.5ae18383.0.150ba0ec123.N7fc1" name="Response Stage">
+                <con:context>
+                    <con2:userNsDecl prefix="tem" namespace="http://tempuri.org/"/>
+                    <con2:userNsDecl prefix="cit" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/CitaType"/>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCitas"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="body">
+                        <con2:id>_ActionId-af004f7.4983d8d0.0.150def0311d.N7b8f</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText><![CDATA[fn-bea:inlinedXML(concat("<soapenv:Body xmlns:soapenv='http://schemas.xmlsoap.org/soap/envelope/'>
+	<NMPCitas:cancelarCitaResponse 	xmlns:CitaType='http://servicios.montedepiedad.com.mx/NMP/Schema/CitaType' 
+                                xmlns:NMPCitas='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCitas'>
+		<CitaType:ConfirmacionEnvio>
+			<CitaType:idEnvio>",$cancelarCitaRes/tem:CancelWorkOrdersXMLIdResult,"</CitaType:idEnvio>
+		</CitaType:ConfirmacionEnvio>
+	</NMPCitas:cancelarCitaResponse>
+</soapenv:Body>"))]]></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con3:report>
+                        <con2:id>_ActionId-a1e030f.N46f09b50.16.1533361fa34.N7fff</con2:id>
+                        <con3:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>outputCancela</con3:key>
+                            <con3:varName>tmp</con3:varName>
+                            <con3:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.//cit:clientId/text()</con:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-af004f7.4983d8d0.0.150def0311d.N7c13">
+            <con2:stage name="Formiik Callout Error Handler Stage" id="_StageId-af004f7.4983d8d0.0.150def0311d.N7ba4" xmlns:con2="http://www.bea.com/wli/sb/pipeline/config" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+                <con:context>
+                    <con1:userNsDecl prefix="con" namespace="http://www.bea.com/wli/sb/context"/>
+                    <con1:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                    <con1:userNsDecl prefix="ns1" namespace="urn:mx.com.nmp.clientes"/>
+                    <con1:userNsDecl prefix="NMPConsultaC" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente"/>
+                    <con1:userNsDecl prefix="crm" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal"/>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal"/>
+                    <con1:varNsDecl prefix="nmp2" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente"/>
+                    <con1:varNsDecl prefix="cit" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/CitaType"/>
+                    <con1:varNsDecl prefix="nmp3" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCitas"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="header" contents-only="false" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-af004f7.4983d8d0.0.150def0311d.N7ba3</con3:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML('&lt;soapenv:Header xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">&lt;/soapenv:Header>')</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con3:report>
+                        <con1:id>_ActionId-af004f7.4983d8d0.0.150def0311d.N7ba2</con1:id>
+                        <con3:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault</con:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>errorFormiikCancelarCita</con3:key>
+                            <con3:varName>tmp</con3:varName>
+                            <con3:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.//cit:clientId/text()</con:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                    <con4:replace varName="body" contents-only="true" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con1:id>_ActionId-a1e030f.N4c30c2c3.59.1524219885e.N7ffd</con1:id>
+                        <con4:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con4:location>
+                        <con4:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="FuerzaDeVentas/Citas/Resources/Transformations/TransformCitasFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="app">
+                                    <con1:path>1</con1:path>
+                                </con1:param>
+                                <con1:param name="faultCode">
+                                    <con1:path>'cancelarCitaFault'</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con4:expr>
+                    </con4:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-a1e030f.N4c30c2c3.50.15241be82ad.N7ffe</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con2:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N53e1fe3b.5ae18383.0.150ba0ec123.N7fc8">
+            <con:stage id="_StageId-N53e1fd0e.19aed8e0.0.150f7b50f7d.N7fce" name="Validate Stage">
+                <con:context>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCitas"/>
+                    <con2:userNsDecl prefix="cit" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/CitaType"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="tmp">
+                        <con2:id>_ActionId-a1e030f.N46f09b50.13.153335d90da.N8000</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/*</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:validate>
+                        <con2:id>_ActionId-N53e1fd0e.19aed8e0.0.150f7b50f7d.N7fcd</con2:id>
+                        <con1:schema ref="FuerzaDeVentas/Citas/Resources/Schemas/Citas_ELEMENTOS"/>
+                        <con1:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCitas">nmp:actualizarCitaRequest</con1:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con2:xpathText>./nmp:actualizarCitaRequest</con2:xpathText>
+                        </con1:location>
+                        <con1:resultVarName/>
+                    </con1:validate>
+                    <con3:report>
+                        <con2:id>_ActionId-a1e030f.N46f09b50.14.153335e1c77.N8000</con2:id>
+                        <con3:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>inputActualiza</con3:key>
+                            <con3:varName>tmp</con3:varName>
+                            <con3:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.//cit:clientId/text()</con:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N53e1fe3b.5ae18383.0.150ba0ec123.N7fc6" name="Request Stage" errorHandler="error-af004f7.4983d8d0.0.150def0311d.N7d16">
+                <con:context>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCitas"/>
+                    <con2:userNsDecl prefix="cit" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/CitaType"/>
+                    <con2:userNsDecl prefix="tem" namespace="http://tempuri.org/"/>
+                </con:context>
+                <con:actions>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-af004f7.4983d8d0.0.150def0311d.N7e5b</con2:id>
+                        <con1:service ref="FuerzaDeVentas/Citas/Business Services/FORMIIKBackEndBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>UpdateWorkOrdersXMLId</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">actualizarCitaReq</con1:body>
+                            <con1:header/>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">actualizarCitaRes</con1:body>
+                            <con1:header/>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:assign varName="actualizarCitaTmpVar">
+                                <con2:id>_ActionId-af004f7.4983d8d0.0.150def0311d.N7e28</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText>$body</con2:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                            <con1:replace varName="actualizarCitaTmpVar" contents-only="false">
+                                <con2:id>_ActionId-af004f7.4983d8d0.0.150def0311d.N7df5</con2:id>
+                                <con1:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="FuerzaDeVentas/Citas/Resources/Transformations/TrActualizarCitaReqToNewUpdateOrderFormiik"/>
+                                        <con2:input>$actualizarCitaTmpVar/*</con2:input>
+                                    </con2:xsltTransform>
+                                </con1:expr>
+                            </con1:replace>
+                            <con1:assign varName="actualizarCitaTmpStringVar">
+                                <con2:id>_ActionId-af004f7.4983d8d0.0.150def0311d.N7dc1</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText>fn-bea:serialize($actualizarCitaTmpVar)</con2:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                            <con3:report>
+                                <con2:id>_ActionId-a1e030f.N46f09b50.13.153335d90da.N7fff</con2:id>
+                                <con3:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$actualizarCitaTmpVar</con:xqueryText>
+                                </con3:expr>
+                                <con3:labels>
+                                    <con3:key>formiikActualizaRequest</con3:key>
+                                    <con3:varName>tmp</con3:varName>
+                                    <con3:value>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.//cit:clientId/text()</con:xpathText>
+                                    </con3:value>
+                                </con3:labels>
+                            </con3:report>
+                            <con1:assign varName="actualizarCitaReq">
+                                <con2:id>_ActionId-af004f7.4983d8d0.0.150def0311d.N7d8d</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText><![CDATA[fn-bea:inlinedXML(concat("<tem:UpdateWorkOrdersXMLId xmlns:tem='http://tempuri.org/'>
+         <tem:clientId>",$body/nmp:actualizarCitaRequest/cit:Cita/cit:clientId,"</tem:clientId>
+         <tem:productId>",$body/nmp:actualizarCitaRequest/cit:Cita/cit:productId,"</tem:productId>
+         <tem:workOrders><![CDATA[",$actualizarCitaTmpStringVar,"]]]]>><![CDATA[</tem:workOrders>
+      </tem:UpdateWorkOrdersXMLId>"))]]></con2:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:requestTransform>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N53e1fe3b.5ae18383.0.150ba0ec123.N7fcb">
+            <con:stage id="_StageId-N53e1fe3b.5ae18383.0.150ba0ec123.N7fc9" name="Response Stage">
+                <con:context>
+                    <con2:userNsDecl prefix="tem" namespace="http://tempuri.org/"/>
+                    <con2:varNsDecl prefix="cit" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/CitaType"/>
+                    <con2:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCitas"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="body">
+                        <con2:id>_ActionId-af004f7.4983d8d0.0.150def0311d.N7fef</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(concat("<soapenv:Body xmlns:soapenv='http://schemas.xmlsoap.org/soap/envelope/'>
+	<NMPCitas:crearCitaResponse 	xmlns:CitaType='http://servicios.montedepiedad.com.mx/NMP/Schema/CitaType' 
+                                xmlns:NMPCitas='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCitas'>
+		<CitaType:ConfirmacionEnvio>
+			<CitaType:idEnvio>",$crearCitaRes/tem:AddWorkOrdersXMLIdResult,"</CitaType:idEnvio>
+		</CitaType:ConfirmacionEnvio>
+	</NMPCitas:crearCitaResponse>
+</soapenv:Body>"))]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con3:report>
+                        <con2:id>_ActionId-a1e030f.N46f09b50.f.15333512e1a.N8000</con2:id>
+                        <con3:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>outputCrea</con3:key>
+                            <con3:varName>tmp</con3:varName>
+                            <con3:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.//cit:clientId/text()</con:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                        <con3:labels>
+                            <con3:key>orderId</con3:key>
+                            <con3:varName>tmp</con3:varName>
+                            <con3:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.//cit:orderId/text()</con:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-af004f7.4983d8d0.0.150def0311d.N7f61">
+            <con2:stage name="Formiik Callout Error Handler Stage" id="_StageId-af004f7.4983d8d0.0.150def0311d.N7ed9" xmlns:con2="http://www.bea.com/wli/sb/pipeline/config" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+                <con:context>
+                    <con1:userNsDecl prefix="con" namespace="http://www.bea.com/wli/sb/context"/>
+                    <con1:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                    <con1:userNsDecl prefix="ns1" namespace="urn:mx.com.nmp.clientes"/>
+                    <con1:userNsDecl prefix="NMPConsultaC" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente"/>
+                    <con1:userNsDecl prefix="crm" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal"/>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal"/>
+                    <con1:varNsDecl prefix="nmp2" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente"/>
+                    <con1:varNsDecl prefix="cit" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/CitaType"/>
+                    <con1:varNsDecl prefix="nmp3" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCitas"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="header" contents-only="false" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-af004f7.4983d8d0.0.150def0311d.N7ed8</con3:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML('&lt;soapenv:Header xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">&lt;/soapenv:Header>')</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con3:report>
+                        <con1:id>_ActionId-af004f7.4983d8d0.0.150def0311d.N7ed7</con1:id>
+                        <con3:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault</con:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>errorFormiikCrearCita</con3:key>
+                            <con3:varName>tmp</con3:varName>
+                            <con3:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.//cit:clientId/text()</con:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                        <con3:labels>
+                            <con3:key>orderId</con3:key>
+                            <con3:varName>tmp</con3:varName>
+                            <con3:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.//cit:orderId/text()</con:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                    <con4:replace varName="body" contents-only="true" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con1:id>_ActionId-a1e030f.N4c30c2c3.57.152420f8c9d.N7ffe</con1:id>
+                        <con4:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con4:location>
+                        <con4:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="FuerzaDeVentas/Citas/Resources/Transformations/TransformCitasFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="app">
+                                    <con1:path>1</con1:path>
+                                </con1:param>
+                                <con1:param name="faultCode">
+                                    <con1:path>'crearCitaFault'</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con4:expr>
+                    </con4:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-a1e030f.N4c30c2c3.4e.15241bb9d71.N8000</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con2:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N53e1fe3b.5ae18383.0.150ba0ec123.N7fc4">
+            <con:stage id="_StageId-N53e1fe3b.5ae18383.0.150ba0ec123.N7fc2" name="Request Stage" errorHandler="error-af004f7.4983d8d0.0.150def0311d.N7c13">
+                <con:context>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCitas"/>
+                    <con2:userNsDecl prefix="cit" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/CitaType"/>
+                    <con2:userNsDecl prefix="tem" namespace="http://tempuri.org/"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="tmp">
+                        <con2:id>_ActionId-a1e030f.N46f09b50.16.1533361fa34.N8000</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/*</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:validate>
+                        <con2:id>_ActionId-N53e1fd0e.19aed8e0.0.150f7b50f7d.N7f9a</con2:id>
+                        <con1:schema ref="FuerzaDeVentas/Citas/Resources/Schemas/Citas_ELEMENTOS"/>
+                        <con1:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCitas">nmp:cancelarCitaRequest</con1:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con2:xpathText>./nmp:cancelarCitaRequest</con2:xpathText>
+                        </con1:location>
+                        <con1:resultVarName/>
+                    </con1:validate>
+                    <con3:report>
+                        <con2:id>_ActionId-a1e030f.N46f09b50.15.15333607b7c.N7fff</con2:id>
+                        <con3:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>inputCancela</con3:key>
+                            <con3:varName>tmp</con3:varName>
+                            <con3:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.//cit:clientId/text()</con:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-af004f7.4983d8d0.0.150def0311d.N7c62</con2:id>
+                        <con1:service ref="FuerzaDeVentas/Citas/Business Services/FORMIIKBackEndBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>CancelWorkOrdersXMLId</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">cancelarCitaReq</con1:body>
+                            <con1:header/>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">cancelarCitaRes</con1:body>
+                            <con1:header/>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:assign varName="cancelarCitaTmpVar">
+                                <con2:id>_ActionId-af004f7.4983d8d0.0.150def0311d.N7c5f</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText>$body</con2:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                            <con1:replace varName="cancelarCitaTmpVar" contents-only="false">
+                                <con2:id>_ActionId-af004f7.4983d8d0.0.150def0311d.N7c5c</con2:id>
+                                <con1:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="FuerzaDeVentas/Citas/Resources/Transformations/TrCancelarCitaReqToCancelOrderFormiik"/>
+                                        <con2:input>$cancelarCitaTmpVar/*</con2:input>
+                                    </con2:xsltTransform>
+                                </con1:expr>
+                            </con1:replace>
+                            <con1:assign varName="cancelarCitaTmpStringVar">
+                                <con2:id>_ActionId-af004f7.4983d8d0.0.150def0311d.N7c59</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText>fn-bea:serialize($cancelarCitaTmpVar)</con2:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                            <con3:report>
+                                <con2:id>_ActionId-a1e030f.N46f09b50.14.153335e1c77.N7fff</con2:id>
+                                <con3:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$cancelarCitaTmpVar</con:xqueryText>
+                                </con3:expr>
+                                <con3:labels>
+                                    <con3:key>formiikCancelaRequest</con3:key>
+                                    <con3:varName>tmp</con3:varName>
+                                    <con3:value>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.//cit:clientId/text()</con:xpathText>
+                                    </con3:value>
+                                </con3:labels>
+                            </con3:report>
+                            <con1:assign varName="cancelarCitaReq">
+                                <con2:id>_ActionId-af004f7.4983d8d0.0.150def0311d.N7c56</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<tem:CancelWorkOrdersXMLId xmlns:tem='http://tempuri.org/'>
+         <tem:clientId>",$body/nmp:cancelarCitaRequest/cit:clientId,"</tem:clientId>
+         <tem:productId>",$body/nmp:cancelarCitaRequest/cit:productId,"</tem:productId>
+         <tem:cancelOrders><![CDATA[",$cancelarCitaTmpStringVar,"]]]]>><![CDATA[</tem:cancelOrders>
+      </tem:CancelWorkOrdersXMLId>"))]]></con2:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:requestTransform>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N53e1fe3b.5ae18383.0.150ba0ec123.N7fcc">
+            <con:stage id="_StageId-af00445.973f3cc.0.150eee3ff1b.N7fea" name="Validate Stage">
+                <con:context>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCitas"/>
+                    <con2:varNsDecl prefix="cit" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/CitaType"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="tmp">
+                        <con2:id>_ActionId-a1e030f.N46f09b50.10.153335670bb.N8000</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/*</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:validate>
+                        <con2:id>_ActionId-af00445.973f3cc.0.150eee3ff1b.N7fe9</con2:id>
+                        <con1:schema ref="FuerzaDeVentas/Citas/Resources/Schemas/Citas_ELEMENTOS"/>
+                        <con1:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCitas">nmp:crearCitaRequest</con1:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con2:xpathText>./nmp:crearCitaRequest</con2:xpathText>
+                        </con1:location>
+                        <con1:resultVarName/>
+                    </con1:validate>
+                    <con3:report>
+                        <con2:id>_ActionId-a1e030f.N1b950730.1b.152fa3d9eb4.N7ffe</con2:id>
+                        <con3:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>inputCrea</con3:key>
+                            <con3:varName>tmp</con3:varName>
+                            <con3:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.//cit:clientId/text()</con:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                        <con3:labels>
+                            <con3:key>orderId</con3:key>
+                            <con3:varName>tmp</con3:varName>
+                            <con3:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.//cit:orderId/text()</con:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N53e1fe3b.5ae18383.0.150ba0ec123.N7fca" name="Request Stage" errorHandler="error-af004f7.4983d8d0.0.150def0311d.N7f61">
+                <con:context>
+                    <con2:userNsDecl prefix="tem" namespace="http://tempuri.org/"/>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCitas"/>
+                    <con2:userNsDecl prefix="cit" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/CitaType"/>
+                </con:context>
+                <con:actions>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-N53e1fe3b.5ae18383.0.150ba0ec123.N7fbe</con2:id>
+                        <con1:service ref="FuerzaDeVentas/Citas/Business Services/FORMIIKBackEndBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>AddWorkOrdersXMLId</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">crearCitaReq</con1:body>
+                            <con1:header/>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">crearCitaRes</con1:body>
+                            <con1:header/>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:assign varName="crearCitaTmpVar">
+                                <con2:id>_ActionId-af004f0.N232b4ab9.0.150d38edc28.N7fc8</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText>$body</con2:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                            <con1:replace varName="crearCitaTmpVar" contents-only="false">
+                                <con2:id>_ActionId-af004f0.N232b4ab9.0.150d38edc28.N7ffe</con2:id>
+                                <con1:expr>
+                                    <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                        <con:resource ref="FuerzaDeVentas/Citas/Resources/Transformations/TrCrearCitaReqToNewUpdateOrderFormiik"/>
+                                        <con:input>$crearCitaTmpVar/*</con:input>
+                                    </con:xsltTransform>
+                                </con1:expr>
+                            </con1:replace>
+                            <con3:report>
+                                <con2:id>_ActionId-af00445.973f3cc.0.150eee3ff1b.N7fdd</con2:id>
+                                <con3:expr>
+                                    <con2:xqueryText>$crearCitaTmpVar</con2:xqueryText>
+                                </con3:expr>
+                                <con3:labels>
+                                    <con3:key>formiikCreaRequest</con3:key>
+                                    <con3:varName>tmp</con3:varName>
+                                    <con3:value>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.//cit:clientId/text()</con:xpathText>
+                                    </con3:value>
+                                </con3:labels>
+                                <con3:labels>
+                                    <con3:key>orderId</con3:key>
+                                    <con3:varName>tmp</con3:varName>
+                                    <con3:value>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.//cit:orderId/text()</con:xpathText>
+                                    </con3:value>
+                                </con3:labels>
+                            </con3:report>
+                            <con1:assign varName="crearCitaTmpStringVar">
+                                <con2:id>_ActionId-af004f7.4983d8d0.0.150def0311d.N7ffe</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText>fn-bea:serialize($crearCitaTmpVar)</con2:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                            <con1:assign varName="crearCitaReq">
+                                <con2:id>_ActionId-af004f0.N232b4ab9.0.150d38edc28.N7ffb</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText><![CDATA[fn-bea:inlinedXML(concat("<tem:AddWorkOrdersXMLId xmlns:tem='http://tempuri.org/'>
+         <tem:clientId>",$body/nmp:crearCitaRequest/cit:Cita/cit:clientId,"</tem:clientId>
+         <tem:productId>",$body/nmp:crearCitaRequest/cit:Cita/cit:productId,"</tem:productId>
+         <tem:workOrders><![CDATA[",$crearCitaTmpStringVar,"]]]]>><![CDATA[</tem:workOrders>
+      </tem:AddWorkOrdersXMLId>"))]]></con2:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:requestTransform>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N53e1fe3b.5ae18383.0.150ba0ec123.N7fc7">
+            <con:stage id="_StageId-N53e1fe3b.5ae18383.0.150ba0ec123.N7fc5" name="Response Stage">
+                <con:context>
+                    <con2:userNsDecl prefix="tem" namespace="http://tempuri.org/"/>
+                    <con2:varNsDecl prefix="cit" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/CitaType"/>
+                    <con2:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCitas"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="body">
+                        <con2:id>_ActionId-af004f7.4983d8d0.0.150def0311d.N7d59</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText><![CDATA[fn-bea:inlinedXML(concat("<soapenv:Body xmlns:soapenv='http://schemas.xmlsoap.org/soap/envelope/'>
+	<NMPCitas:actualizarCitaResponse 	xmlns:CitaType='http://servicios.montedepiedad.com.mx/NMP/Schema/CitaType' 
+                                xmlns:NMPCitas='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCitas'>
+		<CitaType:ConfirmacionEnvio>
+			<CitaType:idEnvio>",$actualizarCitaRes/tem:UpdateWorkOrdersXMLIdResult,"</CitaType:idEnvio>
+		</CitaType:ConfirmacionEnvio>
+	</NMPCitas:actualizarCitaResponse>
+</soapenv:Body>"))]]></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con3:report>
+                        <con2:id>_ActionId-a1e030f.N46f09b50.15.15333607b7c.N8000</con2:id>
+                        <con3:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>outputActualiza</con3:key>
+                            <con3:varName>tmp</con3:varName>
+                            <con3:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.//cit:clientId/text()</con:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N53e1fd0e.N2dea3070.0.15122608620.N7f8e">
+            <con2:stage name="General Error Handler Stage" id="_StageId-N53e1fd0e.N2dea3070.0.15122608620.N7f1f" xmlns:con2="http://www.bea.com/wli/sb/pipeline/config" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+                <con:context>
+                    <con1:userNsDecl prefix="con" namespace="http://www.bea.com/wli/sb/context"/>
+                    <con1:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                    <con1:userNsDecl prefix="ns1" namespace="urn:mx.com.nmp.clientes"/>
+                    <con1:userNsDecl prefix="NMPConsultaC" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente"/>
+                    <con1:userNsDecl prefix="crm" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal"/>
+                    <con1:userNsDecl prefix="nmp4" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal"/>
+                    <con1:varNsDecl prefix="nmp2" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente"/>
+                    <con1:varNsDecl prefix="cit" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/CitaType"/>
+                    <con1:varNsDecl prefix="nmp3" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCitas"/>
+                    <con4:variable name="messageFault" path="$messageFault" asChild="false" xmlns:con4="http://www.bea.com/wli/sb/typesystem/config">
+                        <con4:schema ref="Common/XSD/NMPStandardMessage" element="messageError"/>
+                    </con4:variable>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="header" contents-only="false" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con4:id xmlns:con4="http://www.bea.com/wli/sb/stages/config">_ActionId-N53e1fd0e.N2dea3070.0.15122608620.N7f1e</con4:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML('&lt;soapenv:Header xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">&lt;/soapenv:Header>')</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:replace varName="body" contents-only="true" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con4:id xmlns:con4="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N4089bba8.15.15592ba4629.N8000</con4:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con4:xsltTransform xmlns:con4="http://www.bea.com/wli/sb/stages/config">
+                                <con4:resource ref="FuerzaDeVentas/Citas/Resources/Transformations/TransformCitasFault"/>
+                                <con4:input>$fault</con4:input>
+                                <con4:param name="app">
+                                    <con4:path>0</con4:path>
+                                </con4:param>
+                                <con4:param name="faultCode">
+                                    <con4:path>'cancelarCitaFault'</con4:path>
+                                </con4:param>
+                            </con4:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con3:report>
+                        <con1:id>_ActionId-N53e1fd0e.N2dea3070.0.15122608620.N7f1d</con1:id>
+                        <con3:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>errorGeneralCitas</con3:key>
+                            <con3:varName>fault</con3:varName>
+                            <con3:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./con:errorCode</con:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-a1e030f.N4089bba8.16.15592c56f3e.N8000</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con2:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-af004f7.4983d8d0.0.150def0311d.N7d16">
+            <con2:stage name="Formiik Callout Error Handler Stage" id="_StageId-af004f7.4983d8d0.0.150def0311d.N7c77" xmlns:con2="http://www.bea.com/wli/sb/pipeline/config" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+                <con:context>
+                    <con1:userNsDecl prefix="con" namespace="http://www.bea.com/wli/sb/context"/>
+                    <con1:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                    <con1:userNsDecl prefix="ns1" namespace="urn:mx.com.nmp.clientes"/>
+                    <con1:userNsDecl prefix="NMPConsultaC" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente"/>
+                    <con1:userNsDecl prefix="crm" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal"/>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal"/>
+                    <con1:varNsDecl prefix="nmp2" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente"/>
+                    <con1:varNsDecl prefix="cit" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/CitaType"/>
+                    <con1:varNsDecl prefix="nmp3" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCitas"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="header" contents-only="false" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-af004f7.4983d8d0.0.150def0311d.N7c76</con3:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML('&lt;soapenv:Header xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">&lt;/soapenv:Header>')</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con3:report>
+                        <con1:id>_ActionId-af004f7.4983d8d0.0.150def0311d.N7c75</con1:id>
+                        <con3:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault</con:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>errorFormiikActualizarCita</con3:key>
+                            <con3:varName>tmp</con3:varName>
+                            <con3:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.//cit:clientId/text()</con:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                    <con4:replace varName="body" contents-only="true" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con1:id>_ActionId-a1e030f.N4c30c2c3.4d.15241bb4041.N7fff</con1:id>
+                        <con4:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con4:location>
+                        <con4:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="FuerzaDeVentas/Citas/Resources/Transformations/TransformCitasFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="app">
+                                    <con1:path>1</con1:path>
+                                </con1:param>
+                                <con1:param name="faultCode">
+                                    <con1:path>'actualizarCitaFault'</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con4:expr>
+                    </con4:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-a1e030f.N4c30c2c3.55.15241e018da.N7fff</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con2:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:branch-node type="operation" id="_FlowId-N53e1fe3b.5ae18383.0.150ba0ec123.N7fcd" name="BranchNodeCitas">
+                <con:context/>
+                <con:branch-table>
+                    <con:branch name="crearCita">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairNodeCrearCita">
+                                <con:request>request-N53e1fe3b.5ae18383.0.150ba0ec123.N7fcc</con:request>
+                                <con:response>response-N53e1fe3b.5ae18383.0.150ba0ec123.N7fcb</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="actualizarCita">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairNodeActualizarCita">
+                                <con:request>request-N53e1fe3b.5ae18383.0.150ba0ec123.N7fc8</con:request>
+                                <con:response>response-N53e1fe3b.5ae18383.0.150ba0ec123.N7fc7</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="cancelarCita">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairNodeCancelarCita">
+                                <con:request>request-N53e1fe3b.5ae18383.0.150ba0ec123.N7fc4</con:request>
+                                <con:response>response-N53e1fe3b.5ae18383.0.150ba0ec123.N7fc3</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+        <con:partner-links/>
+    </con:router>
+</con:pipelineEntry>

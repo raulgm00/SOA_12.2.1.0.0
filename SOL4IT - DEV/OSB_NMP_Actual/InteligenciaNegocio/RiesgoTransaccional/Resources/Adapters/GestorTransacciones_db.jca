@@ -1,0 +1,37 @@
+<adapter-config name="GestorTransacciones" adapter="db" wsdlLocation="../WSDLs/GestorTransacciones.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  
+  <connection-factory UIConnectionName="GPAConnDB" location="eis/DB/GPAConnDB"/>
+  <endpoint-interaction portType="GestorTransacciones_ptt" operation="merge">
+    <interaction-spec className="oracle.tip.adapter.db.DBWriteInteractionSpec">
+      <property name="DescriptorName" value="GestorTransacciones.MensajesProceso"/>
+      <property name="DmlType" value="merge"/>
+      <property name="OutputCompletedXml" value="true"/>
+      <property name="MappingsMetaDataURL" value="GestorTransacciones-or-mappings.xml"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+      <property name="OptimizeMerge" value="true"/>
+      <property name="DetectOmissions" value="true"/>
+    </interaction-spec>
+  </endpoint-interaction>
+
+  <endpoint-interaction portType="GestorTransacciones_ptt" operation="delete">
+    <interaction-spec className="oracle.tip.adapter.db.DBWriteInteractionSpec">
+      <property name="DescriptorName" value="GestorTransacciones.MensajesProceso"/>
+      <property name="DmlType" value="delete"/>
+      <property name="OutputCompletedXml" value="true"/>
+      <property name="MappingsMetaDataURL" value="GestorTransacciones-or-mappings.xml"/>
+      <property name="OptimizeMerge" value="true"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+
+  <endpoint-interaction portType="GestorTransacciones_ptt" operation="GestorTransaccionesSelect">
+    <interaction-spec className="oracle.tip.adapter.db.DBReadInteractionSpec">
+      <property name="DescriptorName" value="GestorTransacciones.MensajesProceso"/>
+      <property name="QueryName" value="GestorTransaccionesSelect"/>
+      <property name="MappingsMetaDataURL" value="GestorTransacciones-or-mappings.xml"/>
+      <property name="ReturnSingleResultSet" value="false"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+
+</adapter-config>

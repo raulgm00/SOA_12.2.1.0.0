@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+    <con:coreEntry>
+        <con:description>Contiene el flujo para las operaciones para obtener y asignar los perfiles, manejo de excepciones.</con:description>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="GestionIdentidades/MIDAS/Resources/WSDL/MidasProvisioningServiceWSDL"/>
+            <con:binding>
+                <con:name>ProvisioningServiceHttpBinding</con:name>
+                <con:namespace>urn:mx.com.nmp.midas</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations>
+            <oper:tracingEnabled>true</oper:tracingEnabled>
+            <oper:logging enabled="false" level="debug"/>
+            <oper:monitoring enabled="false" level="pipeline" aggregationInterval="10"/>
+            <oper:reporting>false</oper:reporting>
+        </oper:operations>
+    </con:coreEntry>
+    <con:router errorHandler="_onErrorHandler-3708010327031629053-b5d49be.14dbb932212.-7f71" xmlns:ser="http://www.bea.com/wli/sb/services">
+        <con:pipeline name="_onErrorHandler-5127800335069807831-2c82504.14ebc804d76.-7fc8" type="error">
+            <con:stage name="MidasProvisioningFault">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://nmpempleado.schema.nmp.servicios.montedepiedad.com.mx" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="usr" namespace="http://nmpusuario.services.nmp.servicios.montedepiedad.com.mx" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="std" namespace="http://nmpstandardmessage.schema.nmp.servicios.montedepiedad.com.mx" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="urn" namespace="urn:mx.com.nmp.midas" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.5a2ca2f3.23.1511d3a81e3.N8000</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:not($body/soap-env:Fault)</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.5a2ca2f3.1d.1511bdec634.N7fff</con2:id>
+                                    <con1:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                            <con:resource ref="GestionIdentidades/MIDAS/Resources/XSLT/TransformMidasFault"/>
+                                            <con:input>$fault</con:input>
+                                        </con:xsltTransform>
+                                    </con1:expr>
+                                </con1:replace>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:default>
+                            <con1:assign varName="detailfaultstring">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e060f.70a724d6.4.1515a73211c.N8000</con2:id>
+                                <con1:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/soap-env:Fault/faultstring/text()</con:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                            <con1:replace varName="body" contents-only="true">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e060f.70a724d6.5.1515a73965b.N8000</con2:id>
+                                <con1:location>
+                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./soap-env:Fault/detail/urn:PerfilesFaultMessage/usr:faultInfo/std:descripcionError</con:xpathText>
+                                </con1:location>
+                                <con1:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:concat($body/soap-env:Fault/detail/urn:PerfilesFaultMessage/usr:faultInfo/std:descripcionError/text(),'. ', $detailfaultstring)</con:xqueryText>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:default>
+                    </con1:ifThenElse>
+                    <con1:report xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.5a2ca2f3.2e.15120ed85d6.N7ffd</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:substring(fn-bea:serialize($body), 0, 1000)</con:xqueryText>
+                        </con1:expr>
+                        <con1:labels>
+                            <con1:key>errorMidasProv</con1:key>
+                            <con1:varName>body_temp</con1:varName>
+                            <con1:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./urn:asignarPerfiles/urn:usuarioDestino/nmp:idEmpleado/text()</con:xpathText>
+                            </con1:value>
+                        </con1:labels>
+                        <con1:labels>
+                            <con1:key>operacion</con1:key>
+                            <con1:varName>nodoOperation</con1:varName>
+                            <con1:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">//operation/text()</con:xpathText>
+                            </con1:value>
+                        </con1:labels>
+                    </con1:report>
+                    <con1:reply isError="true" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+                        <con1:id>_ActionId-5127800335069807831-2c82504.14ebc804d76.-7fc7</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="_onErrorHandler-3708010327031629053-b5d49be.14dbb932212.-7f71" type="error">
+            <con:stage name="MidasProvisioningFault">
+                <con:context>
+                    <con1:userNsDecl prefix="con" namespace="http://www.bea.com/wli/sb/context" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="nmp2" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="ns1" namespace="urn:mx.com.nmp.midas" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="NMPAuto" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="nmp3" namespace="http://nmpempleado.schema.nmp.servicios.montedepiedad.com.mx" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="usr" namespace="http://nmpusuario.services.nmp.servicios.montedepiedad.com.mx" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="std" namespace="http://nmpstandardmessage.schema.nmp.servicios.montedepiedad.com.mx" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="header" contents-only="false" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-3708010327031629053-b5d49be.14dbb932212.-7f70</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML('&lt;soapenv:Header xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">&lt;/soapenv:Header>')</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.5a2ca2f3.43.151222e47d8.N8000</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:not($body/soap-env:Fault)</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.5a2ca2f3.44.151222e78cc.N8000</con2:id>
+                                    <con1:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                            <con:resource ref="GestionIdentidades/MIDAS/Resources/XSLT/TransformMidasFault"/>
+                                            <con:input>$fault</con:input>
+                                        </con:xsltTransform>
+                                    </con1:expr>
+                                </con1:replace>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:default>
+                            <con1:assign varName="detailfaultstring">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e060f.70a724d6.6.1515a871c73.N7fff</con2:id>
+                                <con1:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/soap-env:Fault/faultstring/text()</con:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                            <con1:replace varName="body" contents-only="true">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e060f.70a724d6.7.1515aa4240f.N8000</con2:id>
+                                <con1:location>
+                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./soap-env:Fault/detail/ns1:PerfilesFaultMessage/usr:faultInfo/std:descripcionError</con:xpathText>
+                                </con1:location>
+                                <con1:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:concat($body/soap-env:Fault/detail/ns1:PerfilesFaultMessage/usr:faultInfo/std:descripcionError/text(),'. ', $detailfaultstring)</con:xqueryText>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:default>
+                    </con1:ifThenElse>
+                    <con1:report xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.5a2ca2f3.34.15121a1bca0.N7ffd</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:substring(fn-bea:serialize($body), 0, 1000)</con:xqueryText>
+                        </con1:expr>
+                        <con1:labels>
+                            <con1:key>errorMidasProv</con1:key>
+                            <con1:varName>body_temp</con1:varName>
+                            <con1:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./ns1:asignarPerfiles/ns1:usuarioDestino/nmp3:idEmpleado/text()</con:xpathText>
+                            </con1:value>
+                        </con1:labels>
+                        <con1:labels>
+                            <con1:key>operacion</con1:key>
+                            <con1:varName>nodoOperation</con1:varName>
+                            <con1:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">//operation/text()</con:xpathText>
+                            </con1:value>
+                        </con1:labels>
+                    </con1:report>
+                    <con1:reply isError="true" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+                        <con1:id>_ActionId-a1e030f.5a2ca2f3.7.15116c826e0.N8000</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:route-node name="RouteTo_ProvisioningSvcBS" error-handler="_onErrorHandler-5127800335069807831-2c82504.14ebc804d76.-7fc8">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://nmpempleado.schema.nmp.servicios.montedepiedad.com.mx" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="urn" namespace="urn:mx.com.nmp.midas" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                        <conid1:id xmlns:conid1="http://www.bea.com/wli/sb/stages/config">_ActionId-3708010327031629053-b5d49be.14dbb932212.-7f8a</conid1:id>
+                        <con1:service ref="GestionIdentidades/MIDAS/Business Services/MidasProvisioningSvcBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation passThrough="true"/>
+                        <con1:outboundTransform>
+                            <con2:assign varName="nodoOperation" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.5a2ca2f3.37.15121bf8a82.N8000</con3:id>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(fn:concat('&lt;operation>',fn:local-name($body/*),'&lt;/operation>'))</con:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:report xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.5a2ca2f3.21.1511d1ba7db.N7ffe</con3:id>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                                </con2:expr>
+                                <con2:labels>
+                                    <con2:key>entradaMidasProv</con2:key>
+                                    <con2:varName>body</con2:varName>
+                                    <con2:value>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./urn:asignarPerfiles/urn:usuarioDestino/nmp:idEmpleado/text()</con:xpathText>
+                                    </con2:value>
+                                </con2:labels>
+                                <con2:labels>
+                                    <con2:key>operacion</con2:key>
+                                    <con2:varName>nodoOperation</con2:varName>
+                                    <con2:value>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">//operation/text()</con:xpathText>
+                                    </con2:value>
+                                </con2:labels>
+                            </con2:report>
+                            <con2:assign varName="body_temp" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.5a2ca2f3.2e.15120ed85d6.N7ffc</con3:id>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                        </con1:outboundTransform>
+                        <con1:responseTransform>
+                            <con2:report xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.5a2ca2f3.2c.15120d4a19d.N7ffc</con3:id>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                                </con2:expr>
+                                <con2:labels>
+                                    <con2:key>salidaMidasProv</con2:key>
+                                    <con2:varName>body_temp</con2:varName>
+                                    <con2:value>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./urn:asignarPerfiles/urn:usuarioDestino/nmp:idEmpleado/text()</con:xpathText>
+                                    </con2:value>
+                                </con2:labels>
+                                <con2:labels>
+                                    <con2:key>operacion</con2:key>
+                                    <con2:varName>nodoOperation</con2:varName>
+                                    <con2:value>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">//operation/text()</con:xpathText>
+                                    </con2:value>
+                                </con2:labels>
+                            </con2:report>
+                        </con1:responseTransform>
+                    </con1:route>
+                </con:actions>
+            </con:route-node>
+        </con:flow>
+    </con:router>
+    <aler:alertRules xsi:nil="true" xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert"/>
+</con:pipelineEntry>

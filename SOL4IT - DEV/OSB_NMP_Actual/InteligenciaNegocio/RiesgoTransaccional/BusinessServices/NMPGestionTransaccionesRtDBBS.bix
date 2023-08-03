@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:businessServiceEntry xmlns:con="http://xmlns.oracle.com/servicebus/business/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oper="http://xmlns.oracle.com/servicebus/business/operations" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env">
+    <con:coreEntry>
+        <con:description>Servicio de base de datos (esquema RTUSER) usado para consultar, actualizar e insertar información en las tablas NMP_TRANSACCIONES,  NMP_PARTIDAS las cuales contienen información de los transaciones que generaron un caso de riesgo.</con:description>
+        <con1:binding type="SOAP" xsi:type="con:SoapBindingType" isSoap12="false" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config" xmlns:con1="http://xmlns.oracle.com/servicebus/business/config">
+            <con:wsdl ref="InteligenciaNegocio/RiesgoTransaccional/Resources/WSDLs/NMPGestionTransaccionesRTWSDL"/>
+            <con:binding>
+                <con:name>NmpTransacciones_SOAP11Binding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Service/RTTransaccionesDb</con:namespace>
+            </con:binding>
+            <con:WSI-compliant>false</con:WSI-compliant>
+        </con1:binding>
+        <oper:operations enabled="true">
+            <oper:messageTracing enabled="true">
+                <oper1:detailsLevel xmlns:oper1="http://xmlns.oracle.com/servicebus/operations">terse</oper1:detailsLevel>
+                <oper1:maxSize xmlns:oper1="http://xmlns.oracle.com/servicebus/operations">8192</oper1:maxSize>
+            </oper:messageTracing>
+            <oper:throttling enabled="false"/>
+            <oper:monitoring enabled="false" aggregationInterval="5"/>
+            <oper:resultCachingEnabled>true</oper:resultCachingEnabled>
+        </oper:operations>
+        <con:ws-policy>
+            <ser:binding-mode>no-policies</ser:binding-mode>
+        </con:ws-policy>
+        <con:xqConfiguration>
+            <ser:snippetVersion>1.0</ser:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:endpointConfig>
+        <tran:provider-id>jca</tran:provider-id>
+        <tran:inbound>false</tran:inbound>
+        <tran:URI>
+            <env:value>jca://eis/DB/rtuser</env:value>
+        </tran:URI>
+        <tran:outbound-properties>
+            <tran:load-balancing-algorithm>round-robin</tran:load-balancing-algorithm>
+            <tran:retry-count>0</tran:retry-count>
+            <tran:retry-interval>30</tran:retry-interval>
+            <tran:retry-application-errors>false</tran:retry-application-errors>
+        </tran:outbound-properties>
+        <tran:provider-specific xsi:type="jca:JCAEndPointConfiguration" xmlns:jca="http://www.bea.com/wli/sb/transports/jca">
+            <jca:jca-file ref="InteligenciaNegocio/RiesgoTransaccional/Resources/Adapters/NMPGestionTransaccionesDB"/>
+            <jca:adapter-name>Database Adapter</jca:adapter-name>
+            <jca:adapter-type>db</jca:adapter-type>
+            <jca:dispatch-policy>SBDefaultResponseWorkManager</jca:dispatch-policy>
+            <jca:always-use-wsdl>false</jca:always-use-wsdl>
+            <jca:connection-mode>managed</jca:connection-mode>
+            <jca:outbound-properties>
+                <jca:operation-properties>
+                    <jca:operation-name>getTransaccionNoProcesadas</jca:operation-name>
+                    <jca:spec-properties>
+                        <jca:property>
+                            <jca:name>SqlString</jca:name>
+                            <jca:value>SELECT                          id id_transaccion,                          id_cliente,                          es_cancelacion,                          id_sucursal,                          fecha_tx,                          monto,                          es_reempeno,                          procesado,                           fecha_procesar                            FROM NMP_TRANSACCIONES                          WHERE PROCESADO = '1' or PROCESADO = '2'</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>GetActiveUnitOfWork</jca:name>
+                            <jca:value>false</jca:value>
+                        </jca:property>
+                    </jca:spec-properties>
+                </jca:operation-properties>
+                <jca:operation-properties>
+                    <jca:operation-name>insertTransaccion</jca:operation-name>
+                    <jca:spec-properties>
+                        <jca:property>
+                            <jca:name>DetectOmissions</jca:name>
+                            <jca:value>true</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>DescriptorName</jca:name>
+                            <jca:value>NmpTransacciones.NmpTransacciones</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>MappingsMetaDataURL</jca:name>
+                            <jca:value>servicebus:/RiesgoTransaccional/RTDB/Resources/JCA/NmpTransacciones-or-mappings.xml</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>DmlType</jca:name>
+                            <jca:value>insert</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>GetActiveUnitOfWork</jca:name>
+                            <jca:value>false</jca:value>
+                        </jca:property>
+                    </jca:spec-properties>
+                </jca:operation-properties>
+                <jca:operation-properties>
+                    <jca:operation-name>updateTransaccion</jca:operation-name>
+                    <jca:spec-properties>
+                        <jca:property>
+                            <jca:name>DetectOmissions</jca:name>
+                            <jca:value>true</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>DescriptorName</jca:name>
+                            <jca:value>NmpTransacciones.NmpTransacciones</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>MappingsMetaDataURL</jca:name>
+                            <jca:value>servicebus:/RiesgoTransaccional/RTDB/Resources/JCA/NmpTransacciones-or-mappings.xml</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>DmlType</jca:name>
+                            <jca:value>update</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>GetActiveUnitOfWork</jca:name>
+                            <jca:value>false</jca:value>
+                        </jca:property>
+                    </jca:spec-properties>
+                </jca:operation-properties>
+                <jca:operation-properties>
+                    <jca:operation-name>getTransaccionesCliente</jca:operation-name>
+                    <jca:spec-properties>
+                        <jca:property>
+                            <jca:name>ReturnSingleResultSet</jca:name>
+                            <jca:value>false</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>DescriptorName</jca:name>
+                            <jca:value>NmpTransacciones.NmpTransacciones</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>MappingsMetaDataURL</jca:name>
+                            <jca:value>servicebus:/RiesgoTransaccional/RTDB/Resources/JCA/NmpTransacciones-or-mappings.xml</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>QueryName</jca:name>
+                            <jca:value>NmpTransaccionesSelect</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>GetActiveUnitOfWork</jca:name>
+                            <jca:value>false</jca:value>
+                        </jca:property>
+                    </jca:spec-properties>
+                </jca:operation-properties>
+                <jca:operation-properties>
+                    <jca:operation-name>getTransaccionesById</jca:operation-name>
+                    <jca:spec-properties>
+                        <jca:property>
+                            <jca:name>ReturnSingleResultSet</jca:name>
+                            <jca:value>false</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>DescriptorName</jca:name>
+                            <jca:value>NmpTransacciones.NmpTransacciones</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>MappingsMetaDataURL</jca:name>
+                            <jca:value>servicebus:/RiesgoTransaccional/RTDB/Resources/JCA/NmpTransacciones-or-mappings.xml</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>QueryName</jca:name>
+                            <jca:value>NmpTransaccionesSelectById</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>GetActiveUnitOfWork</jca:name>
+                            <jca:value>false</jca:value>
+                        </jca:property>
+                    </jca:spec-properties>
+                </jca:operation-properties>
+            </jca:outbound-properties>
+        </tran:provider-specific>
+    </con:endpointConfig>
+</con:businessServiceEntry>

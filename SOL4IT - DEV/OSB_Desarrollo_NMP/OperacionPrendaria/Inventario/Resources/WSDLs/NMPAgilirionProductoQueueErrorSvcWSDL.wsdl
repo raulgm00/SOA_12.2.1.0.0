@@ -1,0 +1,34 @@
+<definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/NMPPublicarArticulosErrorQueue" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Servicios/NMPPublicarArticulosErrorQueue" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:NMPArticulos="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPlataformacomercialError" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:env="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import schemaLocation="../Schemas/NMPAgilirionErrorXSD.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPlataformacomercialError"/>
+            <import schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+        </schema>
+    </wsdl:types>
+    <message name="NMPStandardHeader">
+        <part name="requestHeader" element="NMPsh:headerMessage"/>
+        <part name="traz" element="NMPArticulos:trazabilidad"/>
+    </message>
+    <wsdl:message name="obteneArticuloAgilirionErrorRequest">
+        <wsdl:part name="parameters" element="NMPArticulos:obteneArticuloAgilirionErrorResponse"/>
+    </wsdl:message>
+    <portType name="ArticulosQueue_ptt">
+        <operation name="publicarArticulosErrorQueue">
+            <input message="tns:obteneArticuloAgilirionErrorRequest"/>
+        </operation>
+    </portType>
+    <binding name="ArticulosQueueErrorBinding" type="tns:ArticulosQueue_ptt">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="publicarArticulosErrorQueue">
+            <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Servicios/NMPPublicarArticulosErrorQueue/publicarArticulosQueue"/>
+            <input>
+                <soap:body use="literal" parts="parameters"/>
+                <soap:header message="tns:NMPStandardHeader" part="requestHeader" use="literal"/>
+                <soap:header message="tns:NMPStandardHeader" part="traz" use="literal"/>
+            </input>
+        </operation>
+    </binding>
+    <service name="Articulos_ptt">
+        <port name="Articulos_pttPort" binding="tns:ArticulosQueueErrorBinding"/>
+    </service>
+</definitions>

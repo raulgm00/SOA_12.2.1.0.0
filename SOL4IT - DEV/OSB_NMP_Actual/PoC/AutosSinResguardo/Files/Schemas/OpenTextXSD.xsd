@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc">
+  <xsd:element name="almacenaDocumentoRequest" type="AlmacenaDocType">
+    <xsd:annotation>
+      <xsd:documentation>A sample element</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:element name="almacenaDocumentoResponse" type="documentoURLType"/>
+  <xsd:element name="listaDoctosRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="BusinessWorkspace" type="BusinessWorkspaceNodoType"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="listaDoctosResponse" type="documentoURLType"/>
+  <xsd:element name="almacenaDocumentosRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="ruta" type="rutaType"/>
+        <xsd:element name="documentos">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="documento" type="Documento2Type" maxOccurs="unbounded"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="almacenaDocumentosResponse" type="documentosResponse"/>
+  <xsd:complexType name="rutaType">
+    <xsd:sequence>
+     
+        <xsd:element name="directorio">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="nombre" type="xsd:string"/>
+            </xsd:sequence>
+          <xsd:attribute name="tipo" type="xsd:string"/>
+        </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="subdirectorios" maxOccurs="unbounded" minOccurs="0">
+          <xsd:complexType>
+            <xsd:sequence>
+            <xsd:element name="directorioContenedor" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="nombre" type="xsd:string"/>
+            </xsd:sequence>
+            <xsd:attribute name="tipo" type="xsd:string"/>
+            <xsd:attribute name="nivelDependencia" type="xsd:string"/>
+          </xsd:complexType>
+        </xsd:element>
+      
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="documentosResponse">
+    <xsd:sequence>
+      <xsd:element name="documentos">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="documento" minOccurs="0" maxOccurs="unbounded">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="nombreDocumento" type="xsd:string"/>
+                  <xsd:element name="documentoURL" type="xsd:string" minOccurs="0"/>
+                  <xsd:element name="documentoID" type="xsd:int" minOccurs="0"/>
+                  <xsd:element name="fechaCreacion" type="xsd:dateTime" minOccurs="0"/>
+                  <xsd:element name="tipoDocumento" type="xsd:string" minOccurs="0"/>
+                  <xsd:element name="estado" type="xsd:string" minOccurs="0"/>
+                  <xsd:element name="descripcion" type="xsd:string" minOccurs="0"/>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="autenticacionRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="usuario" type="xsd:string"/>
+        <xsd:element name="contrasena" type="xsd:string"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="autenticacionResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="autenticacionToken" type="xsd:string"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="uploadDocumentoRequest" type="uploadDoctoType"/>
+  <xsd:element name="uploadDocumentoResponse" type="documentoURLType"/>
+  <xsd:element name="getIdNodoRequest" type="getNodeType"/>
+  <xsd:element name="getIdNodoResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="idNodo" type="xsd:int"/>
+        <xsd:element name="resultado" type="xsd:string"/>
+        <xsd:element name="descripcion" type="xsd:string" minOccurs="0"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="crearCarpetaRequest" type="carpetasType"/>
+  <xsd:element name="crearCarpetaResponse" type="crearCarpetaResponseType"/>
+  <xsd:complexType name="carpetasType">
+    <xsd:sequence>
+      <xsd:element name="carpetaContenedora" minOccurs="0" type="carpetaContenedoraType"/>
+      <xsd:element name="carpeta" minOccurs="1" type="carpetaType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="carpetaType">
+    <xsd:sequence>
+      <xsd:element name="nombre" type="xsd:string"/>
+      <xsd:element name="comentarios" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+    <xsd:attribute name="tipo" type="tipoFolder" use="required"/>
+    <xsd:attribute name="nivelDependencia" type="xsd:int" use="required"/>
+  </xsd:complexType>
+  <xsd:complexType name="carpetaContenedoraType">
+     <xsd:sequence>
+      <xsd:element name="id" minOccurs="1" type="xsd:int"/>
+    </xsd:sequence>
+    <xsd:attribute name="tipo" type="tipoFolder" use="required"/>
+  </xsd:complexType>
+  <xsd:complexType name="crearCarpetaResponseType">
+    <xsd:sequence>
+      <xsd:element name="carpeta" maxOccurs="1" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="idCarpetaContenedora" type="xsd:int"/>
+            <xsd:element name="nombre" type="xsd:string"/>
+            <xsd:element name="idCarpeta" type="xsd:int"/>
+          </xsd:sequence>
+          <xsd:attribute name="nivelJerarquia" type="xsd:int"/>
+          <xsd:attribute name="tipo" type="xsd:string"/>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="resultado">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="respuesta" type="xsd:string"/>
+            <xsd:element name="descripcion" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="customHeader">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="tokenUser" type="xsd:string"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:complexType name="documentoURLType">
+    <xsd:sequence>
+      <xsd:element name="documentos" minOccurs="0" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="nombreDocumento" type="xsd:string"/>
+            <xsd:element name="documentoURL" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="documentoID" type="xsd:int" minOccurs="0"/>
+            <xsd:element name="fechaCreacion" type="xsd:dateTime" minOccurs="0"/>
+            <xsd:element name="tipoDocumento" type="tipoDocumento" minOccurs="0"/>
+            <xsd:element name="estado" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="descripcion" type="xsd:string" minOccurs="0"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="uploadDoctoType">
+    <xsd:sequence>
+      <xsd:element name="idNodo" type="xsd:int"/>
+      <xsd:element name="documento" type="DocumentoType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="AlmacenaDocType">
+    <xsd:sequence>
+      <xsd:element name="documentos" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="proceso" type="proceso" minOccurs="0"/>
+            <xsd:element name="documento" type="DocumentoType"/>
+            <xsd:element name="BusinessWorkspace" type="BusinessWorkspaceType"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="getNodeType">
+    <xsd:sequence>
+      <xsd:element name="proceso" type="xsd:string"/>
+      <xsd:element name="tipoDocumento" type="xsd:string"/>
+      <xsd:element name="BusinessWorkspace" type="BusinessWorkspaceType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="BusinessWorkspaceType">
+    <xsd:sequence>
+      <xsd:element name="numero" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+    <xsd:attribute name="parentGroup" use="required">
+      <xsd:simpleType>
+        <xsd:restriction base="parentGroup"/>
+      </xsd:simpleType>
+    </xsd:attribute>
+  </xsd:complexType>
+  <xsd:complexType name="BusinessWorkspaceNodoType">
+    <xsd:sequence>
+      <xsd:element name="numero" type="xsd:string"/>
+    </xsd:sequence>
+    <xsd:attribute name="parentGroup" use="required">
+      <xsd:simpleType>
+        <xsd:restriction base="parentGroup"/>
+      </xsd:simpleType>
+    </xsd:attribute>
+    <xsd:attribute name="aliasCarpeta" use="required">
+      <xsd:simpleType>
+        <xsd:restriction base="aliasCarpeta"/>
+      </xsd:simpleType>
+    </xsd:attribute>
+  </xsd:complexType>
+  <xsd:complexType name="DocumentoType">
+    <xsd:sequence>
+      <xsd:element name="nombre" type="xsd:string"/>
+      <xsd:element name="contenido" type="xsd:base64Binary" nillable="false"/>
+      <xsd:element name="size" type="sizeType"/>
+    </xsd:sequence>
+    <xsd:attribute name="tipo" use="optional">
+      <xsd:simpleType>
+        <xsd:restriction base="tipoDocumento"/>
+      </xsd:simpleType>
+    </xsd:attribute>
+  </xsd:complexType>
+  <xsd:complexType name="Documento2Type">
+    <xsd:sequence>
+      <xsd:element name="nombre" type="xsd:string"/>
+      <xsd:element name="contenido" type="xsd:base64Binary" nillable="false"/>
+      <xsd:element name="size" type="sizeType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="sizeType">
+    <xsd:restriction base="xsd:int">
+      <xsd:minInclusive value="1"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="tipoDocumento">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="FTD"/>
+      <xsd:enumeration value="FCO"/>
+      <xsd:enumeration value="CPA"/>
+      <xsd:enumeration value="SCL"/>
+      <xsd:enumeration value="JUD"/>
+      <xsd:enumeration value="OTROS"/>
+      <xsd:enumeration value="INE"/>
+      <xsd:enumeration value="PAS"/>
+      <xsd:enumeration value="FTC"/>
+      <xsd:enumeration value="ACN"/>
+      <xsd:enumeration value="LIC"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="aliasCarpeta">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SCR"/>
+      <xsd:enumeration value="HAB"/>
+      <xsd:enumeration value="ICL"/>
+      <xsd:enumeration value="CLO"/>
+      <xsd:enumeration value="ACR"/>
+      <xsd:enumeration value="REB"/>
+      <xsd:enumeration value="FOT"/>
+      <xsd:enumeration value="CTO"/>
+      <xsd:enumeration value="CBZ"/>
+      <xsd:enumeration value="CRO"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="parentGroup">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="Clientes"/>
+      <xsd:enumeration value="Creditos"/>
+      <xsd:enumeration value="CanalesVenta"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="tipoFolder">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="Clientes"/>      
+      <xsd:enumeration value="Tickets"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="tipoIdentificador">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="id"/>
+      <xsd:enumeration value="nombre"/>      
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="proceso">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="RT"/>
+      <xsd:enumeration value="Cobranza"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+</xsd:schema>

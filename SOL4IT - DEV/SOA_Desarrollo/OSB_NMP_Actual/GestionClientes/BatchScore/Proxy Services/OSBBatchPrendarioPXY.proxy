@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ser:proxyServiceEntry xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:oper="http://xmlns.oracle.com/servicebus/proxy/operations" xmlns:oper1="http://xmlns.oracle.com/servicebus/operations" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ser:coreEntry isAutoPublish="false">
+        <ser:description>Interfaz principal del servicio Batch Prendario para el pase de información prendaria fuera de horario operativo a las aplicaciones de Customer Score y SID de NMP</ser:description>
+        <ser:binding type="SOAP" isSoap12="false" xsi:type="con5:SoapBindingType" xmlns:con5="http://www.bea.com/wli/sb/services/bindings/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:jca="http://www.bea.com/wli/sb/transports/jca" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con4="http://www.bea.com/wli/sb/stages/publish/config" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:env="http://www.bea.com/wli/config/env" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+            <con5:wsdl ref="GestionClientes/BatchScore/Resources/WSDLs/OSBBatchPrendarioSvcWSDL"/>
+            <con5:port>
+                <con5:name>BatchScore-port</con5:name>
+                <con5:namespace>http://servicios.montedepiedad.com.mx/NMP/Services/BatchScore</con5:namespace>
+            </con5:port>
+            <con5:selector type="SOAP action"/>
+            <con5:WSI-compliant>false</con5:WSI-compliant>
+        </ser:binding>
+        <oper:operations enabled="true">
+            <oper:messageTracing enabled="false">
+                <oper1:detailsLevel>full</oper1:detailsLevel>
+                <oper1:maxSize>8192</oper1:maxSize>
+            </oper:messageTracing>
+            <oper:monitoring enabled="true" aggregationInterval="1440"/>
+        </oper:operations>
+        <ser:ws-policy xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:jca="http://www.bea.com/wli/sb/transports/jca" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con4="http://www.bea.com/wli/sb/stages/publish/config" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:env="http://www.bea.com/wli/config/env" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+            <ser:binding-mode>wsdl-policy-attachments</ser:binding-mode>
+        </ser:ws-policy>
+        <ser:invoke ref="GestionClientes/BatchScore/Pipelines/OSBBatchPrendarioPL" xsi:type="con:PipelineRef" xmlns:con="http://www.bea.com/wli/sb/pipeline/config"/>
+    </ser:coreEntry>
+    <ser:endpointConfig xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:jca="http://www.bea.com/wli/sb/transports/jca" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con4="http://www.bea.com/wli/sb/stages/publish/config" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:env="http://www.bea.com/wli/config/env" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+        <tran:provider-id>http</tran:provider-id>
+        <tran:inbound>true</tran:inbound>
+        <tran:URI>
+            <env:value>/NMP/Informix/BatchPrendario</env:value>
+        </tran:URI>
+        <tran:inbound-properties/>
+        <tran:all-headers>true</tran:all-headers>
+        <tran:provider-specific xsi:type="http:HttpEndPointConfiguration">
+            <http:inbound-properties/>
+            <http:compression>
+                <http:compression-support>false</http:compression-support>
+            </http:compression>
+        </tran:provider-specific>
+    </ser:endpointConfig>
+    <aler:alertRules xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert">
+        <aler:alertRule enabled="true" name="SLA_BatchScoreWS_EjecucionSvc_RT">
+            <aler:description>Se ha ejecutado en desarrollo el servicio BatchScoreSvc después de haberse encontrado información para procesar en la Base de Datos de Informix.</aler:description>
+            <aler:startTime>21:30:00.000-06:00</aler:startTime>
+            <aler:frequency>once-until-conditions-clear</aler:frequency>
+            <aler:severity>normal</aler:severity>
+            <aler:stopProcessing>false</aler:stopProcessing>
+            <aler:condition aggregation-interval="15">
+                <con:monCondExpr xmlns:con="http://xmlns.oracle.com/servicebus/monitoring/alert/condition">
+                    <con:function>count</con:function>
+                    <con:lhs>Transport.message-count</con:lhs>
+                    <con:operator>></con:operator>
+                    <con:rhs>0</con:rhs>
+                </con:monCondExpr>
+            </aler:condition>
+            <aler:alertDestination ref="GestionClientes/BatchScore/Resources/Alerts/NMPBatchPrendarioAlert"/>
+            <aler:summary>Ejecución satisfactoria servicio BatchScoreSvc</aler:summary>
+        </aler:alertRule>
+        <aler:alertRule enabled="true" name="SLA_BatchScoreWS_Error_EjecucionSvc_RT">
+            <aler:description>Se han generado más uno o más errores en un rango de media hora en el servicio Batch Score. Revisar bitácora del servicio.</aler:description>
+            <aler:startTime>18:00:00.000-06:00</aler:startTime>
+            <aler:frequency>once-until-conditions-clear</aler:frequency>
+            <aler:severity>major</aler:severity>
+            <aler:stopProcessing>false</aler:stopProcessing>
+            <aler:condition aggregation-interval="30">
+                <con:monCondExpr xmlns:con="http://xmlns.oracle.com/servicebus/monitoring/alert/condition">
+                    <con:function>count</con:function>
+                    <con:lhs>Transport.error-count</con:lhs>
+                    <con:operator>></con:operator>
+                    <con:rhs>0</con:rhs>
+                </con:monCondExpr>
+            </aler:condition>
+            <aler:alertDestination ref="GestionClientes/BatchScore/Resources/Alerts/NMPBatchPrendarioErrorAlert"/>
+            <aler:summary>Se han generado más uno o más errores en un rango de media hora.</aler:summary>
+        </aler:alertRule>
+    </aler:alertRules>
+</ser:proxyServiceEntry>

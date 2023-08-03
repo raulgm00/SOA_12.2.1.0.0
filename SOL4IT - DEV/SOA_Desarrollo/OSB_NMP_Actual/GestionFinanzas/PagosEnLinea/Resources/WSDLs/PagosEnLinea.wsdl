@@ -1,0 +1,78 @@
+<wsdl:definitions name="PagosEnLinea" targetNamespace="http://www.montepiedad.com.mx/OXXO/WSDLs/PagosEnLinea" xmlns:tns="http://www.montepiedad.com.mx/OXXO/WSDLs/PagosEnLinea" xmlns:cons="http://www.montepiedad.com.mx/OXXO/Schemas/PagosEnLinea/ConsultarCliente" xmlns:pagoin="http://www.montepiedad.com.mx/OXXO/Schemas/PagosEnLinea/RealizarPagoEntrada" xmlns:pagoout="http://www.montepiedad.com.mx/OXXO/Schemas/PagosEnLinea/RealizarPagoSalida" xmlns:revin="http://www.montepiedad.com.mx/OXXO/Schemas/PagosEnLinea/ReversarPagoEntrada" xmlns:revout="http://www.montepiedad.com.mx/OXXO/Schemas/PagosEnLinea/ReversarPagoSalida" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+    <wsdl:types>
+        <xsd:schema>
+            <xsd:import namespace="http://www.montepiedad.com.mx/OXXO/Schemas/PagosEnLinea/ConsultarCliente" schemaLocation="../Schemas/ConsultarClienteXSD.xsd"/>
+            <xsd:import namespace="http://www.montepiedad.com.mx/OXXO/Schemas/PagosEnLinea/RealizarPagoEntrada" schemaLocation="../Schemas/RealizarPagoRequestXSD.xsd"/>
+            <xsd:import namespace="http://www.montepiedad.com.mx/OXXO/Schemas/PagosEnLinea/RealizarPagoSalida" schemaLocation="../Schemas/RealizarPagoResponseXSD.xsd"/>
+            <xsd:import namespace="http://www.montepiedad.com.mx/OXXO/Schemas/PagosEnLinea/ReversarPagoEntrada" schemaLocation="../Schemas/ReversarPagoRequestXSD.xsd"/>
+            <xsd:import namespace="http://www.montepiedad.com.mx/OXXO/Schemas/PagosEnLinea/ReversarPagoSalida" schemaLocation="../Schemas/ReversarPagoResponseXSD.xsd"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="consultarClienteRequest">
+        <wsdl:part name="payload" element="cons:ConsultarClienteRequest"/>
+    </wsdl:message>
+    <wsdl:message name="consultarClienteResponse">
+        <wsdl:part name="payload" element="cons:OLS"/>
+    </wsdl:message>
+    <wsdl:message name="realizarPagoRequest">
+        <wsdl:part name="payload" element="pagoin:OLS"/>
+    </wsdl:message>
+    <wsdl:message name="realizarPagoResponse">
+        <wsdl:part name="payload" element="pagoout:OLS"/>
+    </wsdl:message>
+    <wsdl:message name="cancelarPagoRequest">
+        <wsdl:part name="payload" element="revin:OLS"/>
+    </wsdl:message>
+    <wsdl:message name="cancelarPagoResponse">
+        <wsdl:part name="payload" element="revout:OLS"/>
+    </wsdl:message>
+    <wsdl:portType name="pagosenlinea_ptt">
+        <wsdl:operation name="consultarCliente">
+            <wsdl:input message="tns:consultarClienteRequest"/>
+            <wsdl:output message="tns:consultarClienteResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="realizarPago">
+            <wsdl:input message="tns:realizarPagoRequest"/>
+            <wsdl:output message="tns:realizarPagoResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="cancelarPago">
+            <wsdl:input message="tns:cancelarPagoRequest"/>
+            <wsdl:output message="tns:cancelarPagoResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="pagosenlinea_bind" type="tns:pagosenlinea_ptt">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="consultarCliente">
+            <soap:operation style="document" soapAction="consultarCliente"/>
+            <wsdl:input>
+                <soap:body use="literal" namespace="http://www.montepiedad.com.mx/OXXO/WSDLs/PagosEnLinea"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" namespace="http://www.montepiedad.com.mx/OXXO/WSDLs/PagosEnLinea"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="realizarPago">
+            <soap:operation style="document" soapAction="realizarPago"/>
+            <wsdl:input>
+                <soap:body use="literal" namespace="http://www.montepiedad.com.mx/OXXO/WSDLs/PagosEnLinea"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" namespace="http://www.montepiedad.com.mx/OXXO/WSDLs/PagosEnLinea"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="cancelarPago">
+            <soap:operation style="document" soapAction="cancelarPago"/>
+            <wsdl:input>
+                <soap:body use="literal" namespace="http://www.montepiedad.com.mx/OXXO/WSDLs/PagosEnLinea"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" namespace="http://www.montepiedad.com.mx/OXXO/WSDLs/PagosEnLinea"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="pagosenlinea">
+        <wsdl:port name="pagosenlineaport" binding="tns:pagosenlinea_bind">
+            <soap:address location=""/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

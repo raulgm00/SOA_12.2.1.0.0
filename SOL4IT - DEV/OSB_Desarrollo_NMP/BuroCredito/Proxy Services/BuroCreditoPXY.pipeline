@@ -1,0 +1,2265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con3="http://www.bea.com/wli/sb/typesystem/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="BuroCredito/Resources/WSDL/BuroCreditoSvcWSDL"/>
+            <con:binding>
+                <con:name>BuroCreditoBinding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:tracingEnabled>true</oper:tracingEnabled>
+            <oper:logging enabled="false" level="debug"/>
+            <oper:monitoring enabled="true" level="service" aggregationInterval="3"/>
+            <oper:reporting>false</oper:reporting>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:pipeline type="error" name="error-N3f57c7ff.55de20eb.0.1504d12fadf.N7d31">
+            <con:stage id="_StageId-N3f57c7ff.55de20eb.0.1504d12fadf.N7d30" name="StageConsultaAutografaErrorHandler">
+                <con:context>
+                    <con1:userNsDecl prefix="ctx1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-N3f57c7ff.55de20eb.0.1504d12fadf.N7cf8</con1:id>
+                        <con2:case id="_BranchId-N3f57c7ff.55de20eb.0.1504d12fadf.N7cf7">
+                            <con2:condition>
+                                <con1:xqueryText>$fault/ctx:errorCode='OSB-380000'</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace contents-only="true" varName="body">
+                                    <con1:id>_ActionId-N3f57c7ff.5db6b8c.0.1505cd2fd54.N7d02</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-003</faultcode>",
+		"<faultstring>Se ha excedido el tiempo de espera</faultstring>",
+		"<detail>",
+                  "<nmp:consultaAutografaBCFault xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente'>",
+                    "<UpdateFieldsValues>",                                    
+                    "</UpdateFieldsValues>",
+                    "<AfectedFields>",
+                    "</AfectedFields>",
+                     "<FormiikReservedWords>",
+                      "<ReservedWord>AlertMessage</ReservedWord>",
+                      "<Value>","NMP-003 - Se ha excedido el tiempo de espera","</Value>",
+                    "</FormiikReservedWords>",
+                   "</nmp:consultaAutografaBCFault>",
+                 "</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                    </con2:expr>
+                                </con2:replace>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:case id="_BranchId-N3f57c7ff.55de20eb.0.1504d12fadf.N7cf5">
+                            <con2:condition>
+                                <con1:xqueryText>$fault/ctx:errorCode='OSB-380001'</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace contents-only="true" varName="body">
+                                    <con1:id>_ActionId-N3f57c7ff.5db6b8c.0.1505cd2fd54.N7ccf</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-005</faultcode>",
+		"<faultstring>Internal Server Error (500)</faultstring>",
+		"<detail>",
+                  "<nmp:consultaAutografaBCFault xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente'>",
+                    "<UpdateFieldsValues>",                                    
+                    "</UpdateFieldsValues>",
+                    "<AfectedFields>",
+                    "</AfectedFields>",
+                    "<FormiikReservedWords>",
+                      "<ReservedWord>AlertMessage</ReservedWord>",
+                      "<Value>","NMP-005 - Internal Server Error (500)","</Value>",
+                    "</FormiikReservedWords>",
+                   "</nmp:consultaAutografaBCFault>",
+                 "</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                    </con2:expr>
+                                </con2:replace>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:case id="_BranchId-N3f57c7ff.55de20eb.0.1504d12fadf.N7cf3">
+                            <con2:condition>
+                                <con1:xqueryText>$fault/ctx:errorCode='OSB-380002'</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace contents-only="true" varName="body">
+                                    <con1:id>_ActionId-N3f57c7ff.5db6b8c.0.1505cd2fd54.N7c9c</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-001</faultcode>",
+		"<faultstring>Error conectividad 1 - destination unreachable</faultstring>",
+		"<detail>",
+                  "<nmp:consultaAutografaBCFault xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente'>",
+                    "<UpdateFieldsValues>",                                    
+                    "</UpdateFieldsValues>",
+                    "<AfectedFields>",
+                    "</AfectedFields>",
+                    "<FormiikReservedWords>",
+                      "<ReservedWord>AlertMessage</ReservedWord>",
+                      "<Value>","NMP-001 - Error conectividad 1 - destination unreachable","</Value>",
+                    "</FormiikReservedWords>",
+                   "</nmp:consultaAutografaBCFault>",
+                 "</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                    </con2:expr>
+                                </con2:replace>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:case id="_BranchId-N3f57c7ff.55de20eb.0.1504d12fadf.N7cf1">
+                            <con2:condition>
+                                <con1:xqueryText>$fault/ctx:errorCode='OSB-382500'</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:ifThenElse>
+                                    <con1:id>_ActionId-N3f57c7ff.N3806da2a.0.1507236d722.N7fcc</con1:id>
+                                    <con2:case id="_BranchId-N3f57c7ff.N3806da2a.0.1507236d722.N7fcb">
+                                        <con2:condition>
+                                            <con1:xqueryText>$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text() = 'EX_NO_DATA'</con1:xqueryText>
+                                        </con2:condition>
+                                        <con2:actions>
+                                            <con2:replace contents-only="true" varName="body">
+                                                <con1:id>_ActionId-N3f57c7ff.N3806da2a.0.1507236d722.N7f98</con1:id>
+                                                <con2:location>
+                                                    <con1:xpathText>.</con1:xpathText>
+                                                </con2:location>
+                                                <con2:expr>
+                                                    <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-059</faultcode>",
+		"<faultstring>No se envió RFC</faultstring>",
+		"<detail>",
+                  "<nmp:consultaAutografaBCFault xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente'>",
+                    "<UpdateFieldsValues>",                                    
+                    "</UpdateFieldsValues>",
+                    "<AfectedFields>",
+                    "</AfectedFields>",
+                    "<FormiikReservedWords>",
+                      "<ReservedWord>AlertMessage</ReservedWord>",
+                      "<Value>","NMP-059 - No se envió RFC","</Value>",
+                    "</FormiikReservedWords>",
+                   "</nmp:consultaAutografaBCFault>",
+                 "</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con2:actions>
+                                    </con2:case>
+                                    <con2:case id="_BranchId-N3f57c7ff.N53a5a1.0.15073cb753d.N7fff">
+                                        <con2:condition>
+                                            <con1:xqueryText>$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text() = 'EX_NO_AUT'</con1:xqueryText>
+                                        </con2:condition>
+                                        <con2:actions>
+                                            <con2:replace contents-only="true" varName="body">
+                                                <con1:id>_ActionId-N3f57c7ff.N53a5a1.0.15073cb753d.N7fcc</con1:id>
+                                                <con2:location>
+                                                    <con1:xpathText>.</con1:xpathText>
+                                                </con2:location>
+                                                <con2:expr>
+                                                    <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-060</faultcode>",
+		"<faultstring>El ambiente no cuenta con autorización para hacer consultas</faultstring>",
+		"<detail>",
+                  "<nmp:consultaAutografaBCFault xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente'>",
+                    "<UpdateFieldsValues>",                                    
+                    "</UpdateFieldsValues>",
+                    "<AfectedFields>",
+                    "</AfectedFields>",
+                    "<FormiikReservedWords>",
+                      "<ReservedWord>AlertMessage</ReservedWord>",
+                      "<Value>","NMP-060 - El ambiente no cuenta con autorización para hacer consultas","</Value>",
+                    "</FormiikReservedWords>",
+                   "</nmp:consultaAutografaBCFault>",
+                 "</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con2:actions>
+                                    </con2:case>
+                                    <con2:case id="_BranchId-N3f57c7ff.N53a5a1.0.15073cb753d.N7fca">
+                                        <con2:condition>
+                                            <con1:xqueryText>$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text() = 'EX_EXEC_ERROR'</con1:xqueryText>
+                                        </con2:condition>
+                                        <con2:actions>
+                                            <con2:replace contents-only="true" varName="body">
+                                                <con1:id>_ActionId-N3f57c7ff.N53a5a1.0.15073cb753d.N7f97</con1:id>
+                                                <con2:location>
+                                                    <con1:xpathText>.</con1:xpathText>
+                                                </con2:location>
+                                                <con2:expr>
+                                                    <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-061</faultcode>",
+		"<faultstring>Error al ejecutar la aplicación Win32 externa</faultstring>",
+		"<detail>",
+                  "<nmp:consultaAutografaBCFault xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente'>",
+                    "<UpdateFieldsValues>",                                    
+                    "</UpdateFieldsValues>",
+                    "<AfectedFields>",
+                    "</AfectedFields>",
+                    "<FormiikReservedWords>",
+                      "<ReservedWord>AlertMessage</ReservedWord>",
+                      "<Value>","NMP-061 - Error al ejecutar la aplicación Win32 externa","</Value>",
+                    "</FormiikReservedWords>",
+                   "</nmp:consultaAutografaBCFault>",
+                 "</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con2:actions>
+                                    </con2:case>
+                                    <con2:case id="_BranchId-N3f57c7ff.N53a5a1.0.15073cb753d.N7f95">
+                                        <con2:condition>
+                                            <con1:xqueryText>$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text() = 'EX_ID_CONSULTA_ERROR'</con1:xqueryText>
+                                        </con2:condition>
+                                        <con2:actions>
+                                            <con2:replace contents-only="true" varName="body">
+                                                <con1:id>_ActionId-N3f57c7ff.N53a5a1.0.15073cb753d.N7f62</con1:id>
+                                                <con2:location>
+                                                    <con1:xpathText>.</con1:xpathText>
+                                                </con2:location>
+                                                <con2:expr>
+                                                    <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-062</faultcode>",
+		"<faultstring>ID de consulta no se registró en el sistema</faultstring>",
+		"<detail>",
+                  "<nmp:consultaAutografaBCFault xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente'>",
+                    "<UpdateFieldsValues>",                                    
+                    "</UpdateFieldsValues>",
+                    "<AfectedFields>",
+                    "</AfectedFields>",
+                    "<FormiikReservedWords>",
+                      "<ReservedWord>AlertMessage</ReservedWord>",
+                      "<Value>","NMP-062 - ID de consulta no se registró en el sistema","</Value>",
+                    "</FormiikReservedWords>",
+                   "</nmp:consultaAutografaBCFault>",
+                 "</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con2:actions>
+                                    </con2:case>
+                                    <con2:case id="_BranchId-N3f57c7ff.N53a5a1.0.15073cb753d.N7f60">
+                                        <con2:condition>
+                                            <con1:xqueryText>$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text() = 'EX_COM_ERROR'</con1:xqueryText>
+                                        </con2:condition>
+                                        <con2:actions>
+                                            <con2:replace contents-only="true" varName="body">
+                                                <con1:id>_ActionId-N3f57c7ff.N53a5a1.0.15073cb753d.N7f2d</con1:id>
+                                                <con2:location>
+                                                    <con1:xpathText>.</con1:xpathText>
+                                                </con2:location>
+                                                <con2:expr>
+                                                    <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-063</faultcode>",
+		"<faultstring>No se pudo establecer conexión al buró para consulta</faultstring>",
+		"<detail>",
+                  "<nmp:consultaAutografaBCFault xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente'>",
+                    "<UpdateFieldsValues>",                                    
+                    "</UpdateFieldsValues>",
+                    "<AfectedFields>",
+                    "</AfectedFields>",
+                    "<FormiikReservedWords>",
+                      "<ReservedWord>AlertMessage</ReservedWord>",
+                      "<Value>","NMP-063 - No se pudo establecer conexión al buró para consulta","</Value>",
+                    "</FormiikReservedWords>",
+                   "</nmp:consultaAutografaBCFault>",
+                 "</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con2:actions>
+                                    </con2:case>
+                                    <con2:case id="_BranchId-N3f57c7ff.N53a5a1.0.15073cb753d.N7f2b">
+                                        <con2:condition>
+                                            <con1:xqueryText>$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text() = 'EX_ID_CONSULTA_NO_CREA'</con1:xqueryText>
+                                        </con2:condition>
+                                        <con2:actions>
+                                            <con2:replace contents-only="true" varName="body">
+                                                <con1:id>_ActionId-N3f57c7ff.N53a5a1.0.15073cb753d.N7ef8</con1:id>
+                                                <con2:location>
+                                                    <con1:xpathText>.</con1:xpathText>
+                                                </con2:location>
+                                                <con2:expr>
+                                                    <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-064</faultcode>",
+		"<faultstring>No se pudo establecer conexión al buró para consulta</faultstring>",
+		"<detail>",
+                  "<nmp:consultaAutografaBCFault xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente'>",
+                    "<UpdateFieldsValues>",                                    
+                    "</UpdateFieldsValues>",
+                    "<AfectedFields>",
+                    "</AfectedFields>",
+                    "<FormiikReservedWords>",
+                      "<ReservedWord>AlertMessage</ReservedWord>",
+                      "<Value>","NMP-064 - No se pudo generar numeración de consulta al buró","</Value>",
+                    "</FormiikReservedWords>",
+                   "</nmp:consultaAutografaBCFault>",
+                 "</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con2:actions>
+                                    </con2:case>
+                                    <con2:case id="_BranchId-N3f57c7ff.N53a5a1.0.15073cb753d.N7ef6">
+                                        <con2:condition>
+                                            <con1:xqueryText>$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text() = 'EX_ID_CONSULTA_YA_EXISTE'</con1:xqueryText>
+                                        </con2:condition>
+                                        <con2:actions>
+                                            <con2:replace contents-only="true" varName="body">
+                                                <con1:id>_ActionId-N3f57c7ff.N53a5a1.0.15073cb753d.N7ec3</con1:id>
+                                                <con2:location>
+                                                    <con1:xpathText>.</con1:xpathText>
+                                                </con2:location>
+                                                <con2:expr>
+                                                    <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-049</faultcode>",
+		"<faultstring>El identificador de consulta ya existe en el log</faultstring>",
+		"<detail>",
+                  "<nmp:consultaAutografaBCFault xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente'>",
+                    "<UpdateFieldsValues>",                                    
+                    "</UpdateFieldsValues>",
+                    "<AfectedFields>",
+                    "</AfectedFields>",
+                    "<FormiikReservedWords>",
+                      "<ReservedWord>AlertMessage</ReservedWord>",
+                      "<Value>","NMP-049 - El identificador de consulta ya existe en el log","</Value>",
+                    "</FormiikReservedWords>",
+                   "</nmp:consultaAutografaBCFault>",
+                 "</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con2:actions>
+                                    </con2:case>
+                                    <con2:case id="_BranchId-N3f57c7ff.N53a5a1.0.15073cb753d.N7ec1">
+                                        <con2:condition>
+                                            <con1:xqueryText>$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text() = 'EX_INTL_CORRUPTO'</con1:xqueryText>
+                                        </con2:condition>
+                                        <con2:actions>
+                                            <con2:replace contents-only="true" varName="body">
+                                                <con1:id>_ActionId-N3f57c7ff.N53a5a1.0.15073cb753d.N7e5b</con1:id>
+                                                <con2:location>
+                                                    <con1:xpathText>.</con1:xpathText>
+                                                </con2:location>
+                                                <con2:expr>
+                                                    <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-065</faultcode>",
+		"<faultstring>La cadena de respuesta INTL no se puede procesar</faultstring>",
+		"<detail>",
+                  "<nmp:consultaAutografaBCFault xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente'>",
+                    "<UpdateFieldsValues>",                                    
+                    "</UpdateFieldsValues>",
+                    "<AfectedFields>",
+                    "</AfectedFields>",
+                    "<FormiikReservedWords>",
+                      "<ReservedWord>AlertMessage</ReservedWord>",
+                      "<Value>","NMP-065 - La cadena de respuesta INTL no se puede procesar","</Value>",
+                    "</FormiikReservedWords>",
+                   "</nmp:consultaAutografaBCFault>",
+                 "</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con2:actions>
+                                    </con2:case>
+                                    <con2:case id="_BranchId-N3f57c7ff.N53a5a1.0.15073cb753d.N7e59">
+                                        <con2:condition>
+                                            <con1:xqueryText>$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text() = 'EX_DATOS_INCOMP'</con1:xqueryText>
+                                        </con2:condition>
+                                        <con2:actions>
+                                            <con2:replace contents-only="true" varName="body">
+                                                <con1:id>_ActionId-N3f57c7ff.N53a5a1.0.15073cb753d.N7e26</con1:id>
+                                                <con2:location>
+                                                    <con1:xpathText>.</con1:xpathText>
+                                                </con2:location>
+                                                <con2:expr>
+                                                    <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-066</faultcode>",
+		"<faultstring>El cliente no tiene todos los datos requeridos para realizar la consulta</faultstring>",
+		"<detail>",
+                  "<nmp:consultaAutografaBCFault xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente'>",
+                    "<UpdateFieldsValues>",                                    
+                    "</UpdateFieldsValues>",
+                    "<AfectedFields>",
+                    "</AfectedFields>",
+                    "<FormiikReservedWords>",
+                      "<ReservedWord>AlertMessage</ReservedWord>",
+                      "<Value>","NMP-066 - El cliente no tiene todos los datos requeridos para realizar la consulta","</Value>",
+                    "</FormiikReservedWords>",
+                   "</nmp:consultaAutografaBCFault>",
+                 "</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con2:actions>
+                                    </con2:case>
+                                    <con2:case id="_BranchId-N3f57c7ff.N53a5a1.0.15073cb753d.N7e24">
+                                        <con2:condition>
+                                            <con1:xqueryText>$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text() = 'EX_RESP_FORMATO'</con1:xqueryText>
+                                        </con2:condition>
+                                        <con2:actions>
+                                            <con2:replace contents-only="true" varName="body">
+                                                <con1:id>_ActionId-N3f57c7ff.N53a5a1.0.15073cb753d.N7df1</con1:id>
+                                                <con2:location>
+                                                    <con1:xpathText>.</con1:xpathText>
+                                                </con2:location>
+                                                <con2:expr>
+                                                    <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-067</faultcode>",
+		"<faultstring>La respuesta no corresponde a INTL o ERROR</faultstring>",
+		"<detail>",
+                  "<nmp:consultaAutografaBCFault xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente'>",
+                    "<UpdateFieldsValues>",                                    
+                    "</UpdateFieldsValues>",
+                    "<AfectedFields>",
+                    "</AfectedFields>",
+                    "<FormiikReservedWords>",
+                      "<ReservedWord>AlertMessage</ReservedWord>",
+                      "<Value>","NMP-067 - La respuesta no corresponde a INTL o ERROR","</Value>",
+                    "</FormiikReservedWords>",
+                   "</nmp:consultaAutografaBCFault>",
+                 "</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con2:actions>
+                                    </con2:case>
+                                    <con2:case id="_BranchId-N3f57c7ff.N53a5a1.0.15073cb753d.N7def">
+                                        <con2:condition>
+                                            <con1:xqueryText>$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text() = 'EX_AUT_ERROR'</con1:xqueryText>
+                                        </con2:condition>
+                                        <con2:actions>
+                                            <con2:replace contents-only="true" varName="body">
+                                                <con1:id>_ActionId-N3f57c7ff.N53a5a1.0.15073cb753d.N7dbc</con1:id>
+                                                <con2:location>
+                                                    <con1:xpathText>.</con1:xpathText>
+                                                </con2:location>
+                                                <con2:expr>
+                                                    <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-068</faultcode>",
+		"<faultstring>Respuesta buró presenta segmento de error AR</faultstring>",
+		"<detail>",
+                  "<nmp:consultaAutografaBCFault xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente'>",
+                    "<UpdateFieldsValues>",                                    
+                    "</UpdateFieldsValues>",
+                    "<AfectedFields>",
+                    "</AfectedFields>",
+                    "<FormiikReservedWords>",
+                      "<ReservedWord>AlertMessage</ReservedWord>",
+                      "<Value>","NMP-068 - Respuesta buró presenta segmento de error AR","</Value>",
+                    "</FormiikReservedWords>",
+                   "</nmp:consultaAutografaBCFault>",
+                 "</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con2:actions>
+                                    </con2:case>
+                                    <con2:case id="_BranchId-N3f57c7ff.N53a5a1.0.15073cb753d.N7dba">
+                                        <con2:condition>
+                                            <con1:xqueryText>$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text() = 'EX_UR_ERROR'</con1:xqueryText>
+                                        </con2:condition>
+                                        <con2:actions>
+                                            <con2:replace contents-only="true" varName="body">
+                                                <con1:id>_ActionId-N3f57c7ff.N53a5a1.0.15073cb753d.N7d87</con1:id>
+                                                <con2:location>
+                                                    <con1:xpathText>.</con1:xpathText>
+                                                </con2:location>
+                                                <con2:expr>
+                                                    <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-069</faultcode>",
+		"<faultstring>Respuesta buró presenta segmento de error UR</faultstring>",
+		"<detail>",
+                  "<nmp:consultaAutografaBCFault xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente'>",
+                    "<UpdateFieldsValues>",                                    
+                    "</UpdateFieldsValues>",
+                    "<AfectedFields>",
+                    "</AfectedFields>",
+                    "<FormiikReservedWords>",
+                      "<ReservedWord>AlertMessage</ReservedWord>",
+                      "<Value>","NMP-069 - Respuesta buró presenta segmento de error UR","</Value>",
+                    "</FormiikReservedWords>",
+                   "</nmp:consultaAutografaBCFault>",
+                 "</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con2:actions>
+                                    </con2:case>
+                                    <con2:case id="_BranchId-N3f57c7ff.N53a5a1.0.15073cb753d.N7d85">
+                                        <con2:condition>
+                                            <con1:xqueryText>$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text() = 'EX_ERROR_GENERAL'</con1:xqueryText>
+                                        </con2:condition>
+                                        <con2:actions>
+                                            <con2:replace contents-only="true" varName="body">
+                                                <con1:id>_ActionId-N3f57c7ff.N53a5a1.0.15073cb753d.N7d52</con1:id>
+                                                <con2:location>
+                                                    <con1:xpathText>.</con1:xpathText>
+                                                </con2:location>
+                                                <con2:expr>
+                                                    <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-070</faultcode>",
+		"<faultstring>Error en el proceso de consulta al buró</faultstring>",
+		"<detail>",
+                  "<nmp:consultaAutografaBCFault xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente'>",
+                    "<UpdateFieldsValues>",                                    
+                    "</UpdateFieldsValues>",
+                    "<AfectedFields>",
+                    "</AfectedFields>",
+                    "<FormiikReservedWords>",
+                      "<ReservedWord>AlertMessage</ReservedWord>",
+                      "<Value>","NMP-070 - Error en el proceso de consulta al buró","</Value>",
+                    "</FormiikReservedWords>",
+                   "</nmp:consultaAutografaBCFault>",
+                 "</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con2:actions>
+                                    </con2:case>
+                                    <con2:case id="_BranchId-N3f57c7ff.N53a5a1.0.15073cb753d.N7d50">
+                                        <con2:condition>
+                                            <con1:xqueryText>$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text() = 'EX_PROM_NO_AUT'</con1:xqueryText>
+                                        </con2:condition>
+                                        <con2:actions>
+                                            <con2:replace contents-only="true" varName="body">
+                                                <con1:id>_ActionId-N3f57c7ff.N53a5a1.0.15073cb753d.N7d1d</con1:id>
+                                                <con2:location>
+                                                    <con1:xpathText>.</con1:xpathText>
+                                                </con2:location>
+                                                <con2:expr>
+                                                    <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-071</faultcode>",
+		"<faultstring>El promotor no tiene acceso a consultar el buró</faultstring>",
+		"<detail>",
+                  "<nmp:consultaAutografaBCFault xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente'>",
+                    "<UpdateFieldsValues>",                                    
+                    "</UpdateFieldsValues>",
+                    "<AfectedFields>",
+                    "</AfectedFields>",
+                    "<FormiikReservedWords>",
+                      "<ReservedWord>AlertMessage</ReservedWord>",
+                      "<Value>","NMP-071 - El promotor no tiene acceso a consultar el buró","</Value>",
+                    "</FormiikReservedWords>",
+                   "</nmp:consultaAutografaBCFault>",
+                 "</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con2:actions>
+                                    </con2:case>
+                                    <con2:default>
+                                        <con2:replace contents-only="true" varName="body">
+                                            <con1:id>_ActionId-N3f57c7ff.N53a5a1.0.15073cb753d.N7cea</con1:id>
+                                            <con2:location>
+                                                <con1:xpathText>.</con1:xpathText>
+                                            </con2:location>
+                                            <con2:expr>
+                                                <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-006</faultcode>",
+		"<faultstring>", "SOAP Fault Response. Ha ocurrido un error inesperado: ", $fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text(), "</faultstring>",
+		"<detail>",
+                  "<nmp:consultaAutografaBCFault xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente'>",
+                    "<UpdateFieldsValues>",                                    
+                    "</UpdateFieldsValues>",
+                    "<AfectedFields>",
+                    "</AfectedFields>",
+                    "<FormiikReservedWords>",
+                      "<ReservedWord>AlertMessage</ReservedWord>",
+                      "<Value>","SOAP Fault Response. Ha ocurrido un error inesperado:",
+                                    $fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text(), " - ",
+                                    $fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:detail/text(), "</Value>",
+                    "</FormiikReservedWords>",
+                   "</nmp:consultaAutografaBCFault>",
+                 "</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                            </con2:expr>
+                                        </con2:replace>
+                                    </con2:default>
+                                </con2:ifThenElse>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:case id="_BranchId-N3f57c7ff.55de20eb.0.1504d12fadf.N7cef">
+                            <con2:condition>
+                                <con1:xqueryText>$fault/ctx:errorCode='OSB-382502'</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace contents-only="true" varName="body">
+                                    <con1:id>_ActionId-N3f57c7ff.5db6b8c.0.1505cd2fd54.N7c69</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-002</faultcode>",
+		"<faultstring>Error conectividad 2 - not found (404)</faultstring>",
+		"<detail>",
+                  "<nmp:consultaAutografaBCFault xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente'>",
+                    "<UpdateFieldsValues>",                                    
+                    "</UpdateFieldsValues>",
+                    "<AfectedFields>",
+                    "</AfectedFields>",
+                    "<FormiikReservedWords>",
+                      "<ReservedWord>AlertMessage</ReservedWord>",
+                      "<Value>","NMP-002 - Error conectividad 2 - not found (404)","</Value>",
+                    "</FormiikReservedWords>",
+                   "</nmp:consultaAutografaBCFault>",
+                 "</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                    </con2:expr>
+                                </con2:replace>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default>
+                            <con2:replace contents-only="true" varName="body">
+                                <con1:id>_ActionId-N3f57c7ff.5db6b8c.0.1505cd2fd54.N7c36</con1:id>
+                                <con2:location>
+                                    <con1:xpathText>.</con1:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-006</faultcode>",
+		"<faultstring>", $fault/ctx:errorCode/text(),": ",$fault/ctx:reason/text(), "</faultstring>",
+		"<detail>",
+                  "<nmp:consultaAutografaBCFault xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente'>",
+                    "<UpdateFieldsValues>",                                    
+                    "</UpdateFieldsValues>",
+                    "<AfectedFields>",
+                    "</AfectedFields>",
+                    "<FormiikReservedWords>",
+                      "<ReservedWord>AlertMessage</ReservedWord>",
+                      "<Value>","NMP-006 - ", $fault/ctx:errorCode/text(),": ",$fault/ctx:reason/text(),"</Value>",
+                    "</FormiikReservedWords>",
+                   "</nmp:consultaAutografaBCFault>",
+                 "</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                </con2:expr>
+                            </con2:replace>
+                        </con2:default>
+                    </con2:ifThenElse>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57c7ff.N53a5a1.0.15073cb753d.N7c86</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.Nfcf2669.0.1501ee963a9.N7e95">
+            <con:stage id="_StageId-N3f57c7ff.Nfcf2669.0.1501ee963a9.N7dec" name="StageValidationErrorHandler">
+                <con:context/>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-N3f57c7ff.Nfcf2669.0.1501ee963a9.N7deb</con1:id>
+                        <con2:case id="_BranchId-N3f57c7ff.Nfcf2669.0.1501ee963a9.N7dea">
+                            <con2:condition>
+                                <con1:xqueryText>$fault/ctx:errorCode = 'OSB-382505'</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace contents-only="true" varName="body">
+                                    <con1:id>_ActionId-N3f57c7ff.Nfcf2669.0.1501ee963a9.N7de9</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		              "<faultcode>NMP-008</faultcode>",
+                              "<faultstring>Error en los parámetros del mensaje</faultstring>",
+                              "<detail>",
+			        "<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>",
+				  "<codigoError>NMP-008</codigoError>",
+				  "<descripcionError>Error en los parámetros del mensaje</descripcionError>",
+				  "<tipoError>Técnico</tipoError>",
+				  "<severidad>2</severidad>",
+			        "</messageError>",
+		              "</detail>",
+	                    "</soap-env:Fault>"))]]></con1:xqueryText>
+                                    </con2:expr>
+                                </con2:replace>
+                            </con2:actions>
+                        </con2:case>
+                    </con2:ifThenElse>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57c7ff.Nfcf2669.0.1501ee963a9.N7de8</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.2f35b7c2.0.14fcd814433.N7ff6">
+            <con:stage id="_StageId-N3f57c7ff.2f35b7c2.0.14fcd814433.N7ff4" name="StageRespose">
+                <con:context/>
+                <con:actions>
+                    <con1:reply>
+                        <con1:id>_ActionId-N3f57c7ff.9eed76a.0.14ff10a867e.N7ed0</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.2f35b7c2.0.14fcd814433.N7ffa">
+            <con:stage id="_StageId-N3f57c7ff.2f35b7c2.0.14fcd814433.N7ff8" name="StageResponse">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente"/>
+                </con:context>
+                <con:actions>
+                    <con1:reply>
+                        <con1:id>_ActionId-N3f57c7ff.48e1f982.0.1500046f0bd.N7ffc</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.71c119d5.0.15015ce3268.N7f6b">
+            <con:stage id="_StageId-N3f57c7ff.71c119d5.0.15015ce3268.N7f6a" name="StageValidationErrorHandler">
+                <con:context/>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-N3f57c7ff.71c119d5.0.15015ce3268.N7f60</con1:id>
+                        <con2:case id="_BranchId-N3f57c7ff.71c119d5.0.15015ce3268.N7f5f">
+                            <con2:condition>
+                                <con1:xqueryText>$fault/ctx:errorCode = 'OSB-382505'</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace contents-only="true" varName="body">
+                                    <con1:id>_ActionId-N3f57c7ff.71c119d5.0.15015ce3268.N7b6f</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		              "<faultcode>NMP-008</faultcode>",
+                              "<faultstring>Error en los parámetros del mensaje</faultstring>",
+                              "<detail>",
+			        "<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>",
+				  "<codigoError>NMP-008</codigoError>",
+				  "<descripcionError>Error en los parámetros del mensaje</descripcionError>",
+				  "<tipoError>Técnico</tipoError>",
+				  "<severidad>2</severidad>",
+			        "</messageError>",
+		              "</detail>",
+	                    "</soap-env:Fault>"))]]></con1:xqueryText>
+                                    </con2:expr>
+                                </con2:replace>
+                            </con2:actions>
+                        </con2:case>
+                    </con2:ifThenElse>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57c7ff.Nfcf2669.0.1501ee963a9.N7fcd</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.55de20eb.0.1504d12fadf.N7e6b">
+            <con:stage id="_StageId-N3f57c7ff.55de20eb.0.1504d12fadf.N7e6a" name="StageValidationErrorHandler">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-N3f57c7ff.55de20eb.0.1504d12fadf.N7dcb</con1:id>
+                        <con2:case id="_BranchId-N3f57c7ff.55de20eb.0.1504d12fadf.N7dca">
+                            <con2:condition>
+                                <con1:xqueryText>$fault/ctx:errorCode = 'OSB-382505'</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace contents-only="true" varName="body">
+                                    <con1:id>_ActionId-N3f57c7ff.55de20eb.0.1504d12fadf.N7d96</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-008</faultcode>",
+		"<faultstring>Error en los parámetros del mensaje</faultstring>",
+		"<detail>",
+                  "<nmp:consultaAutografaBCFault xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente'>",
+                    "<UpdateFieldsValues>",                                    
+                    "</UpdateFieldsValues>",
+                    "<AfectedFields>",
+                    "</AfectedFields>",
+                    "<FormiikReservedWords>",
+                      "<ReservedWord>AlertMessage</ReservedWord>",
+                      "<Value>","NMP-008 - Error en los parámetros del mensaje","</Value>",
+                    "</FormiikReservedWords>",
+                   "</nmp:consultaAutografaBCFault>",
+                 "</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                    </con2:expr>
+                                </con2:replace>
+                            </con2:actions>
+                        </con2:case>
+                    </con2:ifThenElse>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57c7ff.5db6b8c.0.1505cd2fd54.N7d35</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.2f35b7c2.0.14fcd814433.N7ff7">
+            <con:stage id="_StageId-N3f57c7ff.2f35b7c2.0.14fcd814433.N7ff5" name="StageValidation" errorHandler="error-N3f57c7ff.55de20eb.0.1504d12fadf.N7e6b">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente"/>
+                </con:context>
+                <con:actions>
+                    <con2:validate>
+                        <con1:id>_ActionId-N3f57c7ff.9eed76a.0.14ff10a867e.N7f6b</con1:id>
+                        <con2:schema ref="BuroCredito/Resources/XSD/BuroCreditoSvcXSD"/>
+                        <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente">nmp:consultaAutografaBCRequest</con2:schemaElement>
+                        <con2:varName>body</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./nmp:consultaAutografaBCRequest</con1:xpathText>
+                        </con2:location>
+                    </con2:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57c7ff.2f35b7c2.0.14fcd814433.N7ff9" name="StageConsultaAutografa" errorHandler="error-N3f57c7ff.55de20eb.0.1504d12fadf.N7d31">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente"/>
+                    <con1:userNsDecl prefix="urn" namespace="urn:sap-com:document:sap:rfc:functions"/>
+                </con:context>
+                <con:actions>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-N3f57c7ff.9eed76a.0.14ff10a867e.N7f05</con1:id>
+                        <con2:service ref="BuroCredito/Business Services/ConsultaAutografaBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>ZLM_RFC_CONSULTABURO</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">consultaBCAutografaReq</con2:body>
+                            <con2:header/>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">consultaBCAutografaRes</con2:body>
+                            <con2:header/>
+                        </con2:response>
+                        <con2:requestTransform>
+                            <con2:assign varName="consultaBCAutografaReq">
+                                <con1:id>_ActionId-N3f57c7ff.9eed76a.0.14ff10a867e.N7e30</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryTransform>
+                                        <con1:resource ref="BuroCredito/Resources/XQ/TransformarConsultaAutografaReqXQ"/>
+                                        <con1:param name="consultaAutografa">
+                                            <con1:path>$body/nmp:consultaAutografaBCRequest</con1:path>
+                                        </con1:param>
+                                    </con1:xqueryTransform>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:routing-options>
+                                <con1:id>_ActionId-N3f57c7ff.9a256f0.0.157d386d25d.N7e81</con1:id>
+                                <con2:uriExpr>
+                                    <con1:xqueryText>$targetEndpoint</con1:xqueryText>
+                                </con2:uriExpr>
+                            </con2:routing-options>
+                        </con2:requestTransform>
+                        <con2:responseTransform>
+                            <con2:replace varName="body" contents-only="true">
+                                <con1:id>_ActionId-N3f57c7ff.2f35b7c2.0.14fcd814433.N7f70</con1:id>
+                                <con2:location>
+                                    <con1:xpathText>.</con1:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con:xqueryTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                        <con:resource ref="BuroCredito/Resources/XQ/TransformarConsultaAutografaResXQ"/>
+                                        <con:param name="idCliente">
+                                            <con:path>$body/nmp:consultaAutografaBCRequest/nmp:InputFields/nmp:Num_Cliente/text()</con:path>
+                                        </con:param>
+                                        <con:param name="consultaBuroResponse">
+                                            <con:path>$consultaBCAutografaRes</con:path>
+                                        </con:param>
+                                    </con:xqueryTransform>
+                                </con2:expr>
+                            </con2:replace>
+                        </con2:responseTransform>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.2f35b7c2.0.14fcd814433.N7ffe">
+            <con:stage id="_StageId-N3f57c7ff.2f35b7c2.0.14fcd814433.N7ffc" name="StageResponse">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente"/>
+                </con:context>
+                <con:actions>
+                    <con1:reply>
+                        <con1:id>_ActionId-N3f57c7ff.Nfcf2669.0.1501ee963a9.N7e97</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.2e8a6848.0.150491f8cfe.N7c94">
+            <con:stage id="_StageId-N3f57c7ff.2e8a6848.0.150491f8cfe.N7c93" name="StageAplicarKOErrorHandler">
+                <con:context>
+                    <con1:userNsDecl prefix="rbc" namespace="urn:sap-com:document:sap:soap:functions:mc-style"/>
+                    <con1:userNsDecl prefix="ctx1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-N3f57c7ff.2e8a6848.0.150491f8cfe.N7c2b</con1:id>
+                        <con2:case id="_BranchId-N3f57c7ff.2e8a6848.0.150491f8cfe.N7c2a">
+                            <con2:condition>
+                                <con1:xqueryText>$fault/ctx:errorCode='OSB-380000'</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace contents-only="true" varName="body">
+                                    <con1:id>_ActionId-N3f57c7ff.55de20eb.0.1504d12fadf.N7f6a</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		                       "<faultcode>NMP-003</faultcode>",
+		                       "<faultstring>Se ha excedido el tiempo de espera</faultstring>",
+		                       "<detail>",
+			                      "<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>",
+				                    "<codigoError>NMP-003</codigoError>",
+				                    "<descripcionError>Se ha excedido el tiempo de espera</descripcionError>",
+				                    "<tipoError>Técnico</tipoError>",
+				                    "<severidad>2</severidad>",
+			                      "</messageError>",
+		                       "</detail>",
+	                        "</soap-env:Fault>"))]]></con1:xqueryText>
+                                    </con2:expr>
+                                </con2:replace>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:case id="_BranchId-N3f57c7ff.2e8a6848.0.150491f8cfe.N7c28">
+                            <con2:condition>
+                                <con1:xqueryText>$fault/ctx:errorCode='OSB-380001'</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace contents-only="true" varName="body">
+                                    <con1:id>_ActionId-N3f57c7ff.55de20eb.0.1504d12fadf.N7f37</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-005</faultcode>",
+		"<faultstring>Internal Server Error (500)</faultstring>",
+		"<detail>",
+			"<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>",
+				"<codigoError>NMP-005</codigoError>",
+				"<descripcionError>Internal Server Error (500)</descripcionError>",
+				"<tipoError>Técnico</tipoError>",
+				"<severidad>2</severidad>",
+			"</messageError>",
+		"</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                    </con2:expr>
+                                </con2:replace>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:case id="_BranchId-N3f57c7ff.2e8a6848.0.150491f8cfe.N7c26">
+                            <con2:condition>
+                                <con1:xqueryText>$fault/ctx:errorCode='OSB-380002'</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace contents-only="true" varName="body">
+                                    <con1:id>_ActionId-N3f57c7ff.55de20eb.0.1504d12fadf.N7f04</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-001</faultcode>",
+		"<faultstring>Error conectividad 1 - destination unreachable</faultstring>",
+		"<detail>",
+			"<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>",
+				"<codigoError>NMP-001</codigoError>",
+				"<descripcionError>Error conectividad 1 - destination unreachable</descripcionError>",
+				"<tipoError>Técnico</tipoError>",
+				"<severidad>1</severidad>",
+			"</messageError>",
+		"</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                    </con2:expr>
+                                </con2:replace>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:case id="_BranchId-N3f57c7ff.2e8a6848.0.150491f8cfe.N7c24">
+                            <con2:condition>
+                                <con1:xqueryText>$fault/ctx:errorCode='OSB-382500'</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:ifThenElse>
+                                    <con1:id>_ActionId-N3f57c7ff.55de20eb.0.1504d12fadf.N7c84</con1:id>
+                                    <con2:case id="_BranchId-N3f57c7ff.55de20eb.0.1504d12fadf.N7c83">
+                                        <con2:condition>
+                                            <con1:xqueryText>$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text() = 'ExExisteFolio'</con1:xqueryText>
+                                        </con2:condition>
+                                        <con2:actions>
+                                            <con2:replace contents-only="true" varName="body">
+                                                <con1:id>_ActionId-N3f57c7ff.5db6b8c.0.1505cd2fd54.N7fcd</con1:id>
+                                                <con2:location>
+                                                    <con1:xpathText>.</con1:xpathText>
+                                                </con2:location>
+                                                <con2:expr>
+                                                    <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-047</faultcode>",
+		"<faultstring>El folio ya existe en el log</faultstring>",
+		"<detail>",
+			"<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>",
+				"<codigoError>NMP-047</codigoError>",
+				"<descripcionError>El folio ya existe en el log</descripcionError>",
+				"<tipoError>Técnico</tipoError>",
+				"<severidad>1</severidad>",
+			"</messageError>",
+		"</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con2:actions>
+                                    </con2:case>
+                                    <con2:case id="_BranchId-N3f57c7ff.N67badb76.0.1504e8c10ab.N7fff">
+                                        <con2:condition>
+                                            <con1:xqueryText>$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text() = 'ExIdConsultaNoCreada'</con1:xqueryText>
+                                        </con2:condition>
+                                        <con2:actions>
+                                            <con2:replace contents-only="true" varName="body">
+                                                <con1:id>_ActionId-N3f57c7ff.5db6b8c.0.1505cd2fd54.N7f9a</con1:id>
+                                                <con2:location>
+                                                    <con1:xpathText>.</con1:xpathText>
+                                                </con2:location>
+                                                <con2:expr>
+                                                    <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-048</faultcode>",
+		"<faultstring>Error al generar identificador de la consulta en el log</faultstring>",
+		"<detail>",
+			"<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>",
+				"<codigoError>NMP-048</codigoError>",
+				"<descripcionError>Error al generar identificador de la consulta en el log</descripcionError>",
+				"<tipoError>Técnico</tipoError>",
+				"<severidad>1</severidad>",
+			"</messageError>",
+		"</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con2:actions>
+                                    </con2:case>
+                                    <con2:case id="_BranchId-N3f57c7ff.N67badb76.0.1504e8c10ab.N7ffd">
+                                        <con2:condition>
+                                            <con1:xqueryText>$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text() = 'ExExisteIdConsulta'</con1:xqueryText>
+                                        </con2:condition>
+                                        <con2:actions>
+                                            <con2:replace contents-only="true" varName="body">
+                                                <con1:id>_ActionId-N3f57c7ff.5db6b8c.0.1505cd2fd54.N7f67</con1:id>
+                                                <con2:location>
+                                                    <con1:xpathText>.</con1:xpathText>
+                                                </con2:location>
+                                                <con2:expr>
+                                                    <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-049</faultcode>",
+		"<faultstring>El identificador de consulta ya existe en el log</faultstring>",
+		"<detail>",
+			"<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>",
+				"<codigoError>NMP-049</codigoError>",
+				"<descripcionError>El identificador de consulta ya existe en el log</descripcionError>",
+				"<tipoError>Técnico</tipoError>",
+				"<severidad>1</severidad>",
+			"</messageError>",
+		"</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con2:actions>
+                                    </con2:case>
+                                    <con2:case id="_BranchId-N3f57c7ff.N67badb76.0.1504e8c10ab.N7ffb">
+                                        <con2:condition>
+                                            <con1:xqueryText>$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text() = 'ExNotFound'</con1:xqueryText>
+                                        </con2:condition>
+                                        <con2:actions>
+                                            <con2:replace contents-only="true" varName="body">
+                                                <con1:id>_ActionId-N3f57c7ff.5db6b8c.0.1505cd2fd54.N7f34</con1:id>
+                                                <con2:location>
+                                                    <con1:xpathText>.</con1:xpathText>
+                                                </con2:location>
+                                                <con2:expr>
+                                                    <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-050</faultcode>",
+		"<faultstring>El identificador de la consulta no existe en el log</faultstring>",
+		"<detail>",
+			"<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>",
+				"<codigoError>NMP-050</codigoError>",
+				"<descripcionError>El identificador de la consulta no existe en el log</descripcionError>",
+				"<tipoError>Técnico</tipoError>",
+				"<severidad>1</severidad>",
+			"</messageError>",
+		"</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con2:actions>
+                                    </con2:case>
+                                    <con2:case id="_BranchId-N3f57c7ff.N67badb76.0.1504e8c10ab.N7ff9">
+                                        <con2:condition>
+                                            <con1:xqueryText>$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text() = 'ExIdRequired'</con1:xqueryText>
+                                        </con2:condition>
+                                        <con2:actions>
+                                            <con2:replace contents-only="true" varName="body">
+                                                <con1:id>_ActionId-N3f57c7ff.5db6b8c.0.1505cd2fd54.N7f01</con1:id>
+                                                <con2:location>
+                                                    <con1:xpathText>.</con1:xpathText>
+                                                </con2:location>
+                                                <con2:expr>
+                                                    <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-051</faultcode>",
+		"<faultstring>Se requiere un identificador de consulta</faultstring>",
+		"<detail>",
+			"<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>",
+				"<codigoError>NMP-051</codigoError>",
+				"<descripcionError>Se requiere un identificador de consulta</descripcionError>",
+				"<tipoError>Técnico</tipoError>",
+				"<severidad>1</severidad>",
+			"</messageError>",
+		"</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con2:actions>
+                                    </con2:case>
+                                    <con2:case id="_BranchId-N3f57c7ff.N67badb76.0.1504e8c10ab.N7ff7">
+                                        <con2:condition>
+                                            <con1:xqueryText>$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text() = 'ExIdOverwriteError'</con1:xqueryText>
+                                        </con2:condition>
+                                        <con2:actions>
+                                            <con2:replace contents-only="true" varName="body">
+                                                <con1:id>_ActionId-N3f57c7ff.5db6b8c.0.1505cd2fd54.N7ece</con1:id>
+                                                <con2:location>
+                                                    <con1:xpathText>.</con1:xpathText>
+                                                </con2:location>
+                                                <con2:expr>
+                                                    <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-052</faultcode>",
+		"<faultstring>Identificador ya existente en tabla</faultstring>",
+		"<detail>",
+			"<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>",
+				"<codigoError>NMP-052</codigoError>",
+				"<descripcionError>Identificador ya existente en tabla</descripcionError>",
+				"<tipoError>Técnico</tipoError>",
+				"<severidad>1</severidad>",
+			"</messageError>",
+		"</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con2:actions>
+                                    </con2:case>
+                                    <con2:case id="_BranchId-N3f57c7ff.N67badb76.0.1504e8c10ab.N7ff5">
+                                        <con2:condition>
+                                            <con1:xqueryText>$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text() = 'ExTablaNoActualizada'</con1:xqueryText>
+                                        </con2:condition>
+                                        <con2:actions>
+                                            <con2:replace contents-only="true" varName="body">
+                                                <con1:id>_ActionId-N3f57c7ff.5db6b8c.0.1505cd2fd54.N7e9b</con1:id>
+                                                <con2:location>
+                                                    <con1:xpathText>.</con1:xpathText>
+                                                </con2:location>
+                                                <con2:expr>
+                                                    <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-053</faultcode>",
+		"<faultstring>Error al actualizar tabla</faultstring>",
+		"<detail>",
+			"<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>",
+				"<codigoError>NMP-053</codigoError>",
+				"<descripcionError>Error al actualizar tabla</descripcionError>",
+				"<tipoError>Técnico</tipoError>",
+				"<severidad>1</severidad>",
+			"</messageError>",
+		"</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con2:actions>
+                                    </con2:case>
+                                    <con2:case id="_BranchId-N3f57c7ff.N67badb76.0.1504e8c10ab.N7ff3">
+                                        <con2:condition>
+                                            <con1:xqueryText>$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text() = 'ExSegmentoVacio'</con1:xqueryText>
+                                        </con2:condition>
+                                        <con2:actions>
+                                            <con2:replace contents-only="true" varName="body">
+                                                <con1:id>_ActionId-N3f57c7ff.5db6b8c.0.1505cd2fd54.N7e68</con1:id>
+                                                <con2:location>
+                                                    <con1:xpathText>.</con1:xpathText>
+                                                </con2:location>
+                                                <con2:expr>
+                                                    <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-054</faultcode>",
+		"<faultstring>Resultado de consulta al buró de crédito genero una excepción. ",$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:detail/rbc:ZlmRfcRecibeBuro.Exception/*:Text/text(),"</faultstring>",
+		"<detail>",
+			"<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>",
+				"<codigoError>NMP-054</codigoError>",
+				"<descripcionError>Resultado de consulta al buró de crédito genero una excepción. ",$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:detail/rbc:ZlmRfcRecibeBuro.Exception/*:Text/text(),"</descripcionError>",
+				"<tipoError>Técnico</tipoError>",
+				"<severidad>1</severidad>",
+			"</messageError>",
+		"</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con2:actions>
+                                    </con2:case>
+                                    <con2:case id="_BranchId-N3f57c7ff.N67badb76.0.1504e8c10ab.N7ff1">
+                                        <con2:condition>
+                                            <con1:xqueryText>$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text() = 'ExIdNotFound'</con1:xqueryText>
+                                        </con2:condition>
+                                        <con2:actions>
+                                            <con2:replace contents-only="true" varName="body">
+                                                <con1:id>_ActionId-N3f57c7ff.5db6b8c.0.1505cd2fd54.N7e35</con1:id>
+                                                <con2:location>
+                                                    <con1:xpathText>.</con1:xpathText>
+                                                </con2:location>
+                                                <con2:expr>
+                                                    <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-055</faultcode>",
+		"<faultstring>Resultado de consulta al buró de crédito genero una excepción. ",$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:detail/rbc:ZlmRfcRecibeBuro.Exception/*:Text/text(),"</faultstring>",
+		"<detail>",
+			"<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>",
+				"<codigoError>NMP-055</codigoError>",
+				"<descripcionError>Resultado de consulta al buró de crédito genero una excepción. ",$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:detail/rbc:ZlmRfcRecibeBuro.Exception/*:Text/text(),"</descripcionError>",
+				"<tipoError>Técnico</tipoError>",
+				"<severidad>1</severidad>",
+			"</messageError>",
+		"</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con2:actions>
+                                    </con2:case>
+                                    <con2:case id="_BranchId-N3f57c7ff.N67badb76.0.1504e8c10ab.N7fef">
+                                        <con2:condition>
+                                            <con1:xqueryText>$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text() = 'ExCampoObligatorio'</con1:xqueryText>
+                                        </con2:condition>
+                                        <con2:actions>
+                                            <con2:replace contents-only="true" varName="body">
+                                                <con1:id>_ActionId-N3f57c7ff.5db6b8c.0.1505cd2fd54.N7e02</con1:id>
+                                                <con2:expr>
+                                                    <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-056</faultcode>",
+		"<faultstring>Resultado de consulta al buró de crédito genero una excepción. ",$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:detail/rbc:ZlmRfcRecibeBuro.Exception/*:Text/text(),"</faultstring>",
+		"<detail>",
+			"<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>",
+				"<codigoError>NMP-056</codigoError>",
+				"<descripcionError>Resultado de consulta al buró de crédito genero una excepción. ",$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:detail/rbc:ZlmRfcRecibeBuro.Exception/*:Text/text(),"</descripcionError>",
+				"<tipoError>Técnico</tipoError>",
+				"<severidad>1</severidad>",
+			"</messageError>",
+		"</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con2:actions>
+                                    </con2:case>
+                                    <con2:case id="_BranchId-N3f57c7ff.N67badb76.0.1504e8c10ab.N7fed">
+                                        <con2:condition>
+                                            <con1:xqueryText>$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text() = 'ExOthers'</con1:xqueryText>
+                                        </con2:condition>
+                                        <con2:actions>
+                                            <con2:replace contents-only="true" varName="body">
+                                                <con1:id>_ActionId-N3f57c7ff.5db6b8c.0.1505cd2fd54.N7dcf</con1:id>
+                                                <con2:location>
+                                                    <con1:xpathText>.</con1:xpathText>
+                                                </con2:location>
+                                                <con2:expr>
+                                                    <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-057</faultcode>",
+		"<faultstring>Resultado de consulta al buró de crédito genero una excepción. ",$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:detail/rbc:ZlmRfcRecibeBuro.Exception/*:Text/text(),"</faultstring>",
+		"<detail>",
+			"<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>",
+				"<codigoError>NMP-057</codigoError>",
+				"<descripcionError>Resultado de consulta al buró de crédito genero una excepción. ",$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:detail/rbc:ZlmRfcRecibeBuro.Exception/*:Text/text(),"</descripcionError>",
+				"<tipoError>Técnico</tipoError>",
+				"<severidad>1</severidad>",
+			"</messageError>",
+		"</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con2:actions>
+                                    </con2:case>
+                                    <con2:case id="_BranchId-N3f57c7ff.N67badb76.0.1504e8c10ab.N7feb">
+                                        <con2:condition>
+                                            <con1:xqueryText>$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text() = 'ExCalculoKo'</con1:xqueryText>
+                                        </con2:condition>
+                                        <con2:actions>
+                                            <con2:replace contents-only="true" varName="body">
+                                                <con1:id>_ActionId-N3f57c7ff.5db6b8c.0.1505cd2fd54.N7d9c</con1:id>
+                                                <con2:location>
+                                                    <con1:xpathText>.</con1:xpathText>
+                                                </con2:location>
+                                                <con2:expr>
+                                                    <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-058</faultcode>",
+		"<faultstring>Resultado de consulta al buró de crédito genero una excepción. ",$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:detail/rbc:ZlmRfcRecibeBuro.Exception/*:Text/text(),"</faultstring>",
+		"<detail>",
+			"<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>",
+				"<codigoError>NMP-058</codigoError>",
+				"<descripcionError>Resultado de consulta al buró de crédito genero una excepción. ",$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:detail/rbc:ZlmRfcRecibeBuro.Exception/*:Text/text(),"</descripcionError>",
+				"<tipoError>Técnico</tipoError>",
+				"<severidad>1</severidad>",
+			"</messageError>",
+		"</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con2:actions>
+                                    </con2:case>
+                                    <con2:default>
+                                        <con2:replace contents-only="true" varName="body">
+                                            <con1:id>_ActionId-N3f57c7ff.5db6b8c.0.1505cd2fd54.N7c01</con1:id>
+                                            <con2:location>
+                                                <con1:xpathText>.</con1:xpathText>
+                                            </con2:location>
+                                            <con2:expr>
+                                                <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		              "<faultcode>NMP-006</faultcode>",
+                              "<faultstring>SOAP Fault Response. Ha ocurrido un error inesperado: ", $fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text(), "</faultstring>",
+                                "<detail>",
+                                  "<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>",
+				    "<codigoError>NMP-006</codigoError>",
+				    "<descripcionError>SOAP Fault Response. Ha ocurrido un error inesperado:",
+                                    $fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text(), " - ",
+                                    $fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:detail/text(),
+                                    "</descripcionError>",
+				    "<tipoError>Técnico</tipoError>",
+				    "<severidad>2</severidad>",
+			          "</messageError>",
+                                "</detail>",
+	                     "</soap-env:Fault>"))]]></con1:xqueryText>
+                                            </con2:expr>
+                                        </con2:replace>
+                                    </con2:default>
+                                </con2:ifThenElse>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:case id="_BranchId-N3f57c7ff.2e8a6848.0.150491f8cfe.N7c22">
+                            <con2:condition>
+                                <con1:xqueryText>$fault/ctx:errorCode='OSB-382502'</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace contents-only="true" varName="body">
+                                    <con1:id>_ActionId-N3f57c7ff.55de20eb.0.1504d12fadf.N7ed1</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-002</faultcode>",
+		"<faultstring>Error conectividad 2 - not found (404)</faultstring>",
+		"<detail>",
+			"<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>",
+				"<codigoError>NMP-002</codigoError>",
+				"<descripcionError>Error conectividad 2 - not found (404)</descripcionError>",
+				"<tipoError>Técnico</tipoError>",
+				"<severidad>2</severidad>",
+			"</messageError>",
+		"</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                    </con2:expr>
+                                </con2:replace>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default>
+                            <con2:replace contents-only="true" varName="body">
+                                <con1:id>_ActionId-N3f57c7ff.55de20eb.0.1504d12fadf.N7e9d</con1:id>
+                                <con2:location>
+                                    <con1:xpathText>.</con1:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+								"<faultcode>NMP-006</faultcode>",
+								"<faultstring>",$fault/ctx:errorCode/text(),": ",$fault/ctx:reason/text(),"</faultstring>",
+								"<detail>",
+									"<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>",
+										"<codigoError>NMP-006</codigoError>",
+										"<descripcionError>",$fault/ctx:errorCode/text(),": ",$fault/ctx:reason/text(),"</descripcionError>",
+										"<tipoError>Técnico</tipoError>",
+										"<severidad>2</severidad>",
+									"</messageError>",
+								"</detail>",
+							"</soap-env:Fault>"))]]></con1:xqueryText>
+                                </con2:expr>
+                            </con2:replace>
+                        </con2:default>
+                    </con2:ifThenElse>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57c7ff.2e8a6848.0.150491f8cfe.N7c60</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.a7e2c04.0.1503e42f09d.N7fcc">
+            <con:stage id="_StageId-N3f57c7ff.a7e2c04.0.1503e42f09d.N7fcb" name="StageConsultaBuroErrorHandler">
+                <con:context>
+                    <con1:userNsDecl prefix="ctx1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-N3f57c7ff.2e8a6848.0.150491f8cfe.N7f68</con1:id>
+                        <con2:case id="_BranchId-N3f57c7ff.2e8a6848.0.150491f8cfe.N7f67">
+                            <con2:condition>
+                                <con1:xqueryText>$fault/ctx:errorCode='OSB-380000'</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace varName="body" contents-only="true">
+                                    <con1:id>_ActionId-N3f57c7ff.2e8a6848.0.150491f8cfe.N7ef9</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		                       "<faultcode>NMP-003</faultcode>",
+		                       "<faultstring>Se ha excedido el tiempo de espera</faultstring>",
+		                       "<detail>",
+			                      "<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>",
+				                    "<codigoError>NMP-003</codigoError>",
+				                    "<descripcionError>Se ha excedido el tiempo de espera</descripcionError>",
+				                    "<tipoError>Técnico</tipoError>",
+				                    "<severidad>2</severidad>",
+			                      "</messageError>",
+		                       "</detail>",
+	                        "</soap-env:Fault>"))]]></con1:xqueryText>
+                                    </con2:expr>
+                                </con2:replace>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:case id="_BranchId-N3f57c7ff.2e8a6848.0.150491f8cfe.N7f65">
+                            <con2:condition>
+                                <con1:xqueryText>$fault/ctx:errorCode='OSB-380001'</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace contents-only="true" varName="body">
+                                    <con1:id>_ActionId-N3f57c7ff.2e8a6848.0.150491f8cfe.N7ec6</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-005</faultcode>",
+		"<faultstring>Internal Server Error (500)</faultstring>",
+		"<detail>",
+			"<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>",
+				"<codigoError>NMP-005</codigoError>",
+				"<descripcionError>Internal Server Error (500)</descripcionError>",
+				"<tipoError>Técnico</tipoError>",
+				"<severidad>2</severidad>",
+			"</messageError>",
+		"</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                    </con2:expr>
+                                </con2:replace>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:case id="_BranchId-N3f57c7ff.2e8a6848.0.150491f8cfe.N7f63">
+                            <con2:condition>
+                                <con1:xqueryText>$fault/ctx:errorCode='OSB-380002'</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace contents-only="true" varName="body">
+                                    <con1:id>_ActionId-N3f57c7ff.2e8a6848.0.150491f8cfe.N7e93</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-001</faultcode>",
+		"<faultstring>Error conectividad 1 - destination unreachable</faultstring>",
+		"<detail>",
+			"<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>",
+				"<codigoError>NMP-001</codigoError>",
+				"<descripcionError>Error conectividad 1 - destination unreachable</descripcionError>",
+				"<tipoError>Técnico</tipoError>",
+				"<severidad>1</severidad>",
+			"</messageError>",
+		"</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                    </con2:expr>
+                                </con2:replace>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:case id="_BranchId-N3f57c7ff.2e8a6848.0.150491f8cfe.N7f5f">
+                            <con2:condition>
+                                <con1:xqueryText>$fault/ctx:errorCode='OSB-382502'</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace contents-only="true" varName="body">
+                                    <con1:id>_ActionId-N3f57c7ff.2e8a6848.0.150491f8cfe.N7d2b</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-002</faultcode>",
+		"<faultstring>Error conectividad 2 - not found (404)</faultstring>",
+		"<detail>",
+			"<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>",
+				"<codigoError>NMP-002</codigoError>",
+				"<descripcionError>Error conectividad 2 - not found (404)</descripcionError>",
+				"<tipoError>Técnico</tipoError>",
+				"<severidad>2</severidad>",
+			"</messageError>",
+		"</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                    </con2:expr>
+                                </con2:replace>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:case id="_BranchId-N3f57c7ff.N53a5a1.0.15073cb753d.N7c83">
+                            <con2:condition>
+                                <con1:xqueryText>$fault/ctx:errorCode='OSB-382500'</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace contents-only="true" varName="body">
+                                    <con1:id>_ActionId-N3f57c7ff.N53a5a1.0.15073cb753d.N7c50</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		              "<faultcode>NMP-006</faultcode>",
+                              "<faultstring>SOAP Fault Response. Ha ocurrido un error inesperado: ", $fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text(), "</faultstring>",
+                                "<detail>",
+                                  "<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>",
+				    "<codigoError>NMP-006</codigoError>",
+				    "<descripcionError>SOAP Fault Response. Ha ocurrido un error inesperado:",
+                                    $fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text(), " - ",
+                                    $fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:detail/text(),
+                                    "</descripcionError>",
+				    "<tipoError>Técnico</tipoError>",
+				    "<severidad>2</severidad>",
+			          "</messageError>",
+                                "</detail>",
+	                     "</soap-env:Fault>"))]]></con1:xqueryText>
+                                    </con2:expr>
+                                </con2:replace>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default>
+                            <con2:replace contents-only="true" varName="body">
+                                <con1:id>_ActionId-N3f57c7ff.2e8a6848.0.150491f8cfe.N7cf8</con1:id>
+                                <con2:location>
+                                    <con1:xpathText>.</con1:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+								"<faultcode>NMP-006</faultcode>",
+								"<faultstring>",$fault/ctx:errorCode/text(),": ",$fault/ctx:reason/text(),"</faultstring>",
+								"<detail>",
+									"<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>",
+										"<codigoError>NMP-006</codigoError>",
+										"<descripcionError>",$fault/ctx:errorCode/text(),": ",$fault/ctx:reason/text(),"</descripcionError>",
+										"<tipoError>Técnico</tipoError>",
+										"<severidad>2</severidad>",
+									"</messageError>",
+								"</detail>",
+							"</soap-env:Fault>"))]]></con1:xqueryText>
+                                </con2:expr>
+                            </con2:replace>
+                        </con2:default>
+                    </con2:ifThenElse>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57c7ff.2e8a6848.0.150491f8cfe.N7e60</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.2f35b7c2.0.14fcd814433.N7ffb">
+            <con:stage id="_StageId-N3f57c7ff.9eed76a.0.14ff10a867e.N7f9e" name="StageValidation" errorHandler="error-N3f57c7ff.71c119d5.0.15015ce3268.N7f6b">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente"/>
+                </con:context>
+                <con:actions>
+                    <con2:validate>
+                        <con1:id>_ActionId-N3f57c7ff.N1e234c86.0.14ff5bcbba6.N7f35</con1:id>
+                        <con2:schema ref="BuroCredito/Resources/XSD/BuroCreditoSvcXSD"/>
+                        <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente">nmp:consultaVigenteBCRequest</con2:schemaElement>
+                        <con2:varName>body</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./nmp:consultaVigenteBCRequest</con1:xpathText>
+                        </con2:location>
+                        <con2:resultVarName/>
+                    </con2:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57c7ff.N1e234c86.0.14ff5bcbba6.N7f03" name="StageConsultaVigenteSAP" errorHandler="error-N3f57c7ff.N305c272e.0.15019e5de09.N7eda">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente"/>
+                    <con1:userNsDecl prefix="urn" namespace="urn:sap-com:document:sap:soap:functions:mc-style"/>
+                </con:context>
+                <con:actions>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-N3f57c7ff.26ce5aba.0.14ffc6c77a1.N7fce</con1:id>
+                        <con2:service ref="BuroCredito/Business Services/ConsultaVigenteBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>ZlmRfcConsultaVigente</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">consultaBCVigenteReq</con2:body>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">consultaBCVigenteRes</con2:body>
+                        </con2:response>
+                        <con2:requestTransform>
+                            <con2:assign varName="consultaBCVigenteReq">
+                                <con1:id>_ActionId-N3f57c7ff.26ce5aba.0.14ffc6c77a1.N7f9b</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText>fn-bea:inlinedXML(fn:concat('&lt;urn:ZlmRfcConsultaVigente xmlns:urn="urn:sap-com:document:sap:soap:functions:mc-style">',
+                            '&lt;Cliente>',$body/nmp:consultaVigenteBCRequest/nmp:idCliente,'&lt;/Cliente>',
+                            '&lt;/urn:ZlmRfcConsultaVigente>'))</con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:routing-options>
+                                <con1:id>_ActionId-N3f57c7ff.9a256f0.0.157d386d25d.N7e83</con1:id>
+                                <con2:uriExpr>
+                                    <con1:xqueryText>$targetEndpoint</con1:xqueryText>
+                                </con2:uriExpr>
+                            </con2:routing-options>
+                        </con2:requestTransform>
+                        <con2:responseTransform>
+                            <con2:replace varName="body" contents-only="true">
+                                <con1:id>_ActionId-N3f57c7ff.2f35b7c2.0.14fcd814433.N7f73</con1:id>
+                                <con2:location>
+                                    <con1:xpathText>.</con1:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con1:xqueryText>fn-bea:inlinedXML(fn:concat('&lt;nmp:consultaVigenteBCResponse xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente">',
+                              '&lt;nmp:respuesta>',(
+                                                  if($consultaBCVigenteRes/*:Confirmacion = "1") then "No vigente"
+                                                  else if($consultaBCVigenteRes/*:Confirmacion = "0") then 
+                                                    if(fn:upper-case($consultaBCVigenteRes/*:EstatusKo) = "0") then "Rechazado"
+                                                    else if(fn:upper-case($consultaBCVigenteRes/*:EstatusKo) = "1") then "Aprobado"
+                                                    else if(fn:upper-case($consultaBCVigenteRes/*:EstatusKo) = "2") then "No aplica"
+                                                    else()
+                                                  else()
+                                                 ),
+                              '&lt;/nmp:respuesta>',
+                            '&lt;/nmp:consultaVigenteBCResponse>'))</con1:xqueryText>
+                                </con2:expr>
+                            </con2:replace>
+                        </con2:responseTransform>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.a7e2c04.0.1503e42f09d.N7f34">
+            <con:stage id="_StageId-N3f57c7ff.a7e2c04.0.1503e42f09d.N7f33" name="StageConsultaVigenteErrorHandler">
+                <con:context>
+                    <con1:userNsDecl prefix="ctx1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente"/>
+                    <con3:variable name="respuestaServicio" path="$respuestaServicio">
+                        <con3:xml-schema type="string"/>
+                    </con3:variable>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-N3f57c7ff.N9d3cb46.0.15168c418b5.N7fcb</con1:id>
+                        <con2:case id="_BranchId-N3f57c7ff.N9d3cb46.0.15168c418b5.N7fca">
+                            <con2:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault/ctx:details/*:ReceivedFaultDetail/*:faultcode = 'NMP-019' or $fault/ctx:details/*:ReceivedFaultDetail/*:faultcode = 'NMP-008'</con:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace contents-only="true" varName="body">
+                                    <con1:id>_ActionId-N3f57c7ff.N9d3cb46.0.15168c418b5.N7f64</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(fn:concat("&lt;soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/' xmlns='http://www.bea.com/wli/sb/stages/transform/config'>",
+		              fn-bea:serialize($fault/ctx:details/ctx1:ReceivedFaultDetail/*),
+	                    "&lt;/soap-env:Fault>"))</con:xqueryText>
+                                    </con2:expr>
+                                </con2:replace>
+                                <con1:reply isError="true">
+                                    <con1:id>_ActionId-N3f57c7ff.N9d3cb46.0.15168c418b5.N7ecb</con1:id>
+                                </con1:reply>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default>
+                            <con2:assign varName="estadoServicio">
+                                <con1:id>_ActionId-N3f57c7ff.N54391685.0.15043e12c2d.N7ea2</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText>"ErrConsVig"</con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                            <con1:resume>
+                                <con1:id>_ActionId-N3f57c7ff.N54391685.0.15043e12c2d.N7f9d</con1:id>
+                            </con1:resume>
+                        </con2:default>
+                    </con2:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.N305c272e.0.15019e5de09.N7eda">
+            <con:stage id="_StageId-N3f57c7ff.N305c272e.0.15019e5de09.N7ed9" name="StageConsultaErrorHandler">
+                <con:context>
+                    <con1:userNsDecl prefix="sap" namespace="urn:sap-com:document:sap:soap:functions:mc-style"/>
+                    <con1:userNsDecl prefix="ctx1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-N3f57c7ff.N305c272e.0.15019e5de09.N7ed2</con1:id>
+                        <con2:case id="_BranchId-N3f57c7ff.N305c272e.0.15019e5de09.N7ed1">
+                            <con2:condition>
+                                <con1:xqueryText>$fault/ctx:errorCode = 'OSB-382500'</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:ifThenElse>
+                                    <con1:id>_ActionId-N3f57c7ff.N305c272e.0.15019e5de09.N7e38</con1:id>
+                                    <con2:case id="_BranchId-N3f57c7ff.N305c272e.0.15019e5de09.N7e37">
+                                        <con2:condition>
+                                            <con1:xqueryText>$fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text() = 'ExNoExisteBP'</con1:xqueryText>
+                                        </con2:condition>
+                                        <con2:actions>
+                                            <con2:replace contents-only="true" varName="body">
+                                                <con1:id>_ActionId-N3f57c7ff.N305c272e.0.15019e5de09.N7d37</con1:id>
+                                                <con2:location>
+                                                    <con1:xpathText>.</con1:xpathText>
+                                                </con2:location>
+                                                <con2:expr>
+                                                    <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		                    "<faultcode>NMP-019</faultcode>",
+		                    "<faultstring>El cliente no existe en SAP</faultstring>",
+		                    "<detail>",
+                                      "<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>",
+                                              "<codigoError>NMP-019</codigoError>",
+                                              "<descripcionError>El cliente no existe en SAP</descripcionError>",
+                                              "<tipoError>Negocio</tipoError>",
+                                              "<severidad>1</severidad>",
+                                      "</messageError>",
+                              "</detail>",
+                      "</soap-env:Fault>"))]]></con1:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con2:actions>
+                                    </con2:case>
+                                    <con2:default>
+                                        <con2:replace contents-only="true" varName="body">
+                                            <con1:id>_ActionId-N3f57c7ff.N305c272e.0.15019e5de09.N7e04</con1:id>
+                                            <con2:location>
+                                                <con1:xpathText>.</con1:xpathText>
+                                            </con2:location>
+                                            <con2:expr>
+                                                <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		              "<faultcode>NMP-006</faultcode>",
+                              "<faultstring>SOAP Fault Response. Ha ocurrido un error inesperado: ", $fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text(), "</faultstring>",
+                                "<detail>",
+                                  "<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>",
+				    "<codigoError>NMP-006</codigoError>",
+				    "<descripcionError>SOAP Fault Response. Ha ocurrido un error inesperado:",
+                                    $fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:faultstring/text(), " - ",
+                                    $fault/ctx:details/ctx1:ReceivedFaultDetail/ctx1:detail/text(),
+                                    "</descripcionError>",
+				    "<tipoError>Técnico</tipoError>",
+				    "<severidad>2</severidad>",
+			          "</messageError>",
+                                "</detail>",
+	                     "</soap-env:Fault>"))]]></con1:xqueryText>
+                                            </con2:expr>
+                                        </con2:replace>
+                                    </con2:default>
+                                </con2:ifThenElse>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:case id="_BranchId-N3f57c7ff.N305c272e.0.15019e5de09.N7dd1">
+                            <con2:condition>
+                                <con1:xqueryText>$fault/ctx:errorCode = 'OSB-380000'</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace contents-only="true" varName="body">
+                                    <con1:id>_ActionId-N3f57c7ff.N305c272e.0.15019e5de09.N7d9e</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		                       "<faultcode>NMP-003</faultcode>",
+		                       "<faultstring>Se ha excedido el tiempo de espera</faultstring>",
+		                       "<detail>",
+			                      "<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>",
+				                    "<codigoError>NMP-003</codigoError>",
+				                    "<descripcionError>Se ha excedido el tiempo de espera</descripcionError>",
+				                    "<tipoError>Técnico</tipoError>",
+				                    "<severidad>2</severidad>",
+			                      "</messageError>",
+		                       "</detail>",
+	                        "</soap-env:Fault>"))]]></con1:xqueryText>
+                                    </con2:expr>
+                                </con2:replace>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:case id="_BranchId-N3f57c7ff.Nfcf2669.0.1501ee963a9.N7fcb">
+                            <con2:condition>
+                                <con1:xqueryText>$fault/ctx:errorCode='OSB-380002'</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace varName="body" contents-only="true">
+                                    <con1:id>_ActionId-N3f57c7ff.Nfcf2669.0.1501ee963a9.N7f98</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-001</faultcode>",
+		"<faultstring>Error conectividad 1 - destination unreachable</faultstring>",
+		"<detail>",
+			"<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>",
+				"<codigoError>NMP-001</codigoError>",
+				"<descripcionError>Error conectividad 1 - destination unreachable</descripcionError>",
+				"<tipoError>Técnico</tipoError>",
+				"<severidad>1</severidad>",
+			"</messageError>",
+		"</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                    </con2:expr>
+                                </con2:replace>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:case id="_BranchId-N3f57c7ff.Nfcf2669.0.1501ee963a9.N7f96">
+                            <con2:condition>
+                                <con1:xqueryText>$fault/ctx:errorCode='OSB-382502'</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace varName="body" contents-only="true">
+                                    <con1:id>_ActionId-N3f57c7ff.Nfcf2669.0.1501ee963a9.N7f63</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-002</faultcode>",
+		"<faultstring>Error conectividad 2 - not found (404)</faultstring>",
+		"<detail>",
+			"<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>",
+				"<codigoError>NMP-002</codigoError>",
+				"<descripcionError>Error conectividad 2 - not found (404)</descripcionError>",
+				"<tipoError>Técnico</tipoError>",
+				"<severidad>2</severidad>",
+			"</messageError>",
+		"</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                    </con2:expr>
+                                </con2:replace>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:case id="_BranchId-N3f57c7ff.Nfcf2669.0.1501ee963a9.N7f30">
+                            <con2:condition>
+                                <con1:xqueryText>$fault/ctx:errorCode='OSB-380001'</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace contents-only="true" varName="body">
+                                    <con1:id>_ActionId-N3f57c7ff.Nfcf2669.0.1501ee963a9.N7efd</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+		"<faultcode>NMP-005</faultcode>",
+		"<faultstring>Internal Server Error (500)</faultstring>",
+		"<detail>",
+			"<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>",
+				"<codigoError>NMP-005</codigoError>",
+				"<descripcionError>Internal Server Error (500)</descripcionError>",
+				"<tipoError>Técnico</tipoError>",
+				"<severidad>2</severidad>",
+			"</messageError>",
+		"</detail>",
+	"</soap-env:Fault>"))]]></con1:xqueryText>
+                                    </con2:expr>
+                                </con2:replace>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default>
+                            <con2:replace contents-only="true" varName="body">
+                                <con1:id>_ActionId-N3f57c7ff.N305c272e.0.15019e5de09.N7e9e</con1:id>
+                                <con2:location>
+                                    <con1:xpathText>.</con1:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<soap-env:Fault xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>",
+								"<faultcode>NMP-006</faultcode>",
+								"<faultstring>",$fault/ctx:errorCode/text(),": ",$fault/ctx:reason/text(),"</faultstring>",
+								"<detail>",
+									"<messageError xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage'>",
+										"<codigoError>NMP-006</codigoError>",
+										"<descripcionError>",$fault/ctx:errorCode/text(),": ",$fault/ctx:reason/text(),"</descripcionError>",
+										"<tipoError>Técnico</tipoError>",
+										"<severidad>2</severidad>",
+									"</messageError>",
+								"</detail>",
+							"</soap-env:Fault>"))]]></con1:xqueryText>
+                                </con2:expr>
+                            </con2:replace>
+                        </con2:default>
+                    </con2:ifThenElse>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57c7ff.N305c272e.0.15019e5de09.N7d6a</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.9a256f0.0.157d386d25d.N7f99">
+            <con:stage id="_StageId-N3f57c7ff.9a256f0.0.157d386d25d.N7ef0" name="StageTargetEndpoint" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:env="http://www.bea.com/wli/config/env" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                <con:context>
+                    <con2:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con2:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="endpoints">
+                        <con2:id>_ActionId-N3f57c7ff.9a256f0.0.157d386d25d.N7eef</con2:id>
+                        <con1:expr>
+                            <con2:xqueryTransform>
+                                <con2:resource ref="BuroCredito/Resources/XQ/NMPBuroCreditoEnrutamientoSAP"/>
+                            </con2:xqueryTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="targetEndpoint">
+                        <con2:id>_ActionId-N3f57c7ff.9a256f0.0.157d386d25d.N7eee</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$endpoints//route[@establishment=$header/nmph:headerMessage/nmph:idDestino/text() and @destino='SAPConin']/operations/operation[@name=fn:data($operation)]/endpointURL/text()</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con3:assign varName="operacion">
+                        <con2:id>_ActionId-a1e030f.77e03d19.f.1584ad31f0c.N7fff</con2:id>
+                        <con3:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$operation</con:xqueryText>
+                        </con3:expr>
+                    </con3:assign>
+                    <con3:assign varName="encabezado">
+                        <con2:id>_ActionId-a1e030f.77e03d19.f.1584ad31f0c.N7ffe</con2:id>
+                        <con3:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$header</con:xqueryText>
+                        </con3:expr>
+                    </con3:assign>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-N3f57c7ff.9a256f0.0.157d386d25d.N7eed</con2:id>
+                        <con1:case id="_BranchId-N3f57c7ff.9a256f0.0.157d386d25d.N7eec">
+                            <con1:condition>
+                                <con2:xqueryText>fn:string-length($targetEndpoint) = 0</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:assign varName="targetEndpoint">
+                                    <con2:id>_ActionId-N3f57c7ff.9a256f0.0.157d386d25d.N7eeb</con2:id>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$endpoints//route[@establishment='SAP']/operations/operation[@name=fn:data($operation)]/endpointURL/text()</con:xqueryText>
+                                    </con1:expr>
+                                </con1:assign>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                    <con4:report xmlns:con4="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id>_ActionId-a1e030f.796f47d5.3.158d6c6c6a3.N8000</con2:id>
+                        <con4:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con4:expr>
+                    </con4:report>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.2f35b7c2.0.14fcd814433.N7fff">
+            <con:stage id="_StageId-N3f57c7ff.2f35b7c2.0.14fcd814433.N7ffd" name="StageValidacion" errorHandler="error-N3f57c7ff.Nfcf2669.0.1501ee963a9.N7e95">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente"/>
+                    <con1:userNsDecl prefix="seg" namespace="http://www.bea.com/wli/sb/services/security/config"/>
+                </con:context>
+                <con:actions>
+                    <con2:validate>
+                        <con1:id>_ActionId-N3f57c7ff.2f35b7c2.0.14fcd814433.N7f7f</con1:id>
+                        <con2:schema ref="BuroCredito/Resources/XSD/BuroCreditoSvcXSD"/>
+                        <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente">nmp:consultaBCRequest</con2:schemaElement>
+                        <con2:varName>body</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./nmp:consultaBCRequest</con1:xpathText>
+                        </con2:location>
+                        <con2:resultVarName/>
+                    </con2:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57c7ff.a7e2c04.0.1503e42f09d.N7f66" name="StageConsultaVigente" errorHandler="error-N3f57c7ff.a7e2c04.0.1503e42f09d.N7f34">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente"/>
+                </con:context>
+                <con:actions>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-N3f57c7ff.48e1f982.0.1500046f0bd.N7f66</con1:id>
+                        <con2:service ref="BuroCredito/Proxy Services/BuroCreditoPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>getConsultaVigenteBC</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">infoConsultaVigenteReq</con2:body>
+                            <con2:header>header</con2:header>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">infoConsultaVigenteRes</con2:body>
+                            <con2:header/>
+                        </con2:response>
+                        <con2:requestTransform>
+                            <con2:assign varName="infoConsultaVigenteReq">
+                                <con1:id>_ActionId-N3f57c7ff.48e1f982.0.1500046f0bd.N7f33</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText>fn-bea:inlinedXML(fn:concat(
+                            '&lt;nmp:consultaVigenteBCRequest xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente">',
+                              '&lt;nmp:idCliente>',$body/nmp:consultaBCRequest/nmp:informacionCliente/nmp:personal/nmp:idCliente,'&lt;/nmp:idCliente>',
+                            '&lt;/nmp:consultaVigenteBCRequest>'
+                            ))</con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                        </con2:requestTransform>
+                        <con2:responseTransform>
+                            <con2:assign varName="estadoServicio">
+                                <con1:id>_ActionId-N3f57c7ff.N54391685.0.15043e12c2d.N7ed5</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText>$infoConsultaVigenteRes/*:respuesta</con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                        </con2:responseTransform>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57c7ff.2f35b7c2.0.14fcd814433.N7f3e" name="StageConsultaBuroCredito" errorHandler="error-N3f57c7ff.a7e2c04.0.1503e42f09d.N7fcc">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente"/>
+                    <con1:userNsDecl prefix="seg" namespace="http://www.bea.com/wli/sb/services/security/config"/>
+                    <con1:userNsDecl prefix="urn" namespace="urn:sap-com:document:sap:soap:functions:mc-style"/>
+                    <con1:userNsDecl prefix="cbc" namespace="http://bean.consulta.ws.bc.com"/>
+                    <con1:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-N3f57c7ff.2f35b7c2.0.14fcd814433.N7f31</con1:id>
+                        <con2:case id="_BranchId-N3f57c7ff.2f35b7c2.0.14fcd814433.N7f30">
+                            <con2:condition>
+                                <con1:xqueryText>$estadoServicio = "No vigente" or $estadoServicio = "ErrConsVig"</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:assign varName="credencialesBC">
+                                    <con1:id>_ActionId-N3f57c7ff.2f35b7c2.0.14fcd814433.N7ff1</con1:id>
+                                    <con2:expr>
+                                        <con1:xqueryText>fn-bea:lookupBasicCredentials('BuroCredito/Resources/Service Account/BuroCreditoSA')</con1:xqueryText>
+                                    </con2:expr>
+                                </con2:assign>
+                                <con2:replace contents-only="true" varName="body">
+                                    <con1:id>_ActionId-N3f57c7ff.2f35b7c2.0.14fcd814433.N7fee</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>./nmp:consultaBCRequest/nmp:informacionGeneral/nmp:claveUsuario</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con1:xqueryText>$credencialesBC/seg:username/text()</con1:xqueryText>
+                                    </con2:expr>
+                                </con2:replace>
+                                <con2:replace varName="body" contents-only="true">
+                                    <con1:id>_ActionId-N3f57c7ff.2f35b7c2.0.14fcd814433.N7feb</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>./nmp:consultaBCRequest/nmp:informacionGeneral/nmp:contrasenaUsuario</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con1:xqueryText>$credencialesBC/seg:password/text()</con1:xqueryText>
+                                    </con2:expr>
+                                </con2:replace>
+                                <con1:assign varName="targetEndpointVPN" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:env="http://www.bea.com/wli/config/env" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                                    <con2:id>_ActionId-a1e030f.77e03d19.c.1584a3eb66a.N7ffc</con2:id>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$endpoints//route[@destino="VPN" and @establishment=$encabezado/nmph:headerMessage/nmph:idDestino/text()]/operations[1]/operation[@name=fn:data($operacion)]/endpointURL/text()</con:xqueryText>
+                                    </con1:expr>
+                                </con1:assign>
+                                <con2:wsCallout>
+                                    <con1:id>_ActionId-N3f57c7ff.2f35b7c2.0.14fcd814433.N7f27</con1:id>
+                                    <con2:service ref="BuroCredito/Business Services/ConsultaAutenticaBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                    <con2:operation>consultaXML</con2:operation>
+                                    <con2:request>
+                                        <con2:body wrapped="false">consuldaBCAutenticaReq</con2:body>
+                                        <con2:header/>
+                                    </con2:request>
+                                    <con2:response>
+                                        <con2:body wrapped="false">consuldaBCAutenticaRes</con2:body>
+                                        <con2:header/>
+                                    </con2:response>
+                                    <con2:requestTransform>
+                                        <con1:ifThenElse xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:env="http://www.bea.com/wli/config/env" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                                            <con2:id>_ActionId-a1e030f.77e03d19.11.1584afc4b8a.N7ff6</con2:id>
+                                            <con1:case id="_BranchId-N3f57c7ff.9a256f0.0.157d386d25d.N7eec">
+                                                <con1:condition>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:string-length($targetEndpointVPN) = 0</con:xqueryText>
+                                                </con1:condition>
+                                                <con1:actions>
+                                                    <con1:assign varName="targetEndpointVPN">
+                                                        <con2:id>_ActionId-a1e030f.77e03d19.11.1584afc4b8a.N7ff5</con2:id>
+                                                        <con1:expr>
+                                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$endpoints//route[@establishment='VPN']/operations/operation[@name=fn:data($operacion)]/endpointURL/text()</con:xqueryText>
+                                                        </con1:expr>
+                                                    </con1:assign>
+                                                </con1:actions>
+                                            </con1:case>
+                                        </con1:ifThenElse>
+                                        <con2:routing-options>
+                                            <con1:id>_ActionId-a1e030f.77e03d19.c.1584a3eb66a.N7ffd</con1:id>
+                                            <con2:uriExpr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$targetEndpointVPN</con:xqueryText>
+                                            </con2:uriExpr>
+                                        </con2:routing-options>
+                                        <con2:assign varName="consuldaBCAutenticaReq">
+                                            <con1:id>_ActionId-N3f57c7ff.N54391685.0.15043e12c2d.N7e6f</con1:id>
+                                            <con2:expr>
+                                                <con1:xqueryTransform>
+                                                    <con1:resource ref="BuroCredito/Resources/XQ/TransformarConsultaAutenticaXQ"/>
+                                                    <con1:param name="consultaInfoBC">
+                                                        <con1:path>$body/nmp:consultaBCRequest</con1:path>
+                                                    </con1:param>
+                                                </con1:xqueryTransform>
+                                            </con2:expr>
+                                        </con2:assign>
+                                    </con2:requestTransform>
+                                    <con2:responseTransform>
+                                        <con2:assign varName="estadoServicio">
+                                            <con1:id>_ActionId-N3f57c7ff.N54391685.0.15043e12c2d.N7da4</con1:id>
+                                            <con2:expr>
+                                                <con1:xqueryText>fn-bea:inlinedXML(fn-bea:serialize($consuldaBCAutenticaRes))</con1:xqueryText>
+                                            </con2:expr>
+                                        </con2:assign>
+                                    </con2:responseTransform>
+                                </con2:wsCallout>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default>
+                            <con2:replace varName="body" contents-only="true">
+                                <con1:id>_ActionId-N3f57c7ff.Nfcf2669.0.1501ee963a9.N7d52</con1:id>
+                                <con2:location>
+                                    <con1:xpathText>.</con1:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con1:xqueryText>fn-bea:inlinedXML(fn:concat('&lt;nmp:consultaBCResponse xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente">',
+                              '&lt;nmp:respuesta>',$estadoServicio,'&lt;/nmp:respuesta>',
+                            '&lt;/nmp:consultaBCResponse>'))</con1:xqueryText>
+                                </con2:expr>
+                            </con2:replace>
+                            <con1:reply isError="false">
+                                <con1:id>_ActionId-N3f57c7ff.N49fc3426.0.150af6d8e2b.N7f3a</con1:id>
+                            </con1:reply>
+                        </con2:default>
+                    </con2:ifThenElse>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57c7ff.N54391685.0.15043e12c2d.N7e0c" name="StageAplicarMatrizKO" errorHandler="error-N3f57c7ff.2e8a6848.0.150491f8cfe.N7c94">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente"/>
+                    <con1:userNsDecl prefix="urn" namespace="urn:sap-com:document:sap:soap:functions:mc-style"/>
+                    <con1:userNsDecl prefix="cbc" namespace="http://bean.consulta.ws.bc.com"/>
+                </con:context>
+                <con:actions>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-N3f57c7ff.76249f1e.0.150243acdda.N7fcd</con1:id>
+                        <con2:service ref="BuroCredito/Business Services/ConsultaBuroMatrizBSS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>ZlmRfcRecibeBuro</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">aplicarMatrizKOReq</con2:body>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">aplicarMatrizKORes</con2:body>
+                        </con2:response>
+                        <con2:requestTransform>
+                            <con2:assign varName="aplicarMatrizKOReq">
+                                <con1:id>_ActionId-N3f57c7ff.665d59e1.0.150628826ea.N7fce</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryTransform>
+                                        <con1:resource ref="BuroCredito/Resources/XQ/TransformarAplicaMatrizKoXQ"/>
+                                        <con1:param name="siva">
+                                            <con1:path>fn:string($body/nmp:consultaBCRequest/nmp:informacionCliente/nmp:personal/nmp:score/nmp:siva)</con1:path>
+                                        </con1:param>
+                                        <con1:param name="idCliente">
+                                            <con1:path>fn:string($body/nmp:consultaBCRequest/nmp:informacionCliente/nmp:personal/nmp:idCliente)</con1:path>
+                                        </con1:param>
+                                        <con1:param name="probabilidadIncumplimiento">
+                                            <con1:path>fn:string($body/nmp:consultaBCRequest/nmp:informacionCliente/nmp:personal/nmp:score/nmp:probabilidadIncumplimiento)</con1:path>
+                                        </con1:param>
+                                        <con1:param name="respuestaBuroCredito">
+                                            <con1:path>$estadoServicio</con1:path>
+                                        </con1:param>
+                                    </con1:xqueryTransform>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:routing-options>
+                                <con1:id>_ActionId-N3f57c7ff.9a256f0.0.157d386d25d.N7e86</con1:id>
+                                <con2:uriExpr>
+                                    <con1:xqueryText>$targetEndpoint</con1:xqueryText>
+                                </con2:uriExpr>
+                            </con2:routing-options>
+                        </con2:requestTransform>
+                        <con2:responseTransform>
+                            <con2:replace contents-only="true" varName="body">
+                                <con1:id>_ActionId-N3f57c7ff.55de20eb.0.1504d12fadf.N7fce</con1:id>
+                                <con2:location>
+                                    <con1:xpathText>.</con1:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con1:xqueryText>fn-bea:inlinedXML(fn:concat('&lt;nmp:consultaBCResponse xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente">',
+                              '&lt;nmp:respuesta>',
+                              (
+                                    if($aplicarMatrizKORes/*:Exito = "0") then
+                                            if($aplicarMatrizKORes/*:EstatusKO = "0") then "Rechazado"
+                                            else if($aplicarMatrizKORes/*:EstatusKO = "1") then "Aprobado"
+                                            else if($aplicarMatrizKORes/*:EstatusKO = "2") then "Error buro"
+                                            else ()
+                                    else ()
+                              )
+                              ,'&lt;/nmp:respuesta>',
+                            '&lt;/nmp:consultaBCResponse>'))</con1:xqueryText>
+                                </con2:expr>
+                            </con2:replace>
+                        </con2:responseTransform>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.9a256f0.0.157d386d25d.N7f98"/>
+        <con:flow>
+            <con:pipeline-node name="TargetEndpointPipeline">
+                <con:request>request-N3f57c7ff.9a256f0.0.157d386d25d.N7f99</con:request>
+                <con:response>response-N3f57c7ff.9a256f0.0.157d386d25d.N7f98</con:response>
+            </con:pipeline-node>
+            <con:branch-node type="operation" id="_FlowId-N3f57c7ff.2f35b7c2.0.14fcd814433.N8000" name="BranchNode1">
+                <con:context/>
+                <con:branch-table>
+                    <con:branch name="getConsultaBC">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairConsultaAutentica">
+                                <con:request>request-N3f57c7ff.2f35b7c2.0.14fcd814433.N7fff</con:request>
+                                <con:response>response-N3f57c7ff.2f35b7c2.0.14fcd814433.N7ffe</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="getConsultaVigenteBC">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairConsultaVigente">
+                                <con:request>request-N3f57c7ff.2f35b7c2.0.14fcd814433.N7ffb</con:request>
+                                <con:response>response-N3f57c7ff.2f35b7c2.0.14fcd814433.N7ffa</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="getConsultaAutografaBC">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairConsultaAutografa">
+                                <con:request>request-N3f57c7ff.2f35b7c2.0.14fcd814433.N7ff7</con:request>
+                                <con:response>response-N3f57c7ff.2f35b7c2.0.14fcd814433.N7ff6</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+        <con:shared-variables>
+            <con:variable>estadoServicio</con:variable>
+        </con:shared-variables>
+    </con:router>
+</con:pipelineEntry>

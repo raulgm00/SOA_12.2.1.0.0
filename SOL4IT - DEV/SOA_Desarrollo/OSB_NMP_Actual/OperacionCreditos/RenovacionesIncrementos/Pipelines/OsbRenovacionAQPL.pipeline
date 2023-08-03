@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/alert/config" xmlns:con4="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con5="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con6="http://www.bea.com/wli/sb/stages/publish/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="OperacionCreditos/RenovacionesIncrementos/Resources/WSDLs/OSBDesencolarCreditoAQConcreteWSDL"/>
+            <con:binding>
+                <con:name>Dequeue_ptt-binding</con:name>
+                <con:namespace>http://xmlns.oracle.com/pcbpel/adapter/aq/NMPRenovacionTopUp/OSBRenovacionQueue/RenovacionAQ</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:tracingEnabled>true</oper:tracingEnabled>
+            <oper:monitoring enabled="true" level="service" aggregationInterval="10"/>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router errorHandler="error-N3f57c7ff.729d0ea4.0.151a716e97f.N7fba">
+        <con:pipeline type="request" name="request-N3f57c7ff.729d0ea4.0.151a716e97f.N7ffd">
+            <con:stage id="_StageId-N3f57c7ff.729d0ea4.0.151a716e97f.N7ffb" name="StageReportInput">
+                <con:context/>
+                <con:actions>
+                    <con5:assign varName="body_tmp">
+                        <con2:id>_ActionId-N3f57c7ff.729d0ea4.0.151a716e97f.N7f75</con2:id>
+                        <con5:expr>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con5:expr>
+                    </con5:assign>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.729d0ea4.0.151a716e97f.N7ffc">
+            <con:stage id="_StageId-N3f57c7ff.729d0ea4.0.151a716e97f.N7ffa" name="StageReportOutput">
+                <con:context>
+                    <con2:userNsDecl prefix="dbup" namespace="http://xmlns.oracle.com/pcbpel/adapter/db/DbUpdateRegistroRenovacion"/>
+                    <con2:userNsDecl prefix="cms" namespace="http://xmlns.oracle.com/xdb/CMSOA"/>
+                </con:context>
+                <con:actions>
+                    <con5:assign varName="body">
+                        <con2:id>_ActionId-a1e030f.N4089bba8.14.15592aa46c8.N7fff</con2:id>
+                        <con5:expr>
+                            <con:xqueryTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="OperacionCreditos/RenovacionesIncrementos/Resources/Transformations/TransformOsbResultToDb"/>
+                                <con:param name="headerResponse">
+                                    <con:path>$header/*</con:path>
+                                </con:param>
+                                <con:param name="body">
+                                    <con:path>$body_tmp/*</con:path>
+                                </con:param>
+                            </con:xqueryTransform>
+                        </con5:expr>
+                    </con5:assign>
+                    <con6:route>
+                        <con2:id>_ActionId-N3f57c7ff.40488255.0.151b14bf1cb.N7f05</con2:id>
+                        <con6:service ref="OperacionCreditos/RenovacionesIncrementos/Business Services/BDGOVActualizarRegistroRenovacion" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con6:operation>DbUpdateRegistroRenovacion</con6:operation>
+                        <con6:outboundTransform>
+                            <con5:assign varName="body">
+                                <con2:id>_ActionId-N3f57c7ff.40488255.0.151b14bf1cb.N7eff</con2:id>
+                                <con5:expr>
+                                    <con:xqueryTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                        <con:resource ref="OperacionCreditos/RenovacionesIncrementos/Resources/Transformations/TransformOsbResultToDb"/>
+                                        <con:param name="headerResponse">
+                                            <con:path>$header/*</con:path>
+                                        </con:param>
+                                        <con:param name="body">
+                                            <con:path>$body_tmp/*</con:path>
+                                        </con:param>
+                                    </con:xqueryTransform>
+                                </con5:expr>
+                            </con5:assign>
+                        </con6:outboundTransform>
+                    </con6:route>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.729d0ea4.0.151a716e97f.N7fba">
+            <con:stage id="_StageId-N3f57c7ff.729d0ea4.0.151a716e97f.N7fb9" name="StageServiceError">
+                <con:context>
+                    <con2:userNsDecl prefix="dbup" namespace="http://xmlns.oracle.com/pcbpel/adapter/db/DbUpdateRegistroRenovacion"/>
+                    <con2:userNsDecl prefix="cms" namespace="http://xmlns.oracle.com/xdb/CMSOA"/>
+                </con:context>
+                <con:actions>
+                    <con1:report>
+                        <con2:id>_ActionId-N3f57c7ff.729d0ea4.0.151a716e97f.N7fb3</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$fault</con2:xqueryText>
+                        </con1:expr>
+                        <con1:labels>
+                            <con1:key>AQ_ERROR_idCliente</con1:key>
+                            <con1:varName>body_tmp</con1:varName>
+                            <con1:value>
+                                <con2:xpathText>.//ID_CLIENTE/text()</con2:xpathText>
+                            </con1:value>
+                        </con1:labels>
+                    </con1:report>
+                    <con6:route>
+                        <con2:id>_ActionId-N3f57c7ff.40488255.0.151b14bf1cb.N7ef6</con2:id>
+                        <con6:service ref="OperacionCreditos/RenovacionesIncrementos/Business Services/BDGOVActualizarRegistroRenovacion" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con6:operation>DbUpdateRegistroRenovacion</con6:operation>
+                        <con6:outboundTransform>
+                            <con5:assign varName="body">
+                                <con2:id>_ActionId-N3f57c7ff.40488255.0.151b14bf1cb.N7ef9</con2:id>
+                                <con5:expr>
+                                    <con2:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat('<soap-env:Body xmlns:soap-env="http://schemas.xmlsoap.org/soap/envelope/">
+	<dbup:DbUpdateRegistroRenovacionInput  	xmlns:dbup="http://xmlns.oracle.com/pcbpel/adapter/db/DbUpdateRegistroRenovacion">
+	<dbup:ESTATUS_SOA>ERROR</dbup:ESTATUS_SOA>
+	<dbup:DESCRIPCION_ERROR>',fn-bea:serialize($body//soap-env:Fault),'</dbup:DESCRIPCION_ERROR>
+	<dbup:MANDT>',$body_tmp//MANDT/text(),'</dbup:MANDT>
+        <dbup:SOCIEDAD>',$body_tmp//SOCIEDAD/text(),'</dbup:SOCIEDAD>
+        <dbup:CONTRATO>',$body_tmp//CONTRATO/text(),'</dbup:CONTRATO>
+	</dbup:DbUpdateRegistroRenovacionInput>
+	</soap-env:Body>'))]]></con2:xqueryText>
+                                </con5:expr>
+                            </con5:assign>
+                        </con6:outboundTransform>
+                    </con6:route>
+                    <con2:reply isError="true">
+                        <con2:id>_ActionId-a1e041d.N17ee3d1b.3.15239424b5a.N8000</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.729d0ea4.0.151a716e97f.N7f7f">
+            <con:stage id="_StageId-N3f57c7ff.729d0ea4.0.151a716e97f.N7f7e" name="StageRouteToError">
+                <con:context>
+                    <con2:userNsDecl prefix="cms" namespace="http://xmlns.oracle.com/xdb/CMSOA"/>
+                </con:context>
+                <con:actions>
+                    <con5:Error>
+                        <con2:id>_ActionId-a1e041d.N17ee3d1b.4.1523943cebc.N8000</con2:id>
+                        <con5:errCode>NMP-REN-1001</con5:errCode>
+                        <con5:message>Error al evaluar crédito para renovación  topUp</con5:message>
+                    </con5:Error>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="PipelinePairNode">
+                <con:request>request-N3f57c7ff.729d0ea4.0.151a716e97f.N7ffd</con:request>
+                <con:response>response-N3f57c7ff.729d0ea4.0.151a716e97f.N7ffc</con:response>
+            </con:pipeline-node>
+            <con:route-node name="RouteToOsbEvaluacionPXY" error-handler="error-N3f57c7ff.729d0ea4.0.151a716e97f.N7f7f">
+                <con:context>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con4:route>
+                        <con2:id>_ActionId-N3f57c7ff.729d0ea4.0.151a716e97f.N7ff1</con2:id>
+                        <con4:service ref="OperacionCreditos/RenovacionesIncrementos/Proxy Services/OSBRenovacionCreditosSoapPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con4:operation>processCredito</con4:operation>
+                        <con4:outboundTransform>
+                            <con5:replace varName="header" contents-only="true">
+                                <con2:id>_ActionId-N3f57c7ff.N5209986d.0.1525fd428e8.N7f2e</con2:id>
+                                <con5:location>
+                                    <con2:xpathText>.</con2:xpathText>
+                                </con5:location>
+                                <con5:expr>
+                                    <con2:xqueryText><![CDATA[fn-bea:inlinedXML(string('<nmp:headerMessage xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">
+         <nmp:usuario>osb</nmp:usuario>
+         <nmp:idConsumidor>osb</nmp:idConsumidor>
+         <nmp:idDestino>brm</nmp:idDestino>
+      </nmp:headerMessage>'))]]></con2:xqueryText>
+                                </con5:expr>
+                            </con5:replace>
+                            <con5:replace varName="body" contents-only="true">
+                                <con2:id>_ActionId-N3f57c7ff.729d0ea4.0.151a716e97f.N7feb</con2:id>
+                                <con5:location>
+                                    <con2:xpathText>.</con2:xpathText>
+                                </con5:location>
+                                <con5:expr>
+                                    <con2:xqueryTransform>
+                                        <con2:resource ref="OperacionCreditos/RenovacionesIncrementos/Resources/Transformations/TransformAqToProcessCredito"/>
+                                        <con2:param name="aqBody">
+                                            <con2:path>$body/*</con2:path>
+                                        </con2:param>
+                                    </con2:xqueryTransform>
+                                </con5:expr>
+                            </con5:replace>
+                        </con4:outboundTransform>
+                        <con4:responseTransform/>
+                    </con4:route>
+                </con:actions>
+            </con:route-node>
+        </con:flow>
+        <con:partner-links/>
+    </con:router>
+</con:pipelineEntry>

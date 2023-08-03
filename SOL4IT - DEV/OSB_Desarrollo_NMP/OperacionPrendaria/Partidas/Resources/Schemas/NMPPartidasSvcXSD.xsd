@@ -1,0 +1,488 @@
+<xsd:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:NMPPart="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage">
+  <xsd:import schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+  <xsd:element name="getPartidasClienteRequest" type="NMPPart:PartidasRequestType"/>
+  <xsd:element name="getPartidasClienteResponse" type="NMPPart:PartidasResponseType"/>
+  <xsd:element name="getPartidaDetalleRequest" type="NMPPart:PartidaDetalleRequestType"/>
+  <xsd:element name="getPartidaDetalleResponse" type="NMPPart:PartidaDetalleResponseType"/>
+  <xsd:element name="obtenerExistencia">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element maxOccurs="1" minOccurs="1" name="cliente" nillable="true" type="NMPPart:ExistenciaRequestType"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="obtenerExistenciaResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element maxOccurs="1" minOccurs="1" name="numeroDePartidas" nillable="true" type="xsd:int"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="validarContratoClienteRequest" type="NMPPart:ValidaBoletaRequestType"/>
+  <xsd:element name="validarContratoClienteResponse" type="NMPsm:MessageResponse"/>
+  <xsd:element name="obtenerPartidasClienteRequest" type="NMPPart:ConsultaCreditoRequestType"/>
+  <xsd:element name="obtenerPartidasClienteResponse" type="NMPPart:detallesCreditoType"/>
+  <xsd:element name="notificarDetallePartidasRequest" type="NMPPart:notificarDetallePartidaType"/>
+  <xsd:element name="notificarDetallePartidasResponse" type="NMPPart:MessageResponse"/>
+  <xsd:element name="consultarPartidasFolioRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="folios" type="NMPPart:FolioListType"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="consultarPartidasFolioResponse" type="NMPPart:detallesCreditoType"/>
+  <xsd:element name="trazabilidad" type="NMPPart:trazabilidadType"/>
+  <xsd:complexType name="MessageResponse">
+    <xsd:sequence>
+      <xsd:element name="codigo" type="xsd:string"/>
+      <xsd:element name="descripcion" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="trazabilidadType">
+    <xsd:sequence>
+      <xsd:element name="GUID" type="xsd:string"/>
+      <xsd:element name="urlCallBack" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="notificarDetallePartidaType">
+    <xsd:sequence>
+      <xsd:element name="partidas">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="partida" maxOccurs="unbounded">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="prenda" type="NMPPart:prendaNotificacionType"/>
+                  <xsd:element name="operaciones" type="NMPPart:operacionesType"/>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element ref="NMPPart:trazabilidad"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="prendaType">
+    <xsd:sequence>
+      <xsd:element name="folio" type="xsd:string" minOccurs="1"/>
+      <xsd:element name="sucursal" type="xsd:int" minOccurs="1"/>
+      <xsd:element name="ramo" type="xsd:string" minOccurs="1"/>
+      <xsd:element name="subramo" type="xsd:string" minOccurs="1"/>
+      <xsd:element name="descripcion" type="xsd:string" minOccurs="1"/>
+      <xsd:element name="montoAvaluo" type="xsd:decimal" minOccurs="1"/>
+      <xsd:element name="montoPrestamo" type="xsd:decimal"/>
+      <xsd:element name="titular" type="xsd:string" minOccurs="1"/>
+      <xsd:element name="valuador" type="xsd:string" minOccurs="1"/>
+      <xsd:element name="cotitular" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="tipoContrato" type="xsd:string" minOccurs="1"/>
+      <xsd:element name="operable" type="xsd:boolean"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="prendaNotificacionType">
+    <xsd:sequence>
+      <xsd:element name="folio" type="xsd:string" minOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="operacionesType">
+    <xsd:sequence>
+      <xsd:element name="operacion" maxOccurs="unbounded" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="tipoOperacion" type="xsd:string"/>
+            <xsd:element name="monto" type="xsd:decimal"/>
+            <xsd:element name="subtotales" minOccurs="0">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="subtotal" maxOccurs="unbounded" minOccurs="0">
+                    <xsd:complexType>
+                      <xsd:sequence>
+                        <xsd:element name="producto" type="xsd:string"/>
+                        <xsd:element name="descripcion" type="xsd:string"/>
+                        <xsd:element name="subtotal" type="xsd:decimal"/>
+                      </xsd:sequence>
+                    </xsd:complexType>
+                  </xsd:element>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="PartidasRequestType">
+    <xsd:sequence>
+      <xsd:element name="idCliente" type="xsd:long"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="PartidasResponseType">
+    <xsd:sequence>
+      <xsd:element name="Partida" minOccurs="1" type="NMPPart:PartidasListType" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="PartidasListType">
+    <xsd:sequence>
+      <xsd:element name="folioPartida" type="xsd:string"/>
+      <xsd:element name="ramo" type="xsd:string"/>
+      <xsd:element name="subramo" type="xsd:string"/>
+      <xsd:element minOccurs="0" name="estadoPrenda" type="xsd:long"/>
+      <xsd:element name="descripcion" type="xsd:string"/>
+      <xsd:element name="montoPrestamo" type="xsd:decimal"/>
+      <xsd:element name="idSucursalPartida" type="xsd:int"/>
+      <xsd:element name="fechaVencimiento" type="xsd:dateTime"/>
+      <xsd:element name="Beneficiarios">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="Beneficiario" maxOccurs="unbounded">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="nombre" type="xsd:string"/>
+                  <xsd:element name="apellidoPaterno" type="xsd:string"/>
+                  <xsd:element name="apellidoMaterno" type="xsd:string"/>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="PartidaDetalleRequestType">
+    <xsd:sequence>
+      <xsd:element name="folioPartida" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="PartidaDetalleResponseType">
+    <xsd:sequence>
+      <xsd:element name="Avaluo" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="folio" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="ramo" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="subramo" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="descripcion" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="montoAvaluo" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="montoPrestamo" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="titular" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="valuador" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="Beneficiarios" minOccurs="0">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="Beneficiario" maxOccurs="unbounded" minOccurs="0">
+                    <xsd:complexType>
+                      <xsd:sequence>
+                        <xsd:element name="nombre" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="apellidoPaterno" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="apellidoMaterno" type="xsd:string" minOccurs="0"/>
+                      </xsd:sequence>
+                    </xsd:complexType>
+                  </xsd:element>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="tipoContrato" type="xsd:string" minOccurs="0"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="AvaluoAlhajas" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="incremento" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="desplazamiento" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="valorComercial" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="valorMonte" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="costoMetal" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="kilataje" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="avaluoComplementario" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="rango" type="xsd:string" minOccurs="0"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="UbicacionDeposito" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="sucursal" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="deposito" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="cajon" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="consecutivo" type="xsd:string" minOccurs="0"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="UbicacionAlmoneda" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="sucursal" type="xsd:string" nillable="true" minOccurs="0"/>
+            <xsd:element name="numeroExpendio" type="xsd:string" nillable="true" minOccurs="0"/>
+            <xsd:element name="expendedor" type="xsd:string" nillable="true" minOccurs="0"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="Estado" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="estadoPrenda" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="estadoCaja" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="fechaIngreso" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="fechaComercializacion" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="fechaIngresoDeposito" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="numRefrendosRealizados" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="interes" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="custodia" type="xsd:string" minOccurs="0"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="Proyecciones" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="Proyeccion" minOccurs="0" maxOccurs="unbounded">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="operacion" type="xsd:string" minOccurs="0"/>
+                  <xsd:element name="monto" type="xsd:string" minOccurs="0"/>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="HistorialesMovimientos" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="HistorialMovimientos" maxOccurs="unbounded" minOccurs="0">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="timestampOperacion" type="xsd:string" minOccurs="0"/>
+                  <xsd:element name="usuario" type="xsd:string" minOccurs="0"/>
+                  <xsd:element name="operacion" type="xsd:string" minOccurs="0"/>
+                  <xsd:element name="sucursal" type="xsd:string" minOccurs="0"/>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ExistenciaRequestType">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="cliente" nillable="true" type="xsd:long"/>
+      <xsd:element minOccurs="0" name="tipoExistencia" nillable="true" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ExistenciaResponseType">
+    <xsd:sequence/>
+  </xsd:complexType>
+  <xsd:complexType name="ValidaBoletaRequestType">
+    <xsd:sequence>
+      <xsd:element name="idCliente" type="xsd:long"/>
+      <xsd:element name="folio" type="xsd:long"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ConsultaCreditoRequestType">
+    <xsd:sequence>
+      <xsd:element name="idCliente" type="xsd:long"/>
+      <xsd:element name="criterios" type="NMPPart:ConsultaCreditoCriterioType" minOccurs="1" maxOccurs="1"/>
+      <xsd:element ref="NMPPart:trazabilidad"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ConsultaCreditoCriterioRequestType">
+    <xsd:sequence>
+      <xsd:element name="criterios" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="estados" minOccurs="0">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="estados" type="NMPPart:EstadosCreditoType" maxOccurs="unbounded" minOccurs="0"/>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="numeroMaximoResultados" type="xsd:integer" minOccurs="0"/>
+            <xsd:element name="campoOrdenamiento" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="tipoOrdenamiento" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="rangosFecha" minOccurs="0">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="rangosFecha" minOccurs="0" maxOccurs="3" type="NMPPart:TipoRangoFechaType"/>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="detalles" type="xsd:string" minOccurs="0"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ConsultaCreditoCriterioType">
+    <xsd:sequence>
+      <xsd:element name="criterioBoleta" minOccurs="1" type="NMPPart:CriterioType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="EstadosCreditoType">
+    <xsd:sequence>
+      <xsd:element name="estadoPrenda" type="xsd:integer"/>
+      <xsd:element name="estadoCaja" type="xsd:integer"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="TipoRangoFechaType">
+    <xsd:sequence>
+      <xsd:element name="rangoFecha" type="NMPPart:RangoFechaType"/>
+      <xsd:element name="tipoFecha" type="xsd:string" minOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="RangoFechaType">
+    <xsd:sequence>
+      <xsd:element name="fechaInicio" type="xsd:date" minOccurs="1"/>
+      <xsd:element name="fechaFin" type="xsd:date" minOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="detallesCreditoType">
+    <xsd:sequence>
+      <xsd:element name="partidas">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="partida" type="NMPPart:detalleCreditoType" maxOccurs="unbounded" minOccurs="0"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="detalleCreditoType">
+    <xsd:sequence minOccurs="1">
+      <xsd:element name="prenda" minOccurs="1" type="NMPPart:prendaType"/>
+      <xsd:element name="avaluoAlhajas" minOccurs="0" maxOccurs="1" type="NMPPart:avaluoAlhajasType"/>
+      <xsd:element name="ubicacionDeposito" minOccurs="0" maxOccurs="1" type="NMPPart:ubicacionDepositoType"/>
+      <xsd:element name="ubicacionAlmoneda" minOccurs="0" maxOccurs="1" type="NMPPart:ubicacionAlmonedaType"/>
+      <xsd:element name="condiciones" minOccurs="0" maxOccurs="1" type="NMPPart:condicionesType"/>
+      <xsd:element name="movimientos" minOccurs="0" type="NMPPart:movimientosType"/>
+      <xsd:element name="saldoPL" minOccurs="0" maxOccurs="1" type="NMPPart:saldosPLType"/>
+      <xsd:element name="comercial" minOccurs="0" maxOccurs="1" type="NMPPart:comercialType"/>
+      <xsd:element name="operaciones" minOccurs="0" type="NMPPart:operacionesType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="comercialType">
+    <xsd:sequence>
+      <xsd:element name="canalIngreso" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="precioVenta" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="utilidad" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="fechaIngresoAlmoneda" type="xsd:date" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="saldosPLType">
+    <xsd:sequence>
+      <xsd:element name="saldoInsoluto" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="abonosCapital" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="interesesPagados" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="interesPendiente" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="fecha" type="xsd:dateTime" minOccurs="0"/>
+      <xsd:element name="ivaSobreInteresPendiente" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="comisionPendiente" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="ultimoAbono" type="NMPPart:UltimoAbonoType" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="movimientosType">
+    <xsd:sequence>
+      <xsd:element name="movimiento" minOccurs="0" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="timestampOperacion" type="xsd:dateTime" minOccurs="0"/>
+            <xsd:element name="usuario" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="operacion" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="sucursal" type="xsd:int" minOccurs="0"/>
+            <xsd:element name="estadoPrenda" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="estadoCaja" type="xsd:string" minOccurs="0"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="condicionesType">
+    <xsd:sequence>
+      <xsd:element name="contrato" type="xsd:int" minOccurs="1"/>
+      <xsd:element name="estadoPrenda" type="xsd:string" minOccurs="1"/>
+      <xsd:element name="estadoCaja" type="xsd:string" minOccurs="1"/>
+      <xsd:element name="fechaIngreso" type="xsd:dateTime" minOccurs="1"/>
+      <xsd:element name="fechaLimitePago" type="xsd:date" minOccurs="1"/>
+      <xsd:element name="fechaComercializacion" type="xsd:date" minOccurs="1"/>
+      <xsd:element name="fechaIngresoDeposito" type="xsd:dateTime" minOccurs="1"/>
+      <xsd:element name="numeroMaximoRefrendos" type="xsd:int" minOccurs="1"/>
+      <xsd:element name="numeroRefrendosRealizados" type="xsd:int" minOccurs="1"/>
+      <xsd:element name="interes" type="xsd:decimal" minOccurs="1"/>
+      <xsd:element name="custodia" type="xsd:decimal" minOccurs="1"/>
+      <xsd:element name="aplicaReempeno" type="xsd:boolean" minOccurs="1"/>
+      <xsd:element name="plazo" type="xsd:int" minOccurs="1"/>
+      <xsd:element name="tipoSeguro" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="parametros" type="NMPPart:ParametroContratoType" minOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ubicacionAlmonedaType">
+    <xsd:sequence>
+      <xsd:element name="sucursal" type="xsd:string" minOccurs="1"/>
+      <xsd:element name="numeroExpendio" type="xsd:int" minOccurs="1"/>
+      <xsd:element name="expendedor" type="xsd:string" minOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ubicacionDepositoType">
+    <xsd:sequence>
+      <xsd:element name="sucursal" type="xsd:string" minOccurs="1"/>
+      <xsd:element name="deposito" type="xsd:string" minOccurs="1"/>
+      <xsd:element name="cajon" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="consecutivo" type="xsd:string" minOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="avaluoAlhajasType">
+    <xsd:sequence>
+      <xsd:element name="incremento" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="desplazamiento" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="valorComercial" type="xsd:decimal" minOccurs="1"/>
+      <xsd:element name="valorMonte" type="xsd:decimal" minOccurs="1"/>
+      <xsd:element name="costoMetal" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="kilataje" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="avaluoComplementario" minOccurs="0" type="xsd:decimal"/>
+      <xsd:element name="rango" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ParametroContratoType">
+    <xsd:sequence maxOccurs="unbounded">
+      <xsd:element name="parametro" type="xsd:string" minOccurs="1"/>
+      <xsd:element name="valor" type="xsd:string" minOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="UltimoAbonoType">
+    <xsd:sequence>
+      <xsd:element name="saldoInsolutoAnterior" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="amortizacionUltimoAbono" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="abonoCancelado" type="xsd:boolean" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="FolioListType">
+    <xsd:sequence>
+      <xsd:element name="folio" type="xsd:string" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="DetalleType">
+    <xsd:sequence>
+      <xsd:element name="detalle" type="NMPPart:DetalleListType" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="DetalleListType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="DETALLE_AVALUO_ALHAJAS"/>
+      <xsd:enumeration value="DETALLE_PAGOS_LIBRES"/>
+      <xsd:enumeration value="DETALLE_MOVIMIENTOS"/>
+      <xsd:enumeration value="DETALLE_UBICACION"/>
+      <xsd:enumeration value="DETALLE_CONDICIONES"/>
+      <xsd:enumeration value="DETALLE_COMERCIAL"/>
+      <xsd:enumeration value="DETALLE_PARAMETROS_CONTRATO"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="CriterioType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="1" id="PARTIDAS_ACTIVAS"/>
+      <xsd:enumeration value="2" id="PARTIDAS_PROXIMAS_VENCER"/>
+      <xsd:enumeration value="3" id="PARTIDAS_VENCIDAS"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+</xsd:schema>

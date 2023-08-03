@@ -1,0 +1,76 @@
+<definitions name="aplicarMovimiento" targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Services/NMPBancario" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Services/NMPBancario" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:NMPBancario="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPBancario" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+	<wsdl:types>
+		<xsd:schema>
+			<xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+			<xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPBancario" schemaLocation="../XSD/BancarioSvcXSD.xsd"/>
+			<xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:message name="NMPHeaderRequest">
+		<wsdl:part name="requestHeader" element="NMPsh:headerMessage"/>
+	</wsdl:message>
+	<wsdl:message name="aplicarMovimientoRequestMessage">
+		<wsdl:part name="aplicarMovimientoRequest" element="NMPBancario:aplicarMovimientoRequest"/>
+	</wsdl:message>
+	<wsdl:message name="aplicarMovimientoResponseMessage">
+		<wsdl:part name="aplicarMovimientoResponse" element="NMPBancario:aplicarMovimientoResponse"/>
+	</wsdl:message>
+	<wsdl:message name="aplicarMovimientoFaultMessage">
+		<wsdl:part name="aplicarMovimientoFault" element="NMPsm:messageError"/>
+	</wsdl:message>
+	<wsdl:message name="consultarDatosRequestMessage">
+		<wsdl:part name="consultarDatosRequest" element="NMPBancario:consultarDatosRequest"/>
+	</wsdl:message>
+	<wsdl:message name="consultarDatosResponseMessage">
+		<wsdl:part name="consultarDatosResponse" element="NMPBancario:consultarDatosResponse"/>
+	</wsdl:message>
+	<wsdl:message name="consultarDatosFaultMessage">
+		<wsdl:part name="consultarDatosMovFault" element="NMPsm:messageError"/>
+	</wsdl:message>
+	<wsdl:portType name="Bancario_ptt">
+		<wsdl:operation name="aplicarMovimiento">
+			<wsdl:input message="tns:aplicarMovimientoRequestMessage"/>
+			<wsdl:output message="tns:aplicarMovimientoResponseMessage"/>
+			<wsdl:fault message="tns:aplicarMovimientoFaultMessage" name="aplicarMovimientoFault"/>
+		</wsdl:operation>
+		<wsdl:operation name="consultarDatos">
+			<wsdl:input message="tns:consultarDatosRequestMessage"/>
+			<wsdl:output message="tns:consultarDatosResponseMessage"/>
+			<wsdl:fault message="tns:consultarDatosFaultMessage" name="consultarDatosFault"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="BancarioBinding" type="tns:Bancario_ptt">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="aplicarMovimiento">
+			<soap:operation style="document" soapAction="aplicarMovimiento"/>
+			<wsdl:input>
+				<soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+			<wsdl:fault name="aplicarMovimientoFault">
+				<soap:fault name="aplicarMovimientoFault"/>
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="consultarDatos">
+			<soap:operation soapAction="consultarDatos"/>
+			<wsdl:input>
+				<soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+				<soap:body/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body/>
+			</wsdl:output>
+			<wsdl:fault name="consultarDatosFault">
+				<soap:fault name="consultarDatosFault"/>
+			</wsdl:fault>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="Bancario">
+		<wsdl:port name="BancarioPort" binding="tns:BancarioBinding">
+			<soap:address location="https://10.30.3.15:8012/NMP/Bancario"/>
+		</wsdl:port>
+	</wsdl:service>
+</definitions>

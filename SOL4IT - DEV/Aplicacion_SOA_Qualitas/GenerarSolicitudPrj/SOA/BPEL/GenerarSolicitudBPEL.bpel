@@ -1,0 +1,159 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Fri Nov 25 16:33:19 CST 2016
+  Author:  Soaint
+  Type: BPEL 2.0 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="GenerarSolicitudBPEL" targetNamespace="http://xmlns.oracle.com/GenerarSolicitudApp/GenerarSolicitudPrj/GenerarSolicitudBPEL" xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:client="http://xmlns.oracle.com/GenerarSolicitudApp/GenerarSolicitudPrj/GenerarSolicitudBPEL" xmlns:ora="http://schemas.oracle.com/xpath/extension" xmlns:ui="http://xmlns.oracle.com/soa/designer" xmlns:bpelx="http://schemas.oracle.com/bpel/extension" xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xml:id="id_1"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/GenerarSolicitudApp/GenerarSolicitudPrj/FnGeneraIdSolDB"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ess="http://xmlns.oracle.com/scheduler" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:ns3="http://qualitas.com.mx/Solicitud/GenerarSolicitud/v1/"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/db/sp/FnGeneraIdSolDB"
+         xmlns:ns4="http://qualitas.com.mx/comunes/objetosComunes/v1/" xmlns:ns5="http://qualitas.com.mx/Solicitud/v1/"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:ns6="http://xmlns.oracle.com/pcbpel/adapter/db/GenerarSolicitudApp/GenerarSolicitudPrj/SPGeneraSolicitudBD"
+         xmlns:ns7="http://xmlns.oracle.com/pcbpel/adapter/db/sp/SPGeneraSolicitudBD"
+         xmlns:ns8="http://xmlns.oracle.com/pcbpel/adapter/db/SOA_Desarrollo/GenerarSolicitud/ConsultaNumeroEmpleado"
+         xmlns:ns9="http://xmlns.oracle.com/pcbpel/adapter/db/top/ConsultaNumeroEmpleado">
+
+    <import ui:processWSDL="true" namespace="http://xmlns.oracle.com/GenerarSolicitudApp/GenerarSolicitudPrj/GenerarSolicitudBPEL" location="../WSDLs/GenerarSolicitudBPEL.wsdl" importType="http://schemas.xmlsoap.org/wsdl/" xml:id="id_2"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks xml:id="id_3">
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="generarsolicitudbpel_client" partnerLinkType="client:GenerarSolicitudBPEL" myRole="GenerarSolicitudBPELProvider" xml:id="id_4"/>
+    <partnerLink name="FnGeneraIdSolDB" partnerLinkType="ns1:FnGeneraIdSolDB_plt" partnerRole="FnGeneraIdSolDB_role"
+                 xml:id="id_11"/>
+    <partnerLink name="SPGeneraSolicitudBD" partnerLinkType="ns6:SPGeneraSolicitudBD_plt"
+                 partnerRole="SPGeneraSolicitudBD_role" xml:id="id_31"/>
+    <partnerLink name="ConsultaNumeroEmpleado" partnerLinkType="ns8:ConsultaNumeroEmpleado_plt"
+                 partnerRole="ConsultaNumeroEmpleado_role" xml:id="id_71"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables xml:id="id_5">
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:GenerarSolicitudBPELRequestMessage" xml:id="id_6"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:GenerarSolicitudBPELResponseMessage" xml:id="id_7"/>
+    <variable name="FnGeneraIdSolDB_InputVariable" messageType="ns1:args_in_msg" xml:id="id_13"/>
+    <variable name="FnGeneraIdSolDB_OutputVariable" messageType="ns1:args_out_msg" xml:id="id_14"/>
+    <variable name="PrefijoConstant" type="xsd:string" xml:id="id_16">
+      <from xml:id="id_20">'GPA0'</from>
+    </variable>
+    <variable name="SPGeneraSolicitudBD_InputVariable" messageType="ns6:args_in_msg" xml:id="id_34"/>
+    <variable name="SPGeneraSolicitudBD_OutputVariable" messageType="ns6:args_out_msg" xml:id="id_35"/>
+    <variable name="Inv_BD_ConsultaNumeroEmpleadoSelect_InputVar"
+              messageType="ns8:ConsultaNumeroEmpleadoSelect_inputParameters" xml:id="id_73"/>
+    <variable name="Inv_BD_ConsultaNumeroEmpleadoSelect_OutputVar" messageType="ns8:GpaMapeoUsuariosCollection_msg"
+              xml:id="id_74"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main" xml:id="id_8">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in GenerarSolicitudBPEL.wsdl) -->
+    <receive name="receiveInput" partnerLink="generarsolicitudbpel_client" portType="client:GenerarSolicitudBPEL" operation="process" variable="inputVariable" createInstance="yes" xml:id="id_9"/>
+    <assign name="InputIdSolAssign" xml:id="id_15">
+      <copy xml:id="id_21">
+        <from xml:id="id_22">$inputVariable.payload/ns3:Input/ns3:solicitudOEN/ns5:idSTipoolicitud</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_23">$FnGeneraIdSolDB_InputVariable.InputParameters/ns2:V_TPSOLICITUD</to>
+      </copy>
+      <copy xml:id="id_24">
+        <from xml:id="id_25">$PrefijoConstant</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_26">$FnGeneraIdSolDB_InputVariable.InputParameters/ns2:V_PREFIJO</to>
+      </copy>
+      <copy xml:id="id_27">
+        <from xml:id="id_28">substring(xp20:year-from-dateTime(xp20:current-date()),3)</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_29">$FnGeneraIdSolDB_InputVariable.InputParameters/ns2:V_ANIO</to>
+      </copy>
+    </assign>
+    <invoke name="FnGenIdSolInvoke" xml:id="id_12" partnerLink="FnGeneraIdSolDB"
+            portType="ns1:FnGeneraIdSolDB_ptt" operation="FnGeneraIdSolDB"
+            inputVariable="FnGeneraIdSolDB_InputVariable" outputVariable="FnGeneraIdSolDB_OutputVariable"
+            bpelx:invokeAsDetail="no"/>
+    <assign name="AsignaLogin" xml:id="id_75">
+      <copy xml:id="id_76">
+        <from xml:id="id_77">$inputVariable.payload/ns3:Input/ns3:solicitudOEN/ns5:id_usuario</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_78">$Inv_BD_ConsultaNumeroEmpleadoSelect_InputVar.ConsultaNumeroEmpleadoSelect_inputParameters/ns9:loginUsuario</to>
+      </copy>
+    </assign>
+    <invoke name="Inv_BD" xml:id="id_72" partnerLink="ConsultaNumeroEmpleado"
+            portType="ns8:ConsultaNumeroEmpleado_ptt" operation="ConsultaNumeroEmpleadoSelect"
+            inputVariable="Inv_BD_ConsultaNumeroEmpleadoSelect_InputVar"
+            outputVariable="Inv_BD_ConsultaNumeroEmpleadoSelect_OutputVar" bpelx:invokeAsDetail="no"/>
+    <assign name="getIdSolAssign" xml:id="id_30">
+      <copy xml:id="id_64">
+        <from xml:id="id_65">$FnGeneraIdSolDB_OutputVariable.OutputParameters/ns2:FN_GPA_GENERAR_IDSOLICITUD</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_66">$SPGeneraSolicitudBD_InputVariable.InputParameters/ns7:P_IDSOLICITUD</to>
+      </copy>
+      <copy xml:id="id_55">
+        <from xml:id="id_56">number($inputVariable.payload/ns3:Input/ns3:solicitudOEN/ns5:idSTipoolicitud)</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_57">$SPGeneraSolicitudBD_InputVariable.InputParameters/ns7:P_TPSOLICITUD</to>
+      </copy>
+      <copy xml:id="id_42">
+        <from xml:id="id_43">$inputVariable.payload/ns3:Input/ns3:solicitudOEN/ns5:nombreEmpleado</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_44">$SPGeneraSolicitudBD_InputVariable.InputParameters/ns7:P_NOMEMPLEADO</to>
+      </copy>
+      <copy xml:id="id_48">
+        <from xml:id="id_49">number(1)</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_50">$SPGeneraSolicitudBD_InputVariable.InputParameters/ns7:P_IDEDOSOL</to>
+      </copy>
+      <copy xml:id="id_85">
+        <from xml:id="id_86">string($Inv_BD_ConsultaNumeroEmpleadoSelect_OutputVar.GpaMapeoUsuariosCollection/ns9:GpaMapeoUsuarios/ns9:nroEmpleado)</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_87">$SPGeneraSolicitudBD_InputVariable.InputParameters/ns7:P_NUEMPLEADO</to>
+      </copy>
+      <copy xml:id="id_88">
+        <from xml:id="id_89">$Inv_BD_ConsultaNumeroEmpleadoSelect_OutputVar.GpaMapeoUsuariosCollection/ns9:GpaMapeoUsuarios/ns9:loginUsuario</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_90">$SPGeneraSolicitudBD_InputVariable.InputParameters/ns7:P_USUARIO</to>
+      </copy>
+    </assign>
+    <invoke name="SPGeneraSolicitudInvoke" xml:id="id_33" partnerLink="SPGeneraSolicitudBD"
+            portType="ns6:SPGeneraSolicitudBD_ptt" operation="SPGeneraSolicitudBD"
+            inputVariable="SPGeneraSolicitudBD_InputVariable" outputVariable="SPGeneraSolicitudBD_OutputVariable"
+            bpelx:invokeAsDetail="no"/>
+    <assign name="OutputData" xml:id="id_67">
+      <copy xml:id="id_68">
+        <from xml:id="id_69">$FnGeneraIdSolDB_OutputVariable.OutputParameters/ns2:FN_GPA_GENERAR_IDSOLICITUD</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_70">$outputVariable.payload/ns3:idSolicitud</to>
+      </copy>
+    </assign>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="generarsolicitudbpel_client" portType="client:GenerarSolicitudBPEL" operation="process" variable="outputVariable" xml:id="id_10"/>
+  </sequence>
+</process>

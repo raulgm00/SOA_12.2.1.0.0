@@ -1,0 +1,227 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Wed Dec 07 22:54:22 CST 2016
+  Author:  Soaint
+  Type: BPEL 2.0 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="ActualizaEstadoSolicitudBPEL" targetNamespace="http://qualitas.com.mx/ActualizarEstadoSolicitudApp/ActualizarEstadoSolicitudPrj/ActualizaEstadoSolicitudBPEL" xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:client="http://qualitas.com.mx/ActualizarEstadoSolicitudApp/ActualizarEstadoSolicitudPrj/ActualizaEstadoSolicitudBPEL" xmlns:ora="http://schemas.oracle.com/xpath/extension" xmlns:ui="http://xmlns.oracle.com/soa/designer" xmlns:bpelx="http://schemas.oracle.com/bpel/extension" xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xml:id="id_1"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/ActualizarEstadoSolicitudApp/ActualizarEstadoSolicitudPrj/SPUpdEdoSolDB"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/db/sp/SPUpdEdoSolDB"
+         xmlns:ns2="http://qualitas.com.mx/comunes/objetosComunes/v1/"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ess="http://xmlns.oracle.com/scheduler" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:ns4="http://qualitas.com.mx/Seguimiento/GenerarSeguimiento/v1/"
+         xmlns:ns5="http://xmlns.oracle.com/pcbpel/adapter/db/ActualizarEstadoSolicitudApp/ActualizarEstadoSolicitudPrj/SPGenerarSeguDB"
+         xmlns:ns6="http://xmlns.oracle.com/pcbpel/adapter/db/sp/SPGenerarSeguDB"
+         xmlns:ns7="http://xmlns.oracle.com/pcbpel/adapter/db/ActualizarEstadoSolicitudApp/ActualizarEstadoSolicitudPrj/SPGenerarObservacionesDB"
+         xmlns:ns8="http://xmlns.oracle.com/pcbpel/adapter/db/sp/SPGenerarObservacionesDB">
+
+    <import ui:processWSDL="true" namespace="http://qualitas.com.mx/ActualizarEstadoSolicitudApp/ActualizarEstadoSolicitudPrj/ActualizaEstadoSolicitudBPEL" location="../WSDLs/ActualizaEstadoSolicitudBPEL.wsdl" importType="http://schemas.xmlsoap.org/wsdl/" xml:id="id_2"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks xml:id="id_3">
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="actualizaestadosolicitudbpel_client" partnerLinkType="client:ActualizaEstadoSolicitudBPEL" myRole="ActualizaEstadoSolicitudBPELProvider" xml:id="id_4"/>
+    <partnerLink name="SPUpdEdoSolDB" partnerLinkType="ns1:SPUpdEdoSolDB_plt" partnerRole="SPUpdEdoSolDB_role"
+                 xml:id="id_11"/>
+    <partnerLink name="SPGenerarSeguDB" partnerLinkType="ns5:SPGenerarSeguDB_plt" partnerRole="SPGenerarSeguDB_role"
+                 xml:id="id_61"/>
+    <partnerLink name="SPGenerarObservacionesDB" partnerLinkType="ns7:SPGenerarObservacionesDB_plt"
+                 partnerRole="SPGenerarObservacionesDB_role" xml:id="id_86"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables xml:id="id_5">
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:ActualizaEstadoSolicitudBPELRequestMessage" xml:id="id_6"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:ActualizaEstadoSolicitudBPELResponseMessage" xml:id="id_7"/>
+    <variable name="UpdEdoSolicitudInvoke_InputVariable" messageType="ns1:args_in_msg" xml:id="id_15"/>
+    <variable name="UpdEdoSolicitudInvoke_OutputVariable" messageType="ns1:args_out_msg" xml:id="id_16"/>
+    <variable name="GenerarSeguimientoPL_InputVariable" messageType="ns5:args_in_msg" xml:id="id_64"/>
+    <variable name="GenerarSeguimientoPL_OutputVariable" messageType="ns5:args_out_msg" xml:id="id_65"/>
+    <variable name="GenerarObservacionesPL_InputVariable" messageType="ns7:args_in_msg" xml:id="id_88"/>
+    <variable name="GenerarObservacionesPL_OutputVariable" messageType="ns7:args_out_msg" xml:id="id_89"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main" xml:id="id_8">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in ActualizaEstadoSolicitudBPEL.wsdl) -->
+    <receive name="receiveInput" partnerLink="actualizaestadosolicitudbpel_client" portType="client:ActualizaEstadoSolicitudBPEL" operation="process" variable="inputVariable" createInstance="yes" xml:id="id_9"/>
+    <assign name="InputDataEstadoSol" xml:id="id_13">
+      <copy xml:id="id_17">
+        <from xml:id="id_18">$inputVariable.payload/client:idSolicitud</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_19">$UpdEdoSolicitudInvoke_InputVariable.InputParameters/ns3:P_IDSOLICITUD</to>
+      </copy>
+      <copy xml:id="id_20">
+        <from xml:id="id_21">$inputVariable.payload/client:idTpSolicitud</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_22">$UpdEdoSolicitudInvoke_InputVariable.InputParameters/ns3:P_IDTPSOL</to>
+      </copy>
+      <copy xml:id="id_23">
+        <from xml:id="id_24">$inputVariable.payload/client:idEdoSolicitud</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_25">$UpdEdoSolicitudInvoke_InputVariable.InputParameters/ns3:P_IDEDOSOL</to>
+      </copy>
+    </assign>
+    <invoke name="UpdEdoSolicitudInvoke" xml:id="id_12" partnerLink="SPUpdEdoSolDB" portType="ns1:SPUpdEdoSolDB_ptt"
+            operation="SPUpdEdoSolDB" inputVariable="UpdEdoSolicitudInvoke_InputVariable"
+            outputVariable="UpdEdoSolicitudInvoke_OutputVariable" bpelx:invokeAsDetail="no"/>
+    <if name="If" xml:id="id_78">
+      <documentation xml:id="id_100">
+        <![CDATA[CONTINUAR SEGUIMIENTO]]>
+      </documentation>
+      <condition xml:id="id_84">$UpdEdoSolicitudInvoke_OutputVariable.OutputParameters/ns3:P_OUTCVE = 0</condition>
+      <sequence xml:id="id_85">
+        <scope name="Scope3" xml:id="id_80">
+          <sequence name="Sequence3" xml:id="id_82">
+            <assign name="InputSeguimiento" xml:id="id_62">
+              <copy xml:id="id_66">
+                <from xml:id="id_67">$inputVariable.payload/client:idSolicitud</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_68">$GenerarSeguimientoPL_InputVariable.InputParameters/ns6:P_IDSOL</to>
+              </copy>
+              <copy xml:id="id_69">
+                <from xml:id="id_70">$inputVariable.payload/client:seguimientoOEN/ns4:actividad</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_71">$GenerarSeguimientoPL_InputVariable.InputParameters/ns6:P_ACT</to>
+              </copy>
+              <copy xml:id="id_72">
+                <from xml:id="id_73">$inputVariable.payload/client:seguimientoOEN/ns4:usuario</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_74">$GenerarSeguimientoPL_InputVariable.InputParameters/ns6:P_USUARIO</to>
+              </copy>
+              <copy xml:id="id_111">
+                <from xml:id="id_112">$inputVariable.payload/client:idEdoSolicitud</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_113">$GenerarSeguimientoPL_InputVariable.InputParameters/ns6:P_IDEDOSOL</to>
+              </copy>
+            </assign>
+            <invoke name="GenerarSeguimientoPL" xml:id="id_63" partnerLink="SPGenerarSeguDB"
+                    portType="ns5:SPGenerarSeguDB_ptt" operation="SPGenerarSeguDB"
+                    inputVariable="GenerarSeguimientoPL_InputVariable"
+                    outputVariable="GenerarSeguimientoPL_OutputVariable" bpelx:invokeAsDetail="no"/>
+          </sequence>
+        </scope>
+        <if name="If" xml:id="id_50">
+          <documentation xml:id="id_56">
+            <![CDATA[RECHAZADA]]>
+          </documentation>
+          <condition xml:id="id_60">$inputVariable.payload/client:idRespuesta = 2 and $GenerarSeguimientoPL_OutputVariable.OutputParameters/ns6:P_OUTCVE = 0</condition>
+          <scope name="Scope1" xml:id="id_52">
+            <sequence name="Sequence1" xml:id="id_54">
+              <assign name="TransformObservaciones" xml:id="id_114">
+                <bpelx:annotation xml:id="id_115">
+                  <bpelx:pattern patternName="bpelx:transformation" xml:id="id_116"></bpelx:pattern>
+                </bpelx:annotation>
+                <copy xml:id="id_117">
+                  <from xml:id="id_118">ora:doXSLTransformForDoc("../Transformations/TransformObservaciones.xsl", $inputVariable.payload, "GenerarSeguimientoPL_OutputVariable.OutputParameters", $GenerarSeguimientoPL_OutputVariable.OutputParameters)</from>
+                  <to xml:id="id_119" variable="GenerarObservacionesPL_InputVariable" part="InputParameters"/>
+                </copy>
+              </assign>
+              <invoke name="GenerarObservacionesPL" xml:id="id_87"
+                      partnerLink="SPGenerarObservacionesDB" portType="ns7:SPGenerarObservacionesDB_ptt"
+                      operation="SPGenerarObservacionesDB" inputVariable="GenerarObservacionesPL_InputVariable"
+                      outputVariable="GenerarObservacionesPL_OutputVariable" bpelx:invokeAsDetail="no"/>
+            </sequence>
+          </scope>
+          <else xml:id="id_51">
+            <documentation xml:id="id_57">
+              <![CDATA[AUTORIZADA]]>
+            </documentation>
+            <scope name="Scope2" xml:id="id_53">
+              <sequence name="Sequence2" xml:id="id_55">
+                <empty name="EmptySuccess" xml:id="id_99"/>
+              </sequence>
+            </scope>
+          </else>
+        </if>
+        <assign name="OutputDataSol" xml:id="id_14">
+          <copy xml:id="id_26">
+            <from xml:id="id_27">$UpdEdoSolicitudInvoke_OutputVariable.OutputParameters/ns3:P_IDSOLICITUD</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_28">$outputVariable.payload/client:idSolicitud</to>
+          </copy>
+          <copy xml:id="id_29">
+            <from xml:id="id_30">$UpdEdoSolicitudInvoke_OutputVariable.OutputParameters/ns3:P_IDTPSOL</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_31">$outputVariable.payload/client:idTpSolicitud</to>
+          </copy>
+          <copy xml:id="id_32">
+            <from xml:id="id_33">$UpdEdoSolicitudInvoke_OutputVariable.OutputParameters/ns3:P_IDEDOSOL</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_34">$outputVariable.payload/client:idEdoSolicitud</to>
+          </copy>
+          <copy xml:id="id_35">
+            <from xml:id="id_36">$UpdEdoSolicitudInvoke_OutputVariable.OutputParameters/ns3:P_DESCEDO</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_37">$outputVariable.payload/client:descEstadoSol</to>
+          </copy>
+          <copy xml:id="id_38">
+            <from xml:id="id_39">$UpdEdoSolicitudInvoke_OutputVariable.OutputParameters/ns3:P_FHUPDATE</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_40">$outputVariable.payload/client:fhActualizacion</to>
+          </copy>
+          <copy xml:id="id_41">
+            <from xml:id="id_42">$UpdEdoSolicitudInvoke_OutputVariable.OutputParameters/ns3:P_OUTCVE</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_43">$outputVariable.payload/client:OperationResponse/ns2:codigoRespuesta</to>
+          </copy>
+          <copy xml:id="id_44">
+            <from xml:id="id_45">'EJECUCION EXITOSA'</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_46">$outputVariable.payload/client:OperationResponse/ns2:descripcionRespuesta</to>
+          </copy>
+          <copy xml:id="id_47">
+            <from xml:id="id_48">ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_49">$outputVariable.payload/client:OperationResponse/ns2:fecha</to>
+          </copy>
+        </assign>
+      </sequence>
+      <else xml:id="id_79">
+        <scope name="Scope4" xml:id="id_81">
+          <sequence name="Sequence4" xml:id="id_83">
+            <assign name="OutError" xml:id="id_101">
+              <copy xml:id="id_102">
+                <from xml:id="id_103">$UpdEdoSolicitudInvoke_OutputVariable.OutputParameters/ns3:P_OUTCVE</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_104">$outputVariable.payload/client:OperationResponse/ns2:codigoRespuesta</to>
+              </copy>
+              <copy xml:id="id_105">
+                <from xml:id="id_106">'ERROR AL ACTUALIZAR SOLICITUD'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_107">$outputVariable.payload/client:OperationResponse/ns2:descripcionRespuesta</to>
+              </copy>
+              <copy xml:id="id_108">
+                <from xml:id="id_109">ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_110">$outputVariable.payload/client:OperationResponse/ns2:fecha</to>
+              </copy>
+            </assign>
+          </sequence>
+        </scope>
+      </else>
+    </if>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="actualizaestadosolicitudbpel_client" portType="client:ActualizaEstadoSolicitudBPEL" operation="process" variable="outputVariable" xml:id="id_10"/>
+  </sequence>
+</process>

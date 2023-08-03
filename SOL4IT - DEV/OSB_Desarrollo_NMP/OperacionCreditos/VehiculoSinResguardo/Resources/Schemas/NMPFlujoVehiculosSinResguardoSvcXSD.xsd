@@ -1,0 +1,133 @@
+<xsd:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculoSinResguardo/Flujo" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:NMPIniciaASR="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculoSinResguardo/Flujo" xmlns:NMPComun="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Comun" xmlns:NMPCot="http://servicios.montedepiedad.com.mx/NMP/Schema/Cotizador" xmlns:NMPDoc="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:NMPVeh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPVehiculo">
+  <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Comun" schemaLocation="../../../../Common/XSD/NMPComun_TIPOS.xsd"/>
+  <xsd:import schemaLocation="../../../../Common/XSD/NMPVehiculoXSD.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPVehiculo"/>
+  <xsd:import schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+  <xsd:import schemaLocation="../../../Cotizador/Resources/Schemas/NMPCotizadorSvcXSD.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Cotizador"/>
+  <xsd:import schemaLocation="../../../../Utileria/AdminDocumentos/Resources/Schemas/NMPAdministraDocumentosXSD.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc"/>
+  <xsd:element name="iniciarFlujoVehiculoSinResguardoRequest" type="NMPIniciaASR:SolicitudTramiteType"/>
+  <xsd:element name="iniciarFlujoVehiculoSinResguardoResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Respuesta" type="NMPsm:MessageResponse" minOccurs="0"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="notificarInicioEventoRequest" type="NMPIniciaASR:notificarInicioEventoType"/>
+  <xsd:element name="notificarInicioEventoResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Respuesta" type="NMPsm:MessageResponse" minOccurs="0"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="notificarFinEventoRequest" type="NMPIniciaASR:notificarFinEventoType"/>
+  <xsd:element name="notificarFinEventoResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Respuesta" type="NMPsm:MessageResponse" minOccurs="0"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="folio" type="NMPIniciaASR:folioType"/>
+  <xsd:element name="estadoSolicitud" type="NMPIniciaASR:estadoSolicitudType"/>
+  <xsd:element name="estadoFlujoBpm" type="NMPIniciaASR:estadoFlujoBpmType"/>
+  <xsd:element name="numeroCliente" type="NMPComun:identificadorType"/>
+  <xsd:element name="numeroCredencial">
+    <xsd:simpleType>
+      <xsd:restriction base="xsd:string">
+        <xsd:maxLength value="16"/>
+      </xsd:restriction>
+    </xsd:simpleType>
+  </xsd:element>
+  <xsd:element name="idProducto" type="xsd:int"/>
+  <xsd:element name="nombreProducto" type="xsd:string"/>
+  <xsd:element name="idSubProducto" type="xsd:string"/>
+  <xsd:element name="cliente" type="NMPIniciaASR:ClienteType"/>
+<xsd:element name="cotizacion" type="NMPCot:cotizacionSolicitudType"/>
+    <xsd:complexType name="SolicitudTramiteType">
+      <xsd:sequence>
+        <xsd:element ref="NMPIniciaASR:folio" maxOccurs="1"/>
+        <xsd:element ref="NMPIniciaASR:estadoSolicitud" maxOccurs="1"/>
+        <xsd:element ref="NMPIniciaASR:estadoFlujoBpm" maxOccurs="1"/>
+      <xsd:element ref="NMPIniciaASR:idProducto" maxOccurs="1"/>
+      <xsd:element ref="NMPIniciaASR:nombreProducto" maxOccurs="1"/>
+      <xsd:element ref="NMPIniciaASR:idSubProducto" maxOccurs="1"/>
+      <xsd:element ref="NMPIniciaASR:cliente" maxOccurs="1"/>
+        <xsd:element name="vehiculo" type="NMPVeh:vehiculoType" maxOccurs="1"/>
+        <xsd:element ref="NMPIniciaASR:cotizacion" maxOccurs="1" minOccurs="0"/>
+        <xsd:element name="listaDocumentos" type="NMPDoc:documentoURLType" minOccurs="0"/>
+      </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="ClienteType">
+      <xsd:sequence>
+        <xsd:element ref="NMPIniciaASR:numeroCliente"/>
+    </xsd:sequence>
+    </xsd:complexType>
+  
+    <xsd:complexType name="notificarInicioEventoType">
+      <xsd:sequence>
+        <xsd:element ref="NMPIniciaASR:folio"/>
+        <xsd:element ref="NMPIniciaASR:numeroCredencial"/>
+        <xsd:element ref="NMPIniciaASR:estadoFlujoBpm"/>
+      </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="notificarFinEventoType">
+      <xsd:sequence>
+        <xsd:element ref="NMPIniciaASR:folio"/>
+        <xsd:element ref="NMPIniciaASR:numeroCredencial"/>
+        <xsd:element ref="NMPIniciaASR:estadoFlujoBpm"/>
+        <xsd:element name="motivoFin" type="xsd:string" minOccurs="0"/>
+        <xsd:element name="parametros" type="xsd:anyType" minOccurs="0"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  <xsd:simpleType name="clabeType">
+    <xsd:restriction base="xsd:int">
+      <xsd:totalDigits value="18"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="nombreType">
+      <xsd:restriction base="xsd:string">
+        <xsd:maxLength value="30"/>
+      </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="apellidoPaternoType">
+      <xsd:restriction base="xsd:string">
+        <xsd:maxLength value="30"/>
+      </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="apellidoMaternoType">
+      <xsd:restriction base="xsd:string">
+        <xsd:maxLength value="30"/>
+      </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="folioType">
+      <xsd:restriction base="xsd:string">
+        <xsd:maxLength value="20"/>
+        <xsd:pattern value="[A-Z]{2}[0-9A-F]{4}-[0-9]{13}"/>
+      </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="estadoSolicitudType">
+      <xsd:restriction base="xsd:int">
+        <xsd:enumeration value="0" id="RECHAZADO"/>
+        <xsd:enumeration value="1" id="EN_TRAMITE"/>
+        <xsd:enumeration value="2" id="ACEPTADO"/>
+      </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="estadoFlujoBpmType">
+      <xsd:restriction base="xsd:int">
+        <xsd:enumeration value="0" id="CANCELAR_SOLICITUD"/>
+        <xsd:enumeration value="1" id="GENERAR_FOLIO"/>
+        <xsd:enumeration value="2" id="CONSULTAR_BURO"/>
+        <xsd:enumeration value="3" id="REALIZAR_INSPECCION_FISICA"/>
+        <xsd:enumeration value="4" id="ANALIZAR_CREDITO"/>
+        <xsd:enumeration value="5" id="VERIFICAR_CREDITO"/>
+        <xsd:enumeration value="6" id="OFRECER_OFERTA"/>
+        <xsd:enumeration value="7" id="GENERAR_CONTRATO"/>
+        <xsd:enumeration value="8" id="DOCUMENTACION_GENERADA"/>
+        <xsd:enumeration value="9" id="ERROR_GENERAR_DOCUMENTOS"/>
+        <xsd:enumeration value="10" id="CIERRE_FOLIO"/>
+        
+      </xsd:restriction>
+    </xsd:simpleType>
+  
+</xsd:schema>

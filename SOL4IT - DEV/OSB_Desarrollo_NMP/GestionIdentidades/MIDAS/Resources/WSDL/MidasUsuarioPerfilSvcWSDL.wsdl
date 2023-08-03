@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="urn:mx.com.nmp.midas" xmlns:ns2="http://exception.midas.nmp.com.mx" xmlns:ns1="http://nmpremotelogin.schema.nmp.servicios.montedepiedad.com.mx" xmlns:soapenc12="http://www.w3.org/2003/05/soap-encoding" xmlns:tns="urn:mx.com.nmp.midas" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap11="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc11="http://schemas.xmlsoap.org/soap/encoding/" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">
+  <wsdl:types>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="qualified"
+                elementFormDefault="qualified"
+                targetNamespace="http://nmpremotelogin.schema.nmp.servicios.montedepiedad.com.mx">
+      <xsd:complexType name="RemoteLoginRequest">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="userName" nillable="true" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="RemoteLoginResponse">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="expendios" nillable="true" type="ns1:ArrayOfExpendioType"/>
+          <xsd:element minOccurs="0" name="perfiles" nillable="true" type="ns1:ArrayOfPerfilType"/>
+          <xsd:element minOccurs="0" name="sucursal" nillable="true" type="ns1:SucursalType"/>
+          <xsd:element minOccurs="0" name="usuario" nillable="true" type="ns1:UsuarioType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="SucursalType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="description" nillable="true" type="xsd:string"/>
+          <xsd:element minOccurs="0" name="id" nillable="true" type="xsd:long"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="UsuarioType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="id" nillable="true" type="xsd:string"/>
+          <xsd:element minOccurs="0" name="name" nillable="true" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ArrayOfPerfilType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="PerfilType" nillable="true" type="ns1:PerfilType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="PerfilType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="description" nillable="true" type="xsd:string"/>
+          <xsd:element minOccurs="0" name="id" nillable="true" type="xsd:long"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ArrayOfExpendioType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="ExpendioType" nillable="true" type="ns1:ExpendioType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ExpendioType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="description" nillable="true" type="xsd:string"/>
+          <xsd:element minOccurs="0" name="id" nillable="true" type="xsd:long"/>
+          <xsd:element minOccurs="0" name="numero" nillable="true" type="xsd:int"/>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="qualified"
+    xmlns:ns1="http://nmpremotelogin.schema.nmp.servicios.montedepiedad.com.mx" 
+                elementFormDefault="qualified" targetNamespace="urn:mx.com.nmp.midas" xmlns:ns2="http://exception.midas.nmp.com.mx">
+                <xsd:import namespace="http://exception.midas.nmp.com.mx"/>
+                <xsd:import namespace="http://nmpremotelogin.schema.nmp.servicios.montedepiedad.com.mx" />
+      <xsd:element name="login">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="1" name="request" nillable="true" type="ns1:RemoteLoginRequest"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="loginResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="1" name="return" nillable="true" type="ns1:RemoteLoginResponse"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="ServiceException" type="ns2:ServiceException"/>
+    </xsd:schema>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="qualified"
+                elementFormDefault="qualified" targetNamespace="http://exception.midas.nmp.com.mx">
+      <xsd:complexType abstract="true" name="ServiceException">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="codigoError" nillable="true" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="ServiceException">
+    <wsdl:part name="ServiceException" element="tns:ServiceException">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="loginRequest">
+    <wsdl:part name="parameters" element="tns:login">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="loginResponse">
+    <wsdl:part name="parameters" element="tns:loginResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="RemoteLoginServicePortType">
+    <wsdl:operation name="login">
+      <wsdl:input name="loginRequest" message="tns:loginRequest">
+    </wsdl:input>
+      <wsdl:output name="loginResponse" message="tns:loginResponse">
+    </wsdl:output>
+      <wsdl:fault name="ServiceException" message="tns:ServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="RemoteLoginServiceHttpBinding" type="tns:RemoteLoginServicePortType">
+    <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="login">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="loginRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="loginResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ServiceException">
+        <wsdlsoap:fault name="ServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="RemoteLoginService">
+    <wsdl:port name="RemoteLoginServiceHttpPort" binding="tns:RemoteLoginServiceHttpBinding">
+      <wsdlsoap:address location="http://10.30.3.55:9092/midas-web/services/RemoteLoginService"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

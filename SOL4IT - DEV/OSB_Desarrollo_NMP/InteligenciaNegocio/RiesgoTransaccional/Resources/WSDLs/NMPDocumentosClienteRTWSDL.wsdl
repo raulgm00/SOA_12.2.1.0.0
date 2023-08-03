@@ -1,0 +1,91 @@
+<wsdl:definitions name="NmpDocumentosClientesDb" targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/RT_DB/RT_DB/NmpDocumentosClientesDb" xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/RT_DB/RT_DB/NmpDocumentosClientesDb" xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/" xmlns:NMPSM="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:NMPSH="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:top="http://xmlns.oracle.com/pcbpel/adapter/db/top/NmpDocumentosClientesDb" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <plt:partnerLinkType name="NmpDocumentosClientesDb_plt">
+    <plt:role name="NmpDocumentosClientesDb_role">
+      <plt:portType name="tns:NmpDocumentosClientesDb_ptt"/>
+    </plt:role>
+  </plt:partnerLinkType>
+  <wsdl:types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/NmpDocumentosClientesDb" schemaLocation="../Schemas/NMPDocumentosClienteRTXSD.xsd"/>
+      <import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+      <import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+    </schema>
+  </wsdl:types>
+  <wsdl:message name="NmpDocumentosClientesDbSelect_inputParameters">
+    <wsdl:part name="NmpDocumentosClientesDbSelect_inputParameters" element="top:NmpDocumentosClientesDbSelect_idClienteInputParameters"/>
+  </wsdl:message>
+  <wsdl:message name="NmpDocumentosClientesCollection_msg">
+    <wsdl:part name="NmpDocumentosClientesCollection" element="top:NmpDocumentosClientesCollection"/>
+  </wsdl:message>
+  <wsdl:message name="standardMessageFault">
+    <wsdl:part name="fault" element="NMPSM:messageError"/>
+  </wsdl:message>
+  <wsdl:message name="standardMessageHeader">
+    <wsdl:part name="headerReq" element="NMPSH:headerMessage"/>
+  </wsdl:message>
+  <wsdl:message name="standardMessageHeaderResponse">
+    <wsdl:part name="headerRes" element="NMPSH:headerMessageResponse"/>
+  </wsdl:message>
+  <wsdl:portType name="NmpDocumentosClientesDb_ptt">
+    <wsdl:operation name="ActualizaDocCliente">
+      <wsdl:input message="tns:NmpDocumentosClientesCollection_msg"/>
+      <wsdl:output message="tns:NmpDocumentosClientesCollection_msg"/>
+      <wsdl:fault name="fault" message="tns:standardMessageFault"/>
+    </wsdl:operation>
+    <wsdl:operation name="InsertaDocCliente">
+      <wsdl:input message="tns:NmpDocumentosClientesCollection_msg"/>
+      <wsdl:output message="tns:NmpDocumentosClientesCollection_msg"/>
+      <wsdl:fault name="fault" message="tns:standardMessageFault"/>
+    </wsdl:operation>
+    <wsdl:operation name="ConsutaDocCliente">
+      <wsdl:input message="tns:NmpDocumentosClientesDbSelect_inputParameters"/>
+      <wsdl:output message="tns:NmpDocumentosClientesCollection_msg"/>
+      <wsdl:fault name="fault" message="tns:standardMessageFault"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="NmpDocumentosClientesDb_ptt-binding" type="nmp:NmpDocumentosClientesDb_ptt" xmlns:nmp="http://xmlns.oracle.com/pcbpel/adapter/db/RT_DB/RT_DB/NmpDocumentosClientesDb">
+    <soap:binding style="document" transport="http://www.bea.com/wli/sb/transports/jca"/>
+    <wsdl:operation name="ActualizaDocCliente">
+      <soap:operation soapAction="ActualizaDocCliente"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+        <soap:header message="nmp:standardMessageHeader" part="headerReq" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+        <soap:header message="nmp:standardMessageHeaderResponse" part="headerRes" use="literal"/>
+      </wsdl:output>
+       <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="InsertaDocCliente">
+      <soap:operation soapAction="InsertaDocCliente"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+        <soap:header message="nmp:standardMessageHeader" part="headerReq" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+        <soap:header message="nmp:standardMessageHeaderResponse" part="headerRes" use="literal"/>
+      </wsdl:output>
+       <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="ConsutaDocCliente">
+      <soap:operation soapAction="ConsutaDocCliente"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+        <soap:header message="nmp:standardMessageHeader" part="headerReq" use="literal"/>
+      </wsdl:input>      
+      <wsdl:output>
+        <soap:body use="literal"/>
+        <soap:header message="nmp:standardMessageHeaderResponse" part="headerRes" use="literal"/>
+      </wsdl:output>
+       <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+</wsdl:definitions>

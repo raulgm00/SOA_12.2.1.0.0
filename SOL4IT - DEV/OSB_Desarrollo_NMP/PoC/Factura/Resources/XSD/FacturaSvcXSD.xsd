@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:NMPFacturaE="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPFactura"
+            targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPFactura"
+            elementFormDefault="qualified">
+  <xsd:element name="obtenerDatosFiscalesRequest"
+               type="NMPFacturaE:obtenerDatosFiscalesRequestType"/>
+  <xsd:element name="obtenerDatosFiscalesResponse"
+               type="NMPFacturaE:obtenerDatosFiscalesResponseType"/>
+  <xsd:element name="registrarFacturaRealizadaRequest"
+               type="NMPFacturaE:registrarFacturaRealizadaRequestType"/>
+  <xsd:element name="registrarFacturaRealizadaResponse"
+               type="NMPFacturaE:registrarFacturaRealizadaResponseType"/>
+  <xsd:element name="generarFacturaGlobalRequest"
+               type="NMPFacturaE:generarFacturaGlobalRequestType"/>
+  <xsd:element name="generarFacturaGlobalResponse"
+               type="NMPFacturaE:generarFacturaGlobalResponseType"/>
+  <xsd:element name="validarUsuarioRequest"
+               type="NMPFacturaE:validarUsuarioRequestType"/>
+  <xsd:element name="validarUsuarioResponse"
+               type="NMPFacturaE:validarUsuarioResponseType"/>
+  <xsd:element name="registrarFacturaProveedorRequest"
+               type="NMPFacturaE:registrarFacturaProveedorRequestType"/>
+  <xsd:element name="registrarFacturaProveedorResponse"
+               type="NMPFacturaE:registrarFacturaProveedorResponseType"/>
+  <xsd:element name="obtenerEstatusFacturaRequest"
+               type="NMPFacturaE:obtenerEstatusFacturaRequestType"/>
+  <xsd:element name="obtenerEstatusFacturaResponse"
+               type="NMPFacturaE:obtenerEstatusFacturaResponseType"/>
+  <xsd:complexType name="ComprobanteType">
+    <xsd:sequence>
+      <xsd:element name="formaDePago" type="xsd:string"/>
+      <xsd:element name="condicionesDePago" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="subtotal" type="xsd:decimal"/>
+      <xsd:element name="descuento" minOccurs="0" type="xsd:decimal"/>
+      <xsd:element name="motivoDescuento" minOccurs="0" type="xsd:string"/>
+      <xsd:element name="tipoCambio" minOccurs="0" type="xsd:string"/>
+      <xsd:element name="moneda" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="total" type="xsd:decimal"/>
+      <xsd:element name="metodoDePago" type="xsd:string"/>
+      <xsd:element name="tipoDeComprobante" type="xsd:string"/>
+      <xsd:element name="lugarExpedicion" type="xsd:string"/>
+      <xsd:element name="numCtaPago" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="folioFiscalOrig" minOccurs="0" type="xsd:string"/>
+      <xsd:element name="serieFolioFiscalOrig" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="fechaFolioFiscalOrig" type="xsd:dateTime"
+                   minOccurs="0"/>
+      <xsd:element name="montoFolioFiscalOrig" type="xsd:decimal"
+                   minOccurs="0"/>
+      <xsd:element name="ListaConteptos">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="Concepto" maxOccurs="unbounded">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="cantidad" type="xsd:decimal"/>
+                  <xsd:element name="unidad" type="xsd:string"/>
+                  <xsd:element name="noIdentificacion" type="xsd:string"
+                               minOccurs="0"/>
+                  <xsd:element name="descripcion" type="xsd:string"/>
+                  <xsd:element name="valorUnitario" type="xsd:decimal"/>
+                  <xsd:element name="importe" type="xsd:decimal"/>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="Impuestos">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="totalImpuestosRetenidos" type="xsd:decimal"
+                         minOccurs="0"/>
+            <xsd:element name="totalImpuestosTraslados" minOccurs="0"
+                         type="xsd:decimal"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="Retencion">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="impuesto" type="xsd:string"/>
+            <xsd:element name="importe" type="xsd:decimal"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="Traslados">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="impuesto" type="xsd:string"/>
+            <xsd:element name="tasa" type="xsd:decimal"/>
+            <xsd:element name="importe" type="xsd:decimal"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="Donataria" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="version" type="xsd:string"/>
+            <xsd:element name="noAutorizacion" type="xsd:string"/>
+            <xsd:element name="fechaAutorizacion" type="xsd:dateTime"/>
+            <xsd:element name="leyenda" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="Emisor" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="RFCProveedor" type="xsd:string"/>
+            <xsd:element name="nombre" type="xsd:string"/>
+            <xsd:element name="direccion" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="Receptor" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="RFC" type="xsd:string"/>
+            <xsd:element name="nombre" type="xsd:string"/>
+            <xsd:element name="apellidoPaterno" type="xsd:string"/>
+            <xsd:element name="apellidoMaterno" type="xsd:string"/>
+            <xsd:element name="ListaDirecciones" minOccurs="1">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="Direccion" minOccurs="1"
+                               maxOccurs="unbounded">
+                    <xsd:complexType>
+                      <xsd:sequence>
+                        <xsd:element name="nombreDelaCalle" type="xsd:string"/>
+                        <xsd:element name="numeroExterior" type="xsd:string"/>
+                        <xsd:element name="numeroInterior" type="xsd:string"/>
+                        <xsd:element name="estado" type="xsd:string"/>
+                        <xsd:element name="idEstado" type="xsd:int"/>
+                        <xsd:element name="delegacionMunicipio"
+                                     type="xsd:string"/>
+                        <xsd:element name="colonia" type="xsd:string"/>
+                        <xsd:element name="codigoPostal" type="xsd:string"/>
+                        <xsd:element name="tipoDomicilio" type="xsd:string"/>
+                        <xsd:element name="ciudadPoblacion" type="xsd:string"/>
+                        <xsd:element name="pais" type="xsd:string"/>
+                      </xsd:sequence>
+                    </xsd:complexType>
+                  </xsd:element>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="EstatusFacturaType">
+    <xsd:sequence>
+      <xsd:element name="UUID" type="xsd:string"/>
+      <xsd:element name="estatusFactura" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="obtenerDatosFiscalesRequestType">
+    <xsd:sequence>
+      <xsd:element name="noContrato" type="xsd:string"/>
+      <xsd:element name="fechaDeNacimiento" type="xsd:dateTime"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="obtenerDatosFiscalesResponseType">
+    <xsd:sequence>
+      <xsd:element name="noBusqueda" type="xsd:string"/>
+      <xsd:element name="Comprobante" type="NMPFacturaE:ComprobanteType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="registrarFacturaRealizadaRequestType">
+    <xsd:sequence>
+      <xsd:element name="UUID" type="xsd:string"/>
+      <xsd:element name="noBusqueda" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="registrarFacturaRealizadaResponseType">
+    <xsd:sequence>
+      <xsd:element name="respuesta" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="generarFacturaGlobalRequestType">
+    <xsd:sequence>
+      <xsd:element name="noBusqueda" type="xsd:string"/>
+      <xsd:element name="Comprobante" type="NMPFacturaE:ComprobanteType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="generarFacturaGlobalResponseType">
+    <xsd:sequence>
+      <xsd:element name="respuesta" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="validarUsuarioRequestType">
+    <xsd:sequence>
+      <xsd:element name="idProveedor" type="xsd:long"/>
+      <xsd:element name="RFCProveedor" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="validarUsuarioResponseType">
+    <xsd:sequence>
+      <xsd:element name="respuesta" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="registrarFacturaProveedorRequestType">
+    <xsd:sequence>
+      <xsd:element name="UUID" type="xsd:long"/>
+      <xsd:element name="fechaRecepcion" type="xsd:dateTime" minOccurs="0"/>
+      <xsd:element name="fechaFactura" type="xsd:dateTime" minOccurs="0"/>
+      <xsd:element name="montoTotalFactura" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="totalImpuestosRetenidos" type="xsd:decimal"
+                   minOccurs="0"></xsd:element>
+      <xsd:element name="tasaImpuestosRetenidos" type="xsd:decimal"
+                   minOccurs="0"></xsd:element>
+      <xsd:element name="totalImpuestoTraslados" type="xsd:string"
+                   minOccurs="0"></xsd:element>
+      <xsd:element name="tasaImpuestoTraslados" type="xsd:string"
+                   minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="registrarFacturaProveedorResponseType">
+    <xsd:sequence>
+      <xsd:element name="respuesta" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="obtenerEstatusFacturaRequestType">
+    <xsd:sequence>
+      <xsd:element name="ListaFacturas" type="NMPFacturaE:EstatusFacturaType"
+                   maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="obtenerEstatusFacturaResponseType">
+    <xsd:sequence>
+      <xsd:element name="ListaFacturas" type="NMPFacturaE:EstatusFacturaType"
+                   minOccurs="1" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>

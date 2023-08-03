@@ -1,0 +1,101 @@
+<xsd:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Oferta/Prendario" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:NMPOfertaP="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Oferta/Prendario" xmlns:NMPComun="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Comun">
+  <!-- Import schemas -->
+  <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Comun" schemaLocation="NMPComun_TIPOS.xsd"/>
+  <!-- Simple Type -->
+  <xsd:simpleType name="tipoOfertaType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="BASE"/>
+      <xsd:enumeration value="CAMPANIA"/>
+      <xsd:enumeration value="PERSONALIZADA"/>
+      <xsd:maxLength value="15"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="tipoProductoType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="PAGOS LIBRES"/>
+      <xsd:enumeration value="CLASICO"/>
+      <xsd:maxLength value="15"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="tipoPeriodoType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="MENSUAL"/>
+      <xsd:maxLength value="15"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <!-- Complex Type -->
+  <xsd:complexType name="OfertaType">
+    <xsd:sequence>
+      <xsd:element name="idOferta" minOccurs="0" type="xsd:string"/>
+      <xsd:element name="tipoOferta" type="NMPOfertaP:tipoOfertaType" maxOccurs="1" minOccurs="0"/>
+       <xsd:element name="tipoOfertaPersonalizada" type="xsd:string" maxOccurs="1" minOccurs="0"/>
+      <xsd:element name="idContratoAsociado" type="xsd:string" maxOccurs="1" minOccurs="0"/>
+      <xsd:element name="tipoProducto" type="NMPOfertaP:tipoProductoType" maxOccurs="1" minOccurs="0"/>
+      <xsd:element name="descripcionOferta" type="xsd:string" maxOccurs="1" minOccurs="0"/>
+      <xsd:element name="estadoOferta" type="NMPComun:ofertaEstadoType" maxOccurs="1" minOccurs="0"/>
+      <xsd:element name="montoPrestamo" type="NMPOfertaP:RangoPrestamo" maxOccurs="1" minOccurs="0"/>
+      <xsd:element name="tasaInteres" maxOccurs="1" minOccurs="0">
+        <xsd:complexType>
+          <xsd:simpleContent>
+            <xsd:extension base="NMPComun:decimalType">
+              <xsd:attribute name="highlight" type="xsd:boolean"/>
+            </xsd:extension>
+          </xsd:simpleContent>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="plazoDesempenio" maxOccurs="1" minOccurs="0">
+        <xsd:complexType>
+          <xsd:simpleContent>
+            <xsd:extension base="xsd:int">
+              <xsd:attribute name="highlight" type="xsd:boolean"/>
+            </xsd:extension>
+          </xsd:simpleContent>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="plazoRefrendo" type="xsd:int" maxOccurs="1" minOccurs="0"/>
+      <xsd:element name="numeroRefrendos" maxOccurs="1" minOccurs="0">
+        <xsd:complexType>
+          <xsd:simpleContent>
+            <xsd:extension base="xsd:int">
+              <xsd:attribute name="highlight" type="xsd:boolean"/>
+            </xsd:extension>
+          </xsd:simpleContent>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="tipoPeriodo" type="NMPOfertaP:tipoPeriodoType" maxOccurs="1" minOccurs="0"/>
+      <xsd:element name="catAnual" type="NMPComun:decimalType" maxOccurs="1" minOccurs="0"/>
+      <xsd:element name="catMensual" type="NMPComun:decimalType" maxOccurs="1" minOccurs="0"/>
+      <xsd:element name="catDiario" type="NMPComun:decimalType" maxOccurs="1" minOccurs="0"/>
+      <xsd:element name="diasMinimosEmpenio" type="xsd:int" maxOccurs="1" minOccurs="0"/>
+      <xsd:element name="diasMinimosAbono" type="xsd:int" maxOccurs="1" minOccurs="0"/>
+      <xsd:element name="idCampaniaAsociada" type="xsd:int" maxOccurs="1" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="OfertaListType">
+    <xsd:sequence>
+      <xsd:element name="Oferta" minOccurs="0" maxOccurs="unbounded" type="NMPOfertaP:OfertaType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="RangoPrestamo">
+    <xsd:sequence>
+      <xsd:element name="montoMinimo" minOccurs="0">
+        <xsd:complexType>
+          <xsd:simpleContent>
+            <xsd:extension base="NMPComun:decimalType">
+              <xsd:attribute name="highlight" type="xsd:boolean"/>
+            </xsd:extension>
+          </xsd:simpleContent>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="montoMaximo" minOccurs="0">
+        <xsd:complexType>
+          <xsd:simpleContent>
+            <xsd:extension base="NMPComun:decimalType">
+              <xsd:attribute name="highlight" type="xsd:boolean"/>
+            </xsd:extension>
+          </xsd:simpleContent>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>

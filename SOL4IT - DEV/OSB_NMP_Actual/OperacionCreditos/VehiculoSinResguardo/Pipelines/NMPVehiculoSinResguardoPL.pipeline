@@ -1,0 +1,1033 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="true" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="OperacionCreditos/VehiculoSinResguardo/Resources/WSDLs/NMPVehiculoSinResguardoWSDL"/>
+            <con:binding>
+                <con:name>VehiculoSinResguardoSOAP12Binding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Services/VehiculoSinResguardo</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:tracingEnabled>true</oper:tracingEnabled>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router errorHandler="error-af10c6f.32b6c7ab.0.15a619ec1ca.N7c76">
+        <con:pipeline type="request" name="request-N53effc40.4aaebb08.0.15a8c3f4a3f.N7da0">
+            <con:stage id="_StageId-a1f1746.N4e07acd2.0.15aa9311c0b.N7f6a" name="StageValidarBody">
+                <con:context>
+                    <con1:userNsDecl prefix="vsr" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo"/>
+                </con:context>
+                <con:actions>
+                    <con2:validate>
+                        <con1:id>_ActionId-a1f1746.N4e07acd2.0.15aa9311c0b.N7f69</con1:id>
+                        <con2:schema ref="OperacionCreditos/VehiculoSinResguardo/Resources/Schemas/NMPVehiculosSinResguardoXSD"/>
+                        <con2:schemaElement xmlns:veh="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo">veh:generarSolicitudRequest</con2:schemaElement>
+                        <con2:varName>body</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./vsr:generarSolicitudRequest</con1:xpathText>
+                        </con2:location>
+                    </con2:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-a1f1746.N4e07acd2.0.15aa9311c0b.N7e95" name="StageValidaVehiculo">
+                <con:context>
+                    <con1:userNsDecl prefix="veh" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="validarVehiculoRequest">
+                        <con1:id>_ActionId-a1f1746.N4e07acd2.0.15aa9311c0b.N7e94</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionCreditos/VehiculoSinResguardo/Resources/Transformations/TrGenerarSolicitudReqToValidarVehiculoReq"/>
+                                <con1:input>$body/veh:generarSolicitudRequest</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-a1f1746.N4e07acd2.0.15aa9311c0b.N7e93</con1:id>
+                        <con2:service ref="OperacionCreditos/SolicitudesVSR/ProxyServices/NMPSolicitudesVSRPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>validarVehiculo</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">validarVehiculoRequest</con2:body>
+                            <con2:header>header</con2:header>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">validarVehiculoResponse</con2:body>
+                        </con2:response>
+                        <con2:requestTransform/>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-a1f1746.N4e07acd2.0.15aa9311c0b.N7e2d</con1:id>
+                        <con2:case id="_BranchId-a1f1746.N4e07acd2.0.15aa9311c0b.N7e2c">
+                            <con2:condition>
+                                <con1:xqueryText>$validarVehiculoResponse//*:resultado = 0</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions/>
+                        </con2:case>
+                        <con2:default>
+                            <con2:Error>
+                                <con1:id>_ActionId-a1f1746.N4e07acd2.0.15aa9311c0b.N7d58</con1:id>
+                                <con2:errCode>NMP-012</con2:errCode>
+                                <con2:message>El VIN ya existe en el sistema</con2:message>
+                            </con2:Error>
+                        </con2:default>
+                    </con2:ifThenElse>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-a1f1746.N4e07acd2.0.15aa9311c0b.N7d26" name="StageGeneraFolio">
+                <con:context/>
+                <con:actions>
+                    <con2:javaCallout varName="newFolio">
+                        <con1:id>_ActionId-a1f1746.N4e07acd2.0.15aa9311c0b.N7c5e</con1:id>
+                        <con2:archive ref="OperacionCreditos/VehiculoSinResguardo/Resources/JARs/GeneradorFolio-1.1"/>
+                        <con2:className>mx.nmp.cotizacion.asr.generadorfolio.GeneradorFolio</con2:className>
+                        <con2:method>public static java.lang.String getNextFolio()</con2:method>
+                        <con2:return-param-as-ref>false</con2:return-param-as-ref>
+                    </con2:javaCallout>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-a1f1746.N4e07acd2.0.15aa9311c0b.N7b96" name="StageFlujoAutoSinResguardo">
+                <con:context>
+                    <con1:userNsDecl prefix="veh" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="iniciarFlujoRequest">
+                        <con1:id>_ActionId-a1f1746.N4e07acd2.0.15aa9311c0b.N7b2f</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionCreditos/VehiculoSinResguardo/Resources/Transformations/TrGenerarSolicitudReqToIniciarFlujoReq"/>
+                                <con1:input>$body/veh:generarSolicitudRequest</con1:input>
+                                <con1:param name="newFolio">
+                                    <con1:path>$newFolio</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-a1f1746.N4e07acd2.0.15aa9311c0b.N7b62</con1:id>
+                        <con2:service ref="OperacionCreditos/VehiculoSinResguardo/ProxyServices/NMPFlujoVehiculoSinResguardoPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>iniciarFlujo</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">iniciarFlujoRequest</con2:body>
+                            <con2:header>header</con2:header>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">iniciarFlujoResponse</con2:body>
+                        </con2:response>
+                        <con2:requestTransform/>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N53effc40.4aaebb08.0.15a8c3f4a3f.N7c5e">
+            <con:stage id="_StageId-N53effd5c.7bed514a.0.15ac405ff81.N7f6a" name="StageValidarBody">
+                <con:context>
+                    <con1:userNsDecl prefix="vsr" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo"/>
+                </con:context>
+                <con:actions>
+                    <con2:validate>
+                        <con1:id>_ActionId-N53effd5c.7bed514a.0.15ac405ff81.N7f69</con1:id>
+                        <con2:schema ref="OperacionCreditos/VehiculoSinResguardo/Resources/Schemas/NMPVehiculosSinResguardoXSD"/>
+                        <con2:schemaElement xmlns:veh="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo">veh:analisisCreditoRequest</con2:schemaElement>
+                        <con2:varName>body</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./vsr:analisisCreditoRequest</con1:xpathText>
+                        </con2:location>
+                    </con2:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N53effd5c.7bed514a.0.15ac405ff81.N7ef4" name="StageValidaEstadoFlujoSolicitud">
+                <con:context>
+                    <con1:userNsDecl prefix="veh" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="validaEstadoFlujoSolicitudRequest">
+                        <con1:id>_ActionId-N53effd5c.7bed514a.0.15ac405ff81.N7ef3</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionCreditos/VehiculoSinResguardo/Resources/Transformations/TrAnalisisCreditoReqToValidaEstadoFlujoSolicitudReq"/>
+                                <con1:input>$body/veh:analisisCreditoRequest</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-N53effd5c.7bed514a.0.15ac405ff81.N7ef2</con1:id>
+                        <con2:service ref="OperacionCreditos/SolicitudesVSR/ProxyServices/NMPSolicitudesVSRPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>validaEstadoFlujoSolicitud</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">validaEstadoFlujoSolicitudRequest</con2:body>
+                            <con2:header>header</con2:header>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">validaEstadoFlujoSolicitudResponse</con2:body>
+                            <con2:header/>
+                        </con2:response>
+                        <con2:requestTransform/>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-N53effd5c.7bed514a.0.15ac405ff81.N7ef1</con1:id>
+                        <con2:case id="_BranchId-N53effd5c.7bed514a.0.15ac405ff81.N7ef0">
+                            <con2:condition>
+                                <con1:xqueryText>$validaEstadoFlujoSolicitudResponse//*:resultado = 1</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions/>
+                        </con2:case>
+                        <con2:default>
+                            <con2:Error>
+                                <con1:id>_ActionId-N53effd5c.7bed514a.0.15ac405ff81.N7eef</con1:id>
+                                <con2:errCode>NMP-013</con2:errCode>
+                                <con2:message>Opcion no valida</con2:message>
+                            </con2:Error>
+                        </con2:default>
+                    </con2:ifThenElse>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N53effd5c.7bed514a.0.15ac405ff81.N7e5d" name="StageNotificarFin" errorHandler="error-N53effec6.N4987b9cd.0.15acf9cb227.N7e63">
+                <con:context>
+                    <con1:userNsDecl prefix="veh" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo"/>
+                    <con1:varNsDecl prefix="cot" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Cotizador"/>
+                    <con1:varNsDecl prefix="fluj" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculoSinResguardo/Flujo"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="notificarFinRequest">
+                        <con1:id>_ActionId-N53effd5c.7bed514a.0.15ac405ff81.N7e5c</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionCreditos/VehiculoSinResguardo/Resources/Transformations/TrAnalisisCreditoReqToNotifinFinReq"/>
+                                <con1:input>$body/veh:analisisCreditoRequest</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-N53effd5c.7bed514a.0.15ac405ff81.N7e5b</con1:id>
+                        <con2:service ref="OperacionCreditos/VehiculoSinResguardo/ProxyServices/NMPFlujoVehiculoSinResguardoPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>notificarFin</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">notificarFinRequest</con2:body>
+                            <con2:header>header</con2:header>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">notificarFinResponse</con2:body>
+                            <con2:header>header</con2:header>
+                        </con2:response>
+                        <con2:requestTransform/>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-N53effd5c.7bed514a.0.15ac405ff81.N7e5a</con1:id>
+                        <con2:case id="_BranchId-N53effd5c.7bed514a.0.15ac405ff81.N7e59">
+                            <con2:condition>
+                                <con1:xqueryText>$header//*:codigoRespuesta = 1</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:ifThenElse>
+                                    <con1:id>_ActionId-N53effd5c.7bed514a.0.15ac405ff81.N7e58</con1:id>
+                                    <con2:case id="_BranchId-N53effd5c.7bed514a.0.15ac405ff81.N7e57">
+                                        <con2:condition>
+                                            <con1:xqueryText>fn:contains($notificarFinResponse//*:codigo, 'OSB')</con1:xqueryText>
+                                        </con2:condition>
+                                        <con2:actions>
+                                            <con2:Error>
+                                                <con1:id>_ActionId-N53effd5c.7bed514a.0.15ac405ff81.N7e55</con1:id>
+                                                <con2:errCode>0</con2:errCode>
+                                                <con2:message>0</con2:message>
+                                            </con2:Error>
+                                        </con2:actions>
+                                    </con2:case>
+                                </con2:ifThenElse>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default/>
+                    </con2:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af10036.N6a868bc6.0.15a4e39eab7.N7f9d">
+            <con:stage id="_StageId-N53efffaf.N18ba0f57.0.15a911878b2.N7f32" name="StageValidarBody">
+                <con:context>
+                    <con1:userNsDecl prefix="vsr" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo"/>
+                </con:context>
+                <con:actions>
+                    <con2:validate>
+                        <con1:id>_ActionId-af10c6f.32b6c7ab.0.15a619ec1ca.N7fce</con1:id>
+                        <con2:schema ref="OperacionCreditos/VehiculoSinResguardo/Resources/Schemas/NMPVehiculosSinResguardoXSD"/>
+                        <con2:schemaElement xmlns:veh="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo">veh:obtenerMontoPrestamoRequest</con2:schemaElement>
+                        <con2:varName>body</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./vsr:obtenerMontoPrestamoRequest</con1:xpathText>
+                        </con2:location>
+                    </con2:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-af10c6f.32b6c7ab.0.15a619ec1ca.N7f6b" name="StageAvaluoVehiculo">
+                <con:context>
+                    <con1:userNsDecl prefix="veh" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo"/>
+                    <con1:userNsDecl prefix="ava" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Avaluo"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="obtenerAvaluoRequest">
+                        <con1:id>_ActionId-af10c6f.32b6c7ab.0.15a619ec1ca.N7e70</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionCreditos/VehiculoSinResguardo/Resources/Transformations/TrObtenerMontoPrestamoReqToObtenerAvaluoReq"/>
+                                <con1:input>$body/veh:obtenerMontoPrestamoRequest</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-af10c6f.32b6c7ab.0.15a619ec1ca.N7ea3</con1:id>
+                        <con2:service ref="OperacionPrendaria/Avaluo/Proxy Services/NMPAvaluoSoapPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>obtenerAvaluoAuto</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">obtenerAvaluoRequest</con2:body>
+                            <con2:header>header</con2:header>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">obtenerAvaluoResponse</con2:body>
+                            <con2:header/>
+                        </con2:response>
+                        <con2:requestTransform>
+                            <con2:rename varName="header">
+                                <con1:id>_ActionId-af10c6f.32b6c7ab.0.15a619ec1ca.N7b43</con1:id>
+                                <con1:disabled>true</con1:disabled>
+                                <con2:location>
+                                    <con1:xpathText>.</con1:xpathText>
+                                </con2:location>
+                                <con2:namespace>http://schemas.xmlsoap.org/soap/envelope/</con2:namespace>
+                            </con2:rename>
+                        </con2:requestTransform>
+                        <con2:responseTransform>
+                            <con2:assign varName="montoAvaluo">
+                                <con1:id>_ActionId-af10c6f.32b6c7ab.0.15a619ec1ca.N7cdb</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText>$obtenerAvaluoResponse/ava:montoAvaluo</con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                        </con2:responseTransform>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-af10c6f.32b6c7ab.0.15a619ec1ca.N7dda" name="StageObtieneMontos">
+                <con:context>
+                    <con1:userNsDecl prefix="veh" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="cotizarVehiculoReq">
+                        <con1:id>_ActionId-af10c6f.32b6c7ab.0.15a619ec1ca.N7d74</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionCreditos/VehiculoSinResguardo/Resources/Transformations/TrObtenerMontoPrestamoReqToCotizarVehiculoReq"/>
+                                <con1:input>$body/veh:obtenerMontoPrestamoRequest</con1:input>
+                                <con1:param name="montoAvaluo">
+                                    <con1:path>$montoAvaluo</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-af10c6f.32b6c7ab.0.15a619ec1ca.N7da7</con1:id>
+                        <con2:service ref="OperacionCreditos/Cotizador/Proxy Services/NMPcotizadorSoapPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>cotizarVehiculo</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">cotizarVehiculoReq</con2:body>
+                            <con2:header>header</con2:header>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">cotizarVehiculoRes</con2:body>
+                        </con2:response>
+                        <con2:requestTransform/>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N53effec6.N4987b9cd.0.15acf9cb227.N7d8f">
+            <con:stage id="_StageId-N53effec6.N4987b9cd.0.15acf9cb227.N7d56" name="StageErrorHandler">
+                <con:context>
+                    <con1:varNsDecl prefix="cot" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Cotizador"/>
+                    <con1:varNsDecl prefix="fluj" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculoSinResguardo/Flujo"/>
+                    <con1:varNsDecl prefix="veh" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="header">
+                        <con1:id>_ActionId-N53effec6.N4987b9cd.0.15acf9cb227.N7d55</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>&lt;soap:Header xmlns:soap="http://www.w3.org/2003/05/soap-envelope"/></con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:assign varName="body">
+                        <con1:id>_ActionId-N53effec6.N4987b9cd.0.15acf9cb227.N7d54</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionCreditos/VehiculoSinResguardo/Resources/Transformations/TrFaultsNMPVehiculosSinResguardo"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="AppErrorCode">
+                                    <con1:path>$notificarFinResponse//*:codigo</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N53effec6.N4987b9cd.0.15acf9cb227.N7d53</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N53effc40.4aaebb08.0.15a8c3f4a3f.N7cca">
+            <con:stage id="_StageId-a1f1761.N13ef93f6.0.15ab06bc5c9.N7ec6" name="StageResponse">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:userNsDecl prefix="vsr" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/SolicitudesVSR"/>
+                    <con1:userNsDecl prefix="veh" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo"/>
+                    <con1:varNsDecl prefix="cot" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Cotizador"/>
+                    <con1:varNsDecl prefix="fluj" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculoSinResguardo/Flujo"/>
+                </con:context>
+                <con:actions>
+                    <con2:replace varName="header" contents-only="true">
+                        <con1:id>_ActionId-a1f1761.N13ef93f6.0.15ab06bc5c9.N7ec5</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<nmp:headerMessageResponse xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader'>
+	<nmp:usuario>",$headerSOAP12//nmp:usuario,"</nmp:usuario>
+	<nmp:idConsumidor>",$headerSOAP12//nmp:idConsumidor,"</nmp:idConsumidor>
+	<nmp:idDestino>",$headerSOAP12//nmp:idDestino,"</nmp:idDestino>
+	<nmp:codigoRespuesta>0</nmp:codigoRespuesta>
+	<nmp:descripcionRespuesta>Success</nmp:descripcionRespuesta>
+</nmp:headerMessageResponse>"))]]></con1:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-a1f1761.N13ef93f6.0.15ab06bc5c9.N7ec4</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionCreditos/VehiculoSinResguardo/Resources/Transformations/TrNotificarFinResToCancelarSolicitudRes"/>
+                                <con1:input>$notificarFinResponse</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N53effc40.4aaebb08.0.15a8c3f4a3f.N7fcf">
+            <con:stage id="_StageId-N53efffc2.N72b15ea5.0.15aa6020923.N7f36" name="StageValidarBody">
+                <con:context>
+                    <con1:userNsDecl prefix="vsr" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo"/>
+                </con:context>
+                <con:actions>
+                    <con2:validate>
+                        <con1:id>_ActionId-N53efffc2.N72b15ea5.0.15aa6020923.N7f35</con1:id>
+                        <con2:schema ref="OperacionCreditos/VehiculoSinResguardo/Resources/Schemas/NMPVehiculosSinResguardoXSD"/>
+                        <con2:schemaElement xmlns:veh="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo">veh:consultarSolicitudRequest</con2:schemaElement>
+                        <con2:varName>body</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./vsr:consultarSolicitudRequest</con1:xpathText>
+                        </con2:location>
+                    </con2:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N53efffc2.N72b15ea5.0.15aa6020923.N7ecc" name="StageConsultaSolicitud">
+                <con:context>
+                    <con1:userNsDecl prefix="veh" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="consultarSolicitudRequest">
+                        <con1:id>_ActionId-N53efffc2.N72b15ea5.0.15aa6020923.N7ecb</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionCreditos/VehiculoSinResguardo/Resources/Transformations/TrConsultarSolicitudReqToConsultarSolicitudVsrReq"/>
+                                <con1:input>$body/veh:consultarSolicitudRequest</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-N53efffc2.N72b15ea5.0.15aa6020923.N7eca</con1:id>
+                        <con2:service ref="OperacionCreditos/SolicitudesVSR/ProxyServices/NMPSolicitudesVSRPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>consultarSolicitud</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">consultarSolicitudRequest</con2:body>
+                            <con2:header>header</con2:header>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">consultarSolicitudResponse</con2:body>
+                        </con2:response>
+                        <con2:requestTransform/>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N53effc40.4aaebb08.0.15a8c3f4a3f.N7d38">
+            <con:stage id="_StageId-N53effc40.4aaebb08.0.15a8c3f4a3f.N7cff" name="Stage1">
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N53effc40.4aaebb08.0.15a8c3f4a3f.N7cfe</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionCreditos/VehiculoSinResguardo/Resources/Transformations/TrGenerarContrato"/>
+                                <con1:input>$body</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply>
+                        <con1:id>_ActionId-N53effc40.4aaebb08.0.15a8c3f4a3f.N7cfd</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-af10c6f.32b6c7ab.0.15a619ec1ca.N7c76">
+            <con:stage id="_StageId-af10c6f.32b6c7ab.0.15a619ec1ca.N7c75" name="StageErrorHandler">
+                <con:context>
+                    <con1:varNsDecl prefix="cot" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Cotizador"/>
+                    <con1:varNsDecl prefix="fluj" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculoSinResguardo/Flujo"/>
+                    <con1:varNsDecl prefix="veh" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="header">
+                        <con1:id>_ActionId-af10c6f.32b6c7ab.0.15a619ec1ca.N7a9c</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>&lt;soap:Header xmlns:soap="http://www.w3.org/2003/05/soap-envelope"/></con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:assign varName="body">
+                        <con1:id>_ActionId-af10c6f.32b6c7ab.0.15a619ec1ca.N7c42</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionCreditos/VehiculoSinResguardo/Resources/Transformations/TrFaultsNMPVehiculosSinResguardo"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="AppErrorCode">
+                                    <con1:path>''</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-af10c6f.32b6c7ab.0.15a619ec1ca.N7c0f</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N53effc40.4aaebb08.0.15a8c3f4a3f.N7fce">
+            <con:stage id="_StageId-N53efffc2.N72b15ea5.0.15aa6020923.N7e63" name="StageResponse">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:userNsDecl prefix="vsr" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/SolicitudesVSR"/>
+                    <con1:userNsDecl prefix="veh" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo"/>
+                </con:context>
+                <con:actions>
+                    <con2:replace varName="header" contents-only="true">
+                        <con1:id>_ActionId-N53efff78.d2982ba.0.15aa6cb056a.N7fce</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<nmp:headerMessageResponse xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader'>
+	<nmp:usuario>",$headerSOAP12//nmp:usuario,"</nmp:usuario>
+	<nmp:idConsumidor>",$headerSOAP12//nmp:idConsumidor,"</nmp:idConsumidor>
+	<nmp:idDestino>",$headerSOAP12//nmp:idDestino,"</nmp:idDestino>
+	<nmp:codigoRespuesta>0</nmp:codigoRespuesta>
+	<nmp:descripcionRespuesta>Success</nmp:descripcionRespuesta>
+</nmp:headerMessageResponse>"))]]></con1:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N53efffc2.N72b15ea5.0.15aa6020923.N7dfb</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionCreditos/VehiculoSinResguardo/Resources/Transformations/TrConsultarSolicitudVsrResToConsultarSolicitudRes"/>
+                                <con1:input>$consultarSolicitudResponse</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N53effc40.4aaebb08.0.15a8c3f4a3f.N7d37"/>
+        <con:pipeline type="request" name="request-N53effc40.4aaebb08.0.15a8c3f4a3f.N7bf1">
+            <con:stage id="_StageId-N53effc40.4aaebb08.0.15a8c3f4a3f.N7bb8" name="Stage1">
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N53effc40.4aaebb08.0.15a8c3f4a3f.N7bb7</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionCreditos/VehiculoSinResguardo/Resources/Transformations/TrFirmarContrato"/>
+                                <con1:input>$body</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply>
+                        <con1:id>_ActionId-N53effc40.4aaebb08.0.15a8c3f4a3f.N7bb6</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N53effc40.4aaebb08.0.15a8c3f4a3f.N7bf0"/>
+        <con:pipeline type="request" name="request-N53effc40.4aaebb08.0.15a8c3f4a3f.N7ccb">
+            <con:stage id="_StageId-a1f1761.N13ef93f6.0.15ab06bc5c9.N7f9b" name="StageValidarBody">
+                <con:context>
+                    <con1:userNsDecl prefix="vsr" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo"/>
+                </con:context>
+                <con:actions>
+                    <con2:validate>
+                        <con1:id>_ActionId-a1f1761.N13ef93f6.0.15ab06bc5c9.N7f9a</con1:id>
+                        <con2:schema ref="OperacionCreditos/VehiculoSinResguardo/Resources/Schemas/NMPVehiculosSinResguardoXSD"/>
+                        <con2:schemaElement xmlns:veh="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo">veh:cancelarSolicitudRequest</con2:schemaElement>
+                        <con2:varName>body</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./vsr:cancelarSolicitudRequest</con1:xpathText>
+                        </con2:location>
+                    </con2:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-a1f1761.N13ef93f6.0.15ab06bc5c9.N7f31" name="StageValidaEstadoFlujoSolicitud">
+                <con:context>
+                    <con1:userNsDecl prefix="veh" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="validaEstadoFlujoSolicitudRequest">
+                        <con1:id>_ActionId-a1f1761.N13ef93f6.0.15ab06bc5c9.N7f30</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionCreditos/VehiculoSinResguardo/Resources/Transformations/TrCancelarSolicitudReqToValidaEstadoFlujoSolicitudReq"/>
+                                <con1:input>$body/veh:cancelarSolicitudRequest</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-a1f1761.N13ef93f6.0.15ab06bc5c9.N7f2f</con1:id>
+                        <con2:service ref="OperacionCreditos/SolicitudesVSR/ProxyServices/NMPSolicitudesVSRPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>validaEstadoFlujoSolicitud</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">validaEstadoFlujoSolicitudRequest</con2:body>
+                            <con2:header>header</con2:header>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">validaEstadoFlujoSolicitudResponse</con2:body>
+                            <con2:header/>
+                        </con2:response>
+                        <con2:requestTransform/>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-a1f1761.N13ef93f6.0.15ab06bc5c9.N7e24</con1:id>
+                        <con2:case id="_BranchId-a1f1761.N13ef93f6.0.15ab06bc5c9.N7e23">
+                            <con2:condition>
+                                <con1:xqueryText>$validaEstadoFlujoSolicitudResponse//*:resultado = 1</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions/>
+                        </con2:case>
+                        <con2:default>
+                            <con2:Error>
+                                <con1:id>_ActionId-a1f1761.N13ef93f6.0.15ab06bc5c9.N7ded</con1:id>
+                                <con2:errCode>NMP-013</con2:errCode>
+                                <con2:message>Opcion no valida</con2:message>
+                            </con2:Error>
+                        </con2:default>
+                    </con2:ifThenElse>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-a1f1761.N13ef93f6.0.15ab06bc5c9.N7e5b" name="StageNotificarFin" errorHandler="error-N53effec6.N4987b9cd.0.15acf9cb227.N7d8f">
+                <con:context>
+                    <con1:userNsDecl prefix="veh" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo"/>
+                    <con1:varNsDecl prefix="cot" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Cotizador"/>
+                    <con1:varNsDecl prefix="fluj" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculoSinResguardo/Flujo"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="notificarFinRequest">
+                        <con1:id>_ActionId-a1f1761.N13ef93f6.0.15ab06bc5c9.N7e5a</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionCreditos/VehiculoSinResguardo/Resources/Transformations/TrCancelarSolicitudReqToNotificarFinReq"/>
+                                <con1:input>$body/veh:cancelarSolicitudRequest</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-a1f1761.N13ef93f6.0.15ab06bc5c9.N7e59</con1:id>
+                        <con2:service ref="OperacionCreditos/VehiculoSinResguardo/ProxyServices/NMPFlujoVehiculoSinResguardoPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>notificarFin</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">notificarFinRequest</con2:body>
+                            <con2:header>header</con2:header>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">notificarFinResponse</con2:body>
+                            <con2:header>header</con2:header>
+                        </con2:response>
+                        <con2:requestTransform/>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-a1f1777.N45831f79.0.15ab94f78d4.N7fcc</con1:id>
+                        <con2:case id="_BranchId-a1f1777.N45831f79.0.15ab94f78d4.N7fcb">
+                            <con2:condition>
+                                <con1:xqueryText>$header//*:codigoRespuesta = 1</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:ifThenElse>
+                                    <con1:id>_ActionId-a1e030f.N2a94e5f5.10.15ab99a833f.N7ffb</con1:id>
+                                    <con2:case>
+                                        <con2:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:contains($notificarFinResponse//*:codigo, 'OSB')</con:xqueryText>
+                                        </con2:condition>
+                                        <con2:actions>
+                                            <con2:Error>
+                                                <con1:id>_ActionId-a1e030f.N2a94e5f5.d.15ab8f1a4c6.N7ffe</con1:id>
+                                                <con2:errCode>0</con2:errCode>
+                                                <con2:message>0</con2:message>
+                                            </con2:Error>
+                                        </con2:actions>
+                                    </con2:case>
+                                </con2:ifThenElse>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default/>
+                    </con2:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N53effec6.N4987b9cd.0.15acf9cb227.N7e63">
+            <con:stage id="_StageId-N53effec6.N4987b9cd.0.15acf9cb227.N7e2a" name="StageErrorHandler">
+                <con:context>
+                    <con1:varNsDecl prefix="cot" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Cotizador"/>
+                    <con1:varNsDecl prefix="fluj" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculoSinResguardo/Flujo"/>
+                    <con1:varNsDecl prefix="veh" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="header">
+                        <con1:id>_ActionId-N53effec6.N4987b9cd.0.15acf9cb227.N7e29</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>&lt;soap:Header xmlns:soap="http://www.w3.org/2003/05/soap-envelope"/></con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:assign varName="body">
+                        <con1:id>_ActionId-N53effec6.N4987b9cd.0.15acf9cb227.N7e28</con1:id>
+                        <con2:expr>
+                            <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="OperacionCreditos/VehiculoSinResguardo/Resources/Transformations/TrFaultsNMPVehiculosSinResguardo"/>
+                                <con:input>$fault</con:input>
+                                <con:param name="AppErrorCode">
+                                    <con:path>'NMP-013'</con:path>
+                                </con:param>
+                            </con:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N53effec6.N4987b9cd.0.15acf9cb227.N7e27</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N53effc40.4aaebb08.0.15a8c3f4a3f.N7d9f">
+            <con:stage id="_StageId-a1f1746.N4e07acd2.0.15aa9311c0b.N7f00" name="StageResponse">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:userNsDecl prefix="vsr" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/SolicitudesVSR"/>
+                    <con1:userNsDecl prefix="veh" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo"/>
+                </con:context>
+                <con:actions>
+                    <con2:replace varName="header" contents-only="true">
+                        <con1:id>_ActionId-a1f1746.N4e07acd2.0.15aa9311c0b.N7eff</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<nmp:headerMessageResponse xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader'>
+	<nmp:usuario>",$headerSOAP12//nmp:usuario,"</nmp:usuario>
+	<nmp:idConsumidor>",$headerSOAP12//nmp:idConsumidor,"</nmp:idConsumidor>
+	<nmp:idDestino>",$headerSOAP12//nmp:idDestino,"</nmp:idDestino>
+	<nmp:codigoRespuesta>0</nmp:codigoRespuesta>
+	<nmp:descripcionRespuesta>Success</nmp:descripcionRespuesta>
+</nmp:headerMessageResponse>"))]]></con1:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-a1f1746.N4e07acd2.0.15aa9311c0b.N7efe</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionCreditos/VehiculoSinResguardo/Resources/Transformations/TrIniciarFlujoResToGenerarSolicitudRes"/>
+                                <con1:input>$iniciarFlujoResponse</con1:input>
+                                <con1:param name="newFolio">
+                                    <con1:path>$newFolio</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N53effc40.4aaebb08.0.15a8c3f4a3f.N7c5d"/>
+        <con:pipeline type="response" name="response-af10036.N6a868bc6.0.15a4e39eab7.N7f9c">
+            <con:stage id="_StageId-af10036.N6a868bc6.0.15a4e39eab7.N7f9a" name="StageResponse">
+                <con:context>
+                    <con1:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="body">
+                        <con1:id>_ActionId-af10c6f.32b6c7ab.0.15a619ec1ca.N7ca8</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>&lt;soap12-env:Body xmlns:vsr="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo">
+    &lt;vsr:obtenerMontoPrestamoResponse>
+        {$cotizarVehiculoRes/*}       
+    &lt;/vsr:obtenerMontoPrestamoResponse>
+&lt;/soap12-env:Body></con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:rename varName="headerSOAP12">
+                        <con1:id>_ActionId-af10c6f.32b6c7ab.0.15a619ec1ca.N7b10</con1:id>
+                        <con2:location>
+                            <con1:xpathText>./*</con1:xpathText>
+                        </con2:location>
+                        <con2:localname>headerMessageResponse</con2:localname>
+                    </con2:rename>
+                    <con2:insert varName="headerSOAP12">
+                        <con1:id>_ActionId-af10c6f.32b6c7ab.0.15a619ec1ca.N7aa8</con1:id>
+                        <con2:location>
+                            <con1:xpathText>./nmph:headerMessageResponse</con1:xpathText>
+                        </con2:location>
+                        <con2:where>last-child</con2:where>
+                        <con2:expr>
+                            <con1:xqueryText>&lt;nmph:codigoRespuesta>0&lt;/nmph:codigoRespuesta></con1:xqueryText>
+                        </con2:expr>
+                    </con2:insert>
+                    <con2:insert varName="headerSOAP12">
+                        <con1:id>_ActionId-af10c6f.32b6c7ab.0.15a619ec1ca.N7aa2</con1:id>
+                        <con2:location>
+                            <con1:xpathText>./nmph:headerMessageResponse</con1:xpathText>
+                        </con2:location>
+                        <con2:where>last-child</con2:where>
+                        <con2:expr>
+                            <con1:xqueryText>&lt;nmph:descripcionRespuesta>Success&lt;/nmph:descripcionRespuesta></con1:xqueryText>
+                        </con2:expr>
+                    </con2:insert>
+                    <con2:assign varName="header">
+                        <con1:id>_ActionId-af10c6f.32b6c7ab.0.15a619ec1ca.N7a9f</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$headerSOAP12</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N53effc40.4aaebb08.0.15a8c3f4a3f.N7f0d">
+            <con:stage id="_StageId-N53efff15.7514bc32.0.15a9539deba.N7f9b" name="StageValidarBody">
+                <con:context>
+                    <con1:userNsDecl prefix="vsr" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo"/>
+                </con:context>
+                <con:actions>
+                    <con2:validate>
+                        <con1:id>_ActionId-N53efff15.7514bc32.0.15a9539deba.N7f9a</con1:id>
+                        <con2:schema ref="OperacionCreditos/VehiculoSinResguardo/Resources/Schemas/NMPVehiculosSinResguardoXSD"/>
+                        <con2:schemaElement xmlns:veh="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo">veh:obtenerSolicitudesRequest</con2:schemaElement>
+                        <con2:varName>body</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./vsr:obtenerSolicitudesRequest</con1:xpathText>
+                        </con2:location>
+                    </con2:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N53efff15.7514bc32.0.15a9539deba.N7f06" name="StageConsultarSolicitudesCliente">
+                <con:context>
+                    <con1:userNsDecl prefix="veh" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="consultarSolicitudesClienteRequest">
+                        <con1:id>_ActionId-N53efff15.34fd78d9.0.15a95463f77.N7fce</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionCreditos/VehiculoSinResguardo/Resources/Transformations/TrObtenerSolicitudesReqToConsultarSolicitudesClienteReq"/>
+                                <con1:input>$body/veh:obtenerSolicitudesRequest</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-N53efff15.7514bc32.0.15a9539deba.N7ed2</con1:id>
+                        <con2:service ref="OperacionCreditos/SolicitudesVSR/ProxyServices/NMPSolicitudesVSRPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>consultarSolicitudesCliente</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">consultarSolicitudesClienteRequest</con2:body>
+                            <con2:header>header</con2:header>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">consultarSolicitudesClienteResponse</con2:body>
+                        </con2:response>
+                        <con2:requestTransform/>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N53efffaf.N18ba0f57.0.15a911878b2.N7f9d"/>
+        <con:pipeline type="response" name="response-N53effc40.4aaebb08.0.15a8c3f4a3f.N7f0c">
+            <con:stage id="_StageId-N53efffc2.N72b15ea5.0.15aa6020923.N7fcf" name="StageResponse">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:userNsDecl prefix="vsr" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/SolicitudesVSR"/>
+                    <con1:userNsDecl prefix="veh" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo"/>
+                </con:context>
+                <con:actions>
+                    <con2:replace varName="header" contents-only="true">
+                        <con1:id>_ActionId-N53efff78.d2982ba.0.15aa6cb056a.N7f9a</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<nmp:headerMessageResponse xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader'>
+	<nmp:usuario>",$headerSOAP12//nmp:usuario,"</nmp:usuario>
+	<nmp:idConsumidor>",$headerSOAP12//nmp:idConsumidor,"</nmp:idConsumidor>
+	<nmp:idDestino>",$headerSOAP12//nmp:idDestino,"</nmp:idDestino>
+	<nmp:codigoRespuesta>0</nmp:codigoRespuesta>
+	<nmp:descripcionRespuesta>Success</nmp:descripcionRespuesta>
+</nmp:headerMessageResponse>"))]]></con1:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N53efffc2.N72b15ea5.0.15aa6020923.N7e2f</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionCreditos/VehiculoSinResguardo/Resources/Transformations/TrConsultarSolicitudesClienteResToObtenerSolicitudesRes"/>
+                                <con1:input>$consultarSolicitudesClienteResponse</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N53efffaf.N18ba0f57.0.15a911878b2.N7f9e">
+            <con:stage id="_StageId-af10036.N6a868bc6.0.15a4e39eab7.N7f9b" name="StageValidarHeader">
+                <con:context>
+                    <con1:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:userNsDecl prefix="vsr" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="headerSOAP12">
+                        <con1:id>_ActionId-af10c6f.32b6c7ab.0.15a619ec1ca.N7b76</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$header</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-af10036.N6a868bc6.0.15a4e39eab7.N7f90</con1:id>
+                        <con2:case id="_BranchId-af10036.N6a868bc6.0.15a4e39eab7.N7f8f">
+                            <con2:condition>
+                                <con1:xqueryText>fn:local-name($header/*)=''</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:assign varName="header">
+                                    <con1:id>_ActionId-af10036.N6a868bc6.0.15a4e39eab7.N7f59</con1:id>
+                                    <con2:expr>
+                                        <con1:xsltTransform>
+                                            <con1:resource ref="Common/XSLT/TRInboundToHeaderSoap12NMP"/>
+                                            <con1:input>$inbound</con1:input>
+                                        </con1:xsltTransform>
+                                    </con2:expr>
+                                </con2:assign>
+                            </con2:actions>
+                        </con2:case>
+                    </con2:ifThenElse>
+                    <con2:validate>
+                        <con1:id>_ActionId-af10036.N6a868bc6.0.15a4e39eab7.N7f97</con1:id>
+                        <con2:schema ref="Common/XSD/NMPStandardHeader"/>
+                        <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con2:schemaElement>
+                        <con2:varName>header</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./nmph:headerMessage</con1:xpathText>
+                        </con2:location>
+                    </con2:validate>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="PipelineVehiculoSinResguardo">
+                <con:request>request-N53efffaf.N18ba0f57.0.15a911878b2.N7f9e</con:request>
+                <con:response>response-N53efffaf.N18ba0f57.0.15a911878b2.N7f9d</con:response>
+            </con:pipeline-node>
+            <con:branch-node type="operation" id="_FlowId-af10036.N6a868bc6.0.15a4e39eab7.N7fcf" name="BranchVehiculoSinResguardo">
+                <con:context/>
+                <con:branch-table>
+                    <con:branch name="obtenerSolicitudes">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineObtenerSolicitudes">
+                                <con:request>request-N53effc40.4aaebb08.0.15a8c3f4a3f.N7f0d</con:request>
+                                <con:response>response-N53effc40.4aaebb08.0.15a8c3f4a3f.N7f0c</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="obtenerMontoPrestamo">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineObtenerMontoPrestamo">
+                                <con:request>request-af10036.N6a868bc6.0.15a4e39eab7.N7f9d</con:request>
+                                <con:response>response-af10036.N6a868bc6.0.15a4e39eab7.N7f9c</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="generarSolicitud">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineGenerarSolicitud">
+                                <con:request>request-N53effc40.4aaebb08.0.15a8c3f4a3f.N7da0</con:request>
+                                <con:response>response-N53effc40.4aaebb08.0.15a8c3f4a3f.N7d9f</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="cancelarSolicitud">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineCancelarSolicitud">
+                                <con:request>request-N53effc40.4aaebb08.0.15a8c3f4a3f.N7ccb</con:request>
+                                <con:response>response-N53effc40.4aaebb08.0.15a8c3f4a3f.N7cca</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="consultarSolicitud">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineConsultarSolicitud">
+                                <con:request>request-N53effc40.4aaebb08.0.15a8c3f4a3f.N7fcf</con:request>
+                                <con:response>response-N53effc40.4aaebb08.0.15a8c3f4a3f.N7fce</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="analisisCredito">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineAnalisisCredito">
+                                <con:request>request-N53effc40.4aaebb08.0.15a8c3f4a3f.N7c5e</con:request>
+                                <con:response>response-N53effc40.4aaebb08.0.15a8c3f4a3f.N7c5d</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="generarContrato">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineGenerarContrato">
+                                <con:request>request-N53effc40.4aaebb08.0.15a8c3f4a3f.N7d38</con:request>
+                                <con:response>response-N53effc40.4aaebb08.0.15a8c3f4a3f.N7d37</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="firmarContrato">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineFirmarContrato">
+                                <con:request>request-N53effc40.4aaebb08.0.15a8c3f4a3f.N7bf1</con:request>
+                                <con:response>response-N53effc40.4aaebb08.0.15a8c3f4a3f.N7bf0</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

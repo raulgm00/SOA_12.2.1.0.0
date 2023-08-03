@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<adfc-config xmlns="http://xmlns.oracle.com/adf/controller" version="1.2">
+  <task-flow-definition id="CapturaCriteriosTF">
+    <default-activity>iniciarConcentradora</default-activity>
+    <data-control-scope>
+      <shared/>
+    </data-control-scope>
+    <input-parameter-definition id="__7">
+      <name>p_tipoP</name>
+      <value>#{pageFlowScope.p_tipoP}</value>
+      <class>java.lang.String</class>
+    </input-parameter-definition>
+    <view id="capturaCriterios">
+      <page>/fragments/capturaCriterios.jsff</page>
+    </view>
+    <!--<control-flow-rule id="__5">
+      <from-activity-id>*</from-activity-id>
+    </control-flow-rule>-->
+    <method-call id="iniciarConcentradora">
+      <method>#{bindings.iniciarConcentradora.execute}</method>
+      <outcome>
+        <fixed-outcome>iniciarConcentradora</fixed-outcome>
+      </outcome>
+    </method-call>
+    <control-flow-rule id="__1">
+      <from-activity-id>iniciarConcentradora</from-activity-id>
+      <control-flow-case id="__2">
+        <from-outcome>iniciarConcentradora</from-outcome>
+        <to-activity-id>capturaCriterios</to-activity-id>
+      </control-flow-case>
+    </control-flow-rule>
+    <use-page-fragments/>
+  </task-flow-definition>
+</adfc-config>

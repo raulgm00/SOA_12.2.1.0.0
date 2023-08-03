@@ -1,0 +1,37 @@
+<wsdl:definitions name="BPELPagos" targetNamespace="http://xmlns.oracle.com/Vitamedica/VitamedicaLayout/BPELPagos" xmlns:ns1="http://servicios.montedepiedad.com.mx/NMP/Pagos/Schema" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:client="http://xmlns.oracle.com/Vitamedica/VitamedicaLayout/BPELPagos" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:documentation>
+        <abstractWSDL>http://dcpsoadev1n1.nmp.com.mx:8001/soa-infra/services/nmp/VitamedicaLayout!1.0/BPELPagos.wsdl</abstractWSDL>
+    </wsdl:documentation>
+  <plnk:partnerLinkType name="BPELPagos">
+    <plnk:role name="BPELPagosProvider">
+      <plnk:portType name="client:BPELPagos"/>
+    </plnk:role>
+  </plnk:partnerLinkType>
+  <wsdl:types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://servicios.montedepiedad.com.mx/NMP/Pagos/Schema" schemaLocation="../Schemas/BPELlPagosTiposXSD.xsd"/>
+    </schema>
+  </wsdl:types>
+  <wsdl:message name="BPELPagosRequestMessage">
+    <wsdl:part name="payload" element="ns1:process"/>
+  </wsdl:message>
+  <wsdl:portType name="BPELPagos">
+    <wsdl:operation name="process">
+      <wsdl:input message="client:BPELPagosRequestMessage"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BPELPagosBinding" type="client:BPELPagos">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="process">
+      <soap:operation style="document" soapAction="process"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="bpelpagos_client_ep">
+    <wsdl:port name="BPELPagos_pt" binding="client:BPELPagosBinding">
+      <soap:address location="http://dcpsoadev1n1.nmp.com.mx:8001/soa-infra/services/nmp/VitamedicaLayout/bpelpagos_client_ep"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

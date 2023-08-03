@@ -1,0 +1,68 @@
+<wsdl:definitions name="BITransanccionesDb" targetNamespace="http://servicios.montedepiedad.com.mx/NMP/WSDL/BITransaccionesDb" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/WSDL/BITransaccionesDb" xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/" xmlns:db="http://servicios.montedepiedad.com.mx/NMP/Schema/RTTransaccionesDbXSD" xmlns:trns="http://servicios.montedepiedad.com.mx/NMP/Schema/BIRepositorioXSD" xmlns:NMPSM="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:NMPSH="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/BIRepositorioXSD" schemaLocation="../Schemas/BITransaccionesClienteXSD.xsd"/>
+      <import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+      <import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+    </schema>
+  </wsdl:types>
+  <wsdl:message name="BITransaccionesRequest">
+    <wsdl:part name="BITransaccionesRequest" element="trns:BITransaccionesRequest"/>
+  </wsdl:message>
+  <wsdl:message name="BITransaccionesResponse">
+    <wsdl:part name="BITransaccionesRequest" element="trns:BITransaccionesResponse"/>
+  </wsdl:message>
+  <wsdl:portType name="BITransaccionesPT">
+    <wsdl:operation name="getHistoricoByCliente">
+      <wsdl:input message="tns:BITransaccionesRequest"/>
+      <wsdl:output message="tns:BITransaccionesResponse"/>
+      <wsdl:fault name="fault" message="tns:standardMessageFault"/>
+    </wsdl:operation>
+    <wsdl:operation name="GetHistoricoAlmoneda">
+      <wsdl:input message="tns:GetHistoricoAlmonedaRequest"/>
+      <wsdl:output message="tns:GetHistoricoAlmonedaResponse"/>
+      <wsdl:fault message="tns:standardMessageFault" name="fault"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:message name="standardMessageFault">
+    <wsdl:part name="fault" element="NMPSM:messageError"/>
+  </wsdl:message>
+  <wsdl:message name="standardMessageHeader">
+    <wsdl:part name="header" element="NMPSH:headerMessage"/>
+  </wsdl:message>
+  <wsdl:message name="GetHistoricoAlmonedaRequest">
+    <wsdl:part name="GetHistoricoAlmonedaRequest" element="trns:GetHistoricoAlmonedaRequest"/>
+  </wsdl:message>
+  <wsdl:message name="GetHistoricoAlmonedaResponse">
+    <wsdl:part name="GetHistoricoAlmonedaResponse" element="trns:GetHistoricoAlmonedaResponse"/>
+  </wsdl:message>
+  <wsdl:binding name="BITransaccionesPTSOAP11Binding" type="tns:BITransaccionesPT">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getHistoricoByCliente">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/WSDL/BITransaccionesDb/getHistoricoByCliente"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="BITransaccionesRequest"/>
+        <soap:header message="tns:standardMessageHeader" part="header" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="BITransaccionesRequest"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetHistoricoAlmoneda">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/WSDL/BITransaccionesDb/GetHistoricoAlmoneda"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="GetHistoricoAlmonedaRequest"/>
+        <soap:header message="tns:standardMessageHeader" part="header" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="GetHistoricoAlmonedaResponse"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+</wsdl:definitions>

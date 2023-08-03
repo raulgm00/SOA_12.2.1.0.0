@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:wsdl ref="MasterData/Oficinas/Resources/ValidarOficinasWSDL"/>
+            <con:binding>
+                <con:name>ValidarOficinasBPELBinding</con:name>
+                <con:namespace>http://xmlns.oracle.com/ValidarCentroDeCostosApp/ValidarOficinasPrj/ValidarOficinasBPEL</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:tracingEnabled>true</oper:tracingEnabled>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:pipeline name="PipelinePairNode1_request" type="request">
+            <con:stage name="stage1">
+                <con:context>
+                    <con1:varNsDecl prefix="v1" namespace="http://qualitas.com.mx/Comun/Oficina/validarOficinas/v1/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="body_tmp" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:comment xmlns:con2="http://www.bea.com/wli/sb/stages/config">Back-up del body</con2:comment>
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-N53efe1dc.274b4b7.0.159fa720020.N8000</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con:assign varName="archivo" xmlns:con="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con1:comment xmlns:con1="http://www.bea.com/wli/sb/stages/config">Declaración de una cosntante</con1:comment>
+                        <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-N53efe1dc.274b4b7.1.159fa72fbf8.N8000</con1:id>
+                        <con:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">"TSUC"</con:xqueryText>
+                        </con:expr>
+                    </con:assign>
+                    <con:assign varName="atributos" xmlns:con="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con1:comment xmlns:con1="http://www.bea.com/wli/sb/stages/config">Declaración de una cosntante</con1:comment>
+                        <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-N53efe1dc.274b4b7.2.159fa73f176.N8000</con1:id>
+                        <con:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">1</con:xqueryText>
+                        </con:expr>
+                    </con:assign>
+                    <con:assign varName="formato" xmlns:con="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con1:comment xmlns:con1="http://www.bea.com/wli/sb/stages/config">Declaración de una cosntante</con1:comment>
+                        <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-N53efe1dc.274b4b7.3.159fa746ed9.N8000</con1:id>
+                        <con:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">"U"</con:xqueryText>
+                        </con:expr>
+                    </con:assign>
+                    <con1:foreach xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:comment xmlns:con2="http://www.bea.com/wli/sb/stages/config">Recorre la lista de entrada y cuenta cuantos atributos de Validar Oficna recibio</con2:comment>
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-N53efe1dc.274b4b7.4.159fa74ef79.N8000</con2:id>
+                        <con1:variable>body</con1:variable>
+                        <con1:expression>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./v1:validarOficinasRequest/v1:Input</con:xpathText>
+                        </con1:expression>
+                        <con1:value-variable>validarOficinas</con1:value-variable>
+                        <con1:index-variable>IndexValidarOficinas</con1:index-variable>
+                        <con1:total-variable>validarOficinasCount</con1:total-variable>
+                        <con1:actions>
+                            <con1:ifThenElse>
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-N53efe1dc.3f67a91b.0.159fa8ce07e.N8000</con2:id>
+                                <con1:case>
+                                    <con1:condition>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$IndexValidarOficinas = $validarOficinasCount</con:xqueryText>
+                                    </con1:condition>
+                                    <con1:actions>
+                                        <con1:assign varName="archivoT">
+                                            <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-N53efe1dc.3f67a91b.1.159fa8d7d1e.N8000</con2:id>
+                                            <con1:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:concat($archivoT,$archivo)</con:xqueryText>
+                                            </con1:expr>
+                                        </con1:assign>
+                                    </con1:actions>
+                                </con1:case>
+                                <con1:default>
+                                    <con1:assign varName="archivoT">
+                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-N53efe1dc.3f67a91b.2.159fa8e8da9.N8000</con2:id>
+                                        <con1:expr>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:concat($archivo,"|",$archivoT)</con:xqueryText>
+                                        </con1:expr>
+                                    </con1:assign>
+                                </con1:default>
+                            </con1:ifThenElse>
+                            <con1:assign varName="formatoT">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-N53efe1dc.3f67a91b.4.159fa908762.N8000</con2:id>
+                                <con1:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:concat($formato,"|",$formatoT)</con:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                            <con1:assign varName="atributosT">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-N53efe1dc.3f67a91b.3.159fa8fcc25.N8000</con2:id>
+                                <con1:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:concat($atributos,"|",$atributosT)</con:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                            <con1:assign varName="validarOficinasT">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-N53efe1dc.3f67a91b.5.159fa918ff0.N8000</con2:id>
+                                <con2:disabled xmlns:con2="http://www.bea.com/wli/sb/stages/config">true</con2:disabled>
+                                <con1:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:replace(fn:normalize-space(fn:concat($validarOficinasT,"|",$validarOficinas))," ","")</con:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                            <con1:ifThenElse>
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-N53efe1dc.3f67a91b.6.159fa92efda.N8000</con2:id>
+                                <con1:case>
+                                    <con1:condition>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$IndexValidarOficinas = 1</con:xqueryText>
+                                    </con1:condition>
+                                    <con1:actions>
+                                        <con1:assign varName="validarOficinasT">
+                                            <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-N53efe1dc.3f67a91b.6.159fa92efda.N7fff</con2:id>
+                                            <con1:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:replace(fn:normalize-space(fn:concat($validarOficinasT,$validarOficinas))," ","")</con:xqueryText>
+                                            </con1:expr>
+                                        </con1:assign>
+                                    </con1:actions>
+                                </con1:case>
+                                <con1:default>
+                                    <con1:assign varName="validarOficinasT">
+                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-N53efe1dc.3f67a91b.6.159fa92efda.N7ffe</con2:id>
+                                        <con1:expr>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:replace(fn:normalize-space(fn:concat($validarOficinasT,"|",$validarOficinas))," ","")</con:xqueryText>
+                                        </con1:expr>
+                                    </con1:assign>
+                                </con1:default>
+                            </con1:ifThenElse>
+                        </con1:actions>
+                    </con1:foreach>
+                    <con1:replace varName="body" contents-only="true" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:comment xmlns:con2="http://www.bea.com/wli/sb/stages/config">Responde al servicio con una estructura definida</con2:comment>
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-N53efe1dc.3f67a91b.7.159fa97d442.N8000</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat('<ser:validaEntradas xmlns:ser="http://service.centroscosto.qualitas.com.mx/">
+         <entradas>
+            <entrada>
+<archivo>',$archivoT,'</archivo>
+<atributos>',$atributosT,'</atributos>
+<formato>',$formatoT,'</formato>
+                              <llave>',$validarOficinasT,'</llave>
+            </entrada>
+         </entradas>
+      </ser:validaEntradas>'))]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode1_response" type="response">
+            <con:stage name="stage1">
+                <con:context>
+                    <con1:varNsDecl prefix="v1" namespace="http://qualitas.com.mx/Comun/Oficina/validarOficinas/v1/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-N53efe1dc.3f67a91b.9.159faa6cee3.N8000</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="MasterData/Oficinas/Resources/ValidarOficinasRESP"/>
+                                <con:input>$body</con:input>
+                            </con:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="PipelinePairNode1">
+                <con:request>PipelinePairNode1_request</con:request>
+                <con:response>PipelinePairNode1_response</con:response>
+            </con:pipeline-node>
+            <con:route-node name="RouteNode1">
+                <con:context>
+                    <con1:varNsDecl prefix="v1" namespace="http://qualitas.com.mx/Comun/Oficina/validarOficinas/v1/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-N53efe1dc.3f67a91b.a.159faca5584.N8000</con2:id>
+                        <con1:service ref="Operational/SISE/BusinessSvc/ConsultaInformacionBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                        <con1:outboundTransform/>
+                        <con1:responseTransform>
+                            <con2:assign varName="respValidarOficinas" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-N53efe1dc.3f67a91b.a.159faca5584.N7fff</con3:id>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                        </con1:responseTransform>
+                    </con1:route>
+                </con:actions>
+            </con:route-node>
+        </con:flow>
+    </con:router>
+    <aler:alertRules xsi:nil="true" xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+</con:pipelineEntry>

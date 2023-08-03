@@ -1,0 +1,149 @@
+<wsdl:definitions name="NMPCatalogoAutosSvcWSDL" targetNamespace="http://servicios.montepiedad.com.mx/NMP/Services/CatalogoAutos" xmlns:tns="http://servicios.montepiedad.com.mx/NMP/Services/CatalogoAutos" xmlns:NMPca="http://servicios.montepiedad.com.mx/NMP/Schema/CatalogoAutos" xmlns:NMPh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+    <wsdl:types>
+        <xsd:schema>
+            <xsd:import namespace="http://servicios.montepiedad.com.mx/NMP/Schema/CatalogoAutos" schemaLocation="../Schemas/NMPCatalogoAutosXSD.xsd"/>
+        </xsd:schema>
+        <xsd:schema>
+            <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+        </xsd:schema>
+        <xsd:schema>
+            <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="obtenerMarcasRequestMessage">
+        <wsdl:part name="obtenerMarcasRequest" element="NMPca:obtenerMarcasRequest"/>
+    </wsdl:message>
+    <wsdl:message name="obtenerMarcasResponseMessage">
+        <wsdl:part name="obtenerMarcasResponse" element="NMPca:obtenerMarcasResponse"/>
+    </wsdl:message>
+    <wsdl:message name="catalogoAutosFaultMessage">
+        <wsdl:part name="catalogoAutosFault" element="NMPsm:messageError"/>
+    </wsdl:message>
+    <wsdl:message name="obtenerSubMarcasRequestMessage">
+        <wsdl:part name="obtenerSubMarcasRequest" element="NMPca:obtenerSubMarcaRequest"/>
+    </wsdl:message>
+    <wsdl:message name="obtenerSubMarcasResponseMessage">
+        <wsdl:part name="obtenerSubMarcasResponse" element="NMPca:obtenerSubMarcasResponse"/>
+    </wsdl:message>
+    <wsdl:message name="obtenerModelosRequestMessage">
+        <wsdl:part name="obtenerModelosRequest" element="NMPca:obtenerModelosRequest"/>
+    </wsdl:message>
+    <wsdl:message name="obtenerModelosResponseMessage">
+        <wsdl:part name="obtenerModelosResponse" element="NMPca:obtenerModelosResponse"/>
+    </wsdl:message>
+    <wsdl:message name="obtenerVersionesRequestMessage">
+        <wsdl:part name="obtenerVersionesRequest" element="NMPca:obtenerVersionesRequest"/>
+    </wsdl:message>
+    <wsdl:message name="obtenerVersionesResponseMessage">
+        <wsdl:part name="obtenerVersionesResponse" element="NMPca:obtenerVersionesResponse"/>
+    </wsdl:message>
+    <wsdl:message name="obtenerKilometrajeComplementosRequestMessage">
+        <wsdl:part name="obtenerKilometrajeComplementosRequest" element="NMPca:obtenerKilometrajeComplementosRequest"/>
+    </wsdl:message>
+    <wsdl:message name="obtenerKilometrajeComplementosResponseMessage">
+        <wsdl:part name="obtenerKilometrajeComplementosResponse" element="NMPca:obtenerKilometrajeComplementosResponse"/>
+    </wsdl:message>
+    <wsdl:message name="NMPHeaderMessage">
+        <wsdl:part name="requestHeader" element="NMPh:headerMessage"/>
+    </wsdl:message>
+    <wsdl:message name="NMPHeaderMessageResponse">
+        <wsdl:part name="responseHeader" element="NMPh:headerMessageResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="CatalogoAutos_ptt">
+        <wsdl:operation name="obtenerMarcas">
+            <wsdl:input message="tns:obtenerMarcasRequestMessage"/>
+            <wsdl:output message="tns:obtenerMarcasResponseMessage"/>
+            <wsdl:fault name="Fault" message="tns:catalogoAutosFaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="obtenerSubMarcas">
+            <wsdl:input message="tns:obtenerSubMarcasRequestMessage"/>
+            <wsdl:output message="tns:obtenerSubMarcasResponseMessage"/>
+            <wsdl:fault name="Fault" message="tns:catalogoAutosFaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="obtenerModelos">
+            <wsdl:input message="tns:obtenerModelosRequestMessage"/>
+            <wsdl:output message="tns:obtenerModelosResponseMessage"/>
+            <wsdl:fault name="Fault" message="tns:catalogoAutosFaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="obtenerVersiones">
+            <wsdl:input message="tns:obtenerVersionesRequestMessage"/>
+            <wsdl:output message="tns:obtenerVersionesResponseMessage"/>
+            <wsdl:fault name="Fault" message="tns:catalogoAutosFaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="obtenerKilometrajeComplementos">
+            <wsdl:input message="tns:obtenerKilometrajeComplementosRequestMessage"/>
+            <wsdl:output message="tns:obtenerKilometrajeComplementosResponseMessage"/>
+            <wsdl:fault name="Fault" message="tns:catalogoAutosFaultMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="CatalogoAutosBinding" type="tns:CatalogoAutos_ptt">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="obtenerMarcas">
+            <soap:operation style="document" soapAction="obtenerMarcas"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:NMPHeaderMessage" part="requestHeader" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+                <soap:header message="tns:NMPHeaderMessageResponse" part="responseHeader" use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="Fault">
+                <soap:fault name="Fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="obtenerSubMarcas">
+            <soap:operation style="document" soapAction="obtenerSubMarcas"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:NMPHeaderMessage" part="requestHeader" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+                <soap:header message="tns:NMPHeaderMessageResponse" part="responseHeader" use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="Fault"/>
+        </wsdl:operation>
+        <wsdl:operation name="obtenerModelos">
+            <soap:operation style="document" soapAction="obtenerModelos"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:NMPHeaderMessage" part="requestHeader" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+                <soap:header message="tns:NMPHeaderMessageResponse" part="responseHeader" use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="Fault"/>
+        </wsdl:operation>
+        <wsdl:operation name="obtenerVersiones">
+            <soap:operation style="document" soapAction="obtenerVersiones"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:NMPHeaderMessage" part="requestHeader" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+                <soap:header message="tns:NMPHeaderMessageResponse" part="responseHeader" use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="Fault"/>
+        </wsdl:operation>
+        <wsdl:operation name="obtenerKilometrajeComplementos">
+            <soap:operation style="document" soapAction="obtenerKilometrajeComplementos"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:NMPHeaderMessage" part="requestHeader" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+                <soap:header message="tns:NMPHeaderMessageResponse" part="responseHeader" use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="Fault"/>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="CatalogoAutos">
+        <wsdl:port name="CatalogoAutosPort" binding="tns:CatalogoAutosBinding">
+            <soap:address location=""/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

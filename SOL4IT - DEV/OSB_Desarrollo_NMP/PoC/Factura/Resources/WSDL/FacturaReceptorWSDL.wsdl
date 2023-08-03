@@ -1,0 +1,102 @@
+<definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPFactura" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPFactura" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage">
+  <types>
+    <xsd:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPFactura/types" elementFormDefault="qualified"/>
+    <xsd:schema>
+      <xsd:import schemaLocation="../XSD/FacturaSvcXSD.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPFactura"/>
+    </xsd:schema>
+    <xsd:schema>
+      <xsd:import schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+    </xsd:schema>
+    <xsd:schema>
+      <xsd:import schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+    </xsd:schema>
+  </types>
+  <portType name="FacturaReceptor_ptt">
+    <operation name="validarUsuario">
+      <input message="tns:validarUsuarioRequest"/>
+      <output message="tns:validarUsuarioResponse"/>
+      <fault message="tns:facturaReceptorFaultMessage" name="fault"/>
+    </operation>
+    <operation name="registrarFacturaProveedor">
+      <input message="tns:registrarFacturaProveedorRequest"/>
+      <output message="tns:registrarFacturaProveedorResponse"/>
+      <fault message="tns:facturaReceptorFaultMessage" name="fault"/>
+    </operation>
+    <operation name="obtenerEstatusFactura">
+      <input message="tns:obtenerEstatusFacturaRequest"/>
+      <output message="tns:obtenerEstatusFacturaResponse"/>
+      <fault message="tns:facturaReceptorFaultMessage" name="fault"/>
+    </operation>
+  </portType>
+  <message name="NMPHeaderRequest">
+    <part name="part" element="NMPsh:headerMessage"/>
+  </message>
+  <message name="validarUsuarioRequest">
+    <part name="part" element="tns:validarUsuarioRequest"/>
+  </message>
+  <message name="validarUsuarioResponse">
+    <part name="part" element="tns:validarUsuarioResponse"/>
+  </message>
+  <message name="registrarFacturaProveedorRequest">
+    <part name="part" element="tns:registrarFacturaProveedorRequest"/>
+  </message>
+  <message name="registrarFacturaProveedorResponse">
+    <part name="part" element="tns:registrarFacturaProveedorResponse"/>
+  </message>
+  <message name="obtenerEstatusFacturaRequest">
+    <part name="part" element="tns:obtenerEstatusFacturaRequest"/>
+  </message>
+  <message name="obtenerEstatusFacturaResponse">
+    <part name="part" element="tns:obtenerEstatusFacturaResponse"/>
+  </message>
+  <message name="facturaReceptorFaultMessage">
+    <part name="part" element="NMPsm:messageError"/>
+  </message>
+  <binding name="FacturaReceptorBinding" type="tns:FacturaReceptor_ptt">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="validarUsuario">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPFactura/validarUsuario"/>
+      <input>
+        <soap:body use="literal" parts="part"/>
+        <soap:header message="tns:NMPHeaderRequest" part="part" use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="part"/>
+      </output>
+      <fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="registrarFacturaProveedor">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPFactura/registrarFacturaProveedor"/>
+      <input>
+        <soap:body use="literal" parts="part"/>
+        <soap:header message="tns:NMPHeaderRequest" part="part" use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="part"/>
+      </output>
+      <fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="obtenerEstatusFactura">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPFactura/obtenerEstatusFactura"/>
+      <input>
+        <soap:body use="literal" parts="part"/>
+        <soap:header message="tns:NMPHeaderRequest" part="part" use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="part"/>
+      </output>
+      <fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+  <service name="FacturaReceptor_ptt">
+    <port name="FacturaReceptor_pttPort" binding="tns:FacturaReceptorBinding">
+      <soap:address location="http://10.30.3.15:8011/NMP/CRM/FacturaReceptor"/>
+    </port>
+  </service>
+</definitions>

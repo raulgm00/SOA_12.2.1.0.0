@@ -1,0 +1,836 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:wsdl ref="OperacionPrendaria/ListasPreciosRapaport/Resources/WSDLs/NMPReferenciaAlhajaDiamanteWSDL"/>
+            <con:binding>
+                <con:name>ReferenciaServiceEndpointServiceSoapBinding</con:name>
+                <con:namespace>http://OperacionPrendaria.nmp.com.mx/</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:tracingEnabled>true</oper:tracingEnabled>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router errorHandler="error-N53effccd.36e3d664.0.15a1083b948.N7e92">
+        <con:pipeline name="PipelineObtenerValorComercial_response" type="response">
+            <con:stage name="StageSalidaObtenerValorComercial">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="dat" namespace="http://nmp.com.mx/OperacionPrendaria/datatypes/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:log xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con3="http://www.bea.com/wli/sb/stages/routing/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N53effc63.1e417b89.0.15a16439ec7.N7dbb</con2:id>
+                        <con1:logLevel>warning</con1:logLevel>
+                        <con1:expr>
+                            <con2:xqueryText>"REFERENCIAS: obtenerValorComercial OK"</con2:xqueryText>
+                        </con1:expr>
+                        <con1:message/>
+                    </con1:log>
+                    <con2:replace varName="header" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.Na3efe81.19.1599605d3f4.N7ffc</con3:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("<nmp:headerMessageResponse xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader'>
+         <nmp:usuario>",$headerTmp//*:usuario,"</nmp:usuario>
+         <nmp:idConsumidor>",$headerTmp//*:idConsumidor,"</nmp:idConsumidor>
+         <nmp:idDestino>",$headerTmp//*:idDestino,"</nmp:idDestino>
+		 <nmp:codigoRespuesta>0</nmp:codigoRespuesta>
+		 <nmp:descripcionRespuesta>OK</nmp:descripcionRespuesta>
+      </nmp:headerMessageResponse>"))]]></con:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelineObtenerFactor_request" type="request">
+            <con:stage name="StageValidaBody">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="dat" namespace="http://nmp.com.mx/OperacionPrendaria/datatypes/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:validate>
+                        <con2:id>_ActionId-a1e030f.Na3efe81.22.159aa864a72.N8000</con2:id>
+                        <con1:schema ref="OperacionPrendaria/ListasPreciosRapaport/Resources/Schemas/NMPReferenciaAlhajaDiamanteXSD"/>
+                        <con1:schemaElement xmlns:dat="http://nmp.com.mx/OperacionPrendaria/datatypes/">dat:obtenerFactorRequest</con1:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./*</con:xpathText>
+                        </con1:location>
+                        <con1:resultVarName/>
+                    </con1:validate>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelineObtenerValorGramoMetal_request" type="request">
+            <con:stage name="StageValidaBody">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="dat" namespace="http://nmp.com.mx/OperacionPrendaria/datatypes/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:validate>
+                        <con2:id>_ActionId-a1e030f.Na3efe81.1d.159a87d24ab.N7ffd</con2:id>
+                        <con1:schema ref="OperacionPrendaria/ListasPreciosRapaport/Resources/Schemas/NMPReferenciaAlhajaDiamanteXSD"/>
+                        <con1:schemaElement xmlns:dat="http://nmp.com.mx/OperacionPrendaria/datatypes/">dat:obtenerValorGramoMetalRequest</con1:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./*</con:xpathText>
+                        </con1:location>
+                        <con1:resultVarName/>
+                    </con1:validate>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelineObtenerFactor_response" type="response">
+            <con:stage name="StageSalidaObtenerFactor">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="dat" namespace="http://nmp.com.mx/OperacionPrendaria/datatypes/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:log xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con3="http://www.bea.com/wli/sb/stages/routing/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N53effc63.1e417b89.0.15a16439ec7.N7d22</con2:id>
+                        <con1:logLevel>warning</con1:logLevel>
+                        <con1:expr>
+                            <con2:xqueryText>"REFERENCIAS: obtenerFactor OK"</con2:xqueryText>
+                        </con1:expr>
+                        <con1:message/>
+                    </con1:log>
+                    <con2:replace varName="header" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.Na3efe81.11.15994edf179.N7ffc</con3:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("<nmp:headerMessageResponse xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader'>
+         <nmp:usuario>",$headerTmp//*:usuario,"</nmp:usuario>
+         <nmp:idConsumidor>",$headerTmp//*:idConsumidor,"</nmp:idConsumidor>
+         <nmp:idDestino>",$headerTmp//*:idDestino,"</nmp:idDestino>
+		 <nmp:codigoRespuesta>0</nmp:codigoRespuesta>
+		 <nmp:descripcionRespuesta>OK</nmp:descripcionRespuesta>
+      </nmp:headerMessageResponse>"))]]></con:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelineObtenerValorGramoOro_response" type="response">
+            <con:stage name="StageSalidaObtenerValorGramoOro">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="dat" namespace="http://nmp.com.mx/OperacionPrendaria/datatypes/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:log xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con3="http://www.bea.com/wli/sb/stages/routing/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N53effc63.1e417b89.0.15a16439ec7.N7d88</con2:id>
+                        <con1:logLevel>warning</con1:logLevel>
+                        <con1:expr>
+                            <con2:xqueryText>"REFERENCIAS: obtenerValorGramoOro OK"</con2:xqueryText>
+                        </con1:expr>
+                        <con1:message/>
+                    </con1:log>
+                    <con2:replace varName="header" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.Na3efe81.12.15995ea6268.N7ffc</con3:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("<nmp:headerMessageResponse xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader'>
+         <nmp:usuario>",$headerTmp//*:usuario,"</nmp:usuario>
+         <nmp:idConsumidor>",$headerTmp//*:idConsumidor,"</nmp:idConsumidor>
+         <nmp:idDestino>",$headerTmp//*:idDestino,"</nmp:idDestino>
+		 <nmp:codigoRespuesta>0</nmp:codigoRespuesta>
+		 <nmp:descripcionRespuesta>OK</nmp:descripcionRespuesta>
+      </nmp:headerMessageResponse>"))]]></con:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelineObtenerLimitesIncremento_response" type="response">
+            <con:stage name="StageSalidaObtenerLimitesIncremento">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="dat" namespace="http://nmp.com.mx/OperacionPrendaria/datatypes/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:log xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con3="http://www.bea.com/wli/sb/stages/routing/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N53effc63.1e417b89.0.15a16439ec7.N7d55</con2:id>
+                        <con1:logLevel>warning</con1:logLevel>
+                        <con1:expr>
+                            <con2:xqueryText>"REFERENCIAS: obtenerLimiteIncremento OK"</con2:xqueryText>
+                        </con1:expr>
+                        <con1:message/>
+                    </con1:log>
+                    <con2:replace varName="header" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.Na3efe81.17.15995ffd904.N7ffc</con3:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("<nmp:headerMessageResponse xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader'>
+         <nmp:usuario>",$headerTmp//*:usuario,"</nmp:usuario>
+         <nmp:idConsumidor>",$headerTmp//*:idConsumidor,"</nmp:idConsumidor>
+         <nmp:idDestino>",$headerTmp//*:idDestino,"</nmp:idDestino>
+		 <nmp:codigoRespuesta>0</nmp:codigoRespuesta>
+		 <nmp:descripcionRespuesta>OK</nmp:descripcionRespuesta>
+      </nmp:headerMessageResponse>"))]]></con:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelineObtenerValorGramoMetal_response" type="response">
+            <con:stage name="StageSalidaObtenerValorGramoMetal">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="dat" namespace="http://nmp.com.mx/OperacionPrendaria/datatypes/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:log xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con3="http://www.bea.com/wli/sb/stages/routing/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N53effc63.1e417b89.0.15a16439ec7.N7cef</con2:id>
+                        <con1:logLevel>warning</con1:logLevel>
+                        <con1:expr>
+                            <con2:xqueryText>"REFERENCIAS: obtenerValorGramoMetal OK"</con2:xqueryText>
+                        </con1:expr>
+                        <con1:message/>
+                    </con1:log>
+                    <con2:replace varName="header" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.Na3efe81.13.15995ebf031.N7ffa</con3:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("<nmp:headerMessageResponse xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader'>
+         <nmp:usuario>",$headerTmp//*:usuario,"</nmp:usuario>
+         <nmp:idConsumidor>",$headerTmp//*:idConsumidor,"</nmp:idConsumidor>
+         <nmp:idDestino>",$headerTmp//*:idDestino,"</nmp:idDestino>
+		 <nmp:codigoRespuesta>0</nmp:codigoRespuesta>
+		 <nmp:descripcionRespuesta>OK</nmp:descripcionRespuesta>
+      </nmp:headerMessageResponse>"))]]></con:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelineObtenerModificador_response" type="response">
+            <con:stage name="StageSalidaObtenerModificador">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="dat" namespace="http://nmp.com.mx/OperacionPrendaria/datatypes/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:log xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con3="http://www.bea.com/wli/sb/stages/routing/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N53effc63.1e417b89.0.15a16439ec7.N7df3</con2:id>
+                        <con1:logLevel>warning</con1:logLevel>
+                        <con1:expr>
+                            <con2:xqueryText>"REFERENCIAS: obtenerModificador OK"</con2:xqueryText>
+                        </con1:expr>
+                        <con1:message/>
+                    </con1:log>
+                    <con2:replace varName="header" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.Na3efe81.18.15996002554.N7ffd</con3:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("<nmp:headerMessageResponse xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader'>
+         <nmp:usuario>",$headerTmp//*:usuario,"</nmp:usuario>
+         <nmp:idConsumidor>",$headerTmp//*:idConsumidor,"</nmp:idConsumidor>
+         <nmp:idDestino>",$headerTmp//*:idDestino,"</nmp:idDestino>
+		 <nmp:codigoRespuesta>0</nmp:codigoRespuesta>
+		 <nmp:descripcionRespuesta>OK</nmp:descripcionRespuesta>
+      </nmp:headerMessageResponse>"))]]></con:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelineObtenerValorComercial_request" type="request">
+            <con:stage name="StageValidaBody" id="_StageId-N53efff72.N3d81c97d.0.159ad8e86d1.N7a4d">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="dat" namespace="http://nmp.com.mx/OperacionPrendaria/datatypes/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:validate>
+                        <con2:id>_ActionId-N53efff72.N3d81c97d.0.159ad8e86d1.N7a4b</con2:id>
+                        <con1:schema ref="OperacionPrendaria/ListasPreciosRapaport/Resources/Schemas/NMPReferenciaAlhajaDiamanteXSD"/>
+                        <con1:schemaElement xmlns:dat="http://nmp.com.mx/OperacionPrendaria/datatypes/">dat:obtenerValorComercialRequest</con1:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./*</con:xpathText>
+                        </con1:location>
+                        <con1:resultVarName/>
+                    </con1:validate>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelineObtenerModificador_request" type="request">
+            <con:stage name="StageValidaBody" id="_StageId-N53efff72.N3d81c97d.0.159ad8e86d1.N7f95">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="dat" namespace="http://nmp.com.mx/OperacionPrendaria/datatypes/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:validate>
+                        <con2:id>_ActionId-N53efff72.N3d81c97d.0.159ad8e86d1.N7f93</con2:id>
+                        <con1:schema ref="OperacionPrendaria/ListasPreciosRapaport/Resources/Schemas/NMPReferenciaAlhajaDiamanteXSD"/>
+                        <con1:schemaElement xmlns:dat="http://nmp.com.mx/OperacionPrendaria/datatypes/">dat:obtenerModificadorRequest</con1:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./*</con:xpathText>
+                        </con1:location>
+                        <con1:resultVarName/>
+                    </con1:validate>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelineObtenerValorGramoOro_request" type="request">
+            <con:stage name="StageValidaBody">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="dat" namespace="http://nmp.com.mx/OperacionPrendaria/datatypes/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:validate>
+                        <con2:id>_ActionId-a1e030f.Na3efe81.1f.159aa649713.N7ffe</con2:id>
+                        <con1:schema ref="OperacionPrendaria/ListasPreciosRapaport/Resources/Schemas/NMPReferenciaAlhajaDiamanteXSD"/>
+                        <con1:schemaElement xmlns:dat="http://nmp.com.mx/OperacionPrendaria/datatypes/">dat:obtenerValorGramoOroRequest</con1:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./*</con:xpathText>
+                        </con1:location>
+                        <con1:resultVarName/>
+                    </con1:validate>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelineObtenerLimitesIncremento_request" type="request">
+            <con:stage name="StageValidaBody">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="dat" namespace="http://nmp.com.mx/OperacionPrendaria/datatypes/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:validate>
+                        <con2:id>_ActionId-a1e030f.Na3efe81.13.15995ebf031.N7ffc</con2:id>
+                        <con1:schema ref="OperacionPrendaria/ListasPreciosRapaport/Resources/Schemas/NMPReferenciaAlhajaDiamanteXSD"/>
+                        <con1:schemaElement xmlns:dat="http://nmp.com.mx/OperacionPrendaria/datatypes/">dat:obtenerLimitesIncrementoRequest</con1:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./*</con:xpathText>
+                        </con1:location>
+                        <con1:resultVarName/>
+                    </con1:validate>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N53efff72.N3d81c97d.0.159ad8e86d1.N7a18">
+            <con:stage name="StageValidaHeader" id="_StageId-N53efff72.N3d81c97d.0.159ad8e86d1.N79a8">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="dat" namespace="http://nmp.com.mx/OperacionPrendaria/datatypes/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:validate>
+                        <con2:id>_ActionId-a1e030f.Na3efe81.1e.159aa3d0dd1.N8000</con2:id>
+                        <con1:schema ref="Common/XSD/NMPStandardHeader"/>
+                        <con1:schemaElement xmlns:dat="http://nmp.com.mx/OperacionPrendaria/datatypes/" xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con1:schemaElement>
+                        <con1:varName>header</con1:varName>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./*</con:xpathText>
+                        </con1:location>
+                        <con1:resultVarName/>
+                    </con1:validate>
+                    <con1:assign varName="headerTmp">
+                        <con2:id>_ActionId-a1e030f.Na3efe81.20.159aa6b3c25.N8000</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$header</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:log xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con3="http://www.bea.com/wli/sb/stages/routing/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N53effc63.1e417b89.0.15a16439ec7.N7f1d</con2:id>
+                        <con1:logLevel>warning</con1:logLevel>
+                        <con1:expr>
+                            <con2:xqueryText>"REFERENCIAS: header OK"</con2:xqueryText>
+                        </con1:expr>
+                        <con1:message/>
+                    </con1:log>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N53efff72.N3d81c97d.0.159ad8e86d1.N7a17"/>
+        <con:pipeline name="PipelineObtenerDesplazamiento_request" type="request">
+            <con:stage name="StageValidaBody" id="_StageId-N53effe5c.N17485e42.0.159b304b94a.N7f0d">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="dat" namespace="http://nmp.com.mx/OperacionPrendaria/datatypes/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:validate>
+                        <con2:id>_ActionId-a1e030f.Na3efe81.21.159aa75c10e.N7fff</con2:id>
+                        <con1:schema ref="OperacionPrendaria/ListasPreciosRapaport/Resources/Schemas/NMPReferenciaAlhajaDiamanteXSD"/>
+                        <con1:schemaElement xmlns:dat="http://nmp.com.mx/OperacionPrendaria/datatypes/">dat:obtenerDesplazamientoRequest</con1:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./*</con:xpathText>
+                        </con1:location>
+                        <con1:resultVarName/>
+                    </con1:validate>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelineObtenerDesplazamiento_response" type="response">
+            <con:stage name="StageSalidaObtenerDesplazamiento" id="_StageId-N53effe5c.N17485e42.0.159b304b94a.N7f0c">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="dat" namespace="http://nmp.com.mx/OperacionPrendaria/datatypes/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:log xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con3="http://www.bea.com/wli/sb/stages/routing/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N53effc63.1e417b89.0.15a16439ec7.N7def</con2:id>
+                        <con1:logLevel>warning</con1:logLevel>
+                        <con1:expr>
+                            <con2:xqueryText>"REFERENCIAS: obtenerDesplazamiento OK"</con2:xqueryText>
+                        </con1:expr>
+                        <con1:message/>
+                    </con1:log>
+                    <con2:replace varName="header" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.Na3efe81.b.15993f52b55.N7ffb</con3:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("<nmp:headerMessageResponse xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader'>
+         <nmp:usuario>",$headerTmp//*:usuario,"</nmp:usuario>
+         <nmp:idConsumidor>",$headerTmp//*:idConsumidor,"</nmp:idConsumidor>
+         <nmp:idDestino>",$headerTmp//*:idDestino,"</nmp:idDestino>
+		 <nmp:codigoRespuesta>0</nmp:codigoRespuesta>
+		 <nmp:descripcionRespuesta>OK</nmp:descripcionRespuesta>
+      </nmp:headerMessageResponse>"))]]></con:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N53effccd.36e3d664.0.15a1083b948.N7e92">
+            <con:stage id="_StageId-N53efff72.N3d81c97d.0.159ad8e86d1.N7df4" name="StageErrorHandler">
+                <con:context/>
+                <con:actions>
+                    <con1:delete varName="header">
+                        <con2:id>_ActionId-N53efff72.N3d81c97d.0.159ad8e86d1.N7df3</con2:id>
+                    </con1:delete>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-N53effccd.36e3d664.0.15a1083b948.N7d92</con2:id>
+                        <con1:case id="_BranchId-N53effccd.36e3d664.0.15a1083b948.N7d91">
+                            <con1:condition>
+                                <con2:xqueryText>$body/soap-env:Fault</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:ifThenElse>
+                                    <con2:id>_ActionId-N53effe47.N6a4a35a8.0.15a67811636.N7e97</con2:id>
+                                    <con1:case id="_BranchId-N53effe47.N6a4a35a8.0.15a67811636.N7e96">
+                                        <con1:condition>
+                                            <con2:xqueryText>$body//*:faultactor</con2:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace varName="body" contents-only="true">
+                                                <con2:id>_ActionId-N53effccd.36e3d664.0.15a1083b948.N7d5b</con2:id>
+                                                <con1:expr>
+                                                    <con2:xsltTransform>
+                                                        <con2:resource ref="OperacionPrendaria/ListasPreciosRapaport/Resources/Transformations/TRReferenciaAlhajaDiamanteFault"/>
+                                                        <con2:input>$fault</con2:input>
+                                                        <con2:param name="AppErrorCode">
+                                                            <con2:path>$body//*:faultcode</con2:path>
+                                                        </con2:param>
+                                                        <con2:param name="AppErrorString">
+                                                            <con2:path>$body//*:faultactor</con2:path>
+                                                        </con2:param>
+                                                    </con2:xsltTransform>
+                                                </con1:expr>
+                                            </con1:replace>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:default>
+                                        <con1:replace varName="body" contents-only="true">
+                                            <con2:id>_ActionId-N53effe47.N6a4a35a8.0.15a67811636.N7e61</con2:id>
+                                            <con1:expr>
+                                                <con2:xsltTransform>
+                                                    <con2:resource ref="OperacionPrendaria/ListasPreciosRapaport/Resources/Transformations/TRReferenciaAlhajaDiamanteFault"/>
+                                                    <con2:input>$fault</con2:input>
+                                                    <con2:param name="AppErrorCode">
+                                                        <con2:path>$body//*:faultcode</con2:path>
+                                                    </con2:param>
+                                                    <con2:param name="AppErrorString">
+                                                        <con2:path>$body//*:faultstring</con2:path>
+                                                    </con2:param>
+                                                </con2:xsltTransform>
+                                            </con1:expr>
+                                        </con1:replace>
+                                    </con1:default>
+                                </con1:ifThenElse>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:default>
+                            <con1:replace varName="body" contents-only="true">
+                                <con2:id>_ActionId-N53efff72.N3d81c97d.0.159ad8e86d1.N7df2</con2:id>
+                                <con1:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="OperacionPrendaria/ListasPreciosRapaport/Resources/Transformations/TRReferenciaAlhajaDiamanteFault"/>
+                                        <con2:input>$fault</con2:input>
+                                        <con2:param name="AppErrorCode">
+                                            <con2:path>''</con2:path>
+                                        </con2:param>
+                                        <con2:param name="AppErrorString">
+                                            <con2:path>''</con2:path>
+                                        </con2:param>
+                                    </con2:xsltTransform>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:default>
+                    </con1:ifThenElse>
+                    <con1:log xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con3="http://www.bea.com/wli/sb/stages/routing/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N53effc63.1e417b89.0.15a16439ec7.N7eea</con2:id>
+                        <con1:logLevel>warning</con1:logLevel>
+                        <con1:expr>
+                            <con2:xqueryText>fn:concat("REFERENCIAS: Error=", $body//*:faultstring)</con2:xqueryText>
+                        </con1:expr>
+                        <con1:message/>
+                    </con1:log>
+                    <con2:reply isError="true">
+                        <con2:id>_ActionId-N53efff72.N3d81c97d.0.159ad8e86d1.N7df1</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="PipelinePair">
+                <con:request>request-N53efff72.N3d81c97d.0.159ad8e86d1.N7a18</con:request>
+                <con:response>response-N53efff72.N3d81c97d.0.159ad8e86d1.N7a17</con:response>
+            </con:pipeline-node>
+            <con:branch-node type="operation" name="BranchSIVA">
+                <con:comment/>
+                <con:branch-table>
+                    <con:branch name="obtenerModificador">
+                        <con:operator>equals</con:operator>
+                        <con:value>obtenerModificador</con:value>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineObtenerModificador">
+                                <con:comment/>
+                                <con:request>PipelineObtenerModificador_request</con:request>
+                                <con:response>PipelineObtenerModificador_response</con:response>
+                            </con:pipeline-node>
+                            <con:route-node name="RouteToObtenerModificador">
+                                <con:comment/>
+                                <con:context>
+                                    <con1:varNsDecl prefix="dat" namespace="http://nmp.com.mx/OperacionPrendaria/datatypes/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                                </con:context>
+                                <con:actions>
+                                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                                        <con2:id>_ActionId-a1e030f.Na3efe81.b.15993f52b55.N7ffe</con2:id>
+                                        <con1:service ref="OperacionPrendaria/ListasPreciosRapaport/Business Services/SIVAReferenciaDiamanteBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                        <con1:operation>obtenerModificador</con1:operation>
+                                        <con1:outboundTransform>
+                                            <con2:replace varName="body" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.Na3efe81.14.15995ec937b.N7fff</con3:id>
+                                                <con2:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(fn:concat("&lt;dat:obtenerModificadorRequest xmlns:dat='http://nmp.com.mx/ms/sivad/referencia/ws/diamantes/datatypes/'>
+&lt;dat:certificadoDiamante>",$body//*:certificadoDiamante,"&lt;/dat:certificadoDiamante>
+&lt;/dat:obtenerModificadorRequest>"))</con:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con1:outboundTransform>
+                                        <con1:responseTransform>
+                                            <con2:replace varName="body" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.Na3efe81.16.15995fc70d0.N7fff</con3:id>
+                                                <con2:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(fn:concat("&lt;dat:obtenerModificadorResponse xmlns:dat='http://nmp.com.mx/OperacionPrendaria/datatypes/'>
+&lt;dat:factor>",$body//*:factor,"&lt;/dat:factor>
+&lt;/dat:obtenerModificadorResponse>"))</con:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con1:responseTransform>
+                                    </con1:route>
+                                </con:actions>
+                            </con:route-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="obtenerDesplazamiento">
+                        <con:operator>equals</con:operator>
+                        <con:value>obtenerDesplazamiento</con:value>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineObtenerDesplazamiento">
+                                <con:comment/>
+                                <con:request>PipelineObtenerDesplazamiento_request</con:request>
+                                <con:response>PipelineObtenerDesplazamiento_response</con:response>
+                            </con:pipeline-node>
+                            <con:route-node name="RouteToObtenerDesplazamiento">
+                                <con:comment/>
+                                <con:context>
+                                    <con1:varNsDecl prefix="dat" namespace="http://nmp.com.mx/OperacionPrendaria/datatypes/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                                </con:context>
+                                <con:actions>
+                                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                                        <con2:id>_ActionId-a1e030f.Na3efe81.13.15995ebf031.N8000</con2:id>
+                                        <con1:service ref="OperacionPrendaria/ListasPreciosRapaport/Business Services/SIVAReferenciaAlhajaBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                        <con1:operation>obtenerDesplazamiento</con1:operation>
+                                        <con1:outboundTransform>
+                                            <con2:replace varName="body" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.Na3efe81.13.15995ebf031.N7ffe</con3:id>
+                                                <con2:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("<dat:obtenerDesplazamientoRequest xmlns:dat='http://nmp.com.mx/ms/sivad/referencia/ws/alhajas/datatypes/'>
+    <dat:metal>",$body//*:metal,"</dat:metal>
+    <dat:calidad>",$body//*:calidad,"</dat:calidad>
+    <dat:rango>",$body//*:rango,"</dat:rango>
+</dat:obtenerDesplazamientoRequest>"))]]></con:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con1:outboundTransform>
+                                        <con1:responseTransform>
+                                            <con2:replace varName="body" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.Na3efe81.19.1599605d3f4.N7fff</con3:id>
+                                                <con2:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(fn:concat("&lt;dat:obtenerDesplazamientoResponse xmlns:dat='http://nmp.com.mx/OperacionPrendaria/datatypes/'>
+	&lt;dat:desplazamiento>",$body//*:desplazamiento,"&lt;/dat:desplazamiento>
+&lt;/dat:obtenerDesplazamientoResponse>"))</con:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con1:responseTransform>
+                                    </con1:route>
+                                </con:actions>
+                            </con:route-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="obtenerValorComercial">
+                        <con:operator>equals</con:operator>
+                        <con:value>obtenerValorComercial</con:value>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineObtenerValorComercial">
+                                <con:comment/>
+                                <con:request>PipelineObtenerValorComercial_request</con:request>
+                                <con:response>PipelineObtenerValorComercial_response</con:response>
+                            </con:pipeline-node>
+                            <con:route-node name="RouteToObtenerValorComercial">
+                                <con:comment/>
+                                <con:context>
+                                    <con1:varNsDecl prefix="dat" namespace="http://nmp.com.mx/OperacionPrendaria/datatypes/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                                </con:context>
+                                <con:actions>
+                                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                                        <con2:id>_ActionId-a1e030f.Na3efe81.12.15995ea6268.N8000</con2:id>
+                                        <con1:service ref="OperacionPrendaria/ListasPreciosRapaport/Business Services/SIVAReferenciaDiamanteBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                        <con1:operation>obtenerValorComercial</con1:operation>
+                                        <con1:outboundTransform>
+                                            <con2:replace varName="body" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.Na3efe81.12.15995ea6268.N7ffe</con3:id>
+                                                <con2:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("<dat:obtenerValorComercialRequest xmlns:dat='http://nmp.com.mx/ms/sivad/referencia/ws/diamantes/datatypes/'>
+    <dat:corte>",$body//*:corte,"</dat:corte>
+    <dat:color>",$body//*:color,"</dat:color>
+    <dat:claridad>",$body//*:claridad,"</dat:claridad>
+    <dat:quilates_ct>",$body//*:quilates_ct,"</dat:quilates_ct>
+</dat:obtenerValorComercialRequest>"))]]></con:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con1:outboundTransform>
+                                        <con1:responseTransform>
+                                            <con2:replace varName="body" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.Na3efe81.1b.159961605ff.N8000</con3:id>
+                                                <con2:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("<dat:obtenerValorComercialResponse xmlns:dat='http://nmp.com.mx/OperacionPrendaria/datatypes/'>
+	<dat:valorComercial>
+		<dat:valorMinimo>",$body//*:valorMinimo,"</dat:valorMinimo>
+		<dat:valorMedio>",$body//*:valorMedio,"</dat:valorMedio>
+		<dat:valorMaximo>",$body//*:valorMaximo,"</dat:valorMaximo>
+	</dat:valorComercial>
+</dat:obtenerValorComercialResponse>"))]]></con:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con1:responseTransform>
+                                    </con1:route>
+                                </con:actions>
+                            </con:route-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="obtenerValorGramoOro">
+                        <con:operator>equals</con:operator>
+                        <con:value>obtenerValorGramoOro</con:value>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineObtenerValorGramoOro">
+                                <con:comment/>
+                                <con:request>PipelineObtenerValorGramoOro_request</con:request>
+                                <con:response>PipelineObtenerValorGramoOro_response</con:response>
+                            </con:pipeline-node>
+                            <con:route-node name="RouteToObtenerValorGramoOro">
+                                <con:comment/>
+                                <con:context>
+                                    <con1:userNsDecl prefix="dat" namespace="http://nmp.com.mx/OperacionPrendaria/datatypes/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                                </con:context>
+                                <con:actions>
+                                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                                        <con2:id>_ActionId-a1e030f.Na3efe81.10.15994caa21b.N7fff</con2:id>
+                                        <con1:service ref="OperacionPrendaria/ListasPreciosRapaport/Business Services/SIVAReferenciaAlhajaBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                        <con1:operation>obtenerValorGramoOro</con1:operation>
+                                        <con1:outboundTransform>
+                                            <con2:replace varName="body" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.Na3efe81.19.1599605d3f4.N8000</con3:id>
+                                                <con2:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("<dat:obtenerValorGramoOroRequest xmlns:dat='http://nmp.com.mx/ms/sivad/referencia/ws/alhajas/datatypes/'>
+    <dat:color>",$body//*:color,"</dat:color>
+    <dat:calidad>",$body//*:calidad,"</dat:calidad>
+</dat:obtenerValorGramoOroRequest>"))]]></con:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con1:outboundTransform>
+                                        <con1:responseTransform>
+                                            <con2:replace varName="body" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.Na3efe81.1c.1599619cceb.N8000</con3:id>
+                                                <con2:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(fn:concat("&lt;dat:obtenerValorGramoOroResponse xmlns:dat='http://nmp.com.mx/OperacionPrendaria/datatypes/'>
+	&lt;dat:precioPorGramo>",$body//*:precioPorGramo,"&lt;/dat:precioPorGramo>
+&lt;/dat:obtenerValorGramoOroResponse>"))</con:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con1:responseTransform>
+                                    </con1:route>
+                                </con:actions>
+                            </con:route-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="obtenerLimitesIncremento">
+                        <con:operator>equals</con:operator>
+                        <con:value>obtenerLimitesIncremento</con:value>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineObtenerLimitesIncremento">
+                                <con:comment/>
+                                <con:request>PipelineObtenerLimitesIncremento_request</con:request>
+                                <con:response>PipelineObtenerLimitesIncremento_response</con:response>
+                            </con:pipeline-node>
+                            <con:route-node name="RouteToObtenerLimitesIncremento">
+                                <con:comment/>
+                                <con:context>
+                                    <con1:varNsDecl prefix="dat" namespace="http://nmp.com.mx/OperacionPrendaria/datatypes/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                                </con:context>
+                                <con:actions>
+                                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                                        <con2:id>_ActionId-a1e030f.Na3efe81.12.15995ea6268.N7fff</con2:id>
+                                        <con1:service ref="OperacionPrendaria/ListasPreciosRapaport/Business Services/SIVAReferenciaAlhajaBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                        <con1:operation>obtenerLimitesIncremento</con1:operation>
+                                        <con1:outboundTransform>
+                                            <con2:replace varName="body" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.Na3efe81.17.15995ffd904.N7fff</con3:id>
+                                                <con2:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("<dat:obtenerLimitesIncrementoRequest xmlns:dat='http://nmp.com.mx/ms/sivad/referencia/ws/alhajas/datatypes/'>
+    <dat:metal>",$body//*:metal,"</dat:metal>
+    <dat:calidad>",$body//*:calidad,"</dat:calidad>
+    <dat:rango>",$body//*:rango,"</dat:rango>
+</dat:obtenerLimitesIncrementoRequest>"))]]></con:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con1:outboundTransform>
+                                        <con1:responseTransform>
+                                            <con2:replace varName="body" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.Na3efe81.15.15995fc178f.N7ffe</con3:id>
+                                                <con2:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("<dat:obtenerLimitesIncrementoResponse xmlns:dat='http://nmp.com.mx/OperacionPrendaria/datatypes/'>
+	<dat:limitesIncremento>
+		<dat:limiteInferior>",$body//*:limiteInferior,"</dat:limiteInferior>
+		<dat:limiteSuperior>",$body//*:limiteSuperior,"</dat:limiteSuperior>
+	</dat:limitesIncremento>
+</dat:obtenerLimitesIncrementoResponse>"))]]></con:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con1:responseTransform>
+                                    </con1:route>
+                                </con:actions>
+                            </con:route-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="obtenerFactor">
+                        <con:operator>equals</con:operator>
+                        <con:value>obtenerFactor</con:value>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineObtenerFactor">
+                                <con:comment/>
+                                <con:request>PipelineObtenerFactor_request</con:request>
+                                <con:response>PipelineObtenerFactor_response</con:response>
+                            </con:pipeline-node>
+                            <con:route-node name="RouteToObtenerFactor">
+                                <con:comment/>
+                                <con:context>
+                                    <con1:varNsDecl prefix="dat" namespace="http://nmp.com.mx/OperacionPrendaria/datatypes/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                                </con:context>
+                                <con:actions>
+                                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                                        <con2:id>_ActionId-a1e030f.Na3efe81.11.15994edf179.N7fff</con2:id>
+                                        <con1:service ref="OperacionPrendaria/ListasPreciosRapaport/Business Services/SIVAReferenciaAlhajaBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                        <con1:operation>obtenerFactor</con1:operation>
+                                        <con1:outboundTransform>
+                                            <con2:replace varName="body" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.Na3efe81.1a.159960a7a34.N8000</con3:id>
+                                                <con2:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("<dat:obtenerFactorRequest 	xmlns:dat='http://nmp.com.mx/ms/sivad/referencia/ws/alhajas/datatypes/'>
+<dat:metal>",$body//*:metal,"</dat:metal>
+<dat:calidad>",$body//*:calidad,"</dat:calidad>
+<dat:rango>",$body//*:rango,"</dat:rango>
+</dat:obtenerFactorRequest>"))]]></con:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con1:outboundTransform>
+                                        <con1:responseTransform>
+                                            <con2:replace varName="body" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.Na3efe81.18.15996002554.N7fff</con3:id>
+                                                <con2:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(fn:concat("&lt;dat:obtenerFactorResponse xmlns:dat='http://nmp.com.mx/OperacionPrendaria/datatypes/'>
+	&lt;dat:factor>",$body//*:factor,"&lt;/dat:factor>
+&lt;/dat:obtenerFactorResponse>"))</con:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con1:responseTransform>
+                                    </con1:route>
+                                </con:actions>
+                            </con:route-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="obtenerValorGramoMetal">
+                        <con:operator>equals</con:operator>
+                        <con:value>obtenerValorGramoMetal</con:value>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineObtenerValorGramoMetal">
+                                <con:comment/>
+                                <con:request>PipelineObtenerValorGramoMetal_request</con:request>
+                                <con:response>PipelineObtenerValorGramoMetal_response</con:response>
+                            </con:pipeline-node>
+                            <con:route-node name="RouteToObtenerValorGramoMetal">
+                                <con:comment/>
+                                <con:context>
+                                    <con1:varNsDecl prefix="dat" namespace="http://nmp.com.mx/OperacionPrendaria/datatypes/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                                </con:context>
+                                <con:actions>
+                                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                                        <con2:id>_ActionId-a1e030f.Na3efe81.14.15995ec937b.N8000</con2:id>
+                                        <con1:service ref="OperacionPrendaria/ListasPreciosRapaport/Business Services/SIVAReferenciaAlhajaBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                        <con1:operation>obtenerValorGramoMetal</con1:operation>
+                                        <con1:outboundTransform>
+                                            <con2:replace varName="body" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.Na3efe81.12.15995ea6268.N7ffd</con3:id>
+                                                <con2:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("<dat:obtenerValorGramoMetalRequest xmlns:dat='http://nmp.com.mx/ms/sivad/referencia/ws/alhajas/datatypes/'>
+    <dat:metal>",$body//*:metal,"</dat:metal>
+    <dat:calidad>",$body//*:calidad,"</dat:calidad>
+    <dat:rango>",$body//*:rango,"</dat:rango>
+</dat:obtenerValorGramoMetalRequest>"))]]></con:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con1:outboundTransform>
+                                        <con1:responseTransform>
+                                            <con2:replace varName="body" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.Na3efe81.14.15995ec937b.N7ffe</con3:id>
+                                                <con2:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(fn:concat("&lt;dat:obtenerValorGramoMetalResponse xmlns:dat='http://nmp.com.mx/OperacionPrendaria/datatypes/'>
+	&lt;dat:precioPorGramo>",$body//*:precioPorGramo,"&lt;/dat:precioPorGramo>
+&lt;/dat:obtenerValorGramoMetalResponse>"))</con:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con1:responseTransform>
+                                    </con1:route>
+                                </con:actions>
+                            </con:route-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

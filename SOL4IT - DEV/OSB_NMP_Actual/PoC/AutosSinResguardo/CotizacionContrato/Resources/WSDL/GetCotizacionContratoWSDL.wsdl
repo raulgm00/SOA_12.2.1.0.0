@@ -1,0 +1,68 @@
+<definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Services/AutoSinResguardo" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:NMPAsr="http://servicios.montedepiedad.com.mx/NMP/Services/AutoSinResguardo" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:Asrcot="http://servicios.montedepiedad.com.mx/NMP/Schema/Cotizacion" xmlns:Asrcon="http://servicios.montedepiedad.com.mx/NMP/Schema/Contrato" xmlns:NPMsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <types>
+    <xsd:schema>
+      <xsd:import schemaLocation="../XSD/NmpCotizacionXSD.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Cotizacion"/>
+      <xsd:import schemaLocation="../XSD/NmpContratoXSD.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Contrato"/>
+      <xsd:import schemaLocation="../XSD/NMPStandardMessage.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+    </xsd:schema>
+  </types>
+  <message name="getCotizacionRequest">
+    <part name="part" element="Asrcot:CotizacionRequest"/>
+  </message>
+  <message name="getCotizacionResponse">
+    <part name="part" element="Asrcot:CotizacionResponse"/>
+  </message>
+  <message name="cotizacionContratoFaultMessage">
+    <part name="part" element="NPMsm:messageError"/>
+  </message>
+  <message name="getContratoRequest">
+    <part name="part" element="Asrcon:ContratoRequest"/>
+  </message>
+  <message name="getContratoResponse">
+    <part name="part" element="Asrcon:ContratoResponse"/>
+  </message>
+  <portType name="cotizacionContratoServicePortType">
+    <operation name="getCotizacion">
+      <input message="NMPAsr:getCotizacionRequest"/>
+      <output message="NMPAsr:getCotizacionResponse"/>
+      <fault name="cotizacionContratoFaultMessage" message="NMPAsr:cotizacionContratoFaultMessage"/>
+    </operation>
+    <operation name="getContrato">
+      <input message="NMPAsr:getContratoRequest"/>
+      <output message="NMPAsr:getContratoResponse"/>
+      <fault name="cotizacionContratoFaultMessage" message="NMPAsr:cotizacionContratoFaultMessage"/>
+    </operation>
+  </portType>
+  <binding name="cotizacionContratoBinding" type="NMPAsr:cotizacionContratoServicePortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="getContrato">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/AutoSinResguardo/getContrato"/>
+      <input>
+        <soap:body use="literal" parts="part"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="part"/>
+      </output>
+      <fault name="cotizacionContratoFaultMessage">
+        <soap:fault name="cotizacionContratoFaultMessage" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getCotizacion">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/AutoSinResguardo/getCotizacion"/>
+      <input>
+        <soap:body use="literal" parts="part"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="part"/>
+      </output>
+      <fault name="cotizacionContratoFaultMessage">
+        <soap:fault name="cotizacionContratoFaultMessage" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+  <service name="AutoSinResguardo">
+    <port name="AutoSinResguardoPort" binding="NMPAsr:cotizacionContratoBinding">
+      <soap:address location=""/>
+    </port>
+  </service>
+</definitions>

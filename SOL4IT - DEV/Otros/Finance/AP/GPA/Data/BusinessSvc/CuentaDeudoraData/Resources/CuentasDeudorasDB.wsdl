@@ -1,0 +1,36 @@
+<wsdl:definitions name="CuentasDeudorasDB" targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/OSB_DESARROLLO_QUALITAS/Finance/CuentasDeudorasDB" xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/OSB_DESARROLLO_QUALITAS/Finance/CuentasDeudorasDB" xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/" xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:top="http://xmlns.oracle.com/pcbpel/adapter/db/top/CuentasDeudorasDB" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <plt:partnerLinkType name="CuentasDeudorasDB_plt">
+    <plt:role name="CuentasDeudorasDB_role">
+      <plt:portType name="tns:CuentasDeudorasDB_ptt"/>
+    </plt:role>
+  </plt:partnerLinkType>
+  <wsdl:types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/CuentasDeudorasDB" schemaLocation="CuentasDeudorasDB_table.xsd"/>
+    </schema>
+  </wsdl:types>
+  <wsdl:message name="CuentasDeudorasDBSelect_inputParameters">
+    <wsdl:part name="CuentasDeudorasDBSelect_inputParameters" element="top:CuentasDeudorasDBSelectInputParameters"/>
+  </wsdl:message>
+  <wsdl:message name="Gpa018CdeudorasCollection_msg">
+    <wsdl:part name="Gpa018CdeudorasCollection" element="top:Gpa018CdeudorasCollection"/>
+  </wsdl:message>
+  <wsdl:portType name="CuentasDeudorasDB_ptt">
+    <wsdl:operation name="CuentasDeudorasDBSelect">
+      <wsdl:input message="tns:CuentasDeudorasDBSelect_inputParameters"/>
+      <wsdl:output message="tns:Gpa018CdeudorasCollection_msg"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="CuentasDeudorasDB_Binding" type="tns:CuentasDeudorasDB_ptt">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="CuentasDeudorasDBSelect">
+      <soap:operation style="document" soapAction="http://xmlns.oracle.com/pcbpel/adapter/db/OSB_DESARROLLO_QUALITAS/Finance/CuentasDeudorasDB/CuentasDeudorasDBSelect"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="CuentasDeudorasDBSelect_inputParameters"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="Gpa018CdeudorasCollection"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+</wsdl:definitions>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="true" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="OperacionPrendaria/PagoEnLinea/Resources/WSDLs/NMPTransaccionesLineaWSDL"/>
+            <con:binding>
+                <con:name>TransaccionesLineaPTSOAP12Binding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Services/TransaccionesLinea</con:namespace>
+            </con:binding>
+        </con:binding>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:pipeline type="request" name="request-af10c52.N49cf4df5.0.15e39a976f1.N7668">
+            <con:stage id="_StageId-af10c52.N49cf4df5.0.15e39a976f1.N7666" name="StageValidacion">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPTransacciones"/>
+                </con:context>
+                <con:actions>
+                    <con2:validate>
+                        <con1:id>_ActionId-af10c52.N49cf4df5.0.15e39a976f1.N765f</con1:id>
+                        <con2:schema ref="OperacionPrendaria/PagoEnLinea/Resources/Schemas/NMPTransaccionesXSD"/>
+                        <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPTransacciones">nmp:generarTransaccionPagoRequest</con2:schemaElement>
+                        <con2:varName>body</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./nmp:generarTransaccionPagoRequest</con1:xpathText>
+                        </con2:location>
+                    </con2:validate>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af10c52.N49cf4df5.0.15e39a976f1.N7667">
+            <con:stage id="_StageId-af10c52.N49cf4df5.0.15e39a976f1.N7665" name="StageResponse">
+                <con:context/>
+                <con:actions>
+                    <con2:assign varName="body">
+                        <con1:id>_ActionId-af10c52.N49cf4df5.0.15e39a976f1.N7662</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText><![CDATA[<soap:Body xmlns:soap="http://www.w3.org/2003/05/soap-envelope">
+  <tran:obtenerTransaccionPagoResponse xmlns:tran="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPTransacciones">
+    <tran:transaccion>
+      <tran:idTransaccion>{fn-bea:uuid()}</tran:idTransaccion>
+      <tran:fechaCreacion>{fn:current-dateTime()}</tran:fechaCreacion>
+    </tran:transaccion>
+  </tran:obtenerTransaccionPagoResponse>
+</soap:Body>]]></con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:branch-node type="operation" id="_FlowId-af10c52.N49cf4df5.0.15e39a976f1.N7738" name="BranchTransaccionesLinea">
+                <con:context/>
+                <con:branch-table>
+                    <con:branch name="generarTransaccionPago">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairNode1">
+                                <con:request>request-af10c52.N49cf4df5.0.15e39a976f1.N7668</con:request>
+                                <con:response>response-af10c52.N49cf4df5.0.15e39a976f1.N7667</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

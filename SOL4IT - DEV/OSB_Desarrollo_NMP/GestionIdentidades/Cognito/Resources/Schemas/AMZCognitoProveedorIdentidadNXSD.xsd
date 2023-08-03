@@ -1,0 +1,237 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/AMZCognitoProveedorIdentidad"
+            targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/AMZCognitoProveedorIdentidad"
+            elementFormDefault="qualified" xmlns:nxsd="http://xmlns.oracle.com/pcbpel/nxsd" nxsd:version="JSON"
+            nxsd:encoding="UTF-8">
+  <xsd:element name="adminCreateUserRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="DesiredDeliveryMediums" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+        <xsd:element name="ForceAliasCreation" type="xsd:boolean" minOccurs="1" maxOccurs="1"/>
+        <xsd:element name="MessageAction" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+        <xsd:element name="TemporaryPassword" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+        <xsd:element name="UserAttributes" minOccurs="0" maxOccurs="unbounded">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="Name" type="xsd:string"/>
+              <xsd:element name="Value" type="xsd:string"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="Username" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+        <xsd:element name="UserPoolId" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+        <xsd:element name="ValidationData" minOccurs="0" maxOccurs="unbounded">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="Name" type="xsd:string"/>
+              <xsd:element name="Value" type="xsd:string"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="adminCreateUserResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="User" minOccurs="1" maxOccurs="1">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="Attributes" minOccurs="0" maxOccurs="unbounded">
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element name="Name" type="xsd:string"/>
+                    <xsd:element name="Value" type="xsd:string"/>
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+              <xsd:element name="Enabled" type="xsd:boolean" minOccurs="0" maxOccurs="1"/>
+              <xsd:element name="MFAOptions" minOccurs="0" maxOccurs="unbounded">
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element name="AttributeName" type="xsd:string"/>
+                    <xsd:element name="DeliveryMedium" type="xsd:string"/>
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+              <xsd:element name="UserCreateDate" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+              <xsd:element name="UserLastModifiedDate" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+              <xsd:element name="UserStatus" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+              <xsd:element name="Username" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="adminDeleteUserRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Username" type="xsd:string"/>
+        <xsd:element name="UserPoolId" type="xsd:string"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="adminInitiateAuthRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="AuthFlow" type="xsd:string"/>
+        <xsd:element name="AuthParameters" minOccurs="0" maxOccurs="1">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="USERNAME" type="xsd:string"/>
+              <xsd:element name="PASSWORD" type="xsd:string"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="ClientId" type="xsd:string"/>
+        <xsd:element name="UserPoolId" type="xsd:string" maxOccurs="1"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="adminInitiateAuthResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="AuthenticationResult" minOccurs="0" maxOccurs="1">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="AccessToken" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+              <xsd:element name="ExpiresIn" type="xsd:integer" minOccurs="0" maxOccurs="1"/>
+              <xsd:element name="IdToken" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+              <xsd:element name="NewDeviceMetadata" minOccurs="0" maxOccurs="1">
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element name="DeviceGroupKey" maxOccurs="1" minOccurs="0" type="xsd:string"/>
+                    <xsd:element name="DeviceKey" maxOccurs="1" minOccurs="0" type="xsd:string"/>
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+              <xsd:element name="RefreshToken" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+              <xsd:element name="TokenType" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="ChallengeName" type="xsd:string"/>
+        <xsd:element name="ChallengeParameters">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="USER_ID_FOR_SRP" type="xsd:string"/>
+              <xsd:element name="userAttributes" type="xsd:string" />
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="Session" type="xsd:string"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="adminRespondToAuthChallengeRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="ChallengeName" type="xsd:string"/>
+        <xsd:element name="ChallengeResponses" minOccurs="0" maxOccurs="1">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="USERNAME" type="xsd:string"/>
+              <xsd:element name="NEW_PASSWORD" type="xsd:string"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="ClientId" type="xsd:string"/>
+        <xsd:element name="Session" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+        <xsd:element name="UserPoolId" type="xsd:string"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="adminRespondToAuthChallengeResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="AuthenticationResult">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="AccessToken" type="xsd:string"/>
+              <xsd:element name="ExpiresIn" type="xsd:integer"/>
+              <xsd:element name="IdToken" type="xsd:string"/>
+              <xsd:element name="NewDeviceMetadata" minOccurs="0" maxOccurs="1">
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element name="DeviceGroupKey" maxOccurs="1" minOccurs="0" type="xsd:string"/>
+                    <xsd:element name="DeviceKey" maxOccurs="1" minOccurs="0" type="xsd:string"/>
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+              <xsd:element name="RefreshToken" type="xsd:string"/>
+              <xsd:element name="TokenType" type="xsd:string"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="ChallengeName" type="xsd:string"/>
+        <xsd:element name="ChallengeParameters"/>
+        <xsd:element name="Session" type="xsd:string"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="cognitoIdentityProviderFault">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="__type" type="xsd:string"/>
+        <xsd:element name="message" type="xsd:string"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="adminEnableUserRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Username" type="xsd:string"/>
+        <xsd:element name="UserPoolId" type="xsd:string"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="adminDisableUserRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Username" type="xsd:string"/>
+        <xsd:element name="UserPoolId" type="xsd:string"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+   <xsd:element name="adminGetUserRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Username" type="xsd:string"/>
+        <xsd:element name="UserPoolId" type="xsd:string"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+   <xsd:element name="adminGetUserResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Enabled" type="xsd:boolean" minOccurs="0" maxOccurs="1"/>
+        <xsd:element name="MFAOptions" minOccurs="0" maxOccurs="unbounded">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="AttributeName" type="xsd:string"/>
+              <xsd:element name="DeliveryMedium" type="xsd:string"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="UserAttributes" minOccurs="0" maxOccurs="unbounded">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="Name" type="xsd:string"/>
+              <xsd:element name="Value" type="xsd:string"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="UserCreateDate" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+        <xsd:element name="UserLastModifiedDate" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+        <xsd:element name="Username" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+        <xsd:element name="UserStatus" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:annotation xmlns="">
+    <xsd:appinfo>NXSDSAMPLE=</xsd:appinfo>
+    <xsd:appinfo>USEHEADER=false</xsd:appinfo>
+  </xsd:annotation>
+</xsd:schema>

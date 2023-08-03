@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions targetNamespace="http://ws.gpa.qualitas.mx/" name="ProrrateoSvc" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:tns="http://ws.gpa.qualitas.mx/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata">
+  <types>
+    <xsd:schema>
+      <xsd:import namespace="http://ws.gpa.qualitas.mx/" schemaLocation="ProrrateoSvc_schema1.xsd"/>
+    </xsd:schema>
+  </types>
+  <message name="parse">
+    <part name="data" type="xsd:base64Binary"/>
+  </message>
+  <message name="parseResponse">
+    <part name="Prorrateo" type="tns:prorrateoResponse"/>
+  </message>
+  <portType name="ProrrateoSvc">
+    <operation name="parse">
+      <input wsam:Action="http://ws.gpa.qualitas.mx/ProrrateoSvc/parseRequest" message="tns:parse"/>
+      <output wsam:Action="http://ws.gpa.qualitas.mx/ProrrateoSvc/parseResponse" message="tns:parseResponse"/>
+    </operation>
+  </portType>
+  <binding name="ProrrateoSvcPortBinding" type="tns:ProrrateoSvc">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="rpc"/>
+    <operation name="parse">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal" namespace="http://ws.gpa.qualitas.mx/"/>
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://ws.gpa.qualitas.mx/"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="ProrrateoSvc">
+    <port name="ProrrateoSvcPort" binding="tns:ProrrateoSvcPortBinding">
+      <soap:address location="http://localhost:7101/GPACommons-GPAWebBasic-context-root/ProrrateoSvcPort"/>
+    </port>
+  </service>
+</definitions>

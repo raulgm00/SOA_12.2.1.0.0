@@ -1,0 +1,62 @@
+<definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Service/RiesgoTransaccional" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Service/RiesgoTransaccional" xmlns:ns1="http://servicios.montepiedad.com.mx/NMP/Schema/RiesgoTransaccional" xmlns:ns2="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+   <types>
+      <xsd:schema>
+         <xsd:import namespace="http://servicios.montepiedad.com.mx/NMP/Schema/RiesgoTransaccional" schemaLocation="../Schemas/NMPRiesgoTransaccionalMsgXSD.xsd"/>
+         <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+      </xsd:schema>
+   </types>
+   <message name="cargaDocRequest">
+      <part name="cargaDocRequest" element="ns1:cargaDocRequest"/>
+   </message>
+   <message name="cargaDocResponse">
+      <part name="cargaDocResponse" element="ns1:cargaDocResponse"/>
+   </message>
+    <message name="consultDocRequest">
+      <part name="consultDocRequest" element="ns1:consultDocRequest"/>
+   </message>
+   <message name="consultDocResponse">
+      <part name="consultDocResponse" element="ns1:consultDocResponse"/>
+   </message>
+   <message name="messageError">
+    <part name="messageError" element="ns2:messageError"/>
+   </message>
+   <portType name="GestDocPortType">
+      <operation name="CargaDoc">
+         <input message="tns:cargaDocRequest"/>
+         <output message="tns:cargaDocResponse"/>
+         <fault name="fault" message="tns:messageError"/>
+      </operation>
+      <operation name="ConsultDoc">
+         <input message="tns:consultDocRequest"/>
+         <output message="tns:consultDocResponse"/>
+         <fault message="tns:messageError" name="Fault"/>
+      </operation>
+   </portType>
+   <binding name="GestDocPortTypeSOAP11Binding" type="tns:GestDocPortType">
+      <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <operation name="CargaDoc">
+         <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/RiesgoTransaccional/CargaDoc"/>
+         <input>
+            <soap:body use="literal" parts="cargaDocRequest"/>
+         </input>
+         <output>
+            <soap:body use="literal" parts="cargaDocResponse"/>
+         </output>
+         <fault name="fault">
+            <soap:fault name="fault" use="literal"/>
+         </fault>
+      </operation>
+      <operation name="ConsultDoc">
+         <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/RiesgoTransaccional/ConsultDoc"/>
+         <input>
+            <soap:body use="literal" parts="consultDocRequest"/>
+         </input>
+         <output>
+            <soap:body use="literal" parts="consultDocResponse"/>
+         </output>
+         <fault name="Fault">
+            <soap:fault name="Fault" use="literal"/>
+         </fault>
+      </operation>
+   </binding>
+</definitions>

@@ -1,0 +1,75 @@
+<definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Services/CobranzaConsultas" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:CbzE="http://servicios.montedepiedad.com.mx/NMP/Schema/Elementos/CobranzaConsultas" xmlns:Cbz="http://servicios.montedepiedad.com.mx/NMP/Services/CobranzaConsultas" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage">
+  <types>
+    <xsd:schema>
+      <xsd:import schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+    </xsd:schema>
+    <xsd:schema>
+      <xsd:import schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+    </xsd:schema>
+    <xsd:schema>
+      <xsd:import schemaLocation="../Schemas/NMPSvcCobranzaConsultasElementosXSD.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Elementos/CobranzaConsultas"/>
+    </xsd:schema>
+  </types>
+  <message name="NMPStandardHeader">
+    <part name="part" element="NMPsh:headerMessage"/>
+  </message>
+  <message name="consultarCobranzaClienteRequestMessage">
+    <part name="part" element="CbzE:consultarCobranzaClienteRequest"/>
+  </message>
+  <message name="consultarCobranzaClienteResponseMessage">
+    <part name="part" element="CbzE:consultarCobranzaClienteResponse"/>
+  </message>
+  <message name="consultarEstatusCobranzaRequestMessage">
+    <part name="part" element="CbzE:consultarEstatusCobranzaRequest"/>
+  </message>
+  <message name="consultarEstatusCobranzaResponseMessage">
+    <part name="part" element="CbzE:consultarEstatusCobranzaResponse"/>
+  </message>
+  <message name="consultarCobranzaFault">
+    <part name="part" element="NMPsm:messageError"/>
+  </message>
+  <portType name="ConsultaCobranza_ptt">
+    <operation name="consultarCobranzaCliente">
+      <input message="Cbz:consultarCobranzaClienteRequestMessage"/>
+      <output message="Cbz:consultarCobranzaClienteResponseMessage"/>
+      <fault message="Cbz:consultarCobranzaFault" name="consultarCobranzaFault"/>
+    </operation>
+    <operation name="consultarEstatusCobranza">
+      <input message="Cbz:consultarEstatusCobranzaRequestMessage"/>
+      <output message="Cbz:consultarEstatusCobranzaResponseMessage"/>
+      <fault message="Cbz:consultarCobranzaFault" name="consultarCobranzaFault"/>
+    </operation>
+  </portType>
+  <binding name="ConsultaCobranzaBinding" type="Cbz:ConsultaCobranza_ptt">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="consultarCobranzaCliente">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovil/consultarCobranzaSaldos"/>
+      <input>
+        <soap:body use="literal" parts="part"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="part"/>
+      </output>
+      <fault name="consultarCobranzaFault">
+        <soap:fault name="consultarCobranzaFault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="consultarEstatusCobranza">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovil/consultarCobranzaGestion"/>
+      <input>
+        <soap:body use="literal" parts="part"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="part"/>
+      </output>
+      <fault name="consultarCobranzaFault">
+        <soap:fault name="consultarCobranzaFault" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+  <service name="ConsultaCobranza_ptt">
+    <port name="ConsultaCobranza_pttPort" binding="Cbz:ConsultaCobranzaBinding">
+      <soap:address location=""/>
+    </port>
+  </service>
+</definitions>

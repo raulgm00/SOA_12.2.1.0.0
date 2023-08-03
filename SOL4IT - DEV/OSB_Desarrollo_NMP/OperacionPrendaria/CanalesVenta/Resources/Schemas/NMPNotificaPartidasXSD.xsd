@@ -1,0 +1,45 @@
+<xsd:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NotificacionPartidas"
+            elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Schema/NotificacionPartidas">
+  <xsd:element name="notificaTrasladoPartidaRequest" type="tns:partidasAsignadasType"/>
+  <xsd:element name="notificaTrasladoPartidaResponse" type="tns:responseType"/>
+  <xsd:complexType name="responseType">
+    <xsd:sequence>
+      <xsd:element name="respuesta" type="tns:codigoRespuestaType"/>
+      <xsd:element name="mensaje" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="partidasAsignadasType">
+    <xsd:sequence>
+      <xsd:element name="partidas" type="tns:partidaAsignadaType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="partidaAsignadaType">
+    <xsd:sequence>
+      <xsd:element name="partida" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="canalVenta" maxOccurs="unbounded">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <!--xsd:element name="id" type="xsd:int"/-->
+                  <xsd:element name="identificador" type="xsd:int" minOccurs="0"/>
+                  <xsd:element name="nombre" type="xsd:string"/>
+                  <xsd:element name="numeroPrendas" type="xsd:int"/>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="numeroSucursal" type="xsd:int"/>
+            <xsd:element name="totalPrendas" type="xsd:int"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="codigoRespuestaType">
+  <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="0" id="exitoso"/>
+      <xsd:enumeration value="1" id="fallo"/>     
+    </xsd:restriction>
+  </xsd:simpleType>  
+</xsd:schema>

@@ -1,0 +1,25 @@
+<adapter-config name="TxHistoricasCliente" adapter="db" wsdlLocation="../WSDLs/BITxHistoricasClienteDBWSDL.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  
+  <connection-factory UIConnectionName="BI_Prendario" location="eis/DB/bi_prendario"/>
+ <endpoint-interaction portType="TxHistoricasCliente_ptt" operation="TxHistoricasClientePP_DS_RF_IA">
+    <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+      <property name="SqlString" value="select    sk_movimiento,   num_folio,   desc_movimiento,   case desc_movimiento      when 'PP' then 'Empenio'     when 'DS' then 'Desempenio'     when 'RF' then 'Refrendo'     when 'IA' then 'Pase' end Desc_importe,   sk_sucursalactual,   fch_operacion,   imp_prestamo from nmprendario.HEC_PRENDARIO where desc_movimiento in('PP','DS','RF','IA') and fch_operacion>=sysdate-#rangoDias and sk_clientedwh=#idCliente and rownum&lt;=#numeroFilas"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+      <property name="QueryTimeout" value="10"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  <endpoint-interaction portType="TxHistoricasCliente_ptt" operation="TxHistoricasCliente_VB_VP">
+    <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+      <property name="SqlString" value="select    sk_movimiento,   num_folio,   desc_movimiento,   case desc_movimiento      when 'VB' then 'Venta_Billete'     when 'VP' then 'Venta_Publico' end Desc_importe,   sk_sucursalactual,   fch_operacion,   imp_prestamo from nmprendario.HEC_COMERCIAL where desc_movimiento in('VP','VB') and fch_operacion>=sysdate-#rangoDias and sk_clientedwh=#idCliente and rownum&lt;=#numeroFilas"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+      <property name="QueryTimeout" value="10"/>
+    </interaction-spec>
+  </endpoint-interaction>
+ <endpoint-interaction portType="TxHistoricasCliente_ptt" operation="TxHistoricasCliente_DP">
+    <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+      <property name="SqlString" value="select    sk_movimiento,   num_folio,   desc_movimiento,   'Deposito' Desc_importe,   sk_sucursalactual,   fch_operacion,   imp_prestamo from nmprendario.HEC_PRENDARIO where desc_movimiento='DP' and fch_operacion=sysdate-#rangoDias and sk_clientedwh=#idCliente and rownum&lt;=#numeroFilas"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+      <property name="QueryTimeout" value="10"/>
+    </interaction-spec>
+  </endpoint-interaction>
+</adapter-config>

@@ -1,0 +1,258 @@
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="urn:sap-com:document:sap:soap:functions:mc-style" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:n1="urn:sap-com:document:sap:rfc:functions" targetNamespace="urn:sap-com:document:sap:soap:functions:mc-style">
+<wsdl:documentation>
+<sidl:sidl xmlns:sidl="http://www.sap.com/2007/03/sidl"/>
+</wsdl:documentation>
+<wsp:UsingPolicy wsdl:required="true"/>
+<wsp:Policy wsu:Id="BN_ZLM_WS_CREA_CONTRATO">
+<wsaw:UsingAddressing xmlns:wsaw="http://schemas.xmlsoap.org/ws/2004/08/addressing"/>
+<saptrnbnd:OptimizedXMLTransfer xmlns:saptrnbnd="http://www.sap.com/webas/710/soap/features/transportbinding/" uri="http://xml.sap.com/2006/11/esi/esp/binxml" wsp:Optional="true"/>
+<sapattahnd:Enabled xmlns:sapattahnd="http://www.sap.com/710/features/attachment/">false</sapattahnd:Enabled>
+<wsp:ExactlyOne xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:sapsp="http://www.sap.com/webas/630/soap/features/security/policy" xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702" xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:wsu="http://schemas.xmlsoap.org/ws/2002/07/utility"/>
+</wsp:Policy>
+<wsp:Policy wsu:Id="IF_ZLM_WS_CREA_CONTRATO">
+<sapsession:Session xmlns:sapsession="http://www.sap.com/webas/630/soap/features/session/">
+<sapsession:enableSession>false</sapsession:enableSession>
+</sapsession:Session>
+<sapcentraladmin:CentralAdministration xmlns:sapcentraladmin="http://www.sap.com/webas/700/soap/features/CentralAdministration/" wsp:Optional="true">
+<sapcentraladmin:BusinessApplicationID>E3DA1948DDE97EF1BD4DF8DB880509E3</sapcentraladmin:BusinessApplicationID>
+</sapcentraladmin:CentralAdministration>
+</wsp:Policy>
+<wsp:Policy wsu:Id="OP_ZlmRfcCreaContrato">
+<sapcomhnd:enableCommit xmlns:sapcomhnd="http://www.sap.com/NW05/soap/features/commit/">false</sapcomhnd:enableCommit>
+<sapblock:enableBlocking xmlns:sapblock="http://www.sap.com/NW05/soap/features/blocking/">true</sapblock:enableBlocking>
+<saptrhnw05:required xmlns:saptrhnw05="http://www.sap.com/NW05/soap/features/transaction/">no</saptrhnw05:required>
+<saprmnw05:enableWSRM xmlns:saprmnw05="http://www.sap.com/NW05/soap/features/wsrm/">false</saprmnw05:enableWSRM>
+</wsp:Policy>
+<wsdl:types>
+<xsd:schema attributeFormDefault="qualified" targetNamespace="urn:sap-com:document:sap:rfc:functions">
+<xsd:simpleType name="char10">
+<xsd:restriction base="xsd:string">
+<xsd:maxLength value="10"/>
+</xsd:restriction>
+</xsd:simpleType>
+<xsd:simpleType name="char13">
+<xsd:restriction base="xsd:string">
+<xsd:maxLength value="13"/>
+</xsd:restriction>
+</xsd:simpleType>
+<xsd:simpleType name="char2">
+<xsd:restriction base="xsd:string">
+<xsd:maxLength value="2"/>
+</xsd:restriction>
+</xsd:simpleType>
+<xsd:simpleType name="char20">
+<xsd:restriction base="xsd:string">
+<xsd:maxLength value="20"/>
+</xsd:restriction>
+</xsd:simpleType>
+<xsd:simpleType name="char3">
+<xsd:restriction base="xsd:string">
+<xsd:maxLength value="3"/>
+</xsd:restriction>
+</xsd:simpleType>
+<xsd:simpleType name="char4">
+<xsd:restriction base="xsd:string">
+<xsd:maxLength value="4"/>
+</xsd:restriction>
+</xsd:simpleType>
+<xsd:simpleType name="char40">
+<xsd:restriction base="xsd:string">
+<xsd:maxLength value="40"/>
+</xsd:restriction>
+</xsd:simpleType>
+<xsd:simpleType name="char5">
+<xsd:restriction base="xsd:string">
+<xsd:maxLength value="5"/>
+</xsd:restriction>
+</xsd:simpleType>
+<xsd:simpleType name="char6">
+<xsd:restriction base="xsd:string">
+<xsd:maxLength value="6"/>
+</xsd:restriction>
+</xsd:simpleType>
+<xsd:simpleType name="char60">
+<xsd:restriction base="xsd:string">
+<xsd:maxLength value="60"/>
+</xsd:restriction>
+</xsd:simpleType>
+<xsd:simpleType name="curr13.2">
+<xsd:restriction base="xsd:decimal">
+<xsd:totalDigits value="13"/>
+<xsd:fractionDigits value="2"/>
+</xsd:restriction>
+</xsd:simpleType>
+<xsd:simpleType name="date10">
+<xsd:restriction base="xsd:string">
+<xsd:maxLength value="10"/>
+<xsd:pattern value="\d\d\d\d-\d\d-\d\d"/>
+</xsd:restriction>
+</xsd:simpleType>
+<xsd:simpleType name="decimal10.7">
+<xsd:restriction base="xsd:decimal">
+<xsd:totalDigits value="10"/>
+<xsd:fractionDigits value="7"/>
+</xsd:restriction>
+</xsd:simpleType>
+<xsd:simpleType name="numeric2">
+<xsd:restriction base="xsd:string">
+<xsd:maxLength value="2"/>
+<xsd:pattern value="\d*"/>
+</xsd:restriction>
+</xsd:simpleType>
+<xsd:simpleType name="numeric5">
+<xsd:restriction base="xsd:string">
+<xsd:maxLength value="5"/>
+<xsd:pattern value="\d*"/>
+</xsd:restriction>
+</xsd:simpleType>
+</xsd:schema>
+<xsd:schema xmlns:n0="urn:sap-com:document:sap:rfc:functions" attributeFormDefault="qualified" targetNamespace="urn:sap-com:document:sap:soap:functions:mc-style">
+<xsd:import namespace="urn:sap-com:document:sap:rfc:functions"/>
+<xsd:simpleType name="RfcException.Message.Number">
+<xsd:restriction base="xsd:string">
+<xsd:maxLength value="3"/>
+<xsd:pattern value="\d*"/>
+</xsd:restriction>
+</xsd:simpleType>
+<xsd:simpleType name="numeric6">
+<xsd:restriction base="xsd:string">
+<xsd:maxLength value="6"/>
+<xsd:pattern value="\d*"/>
+</xsd:restriction>
+</xsd:simpleType>
+<xsd:complexType name="ZlmStrCreaContrato">
+<xsd:sequence>
+<xsd:element name="Sociedad" type="n0:char4"/>
+<xsd:element name="Producto" type="n0:char3"/>
+<xsd:element name="MontoSolicitado" type="n0:curr13.2"/>
+<xsd:element name="Frecuencia" type="n0:numeric2"/>
+<xsd:element name="Plazo" type="n0:numeric2"/>
+<xsd:element name="TasaInteres" type="n0:decimal10.7"/>
+<xsd:element name="FechaDesembolso" type="n0:date10"/>
+<xsd:element name="FechaPrimerCobro" type="n0:date10"/>
+<xsd:element name="MultMoratorio" type="n0:decimal10.7"/>
+<xsd:element name="Origen" type="n0:char4"/>
+<xsd:element name="Destino" type="n0:char2"/>
+<xsd:element name="TipoDePago" type="n0:char6"/>
+<xsd:element name="DiasGracia" type="tns:numeric6"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ZlmStrCreaCliente">
+<xsd:sequence>
+<xsd:element name="IdCliente" type="n0:char10"/>
+<xsd:element name="Cliente" type="tns:ZlmStrDatosBp"/>
+<xsd:element name="Domicilio" type="tns:ZlmStrDomicilioBp"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ZlmStrDatosBp">
+<xsd:sequence>
+<xsd:element name="PrimerNombre" type="n0:char40"/>
+<xsd:element name="SegundoNombre" type="n0:char40"/>
+<xsd:element name="ApellidoPaterno" type="n0:char40"/>
+<xsd:element name="ApellidoMaterno" type="n0:char40"/>
+<xsd:element name="FechaNacimiento" type="n0:date10"/>
+<xsd:element name="Rfc" type="n0:char20"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ZlmStrDomicilioBp">
+<xsd:sequence>
+<xsd:element name="Calle" type="n0:char60"/>
+<xsd:element name="NumExt" type="n0:char10"/>
+<xsd:element name="NumInt" type="n0:char10"/>
+<xsd:element name="IdColonia" type="n0:char5"/>
+<xsd:element name="Cp" type="n0:numeric5"/>
+<xsd:element name="IdMunicipio" type="n0:char3"/>
+<xsd:element name="IdEstado" type="n0:char2"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="RfcException.Message">
+<xsd:sequence>
+<xsd:element name="ID" type="xsd:string"/>
+<xsd:element name="Number" type="tns:RfcException.Message.Number"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ZlmRfcCreaContrato.RfcException">
+<xsd:sequence>
+<xsd:element name="Name" type="tns:ZlmRfcCreaContrato.RfcExceptions"/>
+<xsd:element name="Text" type="xsd:string" minOccurs="0"/>
+<xsd:element name="Message" type="tns:RfcException.Message" minOccurs="0"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:simpleType name="ZlmRfcCreaContrato.RfcExceptions">
+<xsd:restriction base="xsd:string">
+<xsd:enumeration value="ExCreaSolicitud"/>
+<xsd:enumeration value="ExIva"/>
+<xsd:enumeration value="ExDatos"/>
+<xsd:enumeration value="ExCalculoPagoPeriodico"/>
+<xsd:enumeration value="ExCreaCliente"/>
+</xsd:restriction>
+</xsd:simpleType>
+<xsd:element name="ZlmRfcCreaContrato.Exception" type="tns:ZlmRfcCreaContrato.RfcException"/>
+<xsd:element name="ZlmRfcCreaContrato">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="DatosCliente" type="tns:ZlmStrCreaCliente"/>
+<xsd:element name="DatosContrato" type="tns:ZlmStrCreaContrato"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="ZlmRfcCreaContratoResponse">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="Contrato" type="n0:char13"/>
+<xsd:element name="DatosCliente" type="tns:ZlmStrCreaCliente"/>
+<xsd:element name="DatosContrato" type="tns:ZlmStrCreaContrato"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+</xsd:schema>
+</wsdl:types>
+<wsdl:message name="ZlmRfcCreaContrato">
+<wsdl:part name="parameters" element="tns:ZlmRfcCreaContrato"/>
+</wsdl:message>
+<wsdl:message name="ZlmRfcCreaContratoResponse">
+<wsdl:part name="parameter" element="tns:ZlmRfcCreaContratoResponse"/>
+</wsdl:message>
+<wsdl:message name="ZlmRfcCreaContrato.Exception">
+<wsdl:part name="ZlmRfcCreaContrato.Exception" element="tns:ZlmRfcCreaContrato.Exception"/>
+</wsdl:message>
+<wsdl:portType name="ZLM_WS_CREA_CONTRATO">
+<wsp:Policy>
+<wsp:PolicyReference URI="#IF_ZLM_WS_CREA_CONTRATO"/>
+</wsp:Policy>
+<wsdl:operation name="ZlmRfcCreaContrato">
+<wsp:Policy>
+<wsp:PolicyReference URI="#OP_ZlmRfcCreaContrato"/>
+</wsp:Policy>
+<wsdl:input message="tns:ZlmRfcCreaContrato"/>
+<wsdl:output message="tns:ZlmRfcCreaContratoResponse"/>
+<wsdl:fault name="ZlmRfcCreaContrato.Exception" message="tns:ZlmRfcCreaContrato.Exception"/>
+</wsdl:operation>
+</wsdl:portType>
+<wsdl:binding name="ZLM_WS_CREA_CONTRATO" type="tns:ZLM_WS_CREA_CONTRATO">
+<wsp:Policy>
+<wsp:PolicyReference URI="#BN_ZLM_WS_CREA_CONTRATO"/>
+</wsp:Policy>
+<wsa:EndpointReference xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing">
+<wsa:ReferenceParameters/>
+</wsa:EndpointReference>
+<soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+<wsdl:operation name="ZlmRfcCreaContrato">
+<soap:operation soapAction="" style="document"/>
+<wsdl:input>
+<soap:body use="literal"/>
+</wsdl:input>
+<wsdl:output>
+<soap:body use="literal"/>
+</wsdl:output>
+<wsdl:fault name="ZlmRfcCreaContrato.Exception">
+<soap:fault name="ZlmRfcCreaContrato.Exception" use="literal"/>
+</wsdl:fault>
+</wsdl:operation>
+</wsdl:binding>
+<wsdl:service name="ZLM_WS_CREA_CONTRATO">
+<wsdl:port name="ZLM_WS_CREA_CONTRATO" binding="tns:ZLM_WS_CREA_CONTRATO">
+<soap:address location="http://dcpimsdsap01.nmp.com.mx:8000/sap/bc/srt/rfc/sap/zlm_ws_crea_contrato/300/zlm_ws_crea_contrato/zlm_ws_crea_contrato"/>
+</wsdl:port>
+</wsdl:service>
+</wsdl:definitions>

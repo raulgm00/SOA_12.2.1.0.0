@@ -1,0 +1,114 @@
+<wsdl:definitions name="NotificacionEventosProceso" targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Service/NotificacionEtapasProceso" xmlns:ns1="http://servicios.montedepiedad.com.mx/NMP/Service/NotificacionEtapasProceso" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:client="http://servicios.montedepiedad.com.mx/NMP/Schema/NotificaEventosProceso" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:nmps="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:nmph="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:vprop="http://docs.oasis-open.org/wsbpel/2.0/varprop" xmlns:cor="http://xmlns.oracle.com/ApplicationSOADevNMP/NotificacionEventosProceso/BPEL_NotificaEventoProceso/correlationset">
+    <plnk:partnerLinkType name="NotificaEventosProcesoPLT" xmlns="http://schemas.xmlsoap.org/ws/2003/05/partner-link/">
+        <plnk:role name="NotificaEventosProvider" portType="ns1:NotificacionEventosProceso"/>
+        <plnk:role name="NotificaEventosRequester" portType="ns1:NotificacionEventosProcesoCallBack"/>
+    </plnk:partnerLinkType>
+    <vprop:propertyAlias propertyName="cor:id1" element="client:notificaInicioEventoRequest">
+        <vprop:query>client:identificadores/client:identificador[1]/client:id</vprop:query>
+    </vprop:propertyAlias>
+    <vprop:propertyAlias propertyName="cor:id1" element="client:notificaFinEventoRequest">
+        <vprop:query>client:identificadores/client:identificador[1]/client:id</vprop:query>
+    </vprop:propertyAlias>
+    <vprop:propertyAlias propertyName="cor:id2" element="client:notificaInicioEventoRequest">
+        <vprop:query>client:identificadores/client:identificador[2]/client:id</vprop:query>
+    </vprop:propertyAlias>
+    <vprop:propertyAlias propertyName="cor:id2" element="client:notificaFinEventoRequest">
+        <vprop:query>client:identificadores/client:identificador[2]/client:id</vprop:query>
+    </vprop:propertyAlias>
+    <vprop:propertyAlias propertyName="cor:proceso" element="client:notificaFinEventoRequest">
+        <vprop:query>client:identificadores/@proceso</vprop:query>
+    </vprop:propertyAlias>
+    <vprop:propertyAlias propertyName="cor:proceso" element="client:notificaInicioEventoRequest">
+        <vprop:query>client:identificadores/@proceso</vprop:query>
+    </vprop:propertyAlias>
+ 
+    <wsdl:types>
+        <xsd:schema>
+            <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NotificaEventosProceso" schemaLocation="../XSD/NmpNotificaEventoProcesoXSD.xsd"/>
+        </xsd:schema>
+        <xsd:schema>
+            <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../XSD/NMPStandardHeader.xsd"/>
+        </xsd:schema>
+        <xsd:schema>
+            <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../XSD/NMPStandardMessage.xsd"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="notificaInicioEventoRequest">
+        <wsdl:part name="req" element="client:notificaInicioEventoRequest"/>
+    </wsdl:message>
+    <wsdl:message name="notificaInicioEventoResponse">
+        <wsdl:part name="res" element="client:notificaInicioEventoResponse"/>
+    </wsdl:message>
+    <wsdl:message name="MessageFaultStandardNMP">
+        <wsdl:part name="msg" element="nmps:messageError"/>
+    </wsdl:message>
+    <wsdl:message name="notificaFinEventoRequest">
+        <wsdl:part name="req" element="client:notificaFinEventoRequest"/>
+    </wsdl:message>
+    <wsdl:message name="notificaFinEventoResponse">
+        <wsdl:part name="res" element="client:notificaFinEventoResponse"/>
+    </wsdl:message>
+    <wsdl:message name="notificacionResponse">
+        <wsdl:part name="req" element="client:notificacionResponse"/>
+    </wsdl:message>
+    <wsdl:message name="HeaderStandardNMP">
+        <wsdl:part name="header" element="nmph:headerMessage"/>
+    </wsdl:message>
+     <wsdl:message name="CustomHeader">
+        <wsdl:part name="header" element="client:customHeaderBPEL"/>
+    </wsdl:message>
+    <wsdl:portType name="NotificacionEventosProceso">
+        <wsdl:operation name="notificaInicioEvento">
+            <wsdl:input message="ns1:notificaInicioEventoRequest"/>
+            <wsdl:output message="ns1:notificaInicioEventoResponse"/>
+            <wsdl:fault name="fault" message="ns1:MessageFaultStandardNMP"/>
+        </wsdl:operation>
+        <wsdl:operation name="notificaFinEvento">
+            <wsdl:input message="ns1:notificaFinEventoRequest"/>
+            <wsdl:output message="ns1:notificaFinEventoResponse"/>
+            <wsdl:fault name="fault" message="ns1:MessageFaultStandardNMP"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:portType name="NotificacionEventosProcesoCallBack">
+        <wsdl:operation name="finNotificacion">
+            <wsdl:input message="ns1:notificacionResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="NotificacionEventosProcesoSOAP11Binding" type="ns1:NotificacionEventosProceso">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="notificaInicioEvento">
+            <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/NotificacionEtapasProceso/notificaInicioEvento"/>
+            <wsdl:input>
+                <soap:body use="literal" parts="req"/>
+                <soap:header message="ns1:CustomHeader" part="header" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" parts="res"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="notificaFinEvento">
+            <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/NotificacionEtapasProceso/notificaFinEvento"/>
+            <wsdl:input>
+                <soap:body use="literal" parts="req"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" parts="res"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="NotificacionEtapasCallBackSOAP11Binding" type="ns1:NotificacionEventosProcesoCallBack">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="finNotificacion">
+            <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/NotificacionEtapasProceso/finNotificacion"/>
+            <wsdl:input>
+                <soap:body use="literal" parts="req"/>
+            </wsdl:input>
+        </wsdl:operation>
+    </wsdl:binding>
+</wsdl:definitions>

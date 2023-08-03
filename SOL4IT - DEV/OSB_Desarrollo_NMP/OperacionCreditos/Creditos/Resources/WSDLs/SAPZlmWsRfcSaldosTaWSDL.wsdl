@@ -1,0 +1,199 @@
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+                  xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+                  xmlns:tns="urn:sap-com:document:sap:soap:functions:mc-style"
+                  xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
+                  xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+                  xmlns:n1="urn:sap-com:document:sap:rfc:functions"
+                  targetNamespace="urn:sap-com:document:sap:soap:functions:mc-style">
+  <wsdl:documentation>
+    <sidl:sidl xmlns:sidl="http://www.sap.com/2007/03/sidl"/>
+  </wsdl:documentation>
+  <wsdl:types>
+    <xsd:schema attributeFormDefault="qualified"
+                targetNamespace="urn:sap-com:document:sap:rfc:functions">
+      <xsd:simpleType name="char13">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="13"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char50">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="50"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="cuky5">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="5"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="curr13.2">
+        <xsd:restriction base="xsd:decimal">
+          <xsd:totalDigits value="13"/>
+          <xsd:fractionDigits value="2"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="date10">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="10"/>
+          <xsd:pattern value="\d\d\d\d-\d\d-\d\d"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+    </xsd:schema>
+    <xsd:schema xmlns:n0="urn:sap-com:document:sap:rfc:functions"
+                attributeFormDefault="qualified"
+                targetNamespace="urn:sap-com:document:sap:soap:functions:mc-style">
+      <xsd:import namespace="urn:sap-com:document:sap:rfc:functions"/>
+      <xsd:simpleType name="RfcException.Message.Number">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="3"/>
+          <xsd:pattern value="\d*"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:complexType name="ZlmInfoProyeccion">
+        <xsd:sequence>
+          <xsd:element name="Ranl" type="n0:char13"/>
+          <xsd:element name="Santwhr" type="n0:cuky5"/>
+          <xsd:element name="SActual" type="n0:curr13.2"/>
+          <xsd:element name="SCorte" type="n0:curr13.2"/>
+          <xsd:element name="FCorte" type="n0:date10"/>
+          <xsd:element name="SCorte2" type="n0:curr13.2"/>
+          <xsd:element name="FCorte2" type="n0:date10"/>
+          <xsd:element name="SCorte3" type="n0:curr13.2"/>
+          <xsd:element name="FCorte3" type="n0:date10"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZlmStrSaldos">
+        <xsd:sequence>
+          <xsd:element name="Contrato" type="n0:char13"/>
+          <xsd:element name="Producto" type="n0:char50"/>
+          <xsd:element name="Moneda" type="n0:cuky5"/>
+          <xsd:element name="Desembolso" type="n0:curr13.2"/>
+          <xsd:element name="CapVig" type="n0:curr13.2"/>
+          <xsd:element name="CapVen" type="n0:curr13.2"/>
+          <xsd:element name="SaldoVig" type="n0:curr13.2"/>
+          <xsd:element name="SaldoVen" type="n0:curr13.2"/>
+          <xsd:element name="SaldoCap" type="n0:curr13.2"/>
+          <xsd:element name="IntVig" type="n0:curr13.2"/>
+          <xsd:element name="IntVen" type="n0:curr13.2"/>
+          <xsd:element name="SaldoInt" type="n0:curr13.2"/>
+          <xsd:element name="SaldoCom" type="n0:curr13.2"/>
+          <xsd:element name="PagosNoAplicados" type="n0:curr13.2"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZlmStrAmortizacion">
+        <xsd:sequence>
+          <xsd:element name="Contrato" type="n0:char13"/>
+          <xsd:element name="NumPago" type="xsd:int"/>
+          <xsd:element name="FechaPago" type="n0:date10"/>
+          <xsd:element name="PagoTotal" type="n0:curr13.2"/>
+          <xsd:element name="Capital" type="n0:curr13.2"/>
+          <xsd:element name="Interes" type="n0:curr13.2"/>
+          <xsd:element name="IvaInteres" type="n0:curr13.2"/>
+          <xsd:element name="SaldoCapital" type="n0:curr13.2"/>
+          <xsd:element name="SaldoInteres" type="n0:curr13.2"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="RfcException.Message">
+        <xsd:sequence>
+          <xsd:element name="ID" type="xsd:string"/>
+          <xsd:element name="Number" type="tns:RfcException.Message.Number"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZlmRfcSaldosTa.RfcException">
+        <xsd:sequence>
+          <xsd:element name="Name" type="tns:ZlmRfcSaldosTa.RfcExceptions"/>
+          <xsd:element name="Text" type="xsd:string" minOccurs="0"/>
+          <xsd:element name="Message" type="tns:RfcException.Message"
+                       minOccurs="0"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZlmTtProyeccion">
+        <xsd:sequence>
+          <xsd:element name="item" type="tns:ZlmInfoProyeccion" minOccurs="0"
+                       maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZlmTtSaldos">
+        <xsd:sequence>
+          <xsd:element name="item" type="tns:ZlmStrSaldos" minOccurs="0"
+                       maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZlmTtAmortizacion">
+        <xsd:sequence>
+          <xsd:element name="item" type="tns:ZlmStrAmortizacion" minOccurs="0"
+                       maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:simpleType name="ZlmRfcSaldosTa.RfcExceptions">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="ExVacio"/>
+          <xsd:enumeration value="ExContrato"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:element name="ZlmRfcSaldosTa.Exception"
+                   type="tns:ZlmRfcSaldosTa.RfcException"/>
+      <xsd:element name="ZlmRfcSaldosTa">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="IContrato" type="n0:char13"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="ZlmRfcSaldosTaResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="Amortizaciones" type="tns:ZlmTtAmortizacion"/>
+            <xsd:element name="Proyeccion" type="tns:ZlmTtProyeccion"/>
+            <xsd:element name="Saldos" type="tns:ZlmTtSaldos"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="ZlmRfcSaldosTa">
+    <wsdl:part name="parameters" element="tns:ZlmRfcSaldosTa"/>
+  </wsdl:message>
+  <wsdl:message name="ZlmRfcSaldosTaResponse">
+    <wsdl:part name="parameter" element="tns:ZlmRfcSaldosTaResponse"/>
+  </wsdl:message>
+  <wsdl:message name="ZlmRfcSaldosTa.Exception">
+    <wsdl:part name="ZlmRfcSaldosTa.Exception"
+               element="tns:ZlmRfcSaldosTa.Exception"/>
+  </wsdl:message>
+  <wsdl:portType name="ZLM_WS_RFC_SALDOS_TA">
+    <wsdl:operation name="ZlmRfcSaldosTa">
+      <wsdl:input message="tns:ZlmRfcSaldosTa"/>
+      <wsdl:output message="tns:ZlmRfcSaldosTaResponse"/>
+      <wsdl:fault name="ZlmRfcSaldosTa.Exception"
+                  message="tns:ZlmRfcSaldosTa.Exception"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ZLM_WS_RFC_SALDOS_TA" type="tns:ZLM_WS_RFC_SALDOS_TA">
+    <wsa:EndpointReference xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing">
+      <wsa:ReferenceParameters/>
+    </wsa:EndpointReference>
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"
+                  style="document"/>
+    <wsdl:operation name="ZlmRfcSaldosTa">
+      <soap:operation soapAction="ZlmRfcSaldosTa" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ZlmRfcSaldosTa.Exception">
+        <soap:fault name="ZlmRfcSaldosTa.Exception" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ZLM_WS_RFC_SALDOS_TA">
+    <wsdl:port name="ZLM_WS_RFC_SALDOS_TA" binding="tns:ZLM_WS_RFC_SALDOS_TA">
+      <soap:address location="http://dcpimsdsap01.nmp.com.mx:8000/sap/bc/srt/rfc/sap/zlm_ws_rfc_saldos_ta/300/zlm_ws_rfc_saldos_ta/zlm_ws_rfc_saldos_ta"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

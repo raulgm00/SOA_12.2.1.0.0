@@ -1,0 +1,53 @@
+<WL5G3N0:definitions name="Ofertas" targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Services/Ofertas" xmlns:WL5G3N0="http://schemas.xmlsoap.org/wsdl/" xmlns:WL5G3N1="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:WL5G3N2="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Ofertas" xmlns:WL5G3N3="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:WL5G3N4="http://servicios.montedepiedad.com.mx/NMP/Services/Ofertas" xmlns:WL5G3N5="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <WL5G3N0:types>
+    <xsd:schema xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:SvcNMPOfertasE="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Ofertas" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Services/Ofertas" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Ofertas" schemaLocation="../Schemas/NMPOfertasSvcElementosXSD.xsd"/>
+    </xsd:schema>
+  </WL5G3N0:types>
+  <WL5G3N0:message name="generarOfertasRequestMessage">
+    <WL5G3N0:part name="generarOfertasRequest" element="WL5G3N2:GenerarOfertasRequest"/>
+  </WL5G3N0:message>
+  <WL5G3N0:message name="generarOfertasResponseMessage">
+    <WL5G3N0:part name="generarOfertasResponse" element="WL5G3N2:GenerarOfertasResponse"/>
+  </WL5G3N0:message>
+  <WL5G3N0:message name="ofertasFaultMessage">
+    <WL5G3N0:part name="ofertasFault" element="WL5G3N3:messageError"/>
+  </WL5G3N0:message>
+  <WL5G3N0:message name="NMPHeaderRequest">
+    <WL5G3N0:part name="requestHeader" element="WL5G3N1:headerMessage"/>
+  </WL5G3N0:message>
+  <WL5G3N0:message name="NMPHeaderResponse">
+    <WL5G3N0:part name="responseHeader" element="WL5G3N1:headerMessageResponse"/>
+  </WL5G3N0:message>
+  <WL5G3N0:portType name="Ofertas_ptt">
+    <WL5G3N0:operation name="generarOfertas">
+      <WL5G3N0:input message="WL5G3N4:generarOfertasRequestMessage"/>
+      <WL5G3N0:output message="WL5G3N4:generarOfertasResponseMessage"/>
+      <WL5G3N0:fault name="Fault" message="WL5G3N4:ofertasFaultMessage"/>
+    </WL5G3N0:operation>
+  </WL5G3N0:portType>
+  <WL5G3N0:binding name="OfertasBinding" type="WL5G3N4:Ofertas_ptt">
+    <WL5G3N5:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <WL5G3N0:operation name="generarOfertas">
+      <WL5G3N5:operation style="document" soapAction="generarOfertas"/>
+      <WL5G3N0:input>
+        <WL5G3N5:body use="literal"/>
+        <WL5G3N5:header message="WL5G3N4:NMPHeaderRequest" part="requestHeader" use="literal"/>
+      </WL5G3N0:input>
+      <WL5G3N0:output>
+        <WL5G3N5:body use="literal"/>
+        <WL5G3N5:header message="WL5G3N4:NMPHeaderResponse" part="responseHeader" use="literal"/>
+      </WL5G3N0:output>
+      <WL5G3N0:fault name="Fault">
+        <WL5G3N5:fault name="Fault" use="literal"/>
+      </WL5G3N0:fault>
+    </WL5G3N0:operation>
+  </WL5G3N0:binding>
+  <WL5G3N0:service name="BRMOfertaPrendariaReglas">
+    <WL5G3N0:port name="Ofertas_pt" binding="WL5G3N4:OfertasBinding">
+      <WL5G3N5:address location="http://10.30.3.15:8001/soa-infra/services/OPP_PREN/BRMOfertaPrendaria/BRMOfertaPrendariaReglas"/>
+    </WL5G3N0:port>
+  </WL5G3N0:service>
+</WL5G3N0:definitions>

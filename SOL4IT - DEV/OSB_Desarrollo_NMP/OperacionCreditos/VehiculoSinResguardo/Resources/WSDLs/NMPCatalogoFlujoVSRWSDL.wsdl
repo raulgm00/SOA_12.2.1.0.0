@@ -1,0 +1,107 @@
+<wsdl:definitions name="NMPCatalogoFlujoVSR" targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Services/FlujoVehiculoSinReguardo/Catalogos" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Services/FlujoVehiculoSinReguardo/Catalogos" xmlns:inp1="http://servicios.montedepiedad.com.mx/NMP/Schema/FlujoVehiculosSinResguardo/Catalogos" xmlns:inp2="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:smcmnsn="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">
+  <wsdl:types>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/FlujoVehiculosSinResguardo/Catalogos" schemaLocation="../Schemas/NMPCatalogoFlujoVSRXSD.xsd"/>
+    </xsd:schema>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+    </xsd:schema>
+    <xsd:schema>
+      <xsd:import schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="obtenerMotivosRechazoRequestMessage">
+    <wsdl:part name="request" element="inp1:obtenerMotivosRechazoRequest"/>
+  </wsdl:message>
+  <wsdl:message name="obtenerMotivosRechazoResponseMessage">
+    <wsdl:part name="response" element="inp1:obtenerMotivosRechazoResponse"/>
+  </wsdl:message>
+  <wsdl:message name="obtenerEtapasFlujoRequestMessage">
+    <wsdl:part name="request" element="inp1:obtenerEtapasFlujoRequest"/>
+  </wsdl:message>
+  <wsdl:message name="obtenerEtapasFlujoResponseMessage">
+    <wsdl:part name="response" element="inp1:obtenerEtapasFlujoResponse"/>
+  </wsdl:message>
+  <wsdl:message name="obtenerEstadosSolicitudRequestMessage">
+    <wsdl:part name="request" element="inp1:obtenerEstadosSolicitudRequest"/>
+  </wsdl:message>
+  <wsdl:message name="obtenerEstadosSolicitudResponseMessage">
+    <wsdl:part name="response" element="inp1:obtenerEstadosSolicitudResponse"/>
+  </wsdl:message>
+  <wsdl:message name="faultMessage">
+    <wsdl:part name="catalogoFlujoVSRfault" element="inp2:messageError"/>
+  </wsdl:message>
+  <wsdl:portType name="catalogoVSR_ptt">
+    <wsdl:operation name="obtenerMotivosRechazo">
+      <wsdl:input message="tns:obtenerMotivosRechazoRequestMessage"/>
+      <wsdl:output message="tns:obtenerMotivosRechazoResponseMessage"/>
+      <wsdl:fault name="catalogoFlujoVSRfault" message="tns:faultMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="obtenerEtapasFlujo">
+      <wsdl:input message="tns:obtenerEtapasFlujoRequestMessage"/>
+      <wsdl:output message="tns:obtenerEtapasFlujoResponseMessage"/>
+      <wsdl:fault name="catalogoFlujoVSRfault" message="tns:faultMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="obtenerEstadosSolicitud">
+      <wsdl:input message="tns:obtenerEstadosSolicitudRequestMessage"/>
+      <wsdl:output message="tns:obtenerEstadosSolicitudResponseMessage"/>
+      <wsdl:fault name="catalogoFlujoVSRfault" message="tns:faultMessage"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="catalogoVSR_bind" type="tns:catalogoVSR_ptt">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="obtenerMotivosRechazo">
+      <soap:operation style="document" soapAction="obtenerMotivosRechazo"/>
+      <wsdl:input>
+        <soap:body use="literal" namespace="http://servicios.montedepiedad.com.mx/NMP/Services/FlujoVehiculoSinReguardo/Catalogo"/>
+        <soap:header message="tns:headerRequestMessage" part="headerRequest" use="literal" wsdl:required="true"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" namespace="http://servicios.montedepiedad.com.mx/NMP/Services/FlujoVehiculoSinReguardo/Catalogo"/>
+        <soap:header message="tns:headerResponseMessage" use="literal" part="headerResponse" wsdl:required="true"/>
+      </wsdl:output>
+      <wsdl:fault name="catalogoFlujoVSRfault">
+        <soap:fault name="catalogoFlujoVSRfault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="obtenerEtapasFlujo">
+      <soap:operation style="document" soapAction="obtenerEtapasFlujo"/>
+      <wsdl:input>
+        <soap:body use="literal" namespace="http://servicios.montedepiedad.com.mx/NMP/Services/FlujoVehiculoSinReguardo/Catalogo"/>
+        <soap:header message="tns:headerRequestMessage" part="headerRequest" use="literal" wsdl:required="true"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" namespace="http://servicios.montedepiedad.com.mx/NMP/Services/FlujoVehiculoSinReguardo/Catalogo"/>
+        <soap:header message="tns:headerResponseMessage" use="literal" part="headerResponse" wsdl:required="true"/>
+      </wsdl:output>
+      <wsdl:fault name="catalogoFlujoVSRfault">
+        <soap:fault name="catalogoFlujoVSRfault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="obtenerEstadosSolicitud">
+      <soap:operation style="document" soapAction="obtenerEstadosSolicitud"/>
+      <wsdl:input>
+        <soap:body use="literal" namespace="http://servicios.montedepiedad.com.mx/NMP/Services/FlujoVehiculoSinReguardo/Catalogo"/>
+        <soap:header message="tns:headerRequestMessage" part="headerRequest" use="literal" wsdl:required="true"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" namespace="http://servicios.montedepiedad.com.mx/NMP/Services/FlujoVehiculoSinReguardo/Catalogo"/>
+        <soap:header message="tns:headerResponseMessage" use="literal" part="headerResponse" wsdl:required="true"/>
+      </wsdl:output>
+      <wsdl:fault name="catalogoFlujoVSRfault">
+        <soap:fault name="catalogoFlujoVSRfault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:message name="headerRequestMessage">
+    <wsdl:part name="headerRequest" element="smcmnsn:headerMessage"/>
+  </wsdl:message>
+  <wsdl:message name="headerResponseMessage">
+    <wsdl:part name="headerResponse" element="inp2:messageResponse"/>
+  </wsdl:message>
+  <wsdl:service name="catalogoVSR_ptt">
+    <wsdl:port name="catalogoVSR_pttPort" binding="tns:catalogoVSR_bind">
+      <soap:address location="http://10.30.3.15:8011/"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

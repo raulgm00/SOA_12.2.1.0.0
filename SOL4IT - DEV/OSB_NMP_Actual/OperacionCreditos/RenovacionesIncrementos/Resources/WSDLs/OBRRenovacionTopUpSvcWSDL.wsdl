@@ -1,0 +1,85 @@
+<wsdl:definitions name="BrmReglaRenovacionTopUpWSDL" targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Services/Brm/ReglaRenovacionTopUp" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Services/Brm/ReglaRenovacionTopUp" xmlns:NMPBrmRTP="http://servicios.montedepiedad.com.mx/NMP/Schema/ReglaRenovacionTopUp" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:NMPSTDMSG="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:NMPSTDHD="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:documentation>
+        <abstractWSDL>http://dcpsoadev1n1.nmp.com.mx:17004/soa-infra/services/OPP_FIN/BRMRenovacionTopUp!1.1/WSDLs/BrmReglaRenovacionTopUpWSDL.wsdl</abstractWSDL>
+    </wsdl:documentation>
+  <wsdl:types>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/ReglaRenovacionTopUp" schemaLocation="../Schemas/BRMReglaRenovacionTopUpXSD.xsd"/>
+    </xsd:schema>
+    <xsd:schema>
+      <xsd:import schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+    </xsd:schema>
+    <xsd:schema>
+      <xsd:import schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="isRenovacionRequestMessage">
+    <wsdl:part name="payload" element="NMPBrmRTP:isRenovacionTopUpMessageRequest"/>
+  </wsdl:message>
+  <wsdl:message name="isRenovacionResponseMessage">
+    <wsdl:part name="payload" element="NMPBrmRTP:isRenovacionTopUpMessageResponse"/>
+  </wsdl:message>
+  <wsdl:message name="renovacionFaultMessage">
+    <wsdl:part name="renovacionFault" element="NMPSTDMSG:messageError"/>
+  </wsdl:message>
+  <wsdl:message name="isSolicitarCampRequestMessage">
+    <wsdl:part name="payload" element="NMPBrmRTP:isSolicitarCampanaMessageRequest"/>
+  </wsdl:message>
+  <wsdl:message name="isSolicitarCampResponseMessage">
+    <wsdl:part name="payload" element="NMPBrmRTP:isSolicitarCampanaMessageResponse"/>
+  </wsdl:message>
+  <wsdl:message name="NMPHeaderRequest">
+    <wsdl:part name="requestHeader" element="NMPSTDHD:headerMessage"/>
+  </wsdl:message>
+  <wsdl:message name="NMPHeaderResponse">
+    <wsdl:part name="responseHeader" element="NMPSTDHD:headerMessageResponse"/>
+  </wsdl:message>
+  <wsdl:portType name="brmRenovacionTopUp_ptt">
+    <wsdl:operation name="isRenovacionTopUp">
+      <wsdl:input message="tns:isRenovacionRequestMessage"/>
+      <wsdl:output message="tns:isRenovacionResponseMessage"/>
+      <wsdl:fault name="Fault" message="tns:renovacionFaultMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="isSolicitarCamp">
+      <wsdl:input message="tns:isSolicitarCampRequestMessage"/>
+      <wsdl:output message="tns:isSolicitarCampResponseMessage"/>
+      <wsdl:fault name="Fault" message="tns:renovacionFaultMessage"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="brmRenovacionTopUp_pttSOAP11Binding" type="tns:brmRenovacionTopUp_ptt">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="isRenovacionTopUp">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/Brm/ReglaRenovacionTopUp/isRenovacionTopUp"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="payload"/>
+        <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="payload"/>
+        <soap:header message="tns:NMPHeaderResponse" part="responseHeader" use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="Fault">
+        <soap:fault name="Fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="isSolicitarCamp">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/Brm/ReglaRenovacionTopUp/isSolicitarCamp"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="payload"/>
+        <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="payload"/>
+        <soap:header message="tns:NMPHeaderResponse" part="responseHeader" use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="Fault">
+        <soap:fault name="Fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="BrmRenovacionTopUpService">
+    <wsdl:port name="brmRenovacionTopUp_pt" binding="tns:brmRenovacionTopUp_pttSOAP11Binding">
+      <soap:address location="http://dcpsoadev1n1.nmp.com.mx:17004/soa-infra/services/OPP_FIN/BRMRenovacionTopUp/BrmRenovacionTopUpService"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,1148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/alert/config" xmlns:con4="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con5="http://www.bea.com/wli/sb/stages/publish/config">
+    <con:coreEntry>
+        <con:description>Este servicio considera las operaciones:
+getPartida: Consulta la información de la partida en MIDAS para obtener un id de transaccion valido.
+setOperacion: Se valida si el pago ya existe en la bitacora de admin pagos, si esto se cumple se devuelve una respuesta de existo, en caso contrario se notifica el pago al servicio de MIDAS.
+getComprobantes: Mediante el numero de serie se recupera el comprobante de pago de MIDAS.</con:description>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="OperacionPrendaria/PagoEnLinea/Resources/WSDLs/NMPUtileriaAdminPagosWSDL"/>
+            <con:binding>
+                <con:name>AdminPagosBinding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Services/NMPAdminPagosSvc</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:logging enabled="false" level="debug"/>
+            <oper:monitoring enabled="true" level="service" aggregationInterval="10"/>
+            <oper:reporting>false</oper:reporting>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router errorHandler="error-N3f57c7ff.37012dab.0.152ae870506.N7ffc">
+        <con:pipeline type="error" name="error-af10c6f.N3d1c1ef2.0.15a012c3203.N7ef6" xmlns:con3="http://www.bea.com/wli/sb/stages/publish/config">
+            <con:stage id="_StageId-af10c6f.N3d1c1ef2.0.15a012c3203.N7ef5" name="StageErrorDB">
+                <con:context>
+                    <con2:userNsDecl prefix="util" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos"/>
+                </con:context>
+                <con:actions>
+                    <con4:report>
+                        <con2:id>_ActionId-af004ec.31d598af.0.15ca7f51880.N7ffe</con2:id>
+                        <con4:expr>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con4:expr>
+                        <con4:labels>
+                            <con4:key>registroPagoDB</con4:key>
+                            <con4:varName>body</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./util:actualizarTransaccionPagoRequest/util:NmpTransaccionPago/util:transaccionBancaria</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                    </con4:report>
+                    <con2:resume>
+                        <con2:id>_ActionId-af10c6f.N3d1c1ef2.0.15a012c3203.N7ef3</con2:id>
+                    </con2:resume>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-af004ec.31d598af.0.15ca7f51880.N7ace">
+            <con:stage id="_StageId-af004ec.31d598af.0.15ca7f51880.N7acd" name="StageError">
+                <con:context>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPOperacionPago"/>
+                    <con2:userNsDecl prefix="urn" namespace="urn:mx.com.nmp.midas"/>
+                    <con2:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                    <con2:userNsDecl prefix="util" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos"/>
+                    <con2:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con2:userNsDecl prefix="midasE" namespace="http://exception.midas.nmp.com.mx"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="codigoMidas">
+                        <con2:id>_ActionId-af004ec.31d598af.0.15ca7f51880.N7971</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>fn:normalize-space($fault/ctx:details/con1:ReceivedFaultDetail/con1:detail/urn:ServiceException/midasE:codigoError)</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-af004ec.31d598af.0.15ca7f51880.N797a</con2:id>
+                        <con1:case id="_BranchId-af004ec.31d598af.0.15ca7f51880.N7979">
+                            <con1:condition>
+                                <con2:xqueryText>$codigoMidas = 'WS003' or $codigoMidas='WS004' or $codigoMidas='WS004' or $codigoMidas='WS007'</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con5:route>
+                                    <con2:id>_ActionId-af004ec.31d598af.0.15ca7f51880.N7aca</con2:id>
+                                    <con5:service ref="OperacionPrendaria/PagoEnLinea/Business Services/NMPTransaccionesPagoBitacoraBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                    <con5:operation>actualizarTransaccionPago</con5:operation>
+                                    <con5:outboundTransform>
+                                        <con1:assign varName="body" xmlns:con3="http://www.bea.com/wli/sb/stages/publish/config">
+                                            <con2:id>_ActionId-af004ec.31d598af.0.15ca7f51880.N7a96</con2:id>
+                                            <con1:expr>
+                                                <con2:xqueryText><![CDATA[<soapenv:Body xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+    <util:actualizarTransaccionPagoRequest
+        xmlns:util="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos">
+        <util:NmpTransaccionPago>
+            <util:transaccionBancaria>{$body/util:registrarTransaccionPagoRequest/util:operacion/nmp:transaccionBancaria/text()}</util:transaccionBancaria>
+            <util:estadoTransaccion>3</util:estadoTransaccion>
+            <util:procesado>1</util:procesado>
+            <util:descripcionError>{$fault/ctx:details/con1:ReceivedFaultDetail/con1:faultstring/text()}</util:descripcionError>
+            <util:actualizadoPor>{$header/nmph:headerMessage/nmph:idConsumidor/text()}</util:actualizadoPor>
+            <util:fechaActualizacion>{fn:current-dateTime()}</util:fechaActualizacion>
+        </util:NmpTransaccionPago>
+    </util:actualizarTransaccionPagoRequest>
+</soapenv:Body>]]></con2:xqueryText>
+                                            </con1:expr>
+                                        </con1:assign>
+                                    </con5:outboundTransform>
+                                </con5:route>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:default/>
+                    </con1:ifThenElse>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-af004ec.31d598af.0.15ca7f51880.N7a61</con2:id>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="OperacionPrendaria/PagoEnLinea/Resources/Tranformations/TransformAdminPagosFaults"/>
+                                <con2:input>$fault</con2:input>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:Error>
+                        <con2:id>_ActionId-af004ec.31d598af.0.15ca7f51880.N7a5e</con2:id>
+                        <con1:errCode>MIDAS-001</con1:errCode>
+                    </con1:Error>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.37012dab.0.152ae870506.N7ffc">
+            <con:stage id="_StageId-N3f57c7ff.37012dab.0.152ae870506.N7ffb" name="StageFauts">
+                <con:context>
+                    <con2:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                    <con2:userNsDecl prefix="ns2" namespace="http://exception.midas.nmp.com.mx"/>
+                    <con2:userNsDecl prefix="ns1" namespace="urn:mx.com.nmp.midas"/>
+                    <con2:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos"/>
+                </con:context>
+                <con:actions>
+                    <con4:report>
+                        <con2:id>_ActionId-af004ec.31d598af.0.15ca7f51880.N79eb</con2:id>
+                        <con4:expr>
+                            <con2:xqueryText>$fault</con2:xqueryText>
+                        </con4:expr>
+                        <con4:labels>
+                            <con4:key>AdminPagos Fault operacion</con4:key>
+                            <con4:varName>inbound</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ctx:service/ctx:operation</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                    </con4:report>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-af004ec.31d598af.0.15ca7f51880.N7a23</con2:id>
+                        <con1:case id="_BranchId-af004ec.31d598af.0.15ca7f51880.N7a22">
+                            <con1:condition>
+                                <con2:xqueryText>$fault/ctx:errorCode='MIDAS-001'</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con2:reply isError="true">
+                                    <con2:id>_ActionId-N3f57c7ff.61d269a0.0.1530f745b8c.N7f88</con2:id>
+                                </con2:reply>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:default>
+                            <con1:replace varName="body" contents-only="true">
+                                <con2:id>_ActionId-N3f57c7ff.N1ccae699.0.15998c52312.N7df1</con2:id>
+                                <con1:location>
+                                    <con2:xpathText>.</con2:xpathText>
+                                </con1:location>
+                                <con1:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="OperacionPrendaria/PagoEnLinea/Resources/Tranformations/TransformAdminPagosFaults"/>
+                                        <con2:input>$fault</con2:input>
+                                    </con2:xsltTransform>
+                                </con1:expr>
+                            </con1:replace>
+                            <con2:reply isError="true">
+                                <con2:id>_ActionId-af004ec.31d598af.0.15ca7f51880.N79e7</con2:id>
+                            </con2:reply>
+                        </con1:default>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af00458.N4d99fa0a.0.15c643aa20e.N7fcf">
+            <con:stage id="_StageId-af00458.N4d99fa0a.0.15c643aa20e.N7fcd" name="StageValidacion">
+                <con:context/>
+                <con:actions/>
+            </con:stage>
+            <con:stage id="_StageId-af10046.N65939360.0.15c9ce00645.N7f5e" name="StageValidaPago">
+                <con:context>
+                    <con2:userNsDecl prefix="util" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos"/>
+                </con:context>
+                <con:actions>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-af10046.N65939360.0.15c9ce00645.N7f1f</con2:id>
+                        <con1:case id="_BranchId-af10046.N65939360.0.15c9ce00645.N7f1e">
+                            <con1:condition>
+                                <con2:xqueryText>fn:normalize-space($body/util:registrarTransaccionPagoBitRequest/util:preregistro)</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:wsCallout>
+                                    <con2:id>_ActionId-af10046.N65939360.0.15c9ce00645.N7f5d</con2:id>
+                                    <con1:service ref="OperacionPrendaria/PagoEnLinea/Business Services/NMPTransaccionesPagoBitacoraBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                    <con1:operation>validarTransaccionPago</con1:operation>
+                                    <con1:request>
+                                        <con1:body wrapped="false">validaTxRequest</con1:body>
+                                        <con1:header/>
+                                    </con1:request>
+                                    <con1:response>
+                                        <con1:body wrapped="false">validaTxResponse</con1:body>
+                                    </con1:response>
+                                    <con1:requestTransform>
+                                        <con1:assign varName="validaTxRequest">
+                                            <con2:id>_ActionId-af10046.N65939360.0.15c9ce00645.N7ee3</con2:id>
+                                            <con1:expr>
+                                                <con2:xqueryText>&lt;util:validarTransaccionPagoRequest xmlns:util="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos">
+    &lt;util:folioPartida>{$body/util:registrarTransaccionPagoBitRequest/util:NmpTransaccionPago/util:folioPartida/text()}&lt;/util:folioPartida>
+&lt;/util:validarTransaccionPagoRequest></con2:xqueryText>
+                                            </con1:expr>
+                                        </con1:assign>
+                                    </con1:requestTransform>
+                                    <con1:responseTransform/>
+                                </con1:wsCallout>
+                                <con1:ifThenElse>
+                                    <con2:id>_ActionId-af10046.N65939360.0.15c9ce00645.N7f5c</con2:id>
+                                    <con1:case id="_BranchId-af10046.N65939360.0.15c9ce00645.N7f5b">
+                                        <con1:condition>
+                                            <con2:xqueryText>$validaTxResponse/util:transaccion</con2:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:Error>
+                                                <con2:id>_ActionId-af10046.N65939360.0.15c9ce00645.N7f57</con2:id>
+                                                <con1:errCode>NMP-092</con1:errCode>
+                                            </con1:Error>
+                                        </con1:actions>
+                                    </con1:case>
+                                </con1:ifThenElse>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-af00458.N4d99fa0a.0.15c643aa20e.N7f67" name="StageBitacora">
+                <con:context>
+                    <con2:userNsDecl prefix="util" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos"/>
+                </con:context>
+                <con:actions>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-af00458.N4d99fa0a.0.15c643aa20e.N7f66</con2:id>
+                        <con1:service ref="OperacionPrendaria/PagoEnLinea/Business Services/NMPTransaccionesPagoBitacoraBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>registrarTransaccionPago</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="true">body</con1:body>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="true">body</con1:body>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:delete varName="body">
+                                <con2:id>_ActionId-af10046.N65939360.0.15c9ce00645.N7edd</con2:id>
+                                <con1:location>
+                                    <con2:xpathText>./util:registrarTransaccionPagoBitRequest/util:preregistro</con2:xpathText>
+                                </con1:location>
+                            </con1:delete>
+                        </con1:requestTransform>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af100c3.1506eda9.0.15c0cd4e179.N8000">
+            <con:stage id="_StageId-af100c3.1506eda9.0.15c0cd4e179.N7ffe" name="StageResponse" errorHandler="_onErrorHandler-a1e030f.N1d632839.19.15c7f1e80a5.N8000">
+                <con:context>
+                    <con2:userNsDecl prefix="seg" namespace="http://www.bea.com/wli/sb/services/security/config"/>
+                    <con2:varNsDecl prefix="util" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos"/>
+                </con:context>
+                <con:actions>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-a1e030f.1f4a70ff.3.15c172c90b2.N8000</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/util:validarTransaccionBancoRequest/util:nombreBanco='BANAMEX'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:wsCallout>
+                                    <con2:id>_ActionId-a1e030f.1f4a70ff.4.15c172d5ff8.N8000</con2:id>
+                                    <con1:service ref="OperacionPrendaria/PagoEnLinea/Business Services/BanamexTransaccionesBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                    <con1:request>
+                                        <con1:payload wrapped="false"/>
+                                    </con1:request>
+                                    <con1:response>
+                                        <con1:payload wrapped="false">transaccionBancoRes</con1:payload>
+                                    </con1:response>
+                                    <con1:requestTransform>
+                                        <con1:assign varName="credenciales">
+                                            <con2:id>_ActionId-a1e030f.1f4a70ff.1.15c136d2b66.N7fff</con2:id>
+                                            <con1:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:lookupBasicCredentials('OperacionPrendaria/PagoEnLinea/Resources/ServiceAccount/BanamexMerchantSA')</con:xqueryText>
+                                            </con1:expr>
+                                        </con1:assign>
+                                        <con1:assign varName="username">
+                                            <con2:id>_ActionId-a1e030f.1f4a70ff.7.15c173ffa2a.N8000</con2:id>
+                                            <con1:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:substring-after($credenciales/seg:username/text(), '.')</con:xqueryText>
+                                            </con1:expr>
+                                        </con1:assign>
+                                        <con1:assign varName="relativePath">
+                                            <con2:id>_ActionId-a1e030f.1f4a70ff.5.15c172e77f3.N8000</con2:id>
+                                            <con1:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:concat($username, '/order/', $body/util:validarTransaccionBancoRequest/util:transaccionBancaria)</con:xqueryText>
+                                            </con1:expr>
+                                        </con1:assign>
+                                        <con1:routing-options>
+                                            <con2:id>_ActionId-a1e030f.1f4a70ff.4.15c172d5ff8.N7fff</con2:id>
+                                            <con1:restOptions>
+                                                <con1:verb>GET</con1:verb>
+                                                <con1:relPath>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$relativePath</con:xqueryText>
+                                                </con1:relPath>
+                                            </con1:restOptions>
+                                        </con1:routing-options>
+                                    </con1:requestTransform>
+                                    <con1:responseTransform/>
+                                </con1:wsCallout>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:default>
+                            <con1:Error>
+                                <con2:id>_ActionId-a1e030f.1f4a70ff.6.15c172fc073.N8000</con2:id>
+                                <con1:errCode>NMP-084</con1:errCode>
+                                <con1:message>Transacción de Banco No permitida</con1:message>
+                            </con1:Error>
+                        </con1:default>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.37012dab.0.152ae870506.N7f6c">
+            <con:stage id="_StageId-N3f57c7ff.37012dab.0.152ae870506.N7f6a" name="StageResponse">
+                <con:context/>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-N3f57c7ff.N2fd99398.0.152fb0f8cb0.N7ffb</con2:id>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xqueryTransform>
+                                <con2:resource ref="OperacionPrendaria/PagoEnLinea/Resources/Tranformations/TrMIDASgetComprobanteResToGetComprobanteRes"/>
+                                <con2:param name="obtenerComprobanteResponse">
+                                    <con2:path>$obtenerComprobanteResponse</con2:path>
+                                </con2:param>
+                            </con2:xqueryTransform>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af100c3.1506eda9.0.15c0cd4e179.N7f71">
+            <con:stage id="_StageId-af100c3.1506eda9.0.15c0cd4e179.N7f6f" name="StageRespuesta">
+                <con:context/>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-af1008d.N63098342.0.15bb162592d.N755e" xmlns:con3="http://www.bea.com/wli/sb/stages/publish/config">
+            <con:stage id="_StageId-af1008d.N63098342.0.15bb162592d.N755d" name="StageErrorDB">
+                <con:context/>
+                <con:actions>
+                    <con3:alert xmlns:con3="http://www.bea.com/wli/sb/stages/alert/config">
+                        <con2:id>_ActionId-af1008d.N63098342.0.15bb162592d.N755c</con2:id>
+                        <con3:destination ref="OperacionPrendaria/PagoEnLinea/Resources/Alerts/NMPBitacoraDBAdminPagosAlert"/>
+                        <con3:description>Error al momento de registrar la consulta de partida en bitacora.</con3:description>
+                        <con3:severity>normal</con3:severity>
+                        <con3:payload>
+                            <con2:xqueryText><![CDATA[<RESULTADO>
+  <PETICION>
+    {$body}            
+  </PETICION>
+  <ERROR>
+    {$fault}
+  </ERROR>
+</RESULTADO>]]></con2:xqueryText>
+                        </con3:payload>
+                    </con3:alert>
+                    <con2:resume>
+                        <con2:id>_ActionId-af1008d.N63098342.0.15bb162592d.N755b</con2:id>
+                    </con2:resume>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="_onErrorHandler-a1e030f.N1d632839.19.15c7f1e80a5.N8000" type="error">
+            <con:stage name="stage_Faul_Banco">
+                <con:context>
+                    <con2:userNsDecl prefix="util" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos"/>
+                    <con2:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos"/>
+                    <con2:userNsDecl prefix="ns2" namespace="http://exception.midas.nmp.com.mx"/>
+                    <con2:userNsDecl prefix="ns1" namespace="urn:mx.com.nmp.midas"/>
+                </con:context>
+                <con:actions>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-a1e030f.N1d632839.1a.15c7f1e9ec5.N8000</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:contains($fault/ctx:details/con1:ErrorResponseDetail/con1:detail,'Unable to find order ')</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:Error>
+                                    <con2:id>_ActionId-a1e030f.N1d632839.1b.15c830f76b9.N8000</con2:id>
+                                    <con1:errCode>NMP-091</con1:errCode>
+                                </con1:Error>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.37012dab.0.152ae870506.N7f6d">
+            <con:stage id="_StageId-N3f57c7ff.N392b32e4.0.1598567b75b.N7f32" name="StageValidacion">
+                <con:context>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="operacion">
+                        <con2:id>_ActionId-N3f57c7ff.N1ccae699.0.15998c52312.N7e25</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$operation</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:validate>
+                        <con2:id>_ActionId-N3f57c7ff.37012dab.0.152ae870506.N7f7b</con2:id>
+                        <con1:schema ref="OperacionPrendaria/PagoEnLinea/Resources/Schemas/NMPUtileriaAdminPagosXSD"/>
+                        <con1:schemaElement xmlns:util="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos">util:obtenerComprobantesRequest</con1:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con2:xpathText>./nmp:obtenerComprobantesRequest</con2:xpathText>
+                        </con1:location>
+                    </con1:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57c7ff.37012dab.0.152ae870506.N7f6b" name="StageRequest">
+                <con:context>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos"/>
+                </con:context>
+                <con:actions>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-N3f57c7ff.62fea1a1.0.152d27d9334.N7f60</con2:id>
+                        <con1:service ref="OperacionPrendaria/PagoEnLinea/Business Services/MIDASCajaOnlineBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>obtenerComprobante</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">obtenerComprobanteRequest</con1:body>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">obtenerComprobanteResponse</con1:body>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:assign varName="obtenerComprobanteRequest">
+                                <con2:id>_ActionId-N3f57c7ff.N2fd99398.0.152fb0f8cb0.N7ffe</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText>&lt;urn:obtenerComprobante xmlns:urn="urn:mx.com.nmp.midas">
+    &lt;urn:transaccion>{$body/nmp:obtenerComprobantesRequest/nmp:serieImporte/text()}&lt;/urn:transaccion>
+&lt;/urn:obtenerComprobante></con2:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:requestTransform>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af100c3.1506eda9.0.15c0cd4e179.N7fff">
+            <con:stage id="_StageId-af100c3.1506eda9.0.15c0cd4e179.N7ffd" name="StageRequest">
+                <con:context>
+                    <con2:userNsDecl prefix="trx" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/TransaccionesBanco"/>
+                    <con2:varNsDecl prefix="util" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos"/>
+                </con:context>
+                <con:actions>
+                    <con1:nxsdTranslation>
+                        <con2:id>_ActionId-a1e030f.1f4a70ff.4.15c172d5ff8.N7ffe</con2:id>
+                        <con1:type>Native-To-XML</con1:type>
+                        <con1:sourceExpr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$transaccionBancoRes</con:xqueryText>
+                        </con1:sourceExpr>
+                        <con1:nxsd ref="OperacionPrendaria/PagoEnLinea/Resources/Schemas/NMPBanamexTransaccionesNXSD"/>
+                        <con1:schemaElement xmlns:tran="http://servicios.montedepiedad.com.mx/NMP/Schema/TransaccionesBanco">tran:transaccionBancoBanamex</con1:schemaElement>
+                        <con1:assign-variable>transaccionBanamexRes</con1:assign-variable>
+                        <con1:enforceSchemaOrder>false</con1:enforceSchemaOrder>
+                    </con1:nxsdTranslation>
+                    <con1:assign varName="intentoMax">
+                        <con2:id>_ActionId-a1e030f.N380551e2.12.15cf4ac214c.N7fff</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:count($transaccionBanamexRes/trx:transaction)</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="body">
+                        <con2:id>_ActionId-af100c3.1506eda9.0.15c0cd4e179.N7ffa</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<soapenv:Body xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+        xmlns:util="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos">
+        <util:validarTransaccionBancoResponse>
+            <util:transaccion>
+                <util:estado>{$transaccionBanamexRes/trx:transaction[$intentoMax]/trx:response/trx:gatewayCode/text()}</util:estado>
+                <util:codigoAutorizacion>{$transaccionBanamexRes/trx:transaction/trx:transaction/trx:authorizationCode/text()}</util:codigoAutorizacion>
+            </util:transaccion>
+        </util:validarTransaccionBancoResponse>
+    </soapenv:Body>]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.37012dab.0.152ae870506.N7f71">
+            <con:stage id="_StageId-N3f57c7ff.N392b32e4.0.1598567b75b.N7f9a" name="StageValidacion">
+                <con:context>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="operacion">
+                        <con2:id>_ActionId-N3f57c7ff.N1ccae699.0.15998c52312.N7e29</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$operation</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:validate>
+                        <con2:id>_ActionId-N3f57c7ff.37012dab.0.152ae870506.N7f7e</con2:id>
+                        <con1:schema ref="OperacionPrendaria/PagoEnLinea/Resources/Schemas/NMPUtileriaAdminPagosXSD"/>
+                        <con1:schemaElement xmlns:util="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos">util:consultarInformacionPartidaRequest</con1:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con2:xpathText>./nmp:consultarInformacionPartidaRequest</con2:xpathText>
+                        </con1:location>
+                    </con1:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57c7ff.37012dab.0.152ae870506.N7f6f" name="StageRequest">
+                <con:context>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos"/>
+                    <con2:userNsDecl prefix="ns1" namespace="urn:mx.com.nmp.midas"/>
+                </con:context>
+                <con:actions>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-N3f57c7ff.62fea1a1.0.152d27d9334.N7f63</con2:id>
+                        <con1:service ref="OperacionPrendaria/PagoEnLinea/Business Services/MIDASCajaOnlineBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>obtenerInformacionPartida</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">obtenerPartidaRequest</con1:body>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">obtenerPartidaResponse</con1:body>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:assign varName="obtenerPartidaRequest">
+                                <con2:id>_ActionId-N3f57c7ff.71fea178.0.152e7082c7f.N7f92</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText>&lt;urn:obtenerInformacionPartida  xmlns:urn="urn:mx.com.nmp.midas">
+         &lt;urn:folio>{$body/nmp:consultarInformacionPartidaRequest/nmp:folio/text()}&lt;/urn:folio>
+&lt;/urn:obtenerInformacionPartida></con2:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:requestTransform>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-af1008d.N63098342.0.15bb162592d.N75ea" name="StageGetClienteReq" xmlns:con3="http://www.bea.com/wli/sb/stages/publish/config">
+                <con:context>
+                    <con2:userNsDecl prefix="urn" namespace="urn:mx.com.nmp.midas"/>
+                    <con2:userNsDecl prefix="nmp3" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidaSaldos"/>
+                    <con2:userNsDecl prefix="nmp2" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos"/>
+                    <con2:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con2:userNsDecl prefix="dto" namespace="http://dto.model.midas.nmp.com.mx"/>
+                    <con2:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPDSRFPagoLineaSvc"/>
+                </con:context>
+                <con:actions>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-af1008d.N63098342.0.15bb162592d.N75e9</con2:id>
+                        <con1:case id="_BranchId-af1008d.N63098342.0.15bb162592d.N75e8">
+                            <con1:condition>
+                                <con2:xqueryText>$obtenerPartidaResponse/urn:return/dto:idCliente</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:wsCallout>
+                                    <con2:id>_ActionId-af1008d.N63098342.0.15bb162592d.N75e7</con2:id>
+                                    <con1:service ref="GestionClientes/Clientes/Proxy Services/NMPClientesSoapPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                    <con1:operation>getClientesByID</con1:operation>
+                                    <con1:request>
+                                        <con1:body wrapped="false">getClienteRequest</con1:body>
+                                        <con1:header>clientesHeader</con1:header>
+                                    </con1:request>
+                                    <con1:response>
+                                        <con1:body wrapped="false">getClienteResponse</con1:body>
+                                        <con1:header/>
+                                    </con1:response>
+                                    <con1:requestTransform>
+                                        <con1:assign varName="getClienteRequest">
+                                            <con2:id>_ActionId-af1008d.N63098342.0.15bb162592d.N75e6</con2:id>
+                                            <con1:expr>
+                                                <con2:xqueryText>&lt;nmp1:getClientesByIDRequest 	xmlns:nmp1="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente">
+&lt;nmp1:idCliente>{$obtenerPartidaResponse/urn:return/dto:idCliente/text()}&lt;/nmp1:idCliente>
+&lt;/nmp1:getClientesByIDRequest></con2:xqueryText>
+                                            </con1:expr>
+                                        </con1:assign>
+                                        <con1:ifThenElse>
+                                            <con2:id>_ActionId-af1008d.N63098342.0.15bb162592d.N75e5</con2:id>
+                                            <con1:case id="_BranchId-af1008d.N63098342.0.15bb162592d.N75e4">
+                                                <con1:condition>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$header/nmph:headerMessage/nmph:idConsumidor</con:xqueryText>
+                                                </con1:condition>
+                                                <con1:actions>
+                                                    <con1:assign varName="clientesHeader">
+                                                        <con2:id>_ActionId-af1008d.N63098342.0.15bb162592d.N75e3</con2:id>
+                                                        <con1:expr>
+                                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$header</con:xqueryText>
+                                                        </con1:expr>
+                                                    </con1:assign>
+                                                </con1:actions>
+                                            </con1:case>
+                                            <con1:default>
+                                                <con1:assign varName="clientesHeader">
+                                                    <con2:id>_ActionId-af1008d.N63098342.0.15bb162592d.N75e2</con2:id>
+                                                    <con1:expr>
+                                                        <con2:xqueryText><![CDATA[<soap:Header xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+        xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">
+        <nmp:headerMessage>
+            <nmp:usuario>101</nmp:usuario>
+            <nmp:idConsumidor>07</nmp:idConsumidor>
+            <nmp:idDestino>CRM</nmp:idDestino>
+        </nmp:headerMessage>
+    </soap:Header>]]></con2:xqueryText>
+                                                    </con1:expr>
+                                                </con1:assign>
+                                            </con1:default>
+                                        </con1:ifThenElse>
+                                    </con1:requestTransform>
+                                    <con1:responseTransform/>
+                                </con1:wsCallout>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:default>
+                            <con1:Error>
+                                <con2:id>_ActionId-af1008d.N63098342.0.15bb162592d.N75e1</con2:id>
+                                <con1:errCode>NMP-084</con1:errCode>
+                                <con1:message>La partida no devolvio un idCliente válido.</con1:message>
+                            </con1:Error>
+                        </con1:default>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.N2ad2ed4a.0.1526ac542ea.N7fc9">
+            <con:stage id="_StageId-N3f57c7ff.N2ad2ed4a.0.1526ac542ea.N7fc7" name="StageResponse">
+                <con:context/>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-N3f57c7ff.N2ad2ed4a.0.1526ac542ea.N7fc4</con2:id>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xqueryText><![CDATA[<rejectOperacionResponse xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos AdminPagosSvc.xsd"
+        xmlns="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos">
+        <code>OK</code>
+        <message>Operación sin efecto</message>
+        <detail>No se ha definido logica para esta operación</detail>
+    </rejectOperacionResponse>]]></con2:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.37012dab.0.152ae870506.N7f70">
+            <con:stage id="_StageId-af1008d.N63098342.0.15bb162592d.N7562" name="StageRegistraBitacora" errorHandler="error-af1008d.N63098342.0.15bb162592d.N755e" xmlns:con3="http://www.bea.com/wli/sb/stages/publish/config">
+                <con:context>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPDSRFPagoLineaSvc"/>
+                    <con2:userNsDecl prefix="util" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos"/>
+                </con:context>
+                <con:actions>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-af100c3.1506eda9.0.15c0cd4e179.N7f7a</con2:id>
+                        <con1:case id="_BranchId-af100c3.1506eda9.0.15c0cd4e179.N7f79">
+                            <con1:condition>
+                                <con2:xqueryText>$body/util:consultarInformacionPartidaRequest/@util:registrarBitacora=true()</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con3:route>
+                                    <con2:id>_ActionId-af1008d.N63098342.0.15bb162592d.N7561</con2:id>
+                                    <con3:service ref="OperacionPrendaria/PagoEnLinea/Business Services/NMPTransaccionesConsultaBitacoraBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                    <con3:operation>registraTransaccionConsulta</con3:operation>
+                                    <con3:outboundTransform>
+                                        <con1:replace varName="body" contents-only="true">
+                                            <con2:id>_ActionId-af1008d.N63098342.0.15bb162592d.N7560</con2:id>
+                                            <con1:location>
+                                                <con2:xpathText>.</con2:xpathText>
+                                            </con1:location>
+                                            <con1:expr>
+                                                <con2:xsltTransform>
+                                                    <con2:resource ref="OperacionPrendaria/PagoEnLinea/Resources/Tranformations/TrGetPartidasResToInsertGetPartidaDB"/>
+                                                    <con2:input>$obtenerPartidaResponse</con2:input>
+                                                </con2:xsltTransform>
+                                            </con1:expr>
+                                        </con1:replace>
+                                        <con1:routing-options>
+                                            <con2:id>_ActionId-af1008d.N63098342.0.15bb162592d.N755f</con2:id>
+                                            <con1:qualityOfService>exactly-once</con1:qualityOfService>
+                                        </con1:routing-options>
+                                    </con3:outboundTransform>
+                                </con3:route>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:default/>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57c7ff.37012dab.0.152ae870506.N7f6e" name="StageResponse">
+                <con:context/>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-N3f57c7ff.62fea1a1.0.152d27d9334.N7f54</con2:id>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="OperacionPrendaria/PagoEnLinea/Resources/Tranformations/TrMIDASGetPartidaResToConsultaInfoPartidaCliente"/>
+                                <con2:input>$obtenerPartidaResponse</con2:input>
+                                <con2:param name="datosCliente">
+                                    <con2:path>$getClienteResponse</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af100c3.1506eda9.0.15c0cd4e179.N7f72">
+            <con:stage id="_StageId-af100c3.1506eda9.0.15c0cd4e179.N7f70" name="StageValidacion">
+                <con:context>
+                    <con2:userNsDecl prefix="util" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos"/>
+                </con:context>
+                <con:actions>
+                    <con1:validate>
+                        <con2:id>_ActionId-af100c3.1506eda9.0.15c0cd4e179.N7f6c</con2:id>
+                        <con1:schema ref="OperacionPrendaria/PagoEnLinea/Resources/Schemas/NMPUtileriaAdminPagosXSD"/>
+                        <con1:schemaElement xmlns:util="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos">util:validarTransaccionPagoRequest</con1:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con2:xpathText>./util:validarTransaccionPagoRequest</con2:xpathText>
+                        </con1:location>
+                    </con1:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-af100c3.1506eda9.0.15c0cd4e179.N7f6b" name="StageValidaPago">
+                <con:context>
+                    <con2:userNsDecl prefix="util" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos"/>
+                </con:context>
+                <con:actions>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-af100c3.1506eda9.0.15c0cd4e179.N7f68</con2:id>
+                        <con1:service ref="OperacionPrendaria/PagoEnLinea/Business Services/NMPTransaccionesPagoBitacoraBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>validarTransaccionPago</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="true">body</con1:body>
+                            <con1:header/>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="true">body</con1:body>
+                        </con1:response>
+                        <con1:requestTransform/>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-af100c3.1506eda9.0.15c0cd4e179.N7f61</con2:id>
+                        <con1:case id="_BranchId-af100c3.1506eda9.0.15c0cd4e179.N7f60">
+                            <con1:condition>
+                                <con2:xqueryText>$body/util:validarTransaccionPagoResponse/util:transaccion</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions/>
+                        </con1:case>
+                        <con1:default>
+                            <con1:assign varName="body">
+                                <con2:id>_ActionId-af100c3.1506eda9.0.15c0cd4e179.N7f5a</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText><![CDATA[<soapenv:Body xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+        <validarTransaccionPagoResponse
+            xmlns="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos">
+            <resultado>0</resultado>
+        </validarTransaccionPagoResponse>
+</soapenv:Body>]]></con2:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:default>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af00458.N4d99fa0a.0.15c643aa20e.N7fce">
+            <con:stage id="_StageId-af00458.N4d99fa0a.0.15c643aa20e.N7fcc" name="StageResponse">
+                <con:context/>
+                <con:actions>
+                    <con1:assign varName="body">
+                        <con2:id>_ActionId-af00458.N4d99fa0a.0.15c643aa20e.N7ec3</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText><![CDATA[<soapenv:Body xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+    <ut:registrarTransaccionPagoBitResponse
+        xmlns:ut="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos">
+        <ut:respuesta>
+            <ut:codigo>0</ut:codigo>
+            <ut:mensaje>Registro guardado exitosamente</ut:mensaje>
+        </ut:respuesta>        
+    </ut:registrarTransaccionPagoBitResponse>
+</soapenv:Body>]]></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af0046c.N5360c4b1.0.15bfe9e879e.N7f9e">
+            <con:stage id="_StageId-af0046c.N5360c4b1.0.15bfe9e879e.N7f9c" name="StageActualizaPagoRequest">
+                <con:context/>
+                <con:actions>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-af0046c.N5360c4b1.0.15bfe9e879e.N7f98</con2:id>
+                        <con1:service ref="OperacionPrendaria/PagoEnLinea/Business Services/NMPTransaccionesPagoBitacoraBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>actualizarTransaccionPago</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="true">body</con1:body>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="true">body</con1:body>
+                        </con1:response>
+                        <con1:requestTransform/>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.N2ad2ed4a.0.1526ac542ea.N7fca">
+            <con:stage id="_StageId-N3f57c7ff.N392b32e4.0.1598567b75b.N7f66" name="StageValidacion">
+                <con:context>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="operacion">
+                        <con2:id>_ActionId-N3f57c7ff.N1ccae699.0.15998c52312.N7e27</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$operation</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:validate>
+                        <con2:id>_ActionId-N3f57c7ff.37012dab.0.152ae870506.N7f78</con2:id>
+                        <con1:schema ref="OperacionPrendaria/PagoEnLinea/Resources/Schemas/NMPUtileriaAdminPagosXSD"/>
+                        <con1:schemaElement xmlns:util="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos">util:rechazarOperacionRequest</con1:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con2:xpathText>./nmp:rechazarOperacionRequest</con2:xpathText>
+                        </con1:location>
+                    </con1:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57c7ff.N2ad2ed4a.0.1526ac542ea.N7fc8" name="StageRequest">
+                <con:context/>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.37012dab.0.152ae870506.N7f74">
+            <con:stage id="_StageId-N3f57c7ff.37012dab.0.152ae870506.N7f72" name="StageResponse">
+                <con:context>
+                    <con2:userNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPOperacionPago"/>
+                    <con2:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con2:userNsDecl prefix="ns2" namespace="http://dto.model.midas.nmp.com.mx"/>
+                    <con2:userNsDecl prefix="ns1" namespace="urn:mx.com.nmp.midas"/>
+                    <con2:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos"/>
+                </con:context>
+                <con:actions>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-N3f57c7ff.189227a6.0.1532f4db1e4.N7ff2</con2:id>
+                        <con1:case id="_BranchId-N3f57c7ff.189227a6.0.1532f4db1e4.N7ff1">
+                            <con1:condition>
+                                <con2:xqueryText>boolean($registrarOperacionResponse/ns1:return/ns2:exitoso)</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id>_ActionId-N3f57c7ff.62fea1a1.0.152d27d9334.N7f5a</con2:id>
+                                    <con1:location>
+                                        <con2:xpathText>.</con2:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con2:xqueryText><![CDATA[<nmp:registrarTransaccionPagoResponse xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos">
+        <nmp:code>0</nmp:code>
+        <nmp:message>Se ha almacenado correctamente la operacion</nmp:message>
+        <nmp:detail>{concat('Transaccion: ',$transaccion/text())}</nmp:detail>
+</nmp:registrarTransaccionPagoResponse>]]></con2:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                                <con1:assign varName="vEstado">
+                                    <con2:id>_ActionId-af004ec.31d598af.0.15ca7f51880.N7ba5</con2:id>
+                                    <con1:expr>
+                                        <con2:xqueryText>2</con2:xqueryText>
+                                    </con1:expr>
+                                </con1:assign>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:default>
+                            <con1:Error>
+                                <con2:id>_ActionId-N3f57c7ff.189227a6.0.1532f4db1e4.N7fed</con2:id>
+                                <con1:errCode>NMP-083</con1:errCode>
+                                <con1:message>Midas contesto con estatus no exitoso.</con1:message>
+                            </con1:Error>
+                            <con1:assign varName="vEstado">
+                                <con2:id>_ActionId-af004ec.31d598af.0.15ca7f51880.N7ba2</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText>3</con2:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:default>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-af10c6f.N3d1c1ef2.0.15a012c3203.N7efb" name="StageRegistraPagoBitacoraDB" errorHandler="error-af10c6f.N3d1c1ef2.0.15a012c3203.N7ef6" xmlns:con3="http://www.bea.com/wli/sb/stages/publish/config">
+                <con:comment>Registra la notificación del pago en la tabla NMP_ADMIN_PAGOS_BIT_T</con:comment>
+                <con:context>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPDSRFPagoLineaSvc"/>
+                    <con2:userNsDecl prefix="nmp2" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos"/>
+                    <con2:userNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPOperacionPago"/>
+                    <con2:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con2:userNsDecl prefix="db" namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/NmpDSRFPagoLineaDB"/>
+                </con:context>
+                <con:actions>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-af004ec.31d598af.0.15ca7f51880.N7b68</con2:id>
+                        <con1:service ref="OperacionPrendaria/PagoEnLinea/Business Services/NMPTransaccionesPagoBitacoraBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>actualizarTransaccionPago</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">bodyBitacora</con1:body>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">bodyBitacoraResponse</con1:body>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:assign varName="bodyBitacora">
+                                <con2:id>_ActionId-af004ec.31d598af.0.15ca7f51880.N7bd9</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText><![CDATA[<util:actualizarTransaccionPagoRequest
+            xmlns:util="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos">
+            <util:NmpTransaccionPago>
+                <util:transaccionBancaria>{$tmp/nmp2:registrarTransaccionPagoRequest/nmp2:operacion/nmp1:transaccionBancaria/text()}</util:transaccionBancaria>
+                <util:estadoTransaccion>{$vEstado}</util:estadoTransaccion>
+                <util:procesado>1</util:procesado>
+                <util:actualizadoPor>{$header/nmph:headerMessage/nmph:idConsumidor/text()}</util:actualizadoPor>
+                <util:fechaActualizacion>{fn:current-dateTime()}</util:fechaActualizacion>
+            </util:NmpTransaccionPago>
+        </util:actualizarTransaccionPagoRequest>]]></con2:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:requestTransform>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.37012dab.0.152ae870506.N7f75">
+            <con:stage id="_StageId-N3f57c7ff.N392b32e4.0.1598567b75b.N7fff" name="StageValidacion">
+                <con:context>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="operacion">
+                        <con2:id>_ActionId-N3f57c7ff.N1ccae699.0.15998c52312.N7e2c</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$operation</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:validate>
+                        <con2:id>_ActionId-N3f57c7ff.37012dab.0.152ae870506.N7ff8</con2:id>
+                        <con1:schema ref="OperacionPrendaria/PagoEnLinea/Resources/Schemas/NMPUtileriaAdminPagosXSD"/>
+                        <con1:schemaElement xmlns:util="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos">util:registrarTransaccionPagoRequest</con1:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con2:xpathText>./nmp:registrarTransaccionPagoRequest</con2:xpathText>
+                        </con1:location>
+                    </con1:validate>
+                    <con1:assign varName="tmp">
+                        <con2:id>_ActionId-af004be.3b6e7a43.0.15cf552feaf.N7ffe</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57c7ff.62fea1a1.0.152d27d9334.N7ffa" name="StageSetOperacion" errorHandler="error-af004ec.31d598af.0.15ca7f51880.N7ace">
+                <con:context>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos"/>
+                    <con2:userNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPOperacionPago"/>
+                    <con2:userNsDecl prefix="top" namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/NmpDSRFPagoLineaDB"/>
+                    <con2:userNsDecl prefix="ns2" namespace="http://dto.model.midas.nmp.com.mx"/>
+                    <con2:userNsDecl prefix="ns1" namespace="urn:mx.com.nmp.midas"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="transaccion">
+                        <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7f76</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$body/nmp:registrarTransaccionPagoRequest/nmp:operacion/nmp1:transaccion</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-N3f57c7ff.62fea1a1.0.152d27d9334.N7ffe</con2:id>
+                        <con1:service ref="OperacionPrendaria/PagoEnLinea/Business Services/MIDASCajaOnlineBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>registrarOperacion</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">registrarOperacionRequest</con1:body>
+                            <con1:header/>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">registrarOperacionResponse</con1:body>
+                            <con1:header/>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:assign varName="registrarOperacionRequest">
+                                <con2:id>_ActionId-N3f57c7ff.71fea178.0.152e7082c7f.N7f8f</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryTransform>
+                                        <con2:resource ref="OperacionPrendaria/PagoEnLinea/Resources/Tranformations/TrRegistrarOperacionPagoReqToMIDASRegistraOpeReq"/>
+                                        <con2:param name="registrarTransaccionPagoRequest">
+                                            <con2:path>$body/nmp:registrarTransaccionPagoRequest</con2:path>
+                                        </con2:param>
+                                    </con2:xqueryTransform>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:requestTransform>
+                        <con1:responseTransform>
+                            <con1:assign varName="transaccion">
+                                <con2:id>_ActionId-N3f57c7ff.6b0b1472.0.15647ebbe48.N7f73</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText>$registrarOperacionResponse/ns1:return/ns2:transaccion</con2:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:responseTransform>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af0046c.N5360c4b1.0.15bfe9e879e.N7f9d">
+            <con:stage id="_StageId-af0046c.N5360c4b1.0.15bfe9e879e.N7f9b" name="StageActualizaPagoResponse">
+                <con:context/>
+                <con:actions>
+                    <con1:assign varName="body">
+                        <con2:id>_ActionId-af0046c.N5360c4b1.0.15bfe9e879e.N7f95</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText><![CDATA[<soapenv:Body xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+        xmlns:util="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos">
+        <util:actualizarTransaccionPagoResponse>
+            <util:respuesta>
+                <util:codigo>0</util:codigo>
+                <util:mensaje>Registro actualizado exitosamente</util:mensaje>
+            </util:respuesta>
+        </util:actualizarTransaccionPagoResponse>
+</soapenv:Body>]]></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:branch-node type="operation" id="_FlowId-N3f57c7ff.N2ad2ed4a.0.1526ac542ea.N8000" name="BranchAdminPagos">
+                <con:context/>
+                <con:branch-table>
+                    <con:branch name="registrarTransaccionPago">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineRegistrarTransaccionPago">
+                                <con:request>request-N3f57c7ff.37012dab.0.152ae870506.N7f75</con:request>
+                                <con:response>response-N3f57c7ff.37012dab.0.152ae870506.N7f74</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="consultarInformacionPartida">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineConsultaInfoPartidas">
+                                <con:request>request-N3f57c7ff.37012dab.0.152ae870506.N7f71</con:request>
+                                <con:response>response-N3f57c7ff.37012dab.0.152ae870506.N7f70</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="rechazarOperacion">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineRechazaOperacion">
+                                <con:request>request-N3f57c7ff.N2ad2ed4a.0.1526ac542ea.N7fca</con:request>
+                                <con:response>response-N3f57c7ff.N2ad2ed4a.0.1526ac542ea.N7fc9</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="obtenerComprobantes">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineObtieneComprobantes">
+                                <con:request>request-N3f57c7ff.37012dab.0.152ae870506.N7f6d</con:request>
+                                <con:response>response-N3f57c7ff.37012dab.0.152ae870506.N7f6c</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="actualizarTransaccionPago">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineActualizaPago">
+                                <con:request>request-af0046c.N5360c4b1.0.15bfe9e879e.N7f9e</con:request>
+                                <con:response>response-af0046c.N5360c4b1.0.15bfe9e879e.N7f9d</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="validarTransaccionBanco">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineValidaTxBanco">
+                                <con:request>request-af100c3.1506eda9.0.15c0cd4e179.N8000</con:request>
+                                <con:response>response-af100c3.1506eda9.0.15c0cd4e179.N7fff</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="validarTransaccionPago">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineValidarPago">
+                                <con:request>request-af100c3.1506eda9.0.15c0cd4e179.N7f72</con:request>
+                                <con:response>response-af100c3.1506eda9.0.15c0cd4e179.N7f71</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="registrarTransaccionPagoBitacora">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePagoBitacora">
+                                <con:request>request-af00458.N4d99fa0a.0.15c643aa20e.N7fcf</con:request>
+                                <con:response>response-af00458.N4d99fa0a.0.15c643aa20e.N7fce</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

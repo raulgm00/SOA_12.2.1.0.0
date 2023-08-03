@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://servicios.montedepiedad.com.mx/NMP/Schema/BpmProcess"
+            targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/BpmProcess"
+            xmlns:ns1="http://servicios.montedepiedad.com.mx/NMP/Schema/BpmProcess"
+            elementFormDefault="qualified">
+   
+   <xsd:element name="DetalleProcesoBPM" type="DetalleProcesoBPMType"/>
+  <xsd:element name="BpmResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Mensaje" type="xsd:string"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="inicioEtapaRequest">
+      <xsd:complexType>
+         <xsd:sequence>
+            <xsd:element name="idSolicitud" type="ns1:idSolicitudType"/>
+            <xsd:element name="idSucursal" type="xsd:int"/>
+         </xsd:sequence>
+      </xsd:complexType>
+   </xsd:element>
+   <xsd:simpleType name="idSolicitudType">
+      <xsd:restriction base="xsd:string">
+         <xsd:maxLength value="80"/>
+      </xsd:restriction>
+   </xsd:simpleType>
+   <xsd:simpleType name="stringLength1Type">
+      <xsd:restriction base="xsd:string">
+         <xsd:maxLength value="1"/>
+      </xsd:restriction>
+   </xsd:simpleType>
+   <xsd:simpleType name="mensajeType">
+      <xsd:restriction base="xsd:string">
+         <xsd:maxLength value="255"/>
+      </xsd:restriction>
+   </xsd:simpleType>
+   <xsd:complexType name="DetalleProcesoBPMType">
+      <xsd:sequence>
+        <xsd:element name="fechaNotificacion" type="xsd:dateTime"/>
+         <xsd:element name="estatusOperacion" nillable="true" type="ns1:stringLength1Type"/>
+         <xsd:element name="tipoOperacion" nillable="true" type="xsd:int"/>
+         <xsd:element name="proyecto" nillable="true" type="xsd:int"/>
+         <xsd:element name="etapa" nillable="true" type="xsd:int"/>
+         <xsd:element name="subetapa" nillable="true" type="xsd:int"/>
+         <xsd:element name="idSolicitud" nillable="true" type="ns1:idSolicitudType"/>
+         <xsd:element name="idSucursal" nillable="true" type="xsd:int"/>
+         <xsd:element name="resultado" nillable="true" type="ns1:resultadoType"/>
+         <xsd:element name="anexo" type="ns1:anexoType"/>
+         <xsd:element name="mailSucursal" type="xsd:string"/>
+      </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="anexoType">
+      <xsd:sequence maxOccurs="unbounded" minOccurs="0">
+     
+      <xsd:element name="factor" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="ramo" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="subRamo" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="cantidadPartidas" type="xsd:int" minOccurs="0"/>
+    
+      </xsd:sequence>
+   </xsd:complexType>
+   
+   <xsd:complexType name="resultadoType">
+    <xsd:sequence>
+      <xsd:element name="numPartExitosas" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="numPartNoExitosas" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="totalPartidas" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="mensaje" type="ns1:mensajeType" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>

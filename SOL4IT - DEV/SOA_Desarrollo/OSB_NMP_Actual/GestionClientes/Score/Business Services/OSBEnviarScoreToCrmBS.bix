@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:businessServiceEntry xmlns:con="http://xmlns.oracle.com/servicebus/business/config" xmlns:oper="http://xmlns.oracle.com/servicebus/business/operations" xmlns:oper1="http://xmlns.oracle.com/servicebus/operations" xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert">
+    <con:coreEntry>
+        <con:description/>
+        <con1:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:env="http://www.bea.com/wli/config/env" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://xmlns.oracle.com/servicebus/business/config">
+            <con:wsdl ref="GestionClientes/Score/Resources/WSDLs/OSBScoreCrmWSDL"/>
+            <con:port>
+                <con:name>BasicHttpBinding_IScore</con:name>
+                <con:namespace>http://tempuri.org/</con:namespace>
+            </con:port>
+            <con:WSI-compliant>false</con:WSI-compliant>
+        </con1:binding>
+        <oper:operations enabled="true" xmlns:cus="http://www.bea.com/wli/config/customizations" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xt="http://www.bea.com/wli/config/xmltypes">
+            <oper:messageTracing enabled="false">
+                <oper1:detailsLevel>full</oper1:detailsLevel>
+                <oper1:maxSize>8192</oper1:maxSize>
+            </oper:messageTracing>
+            <oper:throttling enabled="false">
+                <oper:capacity>0</oper:capacity>
+                <oper:maxQueueLength>0</oper:maxQueueLength>
+                <oper:timeToLive>0</oper:timeToLive>
+            </oper:throttling>
+            <oper:monitoring enabled="true" aggregationInterval="1440"/>
+            <oper:resultCachingEnabled>true</oper:resultCachingEnabled>
+        </oper:operations>
+        <con:ws-policy xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:env="http://www.bea.com/wli/config/env" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <ser:binding-mode>wsdl-policy-attachments</ser:binding-mode>
+        </con:ws-policy>
+        <con:pageAttachments isEnabled="false"/>
+        <con:result-caching isSupported="false"/>
+    </con:coreEntry>
+    <con:endpointConfig xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:env="http://www.bea.com/wli/config/env" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <tran:provider-id>http</tran:provider-id>
+        <tran:inbound>false</tran:inbound>
+        <tran:URI>
+            <env:value>https://10.30.3.49/Nmp.Crm.Scoring/Score.svc</env:value>
+        </tran:URI>
+        <tran:outbound-properties>
+            <tran:load-balancing-algorithm>round-robin</tran:load-balancing-algorithm>
+            <tran:retry-count>1</tran:retry-count>
+            <tran:retry-interval>2</tran:retry-interval>
+            <tran:retry-application-errors>true</tran:retry-application-errors>
+        </tran:outbound-properties>
+        <tran:provider-specific xsi:type="http:HttpEndPointConfiguration">
+            <http:outbound-properties>
+                <http:request-method>POST</http:request-method>
+                <http:timeout>5</http:timeout>
+                <http:connection-timeout>5</http:connection-timeout>
+                <http:follow-redirects>false</http:follow-redirects>
+                <http:chunked-streaming-mode>true</http:chunked-streaming-mode>
+                <http:session-sctikiness enabled="false" session-id-name="JSESSIONID"/>
+            </http:outbound-properties>
+            <http:dispatch-policy>SBDefaultResponseWorkManager</http:dispatch-policy>
+            <http:compression>
+                <http:compression-support>false</http:compression-support>
+            </http:compression>
+        </tran:provider-specific>
+    </con:endpointConfig>
+    <aler:alertRules>
+        <aler:alertRule enabled="true" name="SLA_RhinoScoreWS_Minor" xmlns:cus="http://www.bea.com/wli/config/customizations" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xt="http://www.bea.com/wli/config/xmltypes">
+            <aler:startTime>08:00:00.000-06:00</aler:startTime>
+            <aler:endTime>20:30:00.000-06:00</aler:endTime>
+            <aler:frequency>every-time</aler:frequency>
+            <aler:severity>minor</aler:severity>
+            <aler:stopProcessing>false</aler:stopProcessing>
+            <aler:condition aggregation-interval="5">
+                <con1:logicalExpr logical-operator="and" xmlns:con1="http://xmlns.oracle.com/servicebus/monitoring/alert/condition">
+                    <con1:monCondExpr>
+                        <con1:function>average</con1:function>
+                        <con1:lhs>Transport.response-time</con1:lhs>
+                        <con1:operator>></con1:operator>
+                        <con1:rhs>1000</con1:rhs>
+                    </con1:monCondExpr>
+                    <con1:monCondExpr>
+                        <con1:function>average</con1:function>
+                        <con1:lhs>Transport.response-time</con1:lhs>
+                        <con1:operator>&lt;</con1:operator>
+                        <con1:rhs>2500</con1:rhs>
+                    </con1:monCondExpr>
+                </con1:logicalExpr>
+            </aler:condition>
+            <aler:alertDestination ref="GestionClientes/Score/Resources/Alerts/NMPScoreAlert"/>
+        </aler:alertRule>
+        <aler:alertRule enabled="true" name="SLA_RhinoScore_Major" xmlns:cus="http://www.bea.com/wli/config/customizations" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xt="http://www.bea.com/wli/config/xmltypes">
+            <aler:startTime>08:00:00.000-06:00</aler:startTime>
+            <aler:endTime>20:30:00.000-06:00</aler:endTime>
+            <aler:frequency>every-time</aler:frequency>
+            <aler:severity>major</aler:severity>
+            <aler:stopProcessing>false</aler:stopProcessing>
+            <aler:condition aggregation-interval="5">
+                <con1:logicalExpr logical-operator="and" xmlns:con1="http://xmlns.oracle.com/servicebus/monitoring/alert/condition">
+                    <con1:monCondExpr>
+                        <con1:function>average</con1:function>
+                        <con1:lhs>Transport.response-time</con1:lhs>
+                        <con1:operator>></con1:operator>
+                        <con1:rhs>2500</con1:rhs>
+                    </con1:monCondExpr>
+                    <con1:monCondExpr>
+                        <con1:function>average</con1:function>
+                        <con1:lhs>Transport.response-time</con1:lhs>
+                        <con1:operator>&lt;</con1:operator>
+                        <con1:rhs>6000</con1:rhs>
+                    </con1:monCondExpr>
+                </con1:logicalExpr>
+            </aler:condition>
+            <aler:alertDestination ref="GestionClientes/Score/Resources/Alerts/NMPScoreAlert"/>
+        </aler:alertRule>
+        <aler:alertRule enabled="true" name="SLA_RhinoScore_Critical" xmlns:cus="http://www.bea.com/wli/config/customizations" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xt="http://www.bea.com/wli/config/xmltypes">
+            <aler:startTime>08:00:00.000-06:00</aler:startTime>
+            <aler:endTime>20:30:00.000-06:00</aler:endTime>
+            <aler:frequency>every-time</aler:frequency>
+            <aler:severity>critical</aler:severity>
+            <aler:stopProcessing>false</aler:stopProcessing>
+            <aler:condition aggregation-interval="5">
+                <con1:monCondExpr xmlns:con1="http://xmlns.oracle.com/servicebus/monitoring/alert/condition">
+                    <con1:function>average</con1:function>
+                    <con1:lhs>Transport.response-time</con1:lhs>
+                    <con1:operator>></con1:operator>
+                    <con1:rhs>6000</con1:rhs>
+                </con1:monCondExpr>
+            </aler:condition>
+            <aler:alertDestination ref="GestionClientes/Score/Resources/Alerts/NMPScoreAlert"/>
+        </aler:alertRule>
+    </aler:alertRules>
+</con:businessServiceEntry>

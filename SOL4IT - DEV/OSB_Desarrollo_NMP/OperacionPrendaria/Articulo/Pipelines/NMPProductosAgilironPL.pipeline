@@ -1,0 +1,627 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+    <con:coreEntry>
+        <con:binding type="Native REST" xsi:type="con:NativeRestBindingType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:wadl ref="OperacionPrendaria/Articulo/Resources/WADLs/NMPProductosWADL"/>
+        </con:binding>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:pipeline name="PipelinePairActualizarInventario_request" type="request">
+            <con:stage name="RequestStage">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="seg" namespace="http://www.bea.com/wli/sb/services/security/config" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="request" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.11.15dc497cdd5.N8000</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:concat('{"product_xml":"',fn-bea:serialize($body/*),'"}')</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:wsCallout xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.11.15dc497cdd5.N7fff</con2:id>
+                        <con1:service ref="OperacionPrendaria/Articulo/BusinessServices/AgilironProductosBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                        <con1:request>
+                            <con1:payload wrapped="false">request</con1:payload>
+                        </con1:request>
+                        <con1:response>
+                            <con1:payload wrapped="false">response</con1:payload>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:routing-options>
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.11.15dc497cdd5.N7ffe</con2:id>
+                                <con1:restOptions>
+                                    <con1:verb>POST</con1:verb>
+                                    <con1:relPath>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'ProductsInventory/'</con:xqueryText>
+                                    </con1:relPath>
+                                    <con1:query-param>
+                                        <con1:name>key</con1:name>
+                                        <con1:value>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$Credentials/seg:password/text()</con:xqueryText>
+                                        </con1:value>
+                                    </con1:query-param>
+                                </con1:restOptions>
+                            </con1:routing-options>
+                        </con1:requestTransform>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairObtenerInventario_response" type="response">
+            <con:stage name="ResponseStage">
+                <con:comment/>
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <con1:id>_ActionId-a1e030f.1ce659b8.8.15daebcf3b3.N7ffc</con1:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$response</con:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairActualizarProducto_request" type="request">
+            <con:stage name="RequestStage">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="seg" namespace="http://www.bea.com/wli/sb/services/security/config" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="request" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.e.15dbe52dbf0.N7ff9</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:concat('{"product_xml":"',fn-bea:serialize($body/*),'"}')</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:wsCallout xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.e.15dbe52dbf0.N7ff8</con2:id>
+                        <con1:service ref="OperacionPrendaria/Articulo/BusinessServices/AgilironProductosBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                        <con1:request>
+                            <con1:payload wrapped="false">request</con1:payload>
+                        </con1:request>
+                        <con1:response>
+                            <con1:payload wrapped="false">response</con1:payload>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:routing-options>
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.e.15dbe52dbf0.N7ff7</con2:id>
+                                <con1:restOptions>
+                                    <con1:verb>PUT</con1:verb>
+                                    <con1:relPath>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">"Products/"</con:xqueryText>
+                                    </con1:relPath>
+                                    <con1:query-param>
+                                        <con1:name>key</con1:name>
+                                        <con1:value>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$Credentials/seg:password/text()</con:xqueryText>
+                                        </con1:value>
+                                    </con1:query-param>
+                                </con1:restOptions>
+                            </con1:routing-options>
+                        </con1:requestTransform>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairCrearProducto_request" type="request">
+            <con:stage name="RequestStage">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="seg" namespace="http://www.bea.com/wli/sb/services/security/config" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="request" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.4.15da521153a.N7ffb</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:concat('{"product_xml":"',fn-bea:serialize($body/*),'"}')</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:wsCallout xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.e.15dbe52dbf0.N7ffc</con2:id>
+                        <con1:service ref="OperacionPrendaria/Articulo/BusinessServices/AgilironProductosBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                        <con1:request>
+                            <con1:payload wrapped="false">request</con1:payload>
+                        </con1:request>
+                        <con1:response>
+                            <con1:payload wrapped="false">response</con1:payload>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:routing-options>
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.6.15daeac56b4.N7ff7</con2:id>
+                                <con1:restOptions>
+                                    <con1:verb>POST</con1:verb>
+                                    <con1:relPath>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'Products/'</con:xqueryText>
+                                    </con1:relPath>
+                                    <con1:query-param>
+                                        <con1:name>key</con1:name>
+                                        <con1:value>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$Credentials/seg:password/text()</con:xqueryText>
+                                        </con1:value>
+                                    </con1:query-param>
+                                </con1:restOptions>
+                            </con1:routing-options>
+                        </con1:requestTransform>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairActualizarListadePrecios_response" type="response">
+            <con:stage name="ResponseStage">
+                <con:comment/>
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <con1:id>_ActionId-a1e030f.1ce659b8.8.15daebcf3b3.N7ffa</con1:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$response</con:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairObtenerProducto_response" type="response">
+            <con:stage name="ResponseStage">
+                <con:comment/>
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <con1:id>_ActionId-a1e030f.1ce659b8.7.15daeb91033.N7ffb</con1:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$response</con:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairActualizarProducto_response" type="response">
+            <con:stage name="ResponseStage">
+                <con:comment/>
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <con1:id>_ActionId-a1e030f.1ce659b8.c.15dbe03c7e9.N7ffd</con1:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$response</con:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairObtenerInventario_request" type="request">
+            <con:stage name="RequestStage">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="seg" namespace="http://www.bea.com/wli/sb/services/security/config" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="ProductCode" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.d.15dbe063ce4.N7ff9</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$inbound/ctx:transport/ctx:request/http:query-parameters/http:parameter/@value</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:wsCallout xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.d.15dbe063ce4.N7ff8</con2:id>
+                        <con1:service ref="OperacionPrendaria/Articulo/BusinessServices/AgilironProductosBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                        <con1:request>
+                            <con1:payload wrapped="false">body</con1:payload>
+                        </con1:request>
+                        <con1:response>
+                            <con1:payload wrapped="false">response</con1:payload>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:routing-options>
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.d.15dbe063ce4.N7ff7</con2:id>
+                                <con1:restOptions>
+                                    <con1:verb>GET</con1:verb>
+                                    <con1:relPath>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">concat("ProductsInventory/",$ProductCode)</con:xqueryText>
+                                    </con1:relPath>
+                                    <con1:query-param>
+                                        <con1:name>key</con1:name>
+                                        <con1:value>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$Credentials/seg:password/text()</con:xqueryText>
+                                        </con1:value>
+                                    </con1:query-param>
+                                </con1:restOptions>
+                            </con1:routing-options>
+                        </con1:requestTransform>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairActualizarListadePrecios_request" type="request">
+            <con:stage name="RequestStage">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="seg" namespace="http://www.bea.com/wli/sb/services/security/config" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="request" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.d.15dbe063ce4.N7ff6</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:concat('{"product_xml":"',fn-bea:serialize($body/*),'"}')</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:wsCallout xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.d.15dbe063ce4.N7ff5</con2:id>
+                        <con1:service ref="OperacionPrendaria/Articulo/BusinessServices/AgilironProductosBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                        <con1:request>
+                            <con1:payload wrapped="false">request</con1:payload>
+                        </con1:request>
+                        <con1:response>
+                            <con1:payload wrapped="false">response</con1:payload>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:routing-options>
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.d.15dbe063ce4.N7ff4</con2:id>
+                                <con1:restOptions>
+                                    <con1:verb>POST</con1:verb>
+                                    <con1:relPath>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'ProductsPriceBook/'</con:xqueryText>
+                                    </con1:relPath>
+                                    <con1:query-param>
+                                        <con1:name>key</con1:name>
+                                        <con1:value>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$Credentials/seg:password/text()</con:xqueryText>
+                                        </con1:value>
+                                    </con1:query-param>
+                                </con1:restOptions>
+                            </con1:routing-options>
+                        </con1:requestTransform>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairObtenerProducto_request" type="request">
+            <con:stage name="RequestStage">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="seg" namespace="http://www.bea.com/wli/sb/services/security/config" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="ProductCode" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.d.15dbe063ce4.N7ffd</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$inbound/ctx:transport/ctx:request/http:query-parameters/http:parameter/@value</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:wsCallout xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.d.15dbe063ce4.N7ffc</con2:id>
+                        <con1:service ref="OperacionPrendaria/Articulo/BusinessServices/AgilironProductosBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                        <con1:request>
+                            <con1:payload wrapped="false">body</con1:payload>
+                        </con1:request>
+                        <con1:response>
+                            <con1:payload wrapped="false">response</con1:payload>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:routing-options>
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.d.15dbe063ce4.N7ffb</con2:id>
+                                <con1:restOptions>
+                                    <con1:verb>GET</con1:verb>
+                                    <con1:relPath>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">concat("Products/",$ProductCode)</con:xqueryText>
+                                    </con1:relPath>
+                                    <con1:query-param>
+                                        <con1:name>key</con1:name>
+                                        <con1:value>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$Credentials/seg:password/text()</con:xqueryText>
+                                        </con1:value>
+                                    </con1:query-param>
+                                </con1:restOptions>
+                            </con1:routing-options>
+                        </con1:requestTransform>
+                        <con1:responseTransform>
+                            <con1:assign varName="X">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.12.15dc4aa4aed.N7fff</con2:id>
+                                <con1:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:serialize($response)</con:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:responseTransform>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairDefault_request" type="request"/>
+        <con:pipeline name="PipelinePairProductos_request" type="request">
+            <con:stage name="InputStage">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="seg" namespace="http://www.bea.com/wli/sb/services/security/config" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="Credentials" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <con1:id>_ActionId-a1e030f.1ce659b8.6.15daeac56b4.N7ff6</con1:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:lookupBasicCredentials('OperacionPrendaria/Articulo/Resources/ServiceAccount/Agiliron')</con:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairProductos_response" type="response"/>
+        <con:pipeline name="PipelinePairActualizarInventario_response" type="response">
+            <con:stage name="ResponseStage">
+                <con:comment/>
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <con1:id>_ActionId-a1e030f.1ce659b8.11.15dc497cdd5.N7ffd</con1:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$response</con:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairCrearProducto_response" type="response">
+            <con:stage name="ResponseStage">
+                <con:comment/>
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <con1:id>_ActionId-a1e030f.1ce659b8.9.15daec83f06.N7fff</con1:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$response</con:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairObtenerListadePrecios_request" type="request">
+            <con:stage name="RequestStage">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="seg" namespace="http://www.bea.com/wli/sb/services/security/config" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="ProductCode" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.b.15dbde71791.N7ffe</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$inbound/ctx:transport/ctx:request/http:query-parameters/http:parameter/@value</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:wsCallout xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.b.15dbde71791.N7ffd</con2:id>
+                        <con1:service ref="OperacionPrendaria/Articulo/BusinessServices/AgilironProductosBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                        <con1:request>
+                            <con1:payload wrapped="false">body</con1:payload>
+                        </con1:request>
+                        <con1:response>
+                            <con1:payload wrapped="false">response</con1:payload>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:routing-options>
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.b.15dbde71791.N7ffc</con2:id>
+                                <con1:restOptions>
+                                    <con1:verb>GET</con1:verb>
+                                    <con1:relPath>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">concat("ProductsPriceBook/",$ProductCode)</con:xqueryText>
+                                    </con1:relPath>
+                                    <con1:query-param>
+                                        <con1:name>key</con1:name>
+                                        <con1:value>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$Credentials/seg:password/text()</con:xqueryText>
+                                        </con1:value>
+                                    </con1:query-param>
+                                </con1:restOptions>
+                            </con1:routing-options>
+                        </con1:requestTransform>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairDefault_response" type="response">
+            <con:stage name="ErrorStage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                <con:comment/>
+                <con:context/>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-a1e030f.830c5ee.34.15e4dd63b60.N7ffe</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'{
+"error":"Operacion NO valida"
+}'</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairEliminarProducto_response" type="response">
+            <con:stage name="ResponseStage">
+                <con:comment/>
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <con1:id>_ActionId-a1e030f.1ce659b8.f.15dbeb7ea99.N7ffc</con1:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$response</con:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairObtenerListadePrecios_response" type="response">
+            <con:stage name="ResponseStage">
+                <con:comment/>
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <con1:id>_ActionId-a1e030f.1ce659b8.12.15dc4aa4aed.N8000</con1:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$response</con:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairEliminarProducto_request" type="request">
+            <con:stage name="RequestStage">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="seg" namespace="http://www.bea.com/wli/sb/services/security/config" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="ProductCode" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.f.15dbeb7ea99.N7fff</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$inbound/ctx:transport/ctx:request/http:query-parameters/http:parameter/@value</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:wsCallout xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.f.15dbeb7ea99.N7ffe</con2:id>
+                        <con1:service ref="OperacionPrendaria/Articulo/BusinessServices/AgilironProductosBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                        <con1:request>
+                            <con1:payload wrapped="false">body</con1:payload>
+                        </con1:request>
+                        <con1:response>
+                            <con1:payload wrapped="false">response</con1:payload>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:routing-options>
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.f.15dbeb7ea99.N7ffd</con2:id>
+                                <con1:restOptions>
+                                    <con1:verb>DELETE</con1:verb>
+                                    <con1:relPath>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">concat("Products/",$ProductCode)</con:xqueryText>
+                                    </con1:relPath>
+                                    <con1:query-param>
+                                        <con1:name>key</con1:name>
+                                        <con1:value>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$Credentials/seg:password/text()</con:xqueryText>
+                                        </con1:value>
+                                    </con1:query-param>
+                                </con1:restOptions>
+                            </con1:routing-options>
+                        </con1:requestTransform>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="PipelinePairProductos">
+                <con:comment/>
+                <con:request>PipelinePairProductos_request</con:request>
+                <con:response>PipelinePairProductos_response</con:response>
+            </con:pipeline-node>
+            <con:branch-node type="operation" name="BranchNode">
+                <con:comment/>
+                <con:branch-table>
+                    <con:branch name="CrearProducto">
+                        <con:operator>equals</con:operator>
+                        <con:value>CrearProducto</con:value>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairCrearProducto">
+                                <con:comment/>
+                                <con:request>PipelinePairCrearProducto_request</con:request>
+                                <con:response>PipelinePairCrearProducto_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="ObtenerProducto">
+                        <con:operator>equals</con:operator>
+                        <con:value>ObtenerProducto</con:value>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairObtenerProducto">
+                                <con:comment/>
+                                <con:request>PipelinePairObtenerProducto_request</con:request>
+                                <con:response>PipelinePairObtenerProducto_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="ActualizarProducto">
+                        <con:operator>equals</con:operator>
+                        <con:value>ActualizarProducto</con:value>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairActualizarProducto">
+                                <con:comment/>
+                                <con:request>PipelinePairActualizarProducto_request</con:request>
+                                <con:response>PipelinePairActualizarProducto_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="EliminarProducto">
+                        <con:operator>equals</con:operator>
+                        <con:value>EliminarProducto</con:value>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairEliminarProducto">
+                                <con:comment/>
+                                <con:request>PipelinePairEliminarProducto_request</con:request>
+                                <con:response>PipelinePairEliminarProducto_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="ObtenerInventario">
+                        <con:operator>equals</con:operator>
+                        <con:value>ObtenerInventario</con:value>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairObtenerInventario">
+                                <con:comment/>
+                                <con:request>PipelinePairObtenerInventario_request</con:request>
+                                <con:response>PipelinePairObtenerInventario_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="ActualizarInventario">
+                        <con:operator>equals</con:operator>
+                        <con:value>ActualizarInventario</con:value>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairActualizarInventario">
+                                <con:comment/>
+                                <con:request>PipelinePairActualizarInventario_request</con:request>
+                                <con:response>PipelinePairActualizarInventario_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="ObtenerListadePrecios">
+                        <con:operator>equals</con:operator>
+                        <con:value>ObtenerListadePrecios</con:value>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairObtenerListadePrecios">
+                                <con:comment/>
+                                <con:request>PipelinePairObtenerListadePrecios_request</con:request>
+                                <con:response>PipelinePairObtenerListadePrecios_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="ActualizarListadePrecios">
+                        <con:operator>equals</con:operator>
+                        <con:value>ActualizarListadePrecios</con:value>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairActualizarListadePrecios">
+                                <con:comment/>
+                                <con:request>PipelinePairActualizarListadePrecios_request</con:request>
+                                <con:response>PipelinePairActualizarListadePrecios_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairDefault">
+                                <con:comment/>
+                                <con:request>PipelinePairDefault_request</con:request>
+                                <con:response>PipelinePairDefault_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

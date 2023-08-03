@@ -1,0 +1,97 @@
+<wsdl:definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Services/NMPDSRFPagoLineaSvc" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Services/NMPDSRFPagoLineaSvc" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:NMPDSRFPago="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPDSRFPagoLineaSvc" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage">
+  <wsdl:types>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPDSRFPagoLineaSvc" schemaLocation="../Schemas/NMPPagoLineaXSD.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="NMPHeaderRequest">
+    <wsdl:part name="requestHeader" element="NMPsh:headerMessage"/>
+  </wsdl:message>
+  <wsdl:message name="getPartidaClienteRequest">
+    <wsdl:part name="parameters" element="NMPDSRFPago:getPartidaClienteRequest"/>
+  </wsdl:message>
+  <wsdl:message name="getPartidaClienteResponse">
+    <wsdl:part name="parameters" element="NMPDSRFPago:getPartidaClienteResponse"/>
+  </wsdl:message>
+  <wsdl:message name="notificarPagoRequest">
+    <wsdl:part name="parameters" element="NMPDSRFPago:notificarPagoRequest"/>
+  </wsdl:message>
+  <wsdl:message name="notificarPagoResponse">
+    <wsdl:part name="parameters" element="NMPDSRFPago:notificarPagoResponse"/>
+  </wsdl:message>
+  <wsdl:message name="preregistarPagoRequest">
+    <wsdl:part name="parameters" element="NMPDSRFPago:preregistarPagoRequest"/>
+  </wsdl:message>
+  <wsdl:message name="preregistarPagoResponse">
+    <wsdl:part name="parameters" element="NMPDSRFPago:preregistarPagoResponse"/>
+  </wsdl:message>
+  <wsdl:message name="pagoLineaFault">
+    <wsdl:part name="parameters" element="NMPsm:messageError"/>
+  </wsdl:message>
+  <wsdl:portType name="DSRFPagoLinea_ptt">
+    <wsdl:operation name="getPartidaCliente">
+      <wsdl:input message="tns:getPartidaClienteRequest"/>
+      <wsdl:output message="tns:getPartidaClienteResponse"/>
+      <wsdl:fault name="pagoLineaFault" message="tns:pagoLineaFault"/>
+    </wsdl:operation>
+    <wsdl:operation name="notificarPago">
+      <wsdl:input message="tns:notificarPagoRequest"/>
+      <wsdl:output message="tns:notificarPagoResponse"/>
+      <wsdl:fault name="pagoLineaFault" message="tns:pagoLineaFault"/>
+    </wsdl:operation>
+    <wsdl:operation name="preregistrarPago">
+      <wsdl:input message="tns:preregistarPagoRequest"/>
+      <wsdl:output message="tns:preregistarPagoResponse"/>
+      <wsdl:fault message="tns:pagoLineaFault" name="pagoLineaFault"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="DSRFPagoLineaBinding" type="tns:DSRFPagoLinea_ptt">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getPartidaCliente">
+      <soap:operation soapAction="getPartidaCliente" style="document"/>
+      <wsdl:input>
+        <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="pagoLineaFault">
+        <soap:fault name="pagoLineaFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="notificarPago">
+      <soap:operation soapAction="notificarPago" style="document"/>
+      <wsdl:input>
+        <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="pagoLineaFault">
+        <soap:fault name="pagoLineaFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="preregistrarPago">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/NMPDSRFPagoLineaSvc/preregistrarPago"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="parameters"/>
+        <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="parameters"/>
+      </wsdl:output>
+      <wsdl:fault name="pagoLineaFault">
+        <soap:fault name="pagoLineaFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="DSRFPagoLinea">
+    <wsdl:port binding="tns:DSRFPagoLineaBinding" name="PagoLineaPort">
+      <soap:address location="www.montedepiedad.com/pagoLinea"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,36 @@
+<definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/NMPPartidasQueue" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Servicios/NMPPartidasQueue" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:NMPPartidas="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:env="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import schemaLocation="../Schemas/NMPPartidasSvcXSD.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+            <import schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+        </schema>
+    </wsdl:types>
+    <message name="NMPStandardHeader">
+        <part name="requestHeader" element="NMPsh:headerMessage"/>
+        <part name="traz" element="NMPPartidas:trazabilidad"/>
+    </message>
+    <wsdl:message name="publicarPartidasClienteQueueRequest">
+        <wsdl:part name="parameters" element="NMPPartidas:obtenerPartidasClienteResponse"/>
+    </wsdl:message>
+    <portType name="PartidasQueue_ptt">
+        <operation name="publicarPartidasClienteQueue">
+            <input message="tns:publicarPartidasClienteQueueRequest"/>
+        </operation>
+    </portType>
+    <binding name="PartidasQueueBinding" type="tns:PartidasQueue_ptt">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="publicarPartidasClienteQueue">
+            <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Servicios/NMPPartidas/publicarPartidasClienteQueue"/>
+            <input>
+                <soap:body use="literal" parts="parameters"/>
+                <soap:header message="tns:NMPStandardHeader" part="requestHeader" use="literal"/>
+                <soap:header message="tns:NMPStandardHeader" part="traz" use="literal"/>
+            </input>
+        </operation>
+    </binding>
+    <service name="Partidas_ptt">
+        <port name="Partidas_pttPort" binding="tns:PartidasQueueBinding">
+            <soap:address location="https://10.30.3.15:8012/NMP/MIDAS/Partidas"/>
+        </port>
+    </service>
+</definitions>

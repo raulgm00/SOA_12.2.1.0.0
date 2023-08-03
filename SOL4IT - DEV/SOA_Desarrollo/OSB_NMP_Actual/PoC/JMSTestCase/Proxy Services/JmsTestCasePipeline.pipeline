@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con4="http://www.bea.com/wli/sb/stages/publish/config" xmlns:con5="http://www.bea.com/wli/sb/stages/alert/config">
+    <con:coreEntry>
+        <con:binding type="Any XML"/>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:tracingEnabled>true</oper:tracingEnabled>
+            <oper:monitoring enabled="true" level="service" aggregationInterval="10"/>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:pipeline type="request" name="request-N5601d8a2.324bf65d.0.154ef6edf44.N8000">
+            <con:stage id="_StageId-N5601d8a2.324bf65d.0.154ef6edf44.N7ffe" name="StageRequest">
+                <con:context/>
+                <con:actions>
+                    <con4:route>
+                        <con2:id>_ActionId-N5601d8a2.1c18849e.0.15503a7905a.N7fc7</con2:id>
+                        <con4:service ref="PoC/JMSTestCase/Business/EmailNotification" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con4:outboundTransform/>
+                    </con4:route>
+                    <con5:alert>
+                        <con2:id>_ActionId-N5601d8a2.1c18849e.0.15503a7905a.N7fc4</con2:id>
+                        <con5:destination ref="PoC/JMSTestCase/Business/AlertDestination"/>
+                        <con5:description>Mensaje consumido de tópico - TEST JMS prueba de duplicidad</con5:description>
+                        <con5:severity>normal</con5:severity>
+                        <con5:payload>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con5:payload>
+                    </con5:alert>
+                    <con1:report>
+                        <con2:id>_ActionId-N5601d8a2.324bf65d.0.154ef6edf44.N7ffa</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con1:expr>
+                        <con1:labels>
+                            <con1:key>Mensaje</con1:key>
+                            <con1:varName>body</con1:varName>
+                            <con1:value>
+                                <con2:xpathText>.//*:numMessage/text()</con2:xpathText>
+                            </con1:value>
+                        </con1:labels>
+                    </con1:report>
+                    <con3:wsCallout>
+                        <con2:id>_ActionId-N5601d8a2.324bf65d.0.154ef6edf44.N7ff7</con2:id>
+                        <con3:service ref="PoC/JMSTestCase/Business/JmsTestQueue" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con3:request>
+                            <con3:payload wrapped="false">body</con3:payload>
+                        </con3:request>
+                        <con3:response>
+                            <con3:payload wrapped="false">bodyRes</con3:payload>
+                        </con3:response>
+                        <con3:requestTransform/>
+                        <con3:responseTransform/>
+                    </con3:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N5601d8a2.324bf65d.0.154ef6edf44.N7fff">
+            <con:stage id="_StageId-N5601d8a2.324bf65d.0.154ef6edf44.N7ffd" name="StageResponse">
+                <con:context/>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="PipelinePairNode1">
+                <con:request>request-N5601d8a2.324bf65d.0.154ef6edf44.N8000</con:request>
+                <con:response>response-N5601d8a2.324bf65d.0.154ef6edf44.N7fff</con:response>
+            </con:pipeline-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

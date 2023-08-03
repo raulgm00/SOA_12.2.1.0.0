@@ -1,0 +1,19 @@
+<adapter-config name="NmpDSRFPagoLineaDB" adapter="db" wsdlLocation="../WSDLs/NMPAdminPagosBitacoraDBWSDL.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  
+  <connection-factory UIConnectionName="CMPAGOS" location="eis/DB/CMPAGOS"/>
+  <endpoint-interaction portType="NmpDSRFPagoLineaDB_ptt" operation="insert">
+    <interaction-spec className="oracle.tip.adapter.db.DBWriteInteractionSpec">
+      <property name="DescriptorName" value="NmpDSRFPagoLineaDB.NmpAdminPagosBitT"/>
+      <property name="DmlType" value="insert"/>     
+      <property name="MappingsMetaDataURL" value="NMPAdminPagosBitacoraMAP.xml"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+      <property name="DetectOmissions" value="true"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  <endpoint-interaction portType="NmpDSRFPagoLineaDB_ptt" operation="validaTransaccion">
+    <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+      <property name="SqlString" value="select count(id_seq) cacheFlag from NMP_ADMIN_PAGOS_BIT_T where num_contrato = #numeroContrato and importe = #importe and num_transaccion = #numTransaccion and tipo_operacion = #numOperacion and hr_registro_pago + (0.000694444444444443/60)*(#segundos) > sysdate and iscache='false' and operacion = 'notificarPago'"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction> 
+</adapter-config>

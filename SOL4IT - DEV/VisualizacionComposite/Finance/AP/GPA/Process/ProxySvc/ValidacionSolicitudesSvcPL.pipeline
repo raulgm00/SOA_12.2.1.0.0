@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:wsdl ref="Finance/AP/GPA/Commons/Resources/ValidacionSolicitudesWSDL"/>
+            <con:binding>
+                <con:name>ValidacionSolicitudesSvcPortBinding</con:name>
+                <con:namespace>http://ws.gpa.qualitas.mx/</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:tracingEnabled>true</oper:tracingEnabled>
+            <oper:monitoring enabled="true" level="service" aggregationInterval="10"/>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:pipeline name="PipelinePairNode1_request" type="request">
+            <con:stage name="ValidacionProcess">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="ws1" namespace="http://ws.gpa.qualitas.mx/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:log xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.N6c01dd72.26.15c21defef2.N8000</con2:id>
+                        <con1:logLevel>warning</con1:logLevel>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con1:expr>
+                        <con1:message>***** PROCESO DE LIMPIEZA DE SOLICITUDES NO TERMINADAS *******</con1:message>
+                    </con1:log>
+                    <con:wsCallout xmlns:con="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.N6c01dd72.21.15c21c44c49.N8000</con1:id>
+                        <con:service ref="Finance/AP/GPA/Process/BusinessSvc/SolicitudesCursoDataBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                        <con:operation>SolicitudesCursoDataBSSelect</con:operation>
+                        <con:request>
+                            <con:body wrapped="false">solicitudesEnCursoInput</con:body>
+                            <con:header/>
+                        </con:request>
+                        <con:response>
+                            <con:body wrapped="false">solicitudesEnCursoOutput</con:body>
+                            <con:header/>
+                        </con:response>
+                        <con:requestTransform>
+                            <con:assign varName="solicitudesEnCursoInput">
+                                <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.N6c01dd72.22.15c21c56df3.N8000</con1:id>
+                                <con:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(fn:concat(
+
+
+'&lt;sol:SolicitudesCursoDataBSSelectInputParameters ', 'xmlns:sol="http://xmlns.oracle.com/pcbpel/adapter/db/top/SolicitudesCursoDataBS"' ,' />'
+
+)
+)</con:xqueryText>
+                                </con:expr>
+                            </con:assign>
+                        </con:requestTransform>
+                        <con:responseTransform>
+                            <con1:log xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.N6c01dd72.23.15c21c58d2a.N8000</con2:id>
+                                <con2:disabled xmlns:con2="http://www.bea.com/wli/sb/stages/config">true</con2:disabled>
+                                <con1:logLevel>warning</con1:logLevel>
+                                <con1:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$solicitudesEnCursoOutput</con:xqueryText>
+                                </con1:expr>
+                                <con1:message>**** SOLICITUDES EN CURSO ACTUALES *****</con1:message>
+                            </con1:log>
+                        </con:responseTransform>
+                    </con:wsCallout>
+                    <con1:foreach xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.N6c01dd72.21.15c21c44c49.N7fff</con2:id>
+                        <con1:variable>solicitudesEnCursoOutput</con1:variable>
+                        <con1:expression>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">//*:Gpa001Solicitud</con:xpathText>
+                        </con1:expression>
+                        <con1:value-variable>solicitudCurso</con1:value-variable>
+                        <con1:index-variable>solicitudCursoIdx</con1:index-variable>
+                        <con1:total-variable>solicitudCursoTotal</con1:total-variable>
+                        <con1:actions>
+                            <con2:log xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.N6c01dd72.25.15c21de4075.N8000</con3:id>
+                                <con2:logLevel>warning</con2:logLevel>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:concat(
+
+'ID Solicitud: ',
+$solicitudCurso/*:idSolicitud/text(),
+
+' **Fecha Creación: ',
+$solicitudCurso/*:fhCreacion/text(),
+
+' **ID Servicio: ',
+$solicitudCurso/*:servicio/*:idServicio/text(),
+
+' **ID Proyecto: ',
+$solicitudCurso/*:proyecto/*:idProyecto/text()
+
+)</con:xqueryText>
+                                </con2:expr>
+                                <con2:message>**** SOLICITUD PARA ANÁLISIS</con2:message>
+                            </con2:log>
+                        </con1:actions>
+                    </con1:foreach>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode1_response" type="response"/>
+        <con:flow>
+            <con:pipeline-node name="PipelinePairNode1">
+                <con:request>PipelinePairNode1_request</con:request>
+                <con:response>PipelinePairNode1_response</con:response>
+            </con:pipeline-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

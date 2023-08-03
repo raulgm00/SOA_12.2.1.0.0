@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:businessServiceEntry xmlns:con="http://xmlns.oracle.com/servicebus/business/config" xmlns:oper="http://xmlns.oracle.com/servicebus/business/operations">
+    <con:coreEntry>
+        <con:description/>
+        <con1:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config" xmlns:jca="http://www.bea.com/wli/sb/transports/jca" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:env="http://www.bea.com/wli/config/env" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://xmlns.oracle.com/servicebus/business/config">
+            <con:wsdl ref="GestionEmpleados/Beneficiario/Resources/WSDLs/DBConsultaCabeceraBeneficiariosSvcWSDL"/>
+            <con:binding>
+                <con:name>CabeceraPadronDBAdapter_ptt-binding</con:name>
+                <con:namespace>http://xmlns.oracle.com/pcbpel/adapter/db/NMP_Padr%C3%B3n_Compontes/NMP_Componentes/CabeceraPadronDBAdapter</con:namespace>
+            </con:binding>
+        </con1:binding>
+        <oper:operations enabled="true">
+            <oper:messageTracing enabled="true">
+                <oper1:detailsLevel xmlns:oper1="http://xmlns.oracle.com/servicebus/operations">terse</oper1:detailsLevel>
+                <oper1:maxSize xmlns:oper1="http://xmlns.oracle.com/servicebus/operations">8192</oper1:maxSize>
+            </oper:messageTracing>
+            <oper:throttling enabled="false">
+                <oper:capacity>0</oper:capacity>
+                <oper:maxQueueLength>0</oper:maxQueueLength>
+                <oper:timeToLive>0</oper:timeToLive>
+            </oper:throttling>
+            <oper:resultCachingEnabled>true</oper:resultCachingEnabled>
+        </oper:operations>
+        <con:ws-policy>
+            <ser:binding-mode xmlns:ser="http://www.bea.com/wli/sb/services">no-policies</ser:binding-mode>
+        </con:ws-policy>
+        <con:result-caching isSupported="false"/>
+    </con:coreEntry>
+    <con:endpointConfig xmlns:jca="http://www.bea.com/wli/sb/transports/jca" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:env="http://www.bea.com/wli/config/env" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <tran:provider-id>jca</tran:provider-id>
+        <tran:inbound>false</tran:inbound>
+        <tran:URI weight="0">
+            <env:value>jca://eis/DB/PeopleSoftAdapter</env:value>
+        </tran:URI>
+        <tran:outbound-properties>
+            <tran:load-balancing-algorithm>round-robin</tran:load-balancing-algorithm>
+            <tran:retry-count>4</tran:retry-count>
+            <tran:retry-interval>2</tran:retry-interval>
+            <tran:retry-application-errors>true</tran:retry-application-errors>
+        </tran:outbound-properties>
+        <tran:all-headers>false</tran:all-headers>
+        <tran:provider-specific xsi:type="jca:JCAEndPointConfiguration">
+            <jca:jca-file ref="GestionEmpleados/Beneficiario/Resources/Adapters/DBConsultaCabeceraBeneficiariosDB"/>
+            <jca:adapter-name>Database Adapter</jca:adapter-name>
+            <jca:adapter-type>DB</jca:adapter-type>
+            <jca:always-use-wsdl>true</jca:always-use-wsdl>
+            <jca:connection-mode>managed</jca:connection-mode>
+            <jca:connection-property-username-password-overwrite>false</jca:connection-property-username-password-overwrite>
+            <jca:outbound-properties>
+                <jca:operation-properties>
+                    <jca:operation-name>CabeceraPadronDBAdapter</jca:operation-name>
+                    <jca:spec-properties>
+                        <jca:property>
+                            <jca:name>QueryTimeout</jca:name>
+                            <jca:value>5</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>SqlString</jca:name>
+                            <jca:value>SELECT NMP_TIP_REG AS TIP_REG, NMP_FEC_REG AS FEC_REG, NMP_GRUPO AS GRUPO, NMP_EMPRESA AS EMPRESA FROM PS_NMP_LAYOUT_CAB;</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>GetActiveUnitOfWork</jca:name>
+                            <jca:value>false</jca:value>
+                        </jca:property>
+                    </jca:spec-properties>
+                </jca:operation-properties>
+            </jca:outbound-properties>
+        </tran:provider-specific>
+    </con:endpointConfig>
+</con:businessServiceEntry>

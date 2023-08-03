@@ -1,0 +1,141 @@
+<wsdl:definitions name="RTTransaccionesDbService" targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Service/RTTransaccionesDb" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Service/RTTransaccionesDb" xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/" xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:top="http://servicios.montedepiedad.com.mx/NMP/Schema/RTTransaccionesDbXSD" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/RTTransaccionesDbXSD" schemaLocation="../Schemas/NMPRiesgoTransaccionalDBXSD.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="NmpTransaccionesSelect_Request">
+    <wsdl:part name="payload" element="top:NmpTransaccionesSelect_Request"/>
+  </wsdl:message>
+  <wsdl:message name="NmpTransaccionesCollection_msg">
+    <wsdl:part name="NmpTransaccionesCollection" element="top:NmpTransaccionesCollection"/>
+  </wsdl:message>
+  <wsdl:message name="updateTransaccionesRequest">
+    <wsdl:part name="NmpTransaccionesCollection" element="top:updateTransaccionesRequest"/>
+  </wsdl:message>
+  <wsdl:message name="NmpTransaccionesSelectByIdRequest">
+    <wsdl:part name="payload" element="top:TransaccionesSelectByIdRequest"/>
+  </wsdl:message>
+  <wsdl:message name="NmpTransaccionesSelectByIdResponse">
+    <wsdl:part name="payload" element="top:TransaccionesSelectByIdResponse"/>
+  </wsdl:message>
+  <wsdl:message name="NMPHeaderRequest">
+    <wsdl:part name="requestHeader" element="NMPsh:headerMessage"/>
+  </wsdl:message>
+  <wsdl:message name="NMPFaultMessage">
+    <wsdl:part name="parameters" element="NMPsm:messageError"/>
+  </wsdl:message>
+  <wsdl:message name="TransaccionNoProcesadasReq">
+    <wsdl:part name="payload" element="top:NmpTransaccionResponse"/>
+  </wsdl:message>
+  <wsdl:message name="TransaccionResponse">
+    <wsdl:part name="payload" element="top:NmpTransaccionResponse"/>
+  </wsdl:message>
+  <wsdl:message name="TransaccionNoProcesadasRes">
+    <wsdl:part name="consultaInstanciasRequest" element="top:TransaccionNoAplicadasRequest"/>
+  </wsdl:message>
+  <wsdl:portType name="NmpTransacciones_ptt">
+    <wsdl:operation name="updateTransaccion">
+      <wsdl:input message="tns:updateTransaccionesRequest"/>
+      <wsdl:output message="tns:TransaccionResponse"/>
+      <wsdl:fault message="tns:NMPFaultMessage" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="insertTransaccion">
+      <wsdl:input message="tns:NmpTransaccionesCollection_msg"/>
+      <wsdl:output message="tns:TransaccionResponse"/>
+      <wsdl:fault name="fault" message="tns:NMPFaultMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="getTransaccionesCliente">
+      <wsdl:input message="tns:NmpTransaccionesSelect_Request"/>
+      <wsdl:output message="tns:NmpTransaccionesCollection_msg"/>
+      <wsdl:fault name="fault" message="tns:NMPFaultMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="getTransaccionNoProcesadas">
+      <wsdl:input message="tns:TransaccionNoProcesadasRes"/>
+      <wsdl:output message="tns:consultaInstanciasResponse"/>
+      <wsdl:fault message="tns:NMPFaultMessage" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="getTransaccionesById">
+      <wsdl:input message="tns:NmpTransaccionesSelectByIdRequest"/>
+      <wsdl:output message="tns:NmpTransaccionesSelectByIdResponse"/>
+      <wsdl:fault message="tns:NMPFaultMessage" name="fault"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <plt:partnerLinkType name="NmpTransacciones_plt">
+    <plt:role name="NmpTransacciones_role">
+      <plt:portType name="tns:NmpTransacciones_ptt"/>
+    </plt:role>
+  </plt:partnerLinkType>
+  <wsdl:message name="consultaInstanciasResponse">
+    <wsdl:part name="consultaInstanciasResponse" element="top:TransaccionNoAplicadasResponse"/>
+  </wsdl:message>
+  <wsdl:binding name="NmpTransacciones_SOAP11Binding" type="tns:NmpTransacciones_ptt">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="insertTransaccion">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/RTTransaccionesDb/insertTransaccion"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="NmpTransaccionesCollection"/>
+        <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="payload"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getTransaccionesCliente">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/RTTransaccionesDb/getTransaccionesCliente"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="payload"/>
+        <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="NmpTransaccionesCollection"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="getTransaccionesClienteFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getTransaccionNoProcesadas">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/RTTransaccionesDb/getTransaccionNoProcesadas"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="consultaInstanciasRequest"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="consultaInstanciasResponse"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getTransaccionesById">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/RTTransaccionesDb/getTransaccionesById"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="payload"/>
+        <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="payload"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="updateTransaccion">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/RTTransaccionesDb/updateTransaccion"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="NmpTransaccionesCollection"/>
+        <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="payload"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+</wsdl:definitions>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="true" xsi:type="con:SoapBindingType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:wsdl ref="ConcentradoraBPM/Resources/WSDL/ProcesaMarcados"/>
+            <con:binding>
+                <con:name>ProcesaMarcadosPTSOAP12Binding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/WSDL/ConsultaInformacionMidas</con:namespace>
+            </con:binding>
+        </con:binding>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router errorHandler="_onErrorHandler-a1e030f.45465aab.10.14f8ea3ee30.N7fff">
+        <con:pipeline name="_onErrorHandler-a1e030f.45465aab.10.14f8ea3ee30.N7fff" type="error">
+            <con:stage name="stage1">
+                <con:actions>
+                    <con1:reply isError="true" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+                        <con1:id>_ActionId-a1e030f.45465aab.0.14f7ebb4dcf.N7ff2</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode1_request" type="request">
+            <con:stage name="stageConsultaMidas">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="proc" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/ProcesaMarcados" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:wsCallout xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.45465aab.12.14f94f16d47.N8000</con2:id>
+                        <con1:service ref="ConcentradoraBPM/ProxyServices/ConsultaInfoMidasPS" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                        <con1:operation>ConsultaTotalProcesados</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">totalRequest</con1:body>
+                            <con1:header/>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">totalResponse</con1:body>
+                            <con1:header/>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:assign varName="totalRequest">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.45465aab.4.14f8135f7da.N7ffc</con2:id>
+                                <con1:expr>
+                                    <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                        <con:resource ref="ConcentradoraBPM/Resources/XSLT/TransformConsultaInfoMidasRequest"/>
+                                        <con:input>$body/proc:IniciaProcesaMarcadosRequest</con:input>
+                                        <con:param name="operacion">
+                                            <con:path>'ConsultaTotalProcesados'</con:path>
+                                        </con:param>
+                                        <con:param name="attribute1">
+                                            <con:path>''</con:path>
+                                        </con:param>
+                                    </con:xsltTransform>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:requestTransform>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+            <con:stage name="stageConsulltaBloque">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="con" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/ConsultaInformacionMidas" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="proc" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/ProcesaMarcados" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con:assign varName="forArreglo" xmlns:con="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.45465aab.1.14f80fbd63d.N7ffe</con1:id>
+                        <con:expr>
+                            <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="ConcentradoraBPM/Resources/XSLT/TransformConsultaInfoMidasRequest"/>
+                                <con:input>$body/proc:IniciaProcesaMarcadosRequest</con:input>
+                                <con:param name="operacion">
+                                    <con:path>'array'</con:path>
+                                </con:param>
+                                <con:param name="attribute1">
+                                    <con:path>$totalResponse/con:Total/text()</con:path>
+                                </con:param>
+                            </con:xsltTransform>
+                        </con:expr>
+                    </con:assign>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode1_response" type="response"/>
+        <con:flow>
+            <con:pipeline-node name="PipelinePairNode1">
+                <con:request>PipelinePairNode1_request</con:request>
+                <con:response>PipelinePairNode1_response</con:response>
+            </con:pipeline-node>
+        </con:flow>
+    </con:router>
+    <aler:alertRules xsi:nil="true" xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+</con:pipelineEntry>

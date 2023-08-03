@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:NMPPers="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPersona"
+            targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPersona"
+            elementFormDefault="qualified" version="2.0">
+  <!--Example element-->
+  <xsd:element name="Persona" type="NMPPers:PersonaType"/>
+  <xsd:simpleType name="emailType">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="100"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <!--Complex Type-->
+  <xsd:complexType name="PersonaType">
+    <xsd:sequence>
+      <xsd:element name="infoBasica" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="genero" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="nombre" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="apellidoPaterno" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="apellidoMaterno" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="fechaDeNacimiento" type="xsd:dateTime" minOccurs="0"/>
+            <xsd:element name="estadoCivil" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="nacionalidad" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="RFC" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="CURP" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="IFE" type="xsd:string" minOccurs="0"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="infoExtendida" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="numeroDeHijos" type="xsd:int" minOccurs="0"/>
+            <xsd:element name="numeroDependientes" type="xsd:int" minOccurs="0"/>
+            <xsd:element name="trabaja" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="escolaridad" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="ocupacion" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="profesion" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="numeroCedulaProfesional" type="xsd:string" minOccurs="0"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="Contacto" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="ListaTelefonos" minOccurs="0">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="Telefono" type="NMPPers:TelefonoType"
+                               maxOccurs="unbounded"/>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="ListaDirecciones" minOccurs="0">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="Direccion" type="NMPPers:DireccionType"
+                               maxOccurs="unbounded"/>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="ListaCorreos" minOccurs="0">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="email" type="NMPPers:emailType" maxOccurs="unbounded"/>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="DireccionType">
+    <xsd:sequence>
+      <xsd:element name="nombreDelaCalle" minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string" >
+            <xsd:maxLength value="240"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="numeroExterior" minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string" >
+            <xsd:maxLength value="5"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="numeroInterior" minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string" >
+            <xsd:maxLength value="5"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="estado"  minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string" >
+            <xsd:maxLength value="20"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="delegacionMunicipio"  minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string" >
+            <xsd:maxLength value="20"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="colonia"  minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string" >
+            <xsd:maxLength value="30"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="codigoPostal"  minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string" >
+            <xsd:maxLength value="5"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="tipoDomicilio"  minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string" >
+            <xsd:enumeration value="Particular"/>
+            <xsd:enumeration value="Oficina"/>
+            <xsd:enumeration value="Fiscal"/>
+            <xsd:maxLength value="10"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="ciudadPoblacion"  minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string" >
+            <xsd:maxLength value="20"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="pais"  minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string" >
+            <xsd:maxLength value="20"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="TelefonoType">
+    <xsd:sequence>
+      <xsd:element name="codigoPais"  minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string" >
+            <xsd:maxLength value="2"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="codigoArea"  minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string" >
+            <xsd:maxLength value="2"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="numeroTelefonico"  minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string" >
+            <xsd:maxLength value="10"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="extension"  minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string" >
+            <xsd:maxLength value="5"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="tipoTelefono"  minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string" >
+            <xsd:enumeration value="Casa"/>
+            <xsd:enumeration value="Oficina"/>
+            <xsd:enumeration value="Móvil"/>
+            <xsd:maxLength value="10"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+</xsd:schema>

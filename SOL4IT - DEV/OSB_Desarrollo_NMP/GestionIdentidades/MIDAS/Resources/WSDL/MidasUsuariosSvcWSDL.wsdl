@@ -1,0 +1,253 @@
+<wsdl:definitions xmlns:ns2="http://nmpusuario.schema.nmp.servicios.montedepiedad.com.mx"
+                  xmlns:ns1="http://nmpempleado.schema.nmp.servicios.montedepiedad.com.mx"
+                  xmlns:ns4="http://nmpusuario.services.nmp.servicios.montedepiedad.com.mx"
+                  xmlns:ns3="http://nmpstandardmessage.schema.nmp.servicios.montedepiedad.com.mx"
+                  xmlns:soapenc12="http://www.w3.org/2003/05/soap-encoding"
+                  xmlns:tns="urn:mx.com.nmp.midas"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:soap11="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:soapenc11="http://schemas.xmlsoap.org/soap/encoding/"
+                  xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"
+                  targetNamespace="urn:mx.com.nmp.midas">
+  <wsdl:types>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                attributeFormDefault="qualified" elementFormDefault="qualified"
+                targetNamespace="http://nmpempleado.schema.nmp.servicios.montedepiedad.com.mx">
+      <xsd:complexType name="EmpleadoType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="idEmpleado" nillable="true"
+                       type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                attributeFormDefault="qualified" elementFormDefault="qualified"
+                targetNamespace="urn:mx.com.nmp.midas">
+      <xsd:element name="updateUsuario">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="1" name="usuario"
+                         nillable="true" type="ns1:EmpleadoType"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="updateUsuarioResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="1"
+                         name="updateUsuarioResponse" nillable="true"
+                         type="ns2:UpdateUsuarioResponseType"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="UsuariosFaultMessage" type="ns4:UsuariosFaultMessage"/>
+      <xsd:element name="getUsuariosMidas">
+        <xsd:complexType/>
+      </xsd:element>
+      <xsd:element name="getUsuariosMidasResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="1" name="listaUsuarios"
+                         nillable="true" type="ns2:ListaUsuarioType"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                attributeFormDefault="qualified" elementFormDefault="qualified"
+                targetNamespace="http://nmpusuario.schema.nmp.servicios.montedepiedad.com.mx">
+      <xsd:complexType name="UpdateUsuarioResponseType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="respuesta" nillable="true"
+                       type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ListaUsuarioType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="usuarios" nillable="true"
+                       type="ns2:ArrayOfUsuarioType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ArrayOfUsuarioType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="UsuarioType"
+                       nillable="true" type="ns2:UsuarioType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="UsuarioType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="apellidoMaterno" nillable="true"
+                       type="xsd:string"/>
+          <xsd:element minOccurs="0" name="apellidoPaterno" nillable="true"
+                       type="xsd:string"/>
+          <xsd:element minOccurs="0" name="correoElectronico" nillable="true"
+                       type="xsd:string"/>
+          <xsd:element minOccurs="0" name="departamento" nillable="true"
+                       type="xsd:string"/>
+          <xsd:element minOccurs="0" name="informacionEmpleado" nillable="true"
+                       type="ns1:EmpleadoType"/>
+          <xsd:element minOccurs="0" name="nombre" nillable="true"
+                       type="xsd:string"/>
+          <xsd:element minOccurs="0" name="nombreCuenta" nillable="true"
+                       type="xsd:string"/>
+          <xsd:element minOccurs="0" name="puesto" nillable="true"
+                       type="xsd:string"/>
+          <xsd:element minOccurs="0" name="rolEmpresarial" nillable="true"
+                       type="ns2:RolEmpresarial"/>
+          <xsd:element minOccurs="0" name="tipoUsuario" nillable="true"
+                       type="xsd:string"/>
+          <xsd:element minOccurs="0" name="ubicacion" nillable="true"
+                       type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="RolEmpresarial">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="perfiles" nillable="true"
+                       type="ns2:Perfiles"/>
+          <xsd:element minOccurs="0" name="roles" nillable="true"
+                       type="ns2:Roles"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="Roles">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="rol" nillable="true"
+                       type="ns2:ArrayOfRolType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ArrayOfRolType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="RolType"
+                       nillable="true" type="ns2:RolType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="RolType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="id" nillable="true"
+                       type="xsd:string"/>
+          <xsd:element minOccurs="0" name="nombre" nillable="true"
+                       type="xsd:string"/>
+          <xsd:element minOccurs="0" name="tipo" nillable="true"
+                       type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="Perfiles">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="perfil" nillable="true"
+                       type="ns2:ArrayOfPerfilType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ArrayOfPerfilType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="PerfilType"
+                       nillable="true" type="ns2:PerfilType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="PerfilType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="id" nillable="true"
+                       type="xsd:string"/>
+          <xsd:element minOccurs="0" name="nombre" nillable="true"
+                       type="xsd:string"/>
+          <xsd:element minOccurs="0" name="tipo" nillable="true"
+                       type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                attributeFormDefault="qualified" elementFormDefault="qualified"
+                targetNamespace="http://nmpusuario.services.nmp.servicios.montedepiedad.com.mx">
+      <xsd:complexType name="UsuariosFaultMessage">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="faultInfo" nillable="true"
+                       type="ns3:MessageError"/>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                attributeFormDefault="qualified" elementFormDefault="qualified"
+                targetNamespace="http://nmpstandardmessage.schema.nmp.servicios.montedepiedad.com.mx">
+      <xsd:complexType name="MessageError">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="codigoError" nillable="true"
+                       type="xsd:string"/>
+          <xsd:element minOccurs="0" name="descripcionError" nillable="true"
+                       type="xsd:string"/>
+          <xsd:element minOccurs="0" name="severidad" nillable="true"
+                       type="xsd:string"/>
+          <xsd:element minOccurs="0" name="tipoError" nillable="true"
+                       type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="getUsuariosMidasRequest">
+    <wsdl:part name="parameters" element="tns:getUsuariosMidas"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="updateUsuarioResponse">
+    <wsdl:part name="parameters" element="tns:updateUsuarioResponse"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="UsuariosFaultMessage">
+    <wsdl:part name="UsuariosFaultMessage" element="tns:UsuariosFaultMessage"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getUsuariosMidasResponse">
+    <wsdl:part name="parameters" element="tns:getUsuariosMidasResponse"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="updateUsuarioRequest">
+    <wsdl:part name="parameters" element="tns:updateUsuario"></wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="UsuariosServicePortType">
+    <wsdl:operation name="updateUsuario">
+      <wsdl:input name="updateUsuarioRequest"
+                  message="tns:updateUsuarioRequest"></wsdl:input>
+      <wsdl:output name="updateUsuarioResponse"
+                   message="tns:updateUsuarioResponse"></wsdl:output>
+      <wsdl:fault name="UsuariosFaultMessage"
+                  message="tns:UsuariosFaultMessage"></wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getUsuariosMidas">
+      <wsdl:input name="getUsuariosMidasRequest"
+                  message="tns:getUsuariosMidasRequest"></wsdl:input>
+      <wsdl:output name="getUsuariosMidasResponse"
+                   message="tns:getUsuariosMidasResponse"></wsdl:output>
+      <wsdl:fault name="UsuariosFaultMessage"
+                  message="tns:UsuariosFaultMessage"></wsdl:fault>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="UsuariosServiceHttpBinding"
+                type="tns:UsuariosServicePortType">
+    <wsdlsoap:binding style="document"
+                      transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="updateUsuario">
+      <wsdlsoap:operation soapAction="updateUsuario"/>
+      <wsdl:input name="updateUsuarioRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="updateUsuarioResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="UsuariosFaultMessage">
+        <wsdlsoap:fault name="UsuariosFaultMessage" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getUsuariosMidas">
+      <wsdlsoap:operation soapAction="getUsuarios"/>
+      <wsdl:input name="getUsuariosMidasRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getUsuariosMidasResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="UsuariosFaultMessage">
+        <wsdlsoap:fault name="UsuariosFaultMessage" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="UsuariosService">
+    <wsdl:port name="UsuariosServiceHttpPort"
+               binding="tns:UsuariosServiceHttpBinding">
+      <wsdlsoap:address location="http://10.30.3.55:8032/midas-web/services/UsuariosService"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

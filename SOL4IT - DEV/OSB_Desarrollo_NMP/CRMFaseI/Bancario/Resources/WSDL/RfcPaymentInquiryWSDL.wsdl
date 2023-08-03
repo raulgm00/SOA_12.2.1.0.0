@@ -1,0 +1,144 @@
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="urn:sap-com:document:sap:soap:functions:mc-style" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:n1="urn:sap-com:document:sap:rfc:functions" targetNamespace="urn:sap-com:document:sap:soap:functions:mc-style">
+	<wsdl:documentation>
+		<sidl:sidl xmlns:sidl="http://www.sap.com/2007/03/sidl"/>
+	</wsdl:documentation>
+	<wsdl:types>
+		<xsd:schema attributeFormDefault="qualified" targetNamespace="urn:sap-com:document:sap:rfc:functions">
+			<xsd:simpleType name="char11">
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="11"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType name="char2">
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="2"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType name="char50">
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="50"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:schema>
+		<xsd:schema xmlns:n0="urn:sap-com:document:sap:rfc:functions" attributeFormDefault="qualified" targetNamespace="urn:sap-com:document:sap:soap:functions:mc-style">
+			<xsd:import namespace="urn:sap-com:document:sap:rfc:functions"/>
+			<xsd:simpleType name="RfcException.Message.Number">
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="3"/>
+					<xsd:pattern value="\d*"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType name="curr13.2">
+				<xsd:restriction base="xsd:decimal">
+					<xsd:totalDigits value="13"/>
+					<xsd:fractionDigits value="2"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:complexType name="ZlmDatosRecibo">
+				<xsd:sequence>
+					<xsd:element name="Desc1" type="n0:char50"/>
+					<xsd:element name="Desc2" type="n0:char50"/>
+					<xsd:element name="Desc3" type="n0:char50"/>
+					<xsd:element name="Desc4" type="n0:char50"/>
+					<xsd:element name="Desc5" type="n0:char50"/>
+					<xsd:element name="Desc6" type="n0:char50"/>
+					<xsd:element name="Desc7" type="n0:char50"/>
+					<xsd:element name="Desc8" type="n0:char50"/>
+					<xsd:element name="Desc9" type="n0:char50"/>
+					<xsd:element name="Desc10" type="n0:char50"/>
+					<xsd:element name="Desc11" type="n0:char50"/>
+					<xsd:element name="Desc12" type="n0:char50"/>
+					<xsd:element name="Desc13" type="n0:char50"/>
+					<xsd:element name="Desc14" type="n0:char50"/>
+					<xsd:element name="Desc15" type="n0:char50"/>
+					<xsd:element name="Desc16" type="n0:char50"/>
+					<xsd:element name="Desc17" type="n0:char50"/>
+					<xsd:element name="Desc18" type="n0:char50"/>
+					<xsd:element name="Desc19" type="n0:char50"/>
+					<xsd:element name="Desc20" type="n0:char50"/>
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="RfcException.Message">
+				<xsd:sequence>
+					<xsd:element name="ID" type="xsd:string"/>
+					<xsd:element name="Number" type="tns:RfcException.Message.Number"/>
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="ZlmPaymentInquiry.RfcException">
+				<xsd:sequence>
+					<xsd:element name="Name" type="tns:ZlmPaymentInquiry.RfcExceptions"/>
+					<xsd:element name="Text" type="xsd:string" minOccurs="0"/>
+					<xsd:element name="Message" type="tns:RfcException.Message" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:simpleType name="ZlmPaymentInquiry.RfcExceptions">
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="ExLog"/>
+					<xsd:enumeration value="ExContratoNe"/>
+					<xsd:enumeration value="ExBancoInhab"/>
+					<xsd:enumeration value="ExEstatus"/>
+					<xsd:enumeration value="ExBanco"/>
+					<xsd:enumeration value="ExBp"/>
+					<xsd:enumeration value="ExClavesMov"/>
+					<xsd:enumeration value="ExRefInvalida"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:element name="ZlmPaymentInquiry.Exception" type="tns:ZlmPaymentInquiry.RfcException"/>
+			<xsd:element name="ZlmPaymentInquiry">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="Banco" type="n0:char2"/>
+						<xsd:element name="Referencia" type="n0:char11"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="ZlmPaymentInquiryResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="DatosRecibo" type="tns:ZlmDatosRecibo"/>
+						<xsd:element name="EPagoReferenciado" type="tns:curr13.2"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:message name="ZlmPaymentInquiry">
+		<wsdl:part name="parameters" element="tns:ZlmPaymentInquiry"/>
+	</wsdl:message>
+	<wsdl:message name="ZlmPaymentInquiryResponse">
+		<wsdl:part name="parameter" element="tns:ZlmPaymentInquiryResponse"/>
+	</wsdl:message>
+	<wsdl:message name="ZlmPaymentInquiry.Exception">
+		<wsdl:part name="ZlmPaymentInquiry.Exception" element="tns:ZlmPaymentInquiry.Exception"/>
+	</wsdl:message>
+	<wsdl:portType name="ZLM_WS_PAGOLINEA_CONSULTA">
+		<wsdl:operation name="ZlmPaymentInquiry">
+			<wsdl:input message="tns:ZlmPaymentInquiry"/>
+			<wsdl:output message="tns:ZlmPaymentInquiryResponse"/>
+			<wsdl:fault name="ZlmPaymentInquiry.Exception" message="tns:ZlmPaymentInquiry.Exception"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="ZLM_WS_PAGOLINEA_CONSULTA" type="tns:ZLM_WS_PAGOLINEA_CONSULTA">
+		<wsa:EndpointReference xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing">
+			<wsa:ReferenceParameters/>
+		</wsa:EndpointReference>
+		<soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+		<wsdl:operation name="ZlmPaymentInquiry">
+			<soap:operation soapAction="ZlmPaymentInquiry" style="document"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+			<wsdl:fault name="ZlmPaymentInquiry.Exception">
+				<soap:fault name="ZlmPaymentInquiry.Exception" use="literal"/>
+			</wsdl:fault>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="ZLM_WS_PAGOLINEA_CONSULTA">
+		<wsdl:port name="ZLM_WS_PAGOLINEA_CONSULTA" binding="tns:ZLM_WS_PAGOLINEA_CONSULTA">
+			<soap:address location="http://dcpimsdsap01.nmp.com.mx:8000/sap/bc/srt/rfc/sap/zlm_ws_pagolinea_consulta/300/zlm_ws_pagolinea_consulta/zlm_ws_pagolinea_consulta"/>
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

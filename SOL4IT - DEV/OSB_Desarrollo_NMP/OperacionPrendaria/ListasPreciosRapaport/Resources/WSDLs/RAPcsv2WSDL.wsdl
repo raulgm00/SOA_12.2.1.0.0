@@ -1,0 +1,42 @@
+<wsdl:definitions name="CSV2" targetNamespace="http://xmlns.oracle.com/OperacionPrendaria/CSV2/CSV2" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:client="http://xmlns.oracle.com/OperacionPrendaria/CSV2/CSV2" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+    <wsdl:documentation>
+        <abstractWSDL>http://10.30.3.15:8001/soa-infra/services/OPP_PREN/CSV2!1.0/WSDLs/CSV2.wsdl</abstractWSDL>
+    </wsdl:documentation>
+    <plnk:partnerLinkType name="CSV2">
+        <plnk:role name="CSV2Provider" portType="client:CSV2"/>
+    </plnk:partnerLinkType>
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlns.oracle.com/OperacionPrendaria/CSV2/CSV2" schemaLocation="../Schemas/RAPcsv2XSD.xsd"/>
+        </schema>
+    </wsdl:types>
+    <wsdl:message name="CSV2RequestMessage">
+        <wsdl:part name="payload" element="client:process"/>
+    </wsdl:message>
+    <wsdl:message name="CSV2ResponseMessage">
+        <wsdl:part name="payload" element="client:processResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="CSV2">
+        <wsdl:operation name="process">
+            <wsdl:input message="client:CSV2RequestMessage"/>
+            <wsdl:output message="client:CSV2ResponseMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="CSV2Binding" type="client:CSV2">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="process">
+            <soap:operation style="document" soapAction="process"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="csv2_client_ep">
+        <wsdl:port name="CSV2_pt" binding="client:CSV2Binding">
+            <soap:address location="http://10.30.3.15:8001/soa-infra/services/OPP_PREN/CSV2/csv2_client_ep"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

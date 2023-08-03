@@ -1,0 +1,136 @@
+<xsd:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:NMPCred="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito">
+  <xsd:include schemaLocation="NMPCreditoSvcTiposXSD.xsd"/>
+  <xsd:element name="getInfoCreditoRequest" type="NMPCred:getInfoCreditoRequestType"/>
+  <xsd:element name="getInfoCreditoResponse" type="NMPCred:getInfoCreditoResponseType"/>
+  <xsd:element name="getSaldosRequest" type="NMPCred:getSaldosRequestType"/>
+  <xsd:element name="getSaldosResponse" type="NMPCred:getSaldosResponseType"/>
+  <xsd:element name="simularPagosRequest" type="NMPCred:simularPagosRequestType"/>
+  <xsd:element name="simularPagosResponse" type="NMPCred:simularPagosResponseType"/>
+  <xsd:element name="getSaldosTARequest" type="NMPCred:getSaldosTARequestType"/>
+  <xsd:element name="getSaldosTAResponse" type="NMPCred:getSaldosTAResponseType"/>
+  <xsd:element name="getEstadoCuentaRequest" type="NMPCred:getEstadoCuentaRequestType"/>
+  <xsd:element name="getEstadoCuentaResponse" type="NMPCred:getEstadoCuentaResponseType"/>
+  <xsd:element name="getEstatusSolicitudRequest" type="NMPCred:getEstatusSolicitudRequestType"/>
+  <xsd:element name="getEstatusSolicitudResponse" type="NMPCred:getEstatusSolicitudResponseType"/>
+  <xsd:element name="obtenerTablaAmortizacionRequest" type="NMPCred:SolicitudTablaAmortizacionType"/>
+  <xsd:element name="obtenerTablaAmortizacionResponse" type="NMPCred:TablaAmortizacionType"/>
+  <xsd:element name="generarContratoRequest" type="NMPCred:GeneraContratoListType"/>
+  <xsd:element name="generarContratoResponse" type="NMPCred:GeneraContratoRespuestaType"/>
+  <xsd:element name="realizarDesembolsoRequest" type="NMPCred:RealizarDesembolsoRequestType"/>
+  <xsd:element name="realizarDesembolsoResponse" type="NMPCred:RealizarDesembolsoResponseType"/>
+  <xsd:element name="generarKitDocumentacionRequest" type="NMPCred:generarKitDocumentacionRequestType"/>
+  <xsd:element name="generarKitDocumentacionResponse" type="NMPCred:generarKitDocumentacionResponseType"/>
+  <xsd:element name="confirmarGeneracionKitRequest" type="NMPCred:confirmarGeneracionKitRequestType"/>
+  <xsd:element name="confirmarGeneracionKitResponse" type="NMPCred:confirmarGeneracionKitResponseType"/>
+  <xsd:complexType name="getInfoCreditoRequestType">
+    <xsd:sequence>
+      <xsd:element name="contrato" type="xsd:string"/>
+      <xsd:element name="fechaInicial" type="xsd:date" minOccurs="0" nillable="true"/>
+      <xsd:element name="fechaFinal" type="xsd:date" minOccurs="0" nillable="true"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="getInfoCreditoResponseType">
+    <xsd:sequence>
+      <xsd:element name="Cliente" type="NMPCred:ClienteType"/>
+      <xsd:element name="Saldo" type="NMPCred:SaldoType"/>
+      <xsd:element name="Solicitud" type="NMPCred:SolicitudType"/>
+      <xsd:element name="GestionVenta" type="NMPCred:GestionVentaType" minOccurs="0"/>
+      <xsd:element name="TablaAmortizacion" type="NMPCred:AmortizacionListType"/>
+      <xsd:element name="ProyeccionPago" type="NMPCred:ProyeccionPagoType"/>
+      <xsd:element name="PartidasAbiertas" type="NMPCred:PartidaAbiertaListType"/>
+      <xsd:element name="Vencimientos" type="NMPCred:VencimientoListType"/>
+      <xsd:element name="Pagos" type="NMPCred:PagoListType"/>
+      <xsd:element name="ProyeccionMoratorios" type="NMPCred:ProyeccionMoratoriosType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="getSaldosRequestType">
+    <xsd:sequence>
+      <xsd:element name="idCliente" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="getSaldosResponseType">
+    <xsd:sequence>
+      <xsd:element name="Saldo" type="NMPCred:SaldoType" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="simularPagosRequestType">
+    <xsd:sequence>
+      <xsd:element name="contrato" type="xsd:string"/>
+      <xsd:element name="montoPago" type="xsd:decimal"/>
+      <xsd:element name="fechaPago" type="xsd:date" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="simularPagosResponseType">
+    <xsd:sequence>
+      <xsd:element name="SaldosSimulado" type="NMPCred:SaldoType"/>
+      <xsd:element name="TablaAmortizacion" type="NMPCred:AmortizacionListType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="getSaldosTARequestType">
+    <xsd:sequence>
+      <xsd:element name="idCliente" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="getSaldosTAResponseType">
+    <xsd:sequence>
+      <xsd:element name="Saldo" type="NMPCred:SaldoType"/>
+      <xsd:element name="TablaAmortizacion" type="NMPCred:AmortizacionListType"/>
+      <xsd:element name="ProyeccionPago" type="NMPCred:ProyeccionPagoType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="getEstadoCuentaRequestType">
+    <xsd:sequence>
+      <xsd:element name="contrato" type="xsd:string"/>
+      <xsd:element name="email" type="xsd:string"/>
+      <xsd:element name="mes" type="xsd:string"/>
+      <xsd:element name="anio" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="getEstadoCuentaResponseType">
+    <xsd:sequence>
+      <xsd:element name="respuesta" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="getEstatusSolicitudRequestType">
+    <xsd:sequence>
+      <xsd:element name="idCiente" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="contrato" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="fechaFinal" type="xsd:date" minOccurs="0"/>
+      <xsd:element name="fechaInicial" type="xsd:date" minOccurs="0"/>
+      <xsd:element name="idPromotor" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="getEstatusSolicitudResponseType">
+    <xsd:sequence>
+      <xsd:element name="EstatusSolicitudes" type="NMPCred:EstatusSolicitudListType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="generarKitDocumentacionRequestType">
+    <xsd:sequence>
+      <xsd:element name="idCliente" type="xsd:string" minOccurs="1"/>
+      <xsd:element name="folio" type="xsd:string" minOccurs="1"/>
+      <xsd:element name="sociedad" type="xsd:string" minOccurs="1"/>
+      <xsd:element name="contrato" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="generarKitDocumentacionResponseType">
+    <xsd:sequence>
+      <xsd:element name="codigoRespuesta" type="xsd:int"/>
+      <xsd:element name="descripcion" type="xsd:string" minOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="confirmarGeneracionKitRequestType">
+    <xsd:sequence>
+      <xsd:element name="idCiente" type="xsd:string" minOccurs="1"/>
+      <xsd:element name="folio" type="xsd:string" minOccurs="1"/>
+      <xsd:element name="estatusEjecucion" type="xsd:int"/>
+      <xsd:element name="descripcionError" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="confirmarGeneracionKitResponseType">
+    <xsd:sequence>
+      <xsd:element name="codigoRespuesta" type="xsd:int"/>
+      <xsd:element name="descripcion" type="xsd:string" minOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>

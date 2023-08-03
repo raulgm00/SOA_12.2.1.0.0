@@ -1,0 +1,678 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="GestionCatalogos/Autos/Resources/WSDLs/NMPCatalogoAutosSvcWSDL"/>
+            <con:binding>
+                <con:name>CatalogoAutosBinding</con:name>
+                <con:namespace>http://servicios.montepiedad.com.mx/NMP/Services/CatalogoAutos</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:logging enabled="false" level="debug"/>
+            <oper:reporting>false</oper:reporting>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router errorHandler="error-af004bd.N7678a42a.0.15a8b84f505.N7f47">
+        <con:pipeline type="response" name="response-N3f57c7ff.N30324231.0.15a618861f0.N7f4f">
+            <con:stage id="_StageId-N3f57c7ff.N30324231.0.15a618861f0.N7f4d" name="StageObtenerKilometrajesResponse">
+                <con:context/>
+                <con:actions>
+                    <con2:assign varName="obtenerKilometrajesResponse">
+                        <con1:id>_ActionId-N3f57c7ff.N6e6ea7a1.0.15a61d7ceea.N7f9b</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Autos/Resources/Transformations/TrObtenerKilometrajesMIDASRes"/>
+                                <con1:input>$obtenerKilometrajesRes</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:replace contents-only="true" varName="body">
+                        <con1:id>_ActionId-N3f57c7ff.N6e6ea7a1.0.15a61d7ceea.N7f98</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xqueryText>$obtenerKilometrajesResponse</con1:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.N30324231.0.15a618861f0.N7f5b">
+            <con:stage id="_StageId-N3f57c7ff.N30324231.0.15a618861f0.N7f59" name="StageObtenerModelosResponse">
+                <con:context/>
+                <con:actions>
+                    <con2:assign varName="obtenerModelosResponse">
+                        <con1:id>_ActionId-N3f57c7ff.N6e6ea7a1.0.15a61d7ceea.N7fb3</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Autos/Resources/Transformations/TrObtenerModelosMIDASRes"/>
+                                <con1:input>$obtenerModelosRes</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:replace contents-only="true" varName="body">
+                        <con1:id>_ActionId-N3f57c7ff.N6e6ea7a1.0.15a61d7ceea.N7fb6</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xqueryText>$obtenerModelosResponse</con1:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.N30324231.0.15a618861f0.N7f95">
+            <con:stage id="_StageId-N3f57c7ff.N30324231.0.15a618861f0.N7f93" name="StageObtenerSubMarcas" errorHandler="error-N3f57c7ff.N30324231.0.15a618861f0.N7f4a">
+                <con:context>
+                    <con1:userNsDecl prefix="obt" namespace="http://www.montepiedad.com.mx/ASR/Schemas/AutoSinResguardo/ObtenerSubMarcaEntrada"/>
+                    <con1:userNsDecl prefix="obt1" namespace="http://www.montepiedad.com.mx/ASR/Schemas/AutoSinResguardo/ObtenerMarcasRequest"/>
+                    <con1:userNsDecl prefix="cat" namespace="http://servicios.montepiedad.com.mx/NMP/Schema/CatalogoAutos"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="obtenerSubMarcasReq">
+                        <con1:id>_ActionId-N3f57c7ff.N30324231.0.15a618861f0.N7f35</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Autos/Resources/Transformations/TrObtenerSubMarcasMIDASReq"/>
+                                <con1:input>$body/cat:obtenerSubMarcaRequest</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-N3f57c7ff.N30324231.0.15a618861f0.N7f2f</con1:id>
+                        <con2:service ref="GestionCatalogos/Autos/Bussines Services/MIDASCatalogoAutosBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>obtenerSubMarcas</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">obtenerSubMarcasReq</con2:body>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">obtenerSubMarcasRes</con2:body>
+                        </con2:response>
+                        <con2:requestTransform/>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.N30324231.0.15a618861f0.N7f94">
+            <con:stage id="_StageId-N3f57c7ff.N30324231.0.15a618861f0.N7f92" name="StageObtenerSubMarcasResponse">
+                <con:context>
+                    <con1:userNsDecl prefix="obt" namespace="http://www.montepiedad.com.mx/ASR/Schemas/AutoSinResguardo/ObtenerSubMarcaEntrada"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="obtenerSubMarcasResponse">
+                        <con1:id>_ActionId-N3f57c7ff.N6e6ea7a1.0.15a61d7ceea.N7ff2</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Autos/Resources/Transformations/TrObtenerSubMarcasMIDASRes"/>
+                                <con1:input>$obtenerSubMarcasRes</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57c7ff.N6e6ea7a1.0.15a61d7ceea.N7fef</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xqueryText>$obtenerSubMarcasResponse</con1:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.N30324231.0.15a618861f0.N7f46">
+            <con:stage id="_StageId-N3f57c7ff.N30324231.0.15a618861f0.N7f45" name="StageObtenerVersiones">
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57c7ff.N6e6ea7a1.0.15a61d7ceea.N7fce</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Autos/Resources/Transformations/TrCatalogoAutosFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="AppError">
+                                    <con1:path>'(Validacion Response)'</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57c7ff.N6e6ea7a1.0.15a61d7ceea.N7fd1</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.N30324231.0.15a618861f0.N7f50">
+            <con:stage id="_StageId-N3f57c7ff.N30324231.0.15a618861f0.N7f4e" name="StageObtenerKilometrajes" errorHandler="error-N3f57c7ff.N30324231.0.15a618861f0.N7f42">
+                <con:context>
+                    <con1:userNsDecl prefix="obt" namespace="http://www.montepiedad.com.mx/ASR/Schemas/AutoSinResguardo/ObtenerComplementosRequest"/>
+                    <con1:userNsDecl prefix="obt1" namespace="http://www.montepiedad.com.mx/ASR/Schemas/AutoSinResguardo/ObtenerKilometrajeRequest"/>
+                    <con1:userNsDecl prefix="cat" namespace="http://servicios.montepiedad.com.mx/NMP/Schema/CatalogoAutos"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="obtenerKilometrajesReq">
+                        <con1:id>_ActionId-N3f57c7ff.N6e6ea7a1.0.15a61d7ceea.N7fa7</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Autos/Resources/Transformations/TrObtenerKilometrajesMIDASReq"/>
+                                <con1:input>$body/cat:ObtenerKilometrajeRequest</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-N3f57c7ff.N6e6ea7a1.0.15a61d7ceea.N7ff5</con1:id>
+                        <con2:service ref="GestionCatalogos/Autos/Bussines Services/MIDASCatalogoAutosBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>obtenerKilometrajes</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">obtenerKilometrajesReq</con2:body>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">obtenerKilometrajesRes</con2:body>
+                        </con2:response>
+                        <con2:requestTransform/>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.N30324231.0.15a618861f0.N7f48">
+            <con:stage id="_StageId-N3f57c7ff.N30324231.0.15a618861f0.N7f47" name="StageObtenerModelos">
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57c7ff.N6e6ea7a1.0.15a61d7ceea.N7fd7</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Autos/Resources/Transformations/TrCatalogoAutosFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="AppError">
+                                    <con1:path>'(Validacion Response)'</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57c7ff.N6e6ea7a1.0.15a61d7ceea.N7fd4</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af004bd.N7678a42a.0.15a8b84f505.N7fef">
+            <con:stage id="_StageId-af004bd.N7678a42a.0.15a8b84f505.N7fed" name="StageValidateHeaders">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con2:replace varName="header" contents-only="true">
+                        <con1:id>_ActionId-af004bd.N7678a42a.0.15a8b84f505.N7fb8</con1:id>
+                        <con2:expr>
+                            <con1:xqueryTransform>
+                                <con1:resource ref="Common/XQ/TRHeadersRest"/>
+                                <con1:param name="inbound">
+                                    <con1:path>$inbound</con1:path>
+                                </con1:param>
+                                <con1:param name="requestHeader">
+                                    <con1:path>$header</con1:path>
+                                </con1:param>
+                            </con1:xqueryTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con2:assign varName="header">
+                        <con1:id>_ActionId-af004bd.N7678a42a.0.15a8b84f505.N7fb5</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$header</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:validate>
+                        <con1:id>_ActionId-af004bd.N7678a42a.0.15a8b84f505.N7fb2</con1:id>
+                        <con2:schema ref="Common/XSD/NMPStandardHeader"/>
+                        <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con2:schemaElement>
+                        <con2:varName>header</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./nmp:headerMessage</con1:xpathText>
+                        </con2:location>
+                    </con2:validate>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.N30324231.0.15a618861f0.N7f42">
+            <con:stage id="_StageId-N3f57c7ff.N30324231.0.15a618861f0.N7f41" name="StageObtenerKilometrajes">
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57c7ff.N6e6ea7a1.0.15a61d7ceea.N7fc5</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Autos/Resources/Transformations/TrCatalogoAutosFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="AppError">
+                                    <con1:path>'(Validacion Response)'</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57c7ff.N6e6ea7a1.0.15a61d7ceea.N7fc2</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-af004bd.N7678a42a.0.15a8b84f505.N7f47">
+            <con:stage id="_StageId-af004bd.N7678a42a.0.15a8b84f505.N7f10" name="StageServiceError">
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-af004bd.N7678a42a.0.15a8b84f505.N7f0f</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Autos/Resources/Transformations/TrCatalogoAutosFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="AppError">
+                                    <con1:path>'(Validacion Response)'</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-af004bd.N7678a42a.0.15a8b84f505.N7f0e</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.N30324231.0.15a618861f0.N7f44">
+            <con:stage id="_StageId-N3f57c7ff.N30324231.0.15a618861f0.N7f43" name="StageObtenerComplementos">
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57c7ff.N6e6ea7a1.0.15a61d7ceea.N7fcb</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Autos/Resources/Transformations/TrCatalogoAutosFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="AppError">
+                                    <con1:path>'(Validacion Response)'</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57c7ff.N6e6ea7a1.0.15a61d7ceea.N7fc8</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af004bd.N7678a42a.0.15a8b84f505.N7fee">
+            <con:stage id="_StageId-af004bd.N7678a42a.0.15a8b84f505.N7fec" name="StageResponse">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:varNsDecl prefix="cat" namespace="http://servicios.montepiedad.com.mx/NMP/Schema/CatalogoAutos"/>
+                    <con1:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPVehiculo"/>
+                </con:context>
+                <con:actions>
+                    <con2:replace varName="header" contents-only="true">
+                        <con1:id>_ActionId-af004bd.N7678a42a.0.15a8b84f505.N7fac</con1:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(concat("<nmp:headerMessageResponse xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader'>
+         <nmp:usuario>",$header//nmp:usuario/text(),"</nmp:usuario>
+         <nmp:idConsumidor>",$header//nmp:idConsumidor/text(),"</nmp:idConsumidor>
+         <nmp:idDestino>",$header//nmp:idDestino/text(),"</nmp:idDestino>
+          <nmp:codigoRespuesta>0</nmp:codigoRespuesta>
+         <nmp:descripcionRespuesta>Ejecución satisfactoria</nmp:descripcionRespuesta>
+      </nmp:headerMessageResponse>"))]]></con:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.N30324231.0.15a618861f0.N7f58">
+            <con:stage id="_StageId-N3f57c7ff.N30324231.0.15a618861f0.N7f56" name="StageObtenerVersiones" errorHandler="error-N3f57c7ff.N30324231.0.15a618861f0.N7f46">
+                <con:context>
+                    <con1:userNsDecl prefix="obt" namespace="http://www.montepiedad.com.mx/ASR/Schemas/AutoSinResguardo/ObtenerVersionesRequest"/>
+                    <con1:userNsDecl prefix="cat" namespace="http://servicios.montepiedad.com.mx/NMP/Schema/CatalogoAutos"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="obtenerVersionesReq">
+                        <con1:id>_ActionId-N3f57c7ff.N6e6ea7a1.0.15a61d7ceea.N7fb0</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Autos/Resources/Transformations/TrObtenerVersionesMIDASReq"/>
+                                <con1:input>$body/cat:obtenerVersionesRequest</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-N3f57c7ff.N6e6ea7a1.0.15a61d7ceea.N7ffb</con1:id>
+                        <con2:service ref="GestionCatalogos/Autos/Bussines Services/MIDASCatalogoAutosBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>obtenerVersiones</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">obtenerVersionesReq</con2:body>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">obtenerVersionesRes</con2:body>
+                        </con2:response>
+                        <con2:requestTransform/>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.N30324231.0.15a618861f0.N7f57">
+            <con:stage id="_StageId-N3f57c7ff.N30324231.0.15a618861f0.N7f55" name="StageObtenerVersionesResponse">
+                <con:context/>
+                <con:actions>
+                    <con2:assign varName="obtenerVersionesResponse">
+                        <con1:id>_ActionId-N3f57c7ff.N6e6ea7a1.0.15a61d7ceea.N7fad</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Autos/Resources/Transformations/TrObtenerVersionesMIDASRes"/>
+                                <con1:input>$obtenerVersionesRes</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:replace contents-only="true" varName="body">
+                        <con1:id>_ActionId-N3f57c7ff.N6e6ea7a1.0.15a61d7ceea.N7faa</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xqueryText>$obtenerVersionesResponse</con1:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.N30324231.0.15a618861f0.N7f4a">
+            <con:stage id="_StageId-N3f57c7ff.N30324231.0.15a618861f0.N7f49" name="StageObtenerSubMarcas">
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57c7ff.N6e6ea7a1.0.15a61d7ceea.N7fe9</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Autos/Resources/Transformations/TrCatalogoAutosFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="AppError">
+                                    <con1:path>'(Validacion Request)'</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57c7ff.N6e6ea7a1.0.15a61d7ceea.N7fe3</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.N30324231.0.15a618861f0.N7f99">
+            <con:stage id="_StageId-N3f57c7ff.N30324231.0.15a618861f0.N7f97" name="StageObtenerMarcas" errorHandler="error-N3f57c7ff.N30324231.0.15a618861f0.N7f4c">
+                <con:context>
+                    <con1:userNsDecl prefix="obt" namespace="http://www.montepiedad.com.mx/ASR/Schemas/AutoSinResguardo/ObtenerMarcasRequest"/>
+                    <con1:userNsDecl prefix="cat" namespace="http://servicios.montepiedad.com.mx/NMP/Schema/CatalogoAutos"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="obtenerMarcasReq">
+                        <con1:id>_ActionId-N3f57c7ff.N30324231.0.15a618861f0.N7f3e</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Autos/Resources/Transformations/TrObtenerMarcasMIDASReq1"/>
+                                <con1:input>$body/cat:obtenerMarcasRequest</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-N3f57c7ff.N30324231.0.15a618861f0.N7f3b</con1:id>
+                        <con2:service ref="GestionCatalogos/Autos/Bussines Services/MIDASCatalogoAutosBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>obtenerMarcas</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">obtenerMarcasReq</con2:body>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">obtenerMarcasRes</con2:body>
+                        </con2:response>
+                        <con2:requestTransform/>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.N30324231.0.15a618861f0.N7f98">
+            <con:stage id="_StageId-N3f57c7ff.N30324231.0.15a618861f0.N7f96" name="StageObtenerMarcasResponse">
+                <con:context/>
+                <con:actions>
+                    <con2:assign varName="obtenerMarcasResponse">
+                        <con1:id>_ActionId-N3f57c7ff.N6e6ea7a1.0.15a61d7ceea.N7fbf</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Autos/Resources/Transformations/TrObtenerMarcasMidasRes1"/>
+                                <con1:input>$obtenerMarcasRes</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:replace contents-only="true" varName="body">
+                        <con1:id>_ActionId-N3f57c7ff.N6e6ea7a1.0.15a61d7ceea.N7fbc</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xqueryText>$obtenerMarcasResponse</con1:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.N30324231.0.15a618861f0.N7f54">
+            <con:stage id="_StageId-N3f57c7ff.N30324231.0.15a618861f0.N7f52" name="StageObtenerComplementos" errorHandler="error-N3f57c7ff.N30324231.0.15a618861f0.N7f44">
+                <con:context>
+                    <con1:userNsDecl prefix="obt" namespace="http://www.montepiedad.com.mx/ASR/Schemas/AutoSinResguardo/ObtenerComplementosRequest"/>
+                    <con1:userNsDecl prefix="cat" namespace="http://servicios.montepiedad.com.mx/NMP/Schema/CatalogoAutos"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="obtenerComplementosReq">
+                        <con1:id>_ActionId-N3f57c7ff.N6e6ea7a1.0.15a61d7ceea.N7fa4</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Autos/Resources/Transformations/TrObtenerComplementosMIDASReq"/>
+                                <con1:input>$body/cat:obtenerComplementosRequest</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-N3f57c7ff.N6e6ea7a1.0.15a61d7ceea.N7ff8</con1:id>
+                        <con2:service ref="GestionCatalogos/Autos/Bussines Services/MIDASCatalogoAutosBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>obtenerComplementos</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">obtenerComplementosReq</con2:body>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">obtenerComplementosRes</con2:body>
+                        </con2:response>
+                        <con2:requestTransform/>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.N30324231.0.15a618861f0.N7f53">
+            <con:stage id="_StageId-N3f57c7ff.N30324231.0.15a618861f0.N7f51" name="StageObtenerComplementosResponse">
+                <con:context/>
+                <con:actions>
+                    <con2:assign varName="obtenerComplementosResponse">
+                        <con1:id>_ActionId-N3f57c7ff.N6e6ea7a1.0.15a61d7ceea.N7fa1</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Autos/Resources/Transformations/TrObtenerComplementosMIDASRes"/>
+                                <con1:input>$obtenerComplementosRes</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57c7ff.N6e6ea7a1.0.15a61d7ceea.N7f9e</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xqueryText>$obtenerComplementosResponse</con1:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.N30324231.0.15a618861f0.N7f5c">
+            <con:stage id="_StageId-N3f57c7ff.N30324231.0.15a618861f0.N7f5a" name="StageObtenerModelos" errorHandler="error-N3f57c7ff.N30324231.0.15a618861f0.N7f48">
+                <con:context>
+                    <con1:userNsDecl prefix="obt" namespace="http://www.montepiedad.com.mx/ASR/Schemas/AutoSinResguardo/ObtenerMarcasRequest"/>
+                    <con1:userNsDecl prefix="obt1" namespace="http://www.montepiedad.com.mx/ASR/Schemas/AutoSinResguardo/ObtenerModelosRequest"/>
+                    <con1:userNsDecl prefix="cat" namespace="http://servicios.montepiedad.com.mx/NMP/Schema/CatalogoAutos"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="obtenerModelosReq">
+                        <con1:id>_ActionId-N3f57c7ff.N6e6ea7a1.0.15a61d7ceea.N7fb9</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Autos/Resources/Transformations/TrObtenerModelosMIDASReq"/>
+                                <con1:input>$body/cat:obtenerModelosRequest</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-N3f57c7ff.N6e6ea7a1.0.15a61d7ceea.N7ffe</con1:id>
+                        <con2:service ref="GestionCatalogos/Autos/Bussines Services/MIDASCatalogoAutosBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>obtenerModelos</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">obtenerModelosReq</con2:body>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">obtenerModelosRes</con2:body>
+                        </con2:response>
+                        <con2:requestTransform/>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.N30324231.0.15a618861f0.N7f4c">
+            <con:stage id="_StageId-N3f57c7ff.N30324231.0.15a618861f0.N7f4b" name="StageObtenerMarca">
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57c7ff.N6e6ea7a1.0.15a61d7ceea.N7fe0</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Autos/Resources/Transformations/TrCatalogoAutosFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="AppError">
+                                    <con1:path>'(Validacion Response)'</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57c7ff.N6e6ea7a1.0.15a61d7ceea.N7fda</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="PipelinePairNodeRequest">
+                <con:request>request-af004bd.N7678a42a.0.15a8b84f505.N7fef</con:request>
+                <con:response>response-af004bd.N7678a42a.0.15a8b84f505.N7fee</con:response>
+            </con:pipeline-node>
+            <con:branch-node type="operation" id="_FlowId-N3f57c7ff.N30324231.0.15a618861f0.N7f9a" name="BranchNode1">
+                <con:context/>
+                <con:branch-table>
+                    <con:branch name="obtenerMarcas">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineObtenerMarcas">
+                                <con:request>request-N3f57c7ff.N30324231.0.15a618861f0.N7f99</con:request>
+                                <con:response>response-N3f57c7ff.N30324231.0.15a618861f0.N7f98</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="obtenerSubMarcas">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineObtenerSubMarcas">
+                                <con:request>request-N3f57c7ff.N30324231.0.15a618861f0.N7f95</con:request>
+                                <con:response>response-N3f57c7ff.N30324231.0.15a618861f0.N7f94</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="obtenerModelos">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineObtenerModelos">
+                                <con:request>request-N3f57c7ff.N30324231.0.15a618861f0.N7f5c</con:request>
+                                <con:response>response-N3f57c7ff.N30324231.0.15a618861f0.N7f5b</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="obtenerVersiones">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineObtenerVersiones">
+                                <con:request>request-N3f57c7ff.N30324231.0.15a618861f0.N7f58</con:request>
+                                <con:response>response-N3f57c7ff.N30324231.0.15a618861f0.N7f57</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="obtenerComplementos">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineObtenerComplementos">
+                                <con:request>request-N3f57c7ff.N30324231.0.15a618861f0.N7f54</con:request>
+                                <con:response>response-N3f57c7ff.N30324231.0.15a618861f0.N7f53</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="obtenerKilometrajes">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineObtenerKilometrajes">
+                                <con:request>request-N3f57c7ff.N30324231.0.15a618861f0.N7f50</con:request>
+                                <con:response>response-N3f57c7ff.N30324231.0.15a618861f0.N7f4f</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

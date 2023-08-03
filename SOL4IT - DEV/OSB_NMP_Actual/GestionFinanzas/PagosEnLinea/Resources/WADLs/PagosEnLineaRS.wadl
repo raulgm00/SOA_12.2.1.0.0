@@ -1,0 +1,44 @@
+<application xmlns:soa="http://www.oracle.com/soa/rest" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:revin="http://www.montepiedad.com.mx/OXXO/Schemas/PagosEnLinea/ReversarPagoEntrada" xmlns:pagoin="http://www.montepiedad.com.mx/OXXO/Schemas/PagosEnLinea/RealizarPagoEntrada" xmlns="http://wadl.dev.java.net/2009/02">
+  <doc title="PagosEnLineaRS">RestService</doc>
+  <grammars>
+    <xsd:schema xmlns:tns="http://www.montepiedad.com.mx/OXXO/WSDLs/PagosEnLinea" xmlns:cons="http://www.montepiedad.com.mx/OXXO/Schemas/PagosEnLinea/ConsultarCliente" xmlns:pagoout="http://www.montepiedad.com.mx/OXXO/Schemas/PagosEnLinea/RealizarPagoSalida" xmlns:revout="http://www.montepiedad.com.mx/OXXO/Schemas/PagosEnLinea/ReversarPagoSalida" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+      <xsd:import namespace="http://www.montepiedad.com.mx/OXXO/Schemas/PagosEnLinea/ConsultarCliente" schemaLocation="../Schemas/ConsultarClienteXSD.xsd"/>
+      <xsd:import namespace="http://www.montepiedad.com.mx/OXXO/Schemas/PagosEnLinea/RealizarPagoEntrada" schemaLocation="../Schemas/RealizarPagoRequestXSD.xsd"/>
+      <xsd:import namespace="http://www.montepiedad.com.mx/OXXO/Schemas/PagosEnLinea/RealizarPagoSalida" schemaLocation="../Schemas/RealizarPagoResponseXSD.xsd"/>
+      <xsd:import namespace="http://www.montepiedad.com.mx/OXXO/Schemas/PagosEnLinea/ReversarPagoEntrada" schemaLocation="../Schemas/ReversarPagoRequestXSD.xsd"/>
+      <xsd:import namespace="http://www.montepiedad.com.mx/OXXO/Schemas/PagosEnLinea/ReversarPagoSalida" schemaLocation="../Schemas/ReversarPagoResponseXSD.xsd"/>
+    </xsd:schema>
+  </grammars>
+  <resources>
+    <resource path="/consulta">
+      <method name="GET" soa:wsdlOperation="consultarCliente">
+        <request soa:paramElement="pns:ConsultarClienteRequest" xmlns:pns="http://www.montepiedad.com.mx/OXXO/Schemas/PagosEnLinea/ConsultarCliente">
+          <param name="client" style="query" soa:expression="$msg.payload" type="xsd:string"/>
+        </request>
+        <response status="200">
+          <representation mediaType="application/xml" element="cns:OLS" xmlns:cns="http://www.montepiedad.com.mx/OXXO/Schemas/PagosEnLinea/ConsultarCliente"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="/pay">
+      <method name="POST" soa:wsdlOperation="realizarPago">
+        <request>
+          <representation mediaType="application/xml" element="cns:OLS" xmlns:cns="http://www.montepiedad.com.mx/OXXO/Schemas/PagosEnLinea/RealizarPagoEntrada"/>
+        </request>
+        <response status="200">
+          <representation mediaType="application/xml" element="cns:OLS" xmlns:cns="http://www.montepiedad.com.mx/OXXO/Schemas/PagosEnLinea/RealizarPagoSalida"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="/reverse">
+      <method name="POST" soa:wsdlOperation="cancelarPago">
+        <request>
+          <representation mediaType="application/xml" element="cns:OLS" xmlns:cns="http://www.montepiedad.com.mx/OXXO/Schemas/PagosEnLinea/ReversarPagoEntrada"/>
+        </request>
+        <response status="200">
+          <representation mediaType="application/xml" element="cns:OLS" xmlns:cns="http://www.montepiedad.com.mx/OXXO/Schemas/PagosEnLinea/ReversarPagoSalida"/>
+        </response>
+      </method>
+    </resource>
+  </resources>
+</application>

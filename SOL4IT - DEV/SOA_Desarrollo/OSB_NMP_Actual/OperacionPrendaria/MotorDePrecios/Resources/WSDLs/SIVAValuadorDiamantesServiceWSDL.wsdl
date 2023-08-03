@@ -1,0 +1,122 @@
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns2="http://nmp.com.mx/ms/sivad/valuacion/ws/diamantes/datatypes/" xmlns:ns1="http://nmp.com.mx/ms/sivad/valuacion/ws/diamantes/" name="ValuadorDiamantesService" targetNamespace="http://nmp.com.mx/ms/sivad/valuacion/ws/diamantes/">
+<wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://nmp.com.mx/ms/sivad/valuacion/ws/diamantes/datatypes/" elementFormDefault="qualified" targetNamespace="http://nmp.com.mx/ms/sivad/valuacion/ws/diamantes/datatypes/" version="1.0">
+<xs:element name="valuarPrendaBasicoRequest">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="prenda" type="tns:Prenda"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="valuarPrendaBasicoResponse">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="prendaValuada" type="tns:Prenda"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="valuarPrendaNMPRequest">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="prenda" type="tns:Prenda"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="valuarPrendaNMPResponse">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="prendaValuada" type="tns:Prenda"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:complexType name="Prenda">
+<xs:sequence>
+<xs:element name="id" nillable="true" type="xs:string"/>
+<xs:element name="ramo" type="xs:string"/>
+<xs:element name="subramo" type="xs:string"/>
+<xs:element name="tipo" type="xs:string"/>
+<xs:element name="avaluo" nillable="true" type="tns:Avaluo"/>
+<xs:element maxOccurs="unbounded" name="pieza" type="tns:Pieza"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="Avaluo">
+<xs:sequence>
+<xs:element default="0.0" name="valorMinimo" type="xs:decimal"/>
+<xs:element default="0.0" name="valorPromedio" type="xs:decimal"/>
+<xs:element default="0.0" name="valorMaximo" type="xs:decimal"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="Pieza">
+<xs:sequence>
+<xs:element name="id" type="xs:string"/>
+<xs:element default="1" name="cantidad" type="xs:int"/>
+<xs:element name="avaluo" type="tns:Avaluo"/>
+<xs:element minOccurs="0" name="diamante" type="tns:Diamante"/>
+<xs:element minOccurs="0" name="alhaja" type="tns:Alhaja"/>
+<xs:element minOccurs="0" name="complemento" type="tns:Complemento"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="Diamante">
+<xs:sequence>
+<xs:element name="corte" type="xs:string"/>
+<xs:element name="forma" type="xs:string"/>
+<xs:element name="color" type="xs:string"/>
+<xs:element name="claridad" type="xs:string"/>
+<xs:element default="0.0" name="quilataje" type="xs:decimal"/>
+<xs:element name="certificado" nillable="true" type="xs:string"/>
+<xs:element name="valorExperto" type="tns:ValorExperto"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="ValorExperto">
+<xs:sequence>
+<xs:element minOccurs="0" name="unitario" type="xs:decimal"/>
+<xs:element minOccurs="0" name="total" type="xs:decimal"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="Alhaja">
+<xs:sequence>
+<xs:element name="tipo" type="xs:string"/>
+<xs:element name="forma" type="xs:string"/>
+<xs:element name="metal" type="xs:string"/>
+<xs:element name="color" nillable="true" type="xs:string"/>
+<xs:element name="rango" nillable="true" type="xs:string"/>
+<xs:element name="calidad" nillable="true" type="xs:string"/>
+<xs:element default="0.0" name="peso" type="xs:decimal"/>
+<xs:element name="condicion" type="xs:string"/>
+<xs:element name="valorExperto" type="tns:ValorExperto"/>
+<xs:element default="0.0" name="incremento" type="xs:decimal"/>
+<xs:element default="0.0" name="desplazamiento" type="xs:decimal"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="Complemento">
+<xs:sequence>
+<xs:element name="tipo" type="xs:string"/>
+<xs:element name="peso" type="xs:string"/>
+<xs:element name="valorExperto" type="tns:ValorExperto"/>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>
+</wsdl:types>
+<wsdl:message name="valuarPrendaBasicoResponse">
+<wsdl:part element="ns2:valuarPrendaBasicoResponse" name="parameters"></wsdl:part>
+</wsdl:message>
+<wsdl:message name="valuarPrendaNMPResponse">
+<wsdl:part element="ns2:valuarPrendaNMPResponse" name="parameters"></wsdl:part>
+</wsdl:message>
+<wsdl:message name="valuarPrendaBasico">
+<wsdl:part element="ns2:valuarPrendaBasicoRequest" name="parameters"></wsdl:part>
+</wsdl:message>
+<wsdl:message name="valuarPrendaNMP">
+<wsdl:part element="ns2:valuarPrendaNMPRequest" name="parameters"></wsdl:part>
+</wsdl:message>
+<wsdl:portType name="ValuadorDiamantesService">
+<wsdl:operation name="valuarPrendaBasico">
+<wsdl:input message="ns1:valuarPrendaBasico" name="valuarPrendaBasico"></wsdl:input>
+<wsdl:output message="ns1:valuarPrendaBasicoResponse" name="valuarPrendaBasicoResponse"></wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="valuarPrendaNMP">
+<wsdl:input message="ns1:valuarPrendaNMP" name="valuarPrendaNMP"></wsdl:input>
+<wsdl:output message="ns1:valuarPrendaNMPResponse" name="valuarPrendaNMPResponse"></wsdl:output>
+</wsdl:operation>
+</wsdl:portType>
+</wsdl:definitions>

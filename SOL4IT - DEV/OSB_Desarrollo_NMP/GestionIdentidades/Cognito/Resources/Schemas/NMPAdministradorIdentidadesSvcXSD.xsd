@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPAdministradorIdentidades"
+            targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPAdministradorIdentidades"
+            elementFormDefault="qualified">
+  <xsd:complexType name="atributoTipo">
+    <xsd:sequence>
+      <xsd:element name="nombre" type="xsd:string"/>
+      <xsd:element name="valor" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="modoNotificacionTipo">
+    <xsd:sequence>
+      <xsd:element name="medio" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="crearUsuarioPeticionTipo">
+    <xsd:sequence>
+      <xsd:element name="modoNotificacion" type="nmp:modoNotificacionTipo" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="forzarCreacionAlias" type="xsd:boolean" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="accionNotificacion" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="contrasenaTemporal" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="atributosUsuario" minOccurs="0" maxOccurs="1">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="atributo" type="nmp:atributoTipo" minOccurs="0" maxOccurs="unbounded"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="usuario" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="DatosValidacion">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="validar" type="nmp:atributoTipo" minOccurs="0" maxOccurs="unbounded"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="MFAOpcion">
+    <xsd:sequence>
+      <xsd:element name="atributo" type="xsd:string"/>
+      <xsd:element name="modoNotificacion" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="usuarioTipo">
+    <xsd:sequence>
+      <xsd:element name="atributos" minOccurs="0" maxOccurs="1">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="atributo" type="nmp:atributoTipo" minOccurs="0" maxOccurs="unbounded"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="esActivado" type="xsd:boolean" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="MFAOpciones" minOccurs="0" maxOccurs="1">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="opcion" type="nmp:MFAOpcion" minOccurs="0" maxOccurs="unbounded"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="fechaCreacion" type="xsd:dateTime" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="fechaUltimaModificacion" type="xsd:dateTime" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="usuario" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="estadoUsuario" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="crearUsuarioRespuestaTipo">
+    <xsd:sequence>
+      <xsd:element name="informacionUsuario" type="nmp:usuarioTipo" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="gestionUsuarioPeticionTipo">
+    <xsd:sequence>
+      <xsd:element name="Username" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="gestionUsuarioRespuestaTipo">
+    <xsd:sequence>
+      <xsd:element name="confirmacion" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="autenticarUsuarioPeticionTipo">
+    <xsd:sequence>
+      <xsd:element name="flujoAutenticacion" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="parametrosAutenticacion" minOccurs="0" maxOccurs="1">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="parametro" type="nmp:atributoTipo" minOccurs="0" maxOccurs="unbounded"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="nuevoDatoDispositivoTipo">
+    <xsd:sequence>
+      <xsd:element name="claveGrupoDispositivo" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="claveDispositivo" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="resultadoAutenticacionTipo">
+    <xsd:sequence>
+      <xsd:element name="tokenAcceso" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="periodoExpiracion" type="xsd:integer" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="idToken" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="nuevoDatoDispositivo" type="nmp:nuevoDatoDispositivoTipo" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="tokenActualizado" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="tipoToken" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="parametrosCambioTipo">
+    <xsd:sequence>
+      <xsd:element name="parametro" minOccurs="1" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="nombre" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="valor" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="atributosUsuario" minOccurs="0" maxOccurs="1">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="atributo" type="nmp:atributoTipo" minOccurs="0" maxOccurs="unbounded"/>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="cambioTipo">
+    <xsd:sequence>
+      <xsd:element name="nombreCambio" type="xsd:string" minOccurs="1"/>
+      <xsd:element name="parametrosCambio" type="nmp:parametrosCambioTipo" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="sesion" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="autenticarUsuarioRespuestaTipo">
+    <xsd:sequence>
+      <xsd:element name="resultadoAutenticacion" type="nmp:resultadoAutenticacionTipo" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="informacionCambio" type="nmp:cambioTipo" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="respuestaCambioTipo">
+    <xsd:sequence>
+      <xsd:element name="nombreCambio" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="respuestaCambios" type="nmp:parametrosCambioTipo" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="Sesion" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="buscarUsuarioResponseTipo">
+    <xsd:sequence>
+      <xsd:element name="respuesta" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="crearUsuarioRequest" type="nmp:crearUsuarioPeticionTipo"/>
+  <xsd:element name="crearUsuarioResponse" type="nmp:crearUsuarioRespuestaTipo"/>
+  <xsd:element name="borrarUsuarioRequest" type="nmp:gestionUsuarioPeticionTipo"/>
+  <xsd:element name="borrarUsuarioResponse" type="nmp:gestionUsuarioRespuestaTipo"/>
+  <xsd:element name="autenticarUsuarioRequest" type="nmp:autenticarUsuarioPeticionTipo"/>
+  <xsd:element name="autenticarUsuarioResponse" type="nmp:autenticarUsuarioRespuestaTipo"/>
+  <xsd:element name="actualizarParamAutenticacionRequest" type="nmp:respuestaCambioTipo"/>
+  <xsd:element name="actualizarParamAutenticacionResponse" type="nmp:autenticarUsuarioRespuestaTipo"/>
+  <xsd:element name="activarUsuarioRequest" type="nmp:gestionUsuarioPeticionTipo"/>
+  <xsd:element name="activarUsuarioResponse" type="nmp:gestionUsuarioRespuestaTipo"/>
+  <xsd:element name="desactivarUsuarioRequest" type="nmp:gestionUsuarioPeticionTipo"/>
+  <xsd:element name="desactivarUsuarioResponse" type="nmp:gestionUsuarioRespuestaTipo"/>
+  <xsd:element name="buscarUsuarioRequest" type="nmp:gestionUsuarioPeticionTipo"/>
+  <xsd:element name="buscarUsuarioResponse" type="nmp:crearUsuarioRespuestaTipo"/>
+</xsd:schema>

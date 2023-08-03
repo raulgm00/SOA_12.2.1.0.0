@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/alert/config">
+    <con:coreEntry>
+        <con:description>Pipeline para el registro en bitacora de la peticion del servicio Prestamo</con:description>
+        <con:binding type="Any SOAP" isSoap12="false" xsi:type="con:AnySoapBindingType"/>
+        <oper:operations>
+            <oper:logging enabled="false" level="debug"/>
+            <oper:monitoring enabled="true" level="pipeline" aggregationInterval="10"/>
+            <oper:reporting>false</oper:reporting>
+            <oper:pipeline-alerting enabled="true" level="major"/>
+        </oper:operations>
+        <con:pageAttachments isEnabled="false"/>
+        <con:transactions isRequired="false" sameTxForResponse="false"/>
+    </con:coreEntry>
+    <con:router xmlns:ser="http://www.bea.com/wli/sb/services">
+        <con:pipeline name="_onErrorHandler-8350840128395393558--5399ca80.14f2931a55d.-7f86" type="error">
+            <con:stage name="stageErrorHandler">
+                <con:comment>Manajador de error general</con:comment>
+                <con:context>
+                    <con1:userNsDecl prefix="ns2" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPrestamo" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con3:alert>
+                        <con2:comment>Alerta producida cuando suceda un problema en el registro de la bitacora del servicio prestamo</con2:comment>
+                        <con2:id>_ActionId-N53effcb2.5266f177.0.1568ec92909.N7ff8</con2:id>
+                        <con3:destination ref="Utileria/BitacoraPrestamo/Resources/Alerts/OSBBitacoraPrestamoAlert"/>
+                        <con3:description>Problema en el registro de la bitacora del servicio prestamo</con3:description>
+                        <con3:severity>major</con3:severity>
+                        <con3:payload>
+                            <con2:xqueryText>fn:substring($fault/ctx:reason, 0, 1500)</con2:xqueryText>
+                        </con3:payload>
+                    </con3:alert>
+                    <con2:resume>
+                        <con2:comment>Reanudar la ejecucion despues de haber notificado el error</con2:comment>
+                        <con2:id>_ActionId-N53effcb2.5266f177.0.1568ec92909.N7ff5</con2:id>
+                    </con2:resume>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:route-node name="RouteToBitacoraPrestamo" error-handler="_onErrorHandler-8350840128395393558--5399ca80.14f2931a55d.-7f86">
+                <con:comment>Generar entradas en bitacora de base de datos para el servicio prestamo</con:comment>
+                <con:context>
+                    <con1:userNsDecl prefix="ns2" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPrestamo" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                        <con2:comment>Direccionar a la base de datos la peticion al servicio Prestamo para registrarlo en la bitacora</con2:comment>
+                        <con2:id>_ActionId-8350840128395393558--5399ca80.14f2931a55d.-7f92</con2:id>
+                        <con1:service ref="Utileria/BitacoraPrestamo/Business Services/OSBRegistrarBitacoraPrestamoBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>insert</con1:operation>
+                        <con1:outboundTransform>
+                            <con2:assign varName="bodyIn" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con4:comment xmlns:con4="http://www.bea.com/wli/sb/stages/config">Alamacenar en variable una copia del body</con4:comment>
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-8350840128395393558--5399ca80.14f2931a55d.-7f87</con3:id>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                            <con3:assign varName="msgId" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con2:comment>Alamacenar en variable el Message ID de la peticion al servicio Prestamo</con2:comment>
+                                <con2:id>_ActionId-N3f57c7ff.Nff091a2.0.1568a16d200.N7f2b</con2:id>
+                                <con3:expr>
+                                    <con2:xqueryText>$header/*:headerMessage/*:idConsumidor/text()</con2:xqueryText>
+                                </con3:expr>
+                            </con3:assign>
+                            <con3:replace contents-only="true" varName="body" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con2:comment>Generar estructura para insertar en bitacora del servicio Prestamo</con2:comment>
+                                <con2:id>_ActionId-N3f57c7ff.Nff091a2.0.1568a16d200.N7f28</con2:id>
+                                <con3:location>
+                                    <con2:xpathText>.</con2:xpathText>
+                                </con3:location>
+                                <con3:expr>
+                                    <con:xqueryTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                        <con:resource ref="Utileria/BitacoraPrestamo/Resources/Transformations/TREstructuraBitacoraPrestamo"/>
+                                        <con:param name="payload">
+                                            <con:path>$body//*:updatePrestamoRequest</con:path>
+                                        </con:param>
+                                        <con:param name="messageId">
+                                            <con:path>$msgId</con:path>
+                                        </con:param>
+                                    </con:xqueryTransform>
+                                </con3:expr>
+                            </con3:replace>
+                        </con1:outboundTransform>
+                        <con1:responseTransform>
+                            <con2:reply isError="false">
+                                <con2:comment>Responder con exito despues de haber notificado el error</con2:comment>
+                                <con2:id>_ActionId-N53effcb2.5266f177.0.1568ec92909.N7ffe</con2:id>
+                            </con2:reply>
+                        </con1:responseTransform>
+                    </con1:route>
+                </con:actions>
+            </con:route-node>
+        </con:flow>
+    </con:router>
+    <aler:alertRules xsi:nil="true" xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert"/>
+</con:pipelineEntry>

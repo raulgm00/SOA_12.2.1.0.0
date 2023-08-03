@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+    <con:coreEntry>
+        <con:description>Segunda parte del pipeline del flujo de envío hacia el CRM. En esta fase se realiza el envío de una en una al CRM. La interacción con el CRM se hace por medio de un Servicio Web que expone por HTTP-SOAP</con:description>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con3:wsdl ref="OperacionPrendaria/Prestamo/Resources/WSDLs/OSBPrestamoCRMWSDL" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:env="http://www.bea.com/wli/config/env" xmlns:con4="http://www.bea.com/wli/sb/typesystem/config" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con3="http://www.bea.com/wli/sb/pipeline/config"/>
+            <con:binding>
+                <con:name>BasicHttpBinding_ILoanStatus</con:name>
+                <con:namespace>http://tempuri.org/</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations>
+            <oper:logging enabled="false" level="debug"/>
+            <oper:monitoring enabled="true" level="action" aggregationInterval="1440"/>
+            <oper:reporting>false</oper:reporting>
+            <oper:pipeline-alerting enabled="true" level="critical"/>
+        </oper:operations>
+    </con:coreEntry>
+    <con3:router xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:con="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con3="http://www.bea.com/wli/sb/pipeline/config" xmlns:con4="http://www.bea.com/wli/sb/typesystem/config">
+        <con:pipeline type="error" name="_onErrorHandler-7069920859508233642--2874e105.144b30c8864.-7891" xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+            <con:stage name="stageGeneralErrorHadler">
+                <con:comment>Manejador general de errores de direccionamiento o procesamiento</con:comment>
+                <con:context>
+                    <con1:varNsDecl namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/CanonicalModel" prefix="can"/>
+                    <con4:variable name="OperacionDatos" path="$OperacionDatos" asChild="false">
+                        <con4:schema ref="OperacionPrendaria/Prestamo/Resources/Schemas/OSBPrestamoCRM0XSD" element="SetOperacionCliente"/>
+                    </con4:variable>
+                </con:context>
+                <con:actions>
+                    <con5:replace varName="body" contents-only="true" xmlns:con5="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con1:comment>Generar error a ser reportado</con1:comment>
+                        <con1:id>_ActionId-a1e030f.N7d8edf5d.2b.156850ce728.N7fff</con1:id>
+                        <con5:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con5:location>
+                        <con5:expr>
+                            <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="OperacionPrendaria/Prestamo/Resources/Transformations/TRPrestamoFault"/>
+                                <con:input>$fault</con:input>
+                                <con:param name="detailFault">
+                                    <con:path>$fault/ctx:reason</con:path>
+                                </con:param>
+                                <con:param name="codeFault">
+                                    <con:path>$fault/ctx:errorCode</con:path>
+                                </con:param>
+                            </con:xsltTransform>
+                        </con5:expr>
+                    </con5:replace>
+                    <con2:report>
+                        <con1:comment>Notificar que se produjo un error CRM</con1:comment>
+                        <con1:id>_ActionId-a1e030f.N7d8edf5d.26.1567bfcff5c.N7ffe</con1:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$msgId</con:xqueryText>
+                        </con2:expr>
+                        <con2:labels>
+                            <con2:key>IdPartida:</con2:key>
+                            <con2:varName>OperacionDatos</con2:varName>
+                            <con2:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.//*:Partida/text()</con:xpathText>
+                            </con2:value>
+                        </con2:labels>
+                        <con2:labels>
+                            <con2:key>FechaOperacionCRM:</con2:key>
+                            <con2:varName>OperacionDatos</con2:varName>
+                            <con2:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.//*:Fecha/text()</con:xpathText>
+                            </con2:value>
+                        </con2:labels>
+                        <con2:labels>
+                            <con2:key>Notificacion:</con2:key>
+                            <con2:varName>body</con2:varName>
+                            <con2:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.//*:faultstring/text()</con:xpathText>
+                            </con2:value>
+                        </con2:labels>
+                    </con2:report>
+                    <con5:alert xmlns:con5="http://www.bea.com/wli/sb/stages/alert/config">
+                        <con1:comment>Generar alerta por problemas en el procesamiento o direccionamiento del mensaje</con1:comment>
+                        <con1:id>_ActionId-a1e030f.N7d8edf5d.28.1567cb23f6e.N7ffe</con1:id>
+                        <con5:destination ref="OperacionPrendaria/Prestamo/Resources/Alerts/NMPPrestamoAlert"/>
+                        <con5:description>Problema en el envio de mensaje a CRM</con5:description>
+                        <con5:severity>critical</con5:severity>
+                        <con5:payload>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con5:payload>
+                    </con5:alert>
+                    <con1:resume>
+                        <con1:comment>Continuar con la ejecucion normal</con1:comment>
+                        <con1:id>_ActionId-7069920859508233642--2874e105.144b30c8864.-74eb</con1:id>
+                    </con1:resume>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+            <con:route-node name="RouteToCRM" error-handler="_onErrorHandler-7069920859508233642--2874e105.144b30c8864.-7891">
+                <con:comment>Envio de operacion a CRM</con:comment>
+                <con:context>
+                    <con1:varNsDecl namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/CanonicalModel" prefix="can"/>
+                </con:context>
+                <con:actions>
+                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                        <con5:comment xmlns:con5="http://www.bea.com/wli/sb/stages/config">Direccionar mensaje recibido hacia CRM por medio de un Web Service</con5:comment>
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-7069920859508233642--2874e105.144b30c8864.-7892</con2:id>
+                        <con1:service ref="OperacionPrendaria/Prestamo/Business Services/OSBEnviarPrestamoToCRMBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>SetOperacionCliente</con1:operation>
+                        <con1:outboundTransform>
+                            <con5:assign varName="msgId" xmlns:con5="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con6:comment xmlns:con6="http://www.bea.com/wli/sb/stages/config">Almacenar el Message ID del origen para traabilidad</con6:comment>
+                                <con6:id xmlns:con6="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N7d8edf5d.26.1567bfcff5c.N7fff</con6:id>
+                                <con5:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$header/*:headerMessage/*:idConsumidor/text()</con:xqueryText>
+                                </con5:expr>
+                            </con5:assign>
+                            <con2:report>
+                                <con5:comment xmlns:con5="http://www.bea.com/wli/sb/stages/config">Reportar entrada de peticion para dar trazabilidad</con5:comment>
+                                <con5:id xmlns:con5="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.26a809d1.66.1537c366cb4.N8000</con5:id>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$msgId</con:xqueryText>
+                                </con2:expr>
+                                <con2:labels>
+                                    <con2:key>IdPartidaCRM:</con2:key>
+                                    <con2:varName>body</con2:varName>
+                                    <con2:value>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./can:SetOperacionCliente/can:loan/can:Partida</con:xpathText>
+                                    </con2:value>
+                                </con2:labels>
+                                <con2:labels>
+                                    <con2:key>FechaOperacionCRM:</con2:key>
+                                    <con2:varName>body</con2:varName>
+                                    <con2:value>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./can:SetOperacionCliente/can:loan/can:Fecha</con:xpathText>
+                                    </con2:value>
+                                </con2:labels>
+                            </con2:report>
+                            <con5:assign varName="OperacionDatos" xmlns:con5="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con6:comment xmlns:con6="http://www.bea.com/wli/sb/stages/config">Almacenar una copia del mensaje</con6:comment>
+                                <con6:id xmlns:con6="http://www.bea.com/wli/sb/stages/config">_ActionId-4972464715489858836--6050b05f.14529f217ca.-7e6c</con6:id>
+                                <con5:expr>
+                                    <con6:xqueryText xmlns:con6="http://www.bea.com/wli/sb/stages/config">$body/can:SetOperacionCliente</con6:xqueryText>
+                                </con5:expr>
+                            </con5:assign>
+                        </con1:outboundTransform>
+                        <con1:responseTransform>
+                            <con5:replace varName="body" contents-only="true" xmlns:con5="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con6:comment xmlns:con6="http://www.bea.com/wli/sb/stages/config">Obtener respuesta de CRM</con6:comment>
+                                <con6:id xmlns:con6="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N7d8edf5d.2c.15685279bf1.N8000</con6:id>
+                                <con5:location>
+                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                </con5:location>
+                                <con5:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/can:SetOperacionClienteResponse/can:SetOperacionClienteResult</con:xqueryText>
+                                </con5:expr>
+                            </con5:replace>
+                            <con5:ifThenElse xmlns:con5="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con6:comment xmlns:con6="http://www.bea.com/wli/sb/stages/config">Verificar la respuesta de CRM</con6:comment>
+                                <con6:id xmlns:con6="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N7d8edf5d.2a.1567f748794.N7ffe</con6:id>
+                                <con5:case>
+                                    <con5:condition>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/*:SetOperacionClienteResult = 'true'</con:xqueryText>
+                                    </con5:condition>
+                                    <con5:actions>
+                                        <con6:reply isError="false" xmlns:con6="http://www.bea.com/wli/sb/stages/config">
+                                            <con6:comment>Responder con ACK</con6:comment>
+                                            <con6:id>_ActionId-a1e030f.N7d8edf5d.2d.156852a4e34.N8000</con6:id>
+                                        </con6:reply>
+                                    </con5:actions>
+                                </con5:case>
+                                <con5:default>
+                                    <con6:reply isError="true" xmlns:con6="http://www.bea.com/wli/sb/stages/config">
+                                        <con6:comment>Responder con fallo</con6:comment>
+                                        <con6:id>_ActionId-a1e030f.N7d8edf5d.2e.156852ae40c.N8000</con6:id>
+                                    </con6:reply>
+                                </con5:default>
+                            </con5:ifThenElse>
+                        </con1:responseTransform>
+                    </con1:route>
+                </con:actions>
+            </con:route-node>
+        </con:flow>
+    </con3:router>
+    <aler:alertRules xsi:nil="true" xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert"/>
+</con:pipelineEntry>

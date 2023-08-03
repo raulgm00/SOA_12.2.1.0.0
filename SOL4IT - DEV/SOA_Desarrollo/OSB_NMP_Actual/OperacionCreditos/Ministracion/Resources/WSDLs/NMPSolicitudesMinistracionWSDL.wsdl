@@ -1,0 +1,49 @@
+<definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Service/SolicitudesMinistracion" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Service/SolicitudesMinistracion" xmlns:SolMinIdTraz="http://servicios.montedepiedad.com.mx/NMP/Schema/SolicitudesMinistracion" xmlns:NMPSM="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:NMPSH="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <types>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/SolicitudesMinistracion" schemaLocation="../Schemas/NMPSolicitudesMinistracionXSD.xsd"/>
+    </xsd:schema>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+    </xsd:schema>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+    </xsd:schema>
+  </types>
+  <message name="updateSolicitudeRequest">
+    <part name="updateSolicitudeRequest" element="SolMinIdTraz:updateSolicitudeRequest"/>
+  </message>
+  <message name="updateSolicitudeResponse">
+    <part name="updateSolicitudeResponse" element="SolMinIdTraz:updateSolicitudeResponse"/>
+  </message>
+  <message name="standardMessageFault">
+    <part name="fault" element="NMPSM:messageError"/>
+  </message>
+  <message name="standardMessageHeader">
+    <part name="header" element="NMPSH:headerMessage"/>
+  </message>
+  <portType name="SolicitudMinistracionPortType">
+    <operation name="updateIdTrazabilidad">
+      <input message="tns:updateSolicitudeRequest"/>
+      <output message="tns:updateSolicitudeResponse"/>
+      <fault message="tns:standardMessageFault" name="fault"/>
+    </operation>
+  </portType>
+  <binding name="SolicitudMinistracionPortTypeSOAP11Binding" type="tns:SolicitudMinistracionPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="updateIdTrazabilidad">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/SolicitudesMinistracion/updateIdTrazabilidad"/>
+      <input>
+        <soap:body use="literal" parts="updateSolicitudeRequest"/>
+        <soap:header message="tns:standardMessageHeader" part="header" use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="updateSolicitudeResponse"/>
+        <soap:header message="tns:standardMessageHeader" part="header" use="literal"/>
+      </output>
+      <fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+</definitions>

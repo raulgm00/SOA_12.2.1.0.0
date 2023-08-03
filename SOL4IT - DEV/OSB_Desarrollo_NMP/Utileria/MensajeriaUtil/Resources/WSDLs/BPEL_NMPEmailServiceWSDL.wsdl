@@ -1,0 +1,35 @@
+<wsdl:definitions name="BPELEmailService" targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Services/Mensajeria/Email" xmlns:client="http://servicios.montedepiedad.com.mx/NMP/Services/Mensajeria/Email" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+	<wsdl:documentation>
+		<abstractWSDL>http://dcpsoadev1n1.nmp.com.mx:17004/soa-infra/services/nmp/NMPEmailService!1.0/WSDLs/BPELEmailService.wsdl</abstractWSDL>
+	</wsdl:documentation>
+	<plnk:partnerLinkType name="BPELEmailService">
+		<plnk:role name="BPELEmailServiceProvider" portType="client:BPELEmailService"/>
+	</plnk:partnerLinkType>
+	<wsdl:types>
+		<schema xmlns="http://www.w3.org/2001/XMLSchema">
+			<import namespace="http://servicios.montedepiedad.com.mx/NMP/Services/Mensajeria/Email" schemaLocation="../Schemas/BPELEmailServiceXSD.xsd"/>
+		</schema>
+	</wsdl:types>
+	<wsdl:message name="BPELEmailServiceRequestMessage">
+		<wsdl:part element="client:process" name="payload"/>
+	</wsdl:message>
+	<wsdl:portType name="BPELEmailService">
+		<wsdl:operation name="process">
+			<wsdl:input message="client:BPELEmailServiceRequestMessage"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="BPELEmailServiceBinding" type="client:BPELEmailService">
+		<soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="process">
+			<soap:operation soapAction="process" style="document"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="emailservice_ep">
+		<wsdl:port binding="client:BPELEmailServiceBinding" name="BPELEmailService_pt">
+			<soap:address location="http://dcpsoadev1n1.nmp.com.mx:17004/soa-infra/services/nmp/NMPEmailService/emailservice_ep"/>
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

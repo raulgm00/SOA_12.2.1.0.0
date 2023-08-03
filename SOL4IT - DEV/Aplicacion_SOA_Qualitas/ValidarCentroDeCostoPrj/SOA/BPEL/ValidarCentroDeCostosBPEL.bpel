@@ -1,0 +1,129 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Tue Dec 06 13:48:00 CST 2016
+  Author:  Soaint
+  Type: BPEL 2.0 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="ValidarCentroDeCostosBPEL" targetNamespace="http://qualitas.com.mx/ValidarCentroDeCostosApp/ValidarCentrosDeCostosPrj/ValidarCentroDeCostosBPEL" xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:client="http://qualitas.com.mx/ValidarCentroDeCostosApp/ValidarCentrosDeCostosPrj/ValidarCentroDeCostosBPEL" xmlns:ora="http://schemas.oracle.com/xpath/extension" xmlns:ui="http://xmlns.oracle.com/soa/designer" xmlns:bpelx="http://schemas.oracle.com/bpel/extension" xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xml:id="id_1"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/ValidarCentroDeCostosApp/ValidarCentrosDeCostosPrj/SPValidarCcDB"
+         xmlns:ns3="http://qualitas.com.mx/comunes/objetosComunes/v1/"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ess="http://xmlns.oracle.com/scheduler" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ns2="http://qualitas.com.mx/Comun/CentroCostos/validarCentroCostos/v1/"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:ns4="http://xmlns.oracle.com/pcbpel/adapter/db/sp/SPValidarCcDB">
+
+    <import ui:processWSDL="true" namespace="http://qualitas.com.mx/ValidarCentroDeCostosApp/ValidarCentrosDeCostosPrj/ValidarCentroDeCostosBPEL" location="../WSDLs/ValidarCentroDeCostosBPEL.wsdl" importType="http://schemas.xmlsoap.org/wsdl/" xml:id="id_2"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks xml:id="id_3">
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="validarcentrodecostosbpel_client" partnerLinkType="client:ValidarCentroDeCostosBPEL" myRole="ValidarCentroDeCostosBPELProvider" xml:id="id_4"/>
+    <partnerLink name="SPValidarCcDB" partnerLinkType="ns1:SPValidarCcDB_plt" partnerRole="SPValidarCcDB_role"
+                 xml:id="id_11"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables xml:id="id_5">
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:ValidarCentroDeCostosBPELRequestMessage" xml:id="id_6"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:ValidarCentroDeCostosBPELResponseMessage" xml:id="id_7"/>
+    <variable name="ValidarCentroCostoInvoke_InputVariable" messageType="ns1:args_in_msg" xml:id="id_14"/>
+    <variable name="ValidarCentroCostoInvoke_OutputVariable" messageType="ns1:args_out_msg" xml:id="id_15"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main" xml:id="id_8">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in ValidarCentroDeCostosBPEL.wsdl) -->
+    <receive name="receiveInput" partnerLink="validarcentrodecostosbpel_client" portType="client:ValidarCentroDeCostosBPEL" operation="process" variable="inputVariable" createInstance="yes" xml:id="id_9"/>
+    <assign name="InputDataCC" xml:id="id_12">
+      <copy xml:id="id_17">
+        <from xml:id="id_18">string($inputVariable.payload/ns2:Input/ns2:centroCostos)</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_19">$ValidarCentroCostoInvoke_InputVariable.InputParameters/ns4:P_CENTROCOSTO</to>
+      </copy>
+      <copy xml:id="id_74">
+        <from xml:id="id_75">$inputVariable.payload/ns2:Input/ns2:idTipoServicio</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_76">$ValidarCentroCostoInvoke_InputVariable.InputParameters/ns4:P_TPSOLICITUD</to>
+      </copy>
+    </assign>
+    <invoke name="ValidarCentroCostoInvoke" xml:id="id_13" partnerLink="SPValidarCcDB"
+            portType="ns1:SPValidarCcDB_ptt" operation="SPValidarCcDB"
+            inputVariable="ValidarCentroCostoInvoke_InputVariable"
+            outputVariable="ValidarCentroCostoInvoke_OutputVariable" bpelx:invokeAsDetail="no"/>
+    <assign name="OutputDataCC" xml:id="id_46">
+      <copy xml:id="id_47">
+        <from xml:id="id_48">$ValidarCentroCostoInvoke_OutputVariable.OutputParameters/ns4:P_FLAG</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_49">$outputVariable.payload/ns2:idTipoCC</to>
+      </copy>
+      <copy xml:id="id_50">
+        <from xml:id="id_51">number($ValidarCentroCostoInvoke_OutputVariable.OutputParameters/ns4:P_CENTROCOSTO)</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_52">$outputVariable.payload/ns2:centroCostos</to>
+      </copy>
+      <copy xml:id="id_53">
+        <from xml:id="id_54">$ValidarCentroCostoInvoke_OutputVariable.OutputParameters/ns4:P_UNDORG</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_55">$outputVariable.payload/ns2:descArea</to>
+      </copy>
+      <copy xml:id="id_56">
+        <from xml:id="id_57">$ValidarCentroCostoInvoke_OutputVariable.OutputParameters/ns4:P_RESPONSABLE</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_58">$outputVariable.payload/ns2:responsableArea</to>
+      </copy>
+      <copy xml:id="id_59">
+        <from xml:id="id_60">$ValidarCentroCostoInvoke_OutputVariable.OutputParameters/ns4:P_CVEOFICINA</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_61">$outputVariable.payload/ns2:claveOficina</to>
+      </copy>
+      <copy xml:id="id_62">
+        <from xml:id="id_63">$ValidarCentroCostoInvoke_OutputVariable.OutputParameters/ns4:P_DESCRIPCION</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_64">$outputVariable.payload/ns2:descOficina</to>
+      </copy>
+      <copy xml:id="id_65">
+        <from xml:id="id_66">$ValidarCentroCostoInvoke_OutputVariable.OutputParameters/ns4:P_OUTCVE</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_67">$outputVariable.payload/ns2:OperationResponse/ns3:codigoRespuesta</to>
+      </copy>
+      <copy xml:id="id_68">
+        <from xml:id="id_69">'EJECUCION EXITOSA'</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_70">$outputVariable.payload/ns2:OperationResponse/ns3:descripcionRespuesta</to>
+      </copy>
+      <copy xml:id="id_71">
+        <from xml:id="id_72">ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_73">$outputVariable.payload/ns2:OperationResponse/ns3:fecha</to>
+      </copy>
+    </assign>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="validarcentrodecostosbpel_client" portType="client:ValidarCentroDeCostosBPEL" operation="process" variable="outputVariable" xml:id="id_10"/>
+  </sequence>
+</process>

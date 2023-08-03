@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:wsdl ref="MasterData/Proyectos/Resources/ActualizarProyectoWSDL"/>
+            <con:binding>
+                <con:name>ActualizarProyectoBPELBinding</con:name>
+                <con:namespace>http://xmlns.oracle.com/ActualizaProyecto/ActualizaProyectoPrj/ActualizarProyectoBPEL</con:namespace>
+            </con:binding>
+        </con:binding>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:pipeline name="PipelinePairNode1_request" type="request">
+            <con:stage name="Consultar Info Solicitud">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="v11" namespace="http://qualitas.com.mx/Comun/Servicio/v1/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="v12" namespace="http://qualitas.com.mx/Comun/Servicio/ProyectoData/v1/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="v1" namespace="http://qualitas.com.mx/Comun/Servicio/ActualizarProyecto/v1/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="source" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.N61.15a22dd4af8.N7ffc</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con:wsCallout xmlns:con="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.N79.15a1a9c6fb6.N7fef</con1:id>
+                        <con:service ref="Finance/AP/GPA/Data/ProxySvc/SolicitudBasicDataSvcPxy" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                        <con:operation>selectByPrimaryKey</con:operation>
+                        <con:request>
+                            <con:body wrapped="false">solicitudBasicDataRequest</con:body>
+                            <con:header/>
+                        </con:request>
+                        <con:response>
+                            <con:body wrapped="false">solicitudBasicDataResponse</con:body>
+                            <con:header/>
+                        </con:response>
+                        <con:requestTransform>
+                            <con:assign varName="solicitudBasicDataRequest">
+                                <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.N5e.15a29dd7061.N7ffa</con1:id>
+                                <con:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(fn:concat(
+      '&lt;sol:Gpa001SolicitudPrimaryKey xmlns:sol="http://xmlns.oracle.com/pcbpel/adapter/db/top/SolicitudBasicDataSvc">',
+         '&lt;sol:idSolicitud>',$body/v1:ActualizarProyectoRequest/v1:Input/v1:servicio/v11:idSolicitud,'&lt;/sol:idSolicitud>',
+      '&lt;/sol:Gpa001SolicitudPrimaryKey>'
+))</con:xqueryText>
+                                </con:expr>
+                            </con:assign>
+                        </con:requestTransform>
+                        <con:responseTransform/>
+                    </con:wsCallout>
+                    <con:ifThenElse xmlns:con="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.N5b.15a2a0adfb3.N7ffc</con1:id>
+                        <con:case>
+                            <con:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:string-length($solicitudBasicDataResponse//*:Gpa001Solicitud/*:auxIdproyecto/text())>0</con:xqueryText>
+                            </con:condition>
+                            <con:actions>
+                                <con:assign varName="proyectoId">
+                                    <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.N75.15a1ab37f9d.N7ffa</con1:id>
+                                    <con:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$solicitudBasicDataResponse//*:Gpa001Solicitud/*:auxIdproyecto/text()</con:xqueryText>
+                                    </con:expr>
+                                </con:assign>
+                                <con:wsCallout>
+                                    <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.N6a.15a1d743127.N7ff8</con1:id>
+                                    <con:service ref="Finance/AP/GPA/Data/ProxySvc/ProyectoDataSvcPxy" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                    <con:operation>selectByPrimaryKey</con:operation>
+                                    <con:request>
+                                        <con:body wrapped="false">proyectoDataRequest</con:body>
+                                        <con:header/>
+                                    </con:request>
+                                    <con:response>
+                                        <con:body wrapped="false">proyectoDataResponse</con:body>
+                                        <con:header/>
+                                    </con:response>
+                                    <con:requestTransform>
+                                        <con:assign varName="proyectoDataRequest">
+                                            <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.N56.15a2bb79ab9.N7ffc</con1:id>
+                                            <con:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(fn:concat(
+      '&lt;proy:Gpa013ProyectoPrimaryKey xmlns:proy="http://xmlns.oracle.com/pcbpel/adapter/db/top/ProyectoDataSvc">',
+         '&lt;proy:idProyecto>',$proyectoId,'&lt;/proy:idProyecto>',
+      '&lt;/proy:Gpa013ProyectoPrimaryKey>'
+))</con:xqueryText>
+                                            </con:expr>
+                                        </con:assign>
+                                    </con:requestTransform>
+                                    <con:responseTransform/>
+                                </con:wsCallout>
+                            </con:actions>
+                        </con:case>
+                        <con:case>
+                            <con:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:string-length($solicitudBasicDataResponse//*:Gpa001Solicitud/*:auxIdservicio/text())>0</con:xqueryText>
+                            </con:condition>
+                            <con:actions>
+                                <con:assign varName="servicioId">
+                                    <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.N74.15a1ab7f79e.N7ffa</con1:id>
+                                    <con:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$solicitudBasicDataResponse//*:Gpa001Solicitud/*:auxIdservicio/text()</con:xqueryText>
+                                    </con:expr>
+                                </con:assign>
+                            </con:actions>
+                        </con:case>
+                    </con:ifThenElse>
+                    <con1:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.N70.15a1ae15106.N7ff8</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">xs:int($body/v1:ActualizarProyectoRequest/v1:Input/v1:servicio/v11:proyecto/v12:condicionPago)=xs:int(1)</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:assign varName="estadoProyecto">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.N56.15a2bb79ab9.N7ffd</con2:id>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">13</con:xqueryText>
+                                    </con1:expr>
+                                </con1:assign>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">xs:int($body/v1:ActualizarProyectoRequest/v1:Input/v1:servicio/v11:proyecto/v12:condicionPago)=xs:int(2)</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:assign varName="estadoProyecto">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.N72.15a1abbeac2.N7ff6</con2:id>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">14</con:xqueryText>
+                                    </con1:expr>
+                                </con1:assign>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode1_response" type="response">
+            <con:stage name="Configurar Respuesta">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="v11" namespace="http://qualitas.com.mx/Comun/Servicio/v1/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="v12" namespace="http://qualitas.com.mx/Comun/Servicio/ProyectoData/v1/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="v1" namespace="http://qualitas.com.mx/Comun/Servicio/ActualizarProyecto/v1/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con:ifThenElse xmlns:con="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.N5b.15a2a0adfb3.N7ffb</con1:id>
+                        <con:case>
+                            <con:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">xs:int($source/v1:ActualizarProyectoRequest/v1:Input/v1:idTipoServicio)=3 and 
+xs:int($source/v1:ActualizarProyectoRequest/v1:Input/v1:tipoOperacion) = 1</con:xqueryText>
+                            </con:condition>
+                            <con:actions>
+                                <con:wsCallout>
+                                    <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.N69.15a1d88d32e.N7ffe</con1:id>
+                                    <con:service ref="Finance/AP/GPA/Data/ProxySvc/ProyectoDataSvcPxy" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                    <con:operation>selectByPrimaryKey</con:operation>
+                                    <con:request>
+                                        <con:body wrapped="false">proyectoDataRequest</con:body>
+                                        <con:header/>
+                                    </con:request>
+                                    <con:response>
+                                        <con:body wrapped="false">proyectoDataResponse</con:body>
+                                        <con:header/>
+                                    </con:response>
+                                    <con:requestTransform>
+                                        <con:assign varName="proyectoDataRequest">
+                                            <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.N68.15a1db9123d.N7ffc</con1:id>
+                                            <con:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(fn:concat(
+      '&lt;proy:Gpa013ProyectoPrimaryKey xmlns:proy="http://xmlns.oracle.com/pcbpel/adapter/db/top/ProyectoDataSvc">',
+         '&lt;proy:idProyecto>',$proyectoId,'&lt;/proy:idProyecto>',
+      '&lt;/proy:Gpa013ProyectoPrimaryKey>'
+))</con:xqueryText>
+                                            </con:expr>
+                                        </con:assign>
+                                    </con:requestTransform>
+                                    <con:responseTransform>
+                                        <con:replace varName="body" contents-only="true">
+                                            <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.N5b.15a2a0adfb3.N7ffa</con1:id>
+                                            <con:location>
+                                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                            </con:location>
+                                            <con:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat(
+      '<ActualizarProyectoResponse xmlns="http://qualitas.com.mx/Comun/Servicio/ActualizarProyecto/v1/">',
+         '<idProyecto>',$proyectoDataResponse//*:Gpa013Proyecto/*:idProyecto/text(),'</idProyecto>',
+         '<nombre>',$proyectoDataResponse//*:Gpa013Proyecto/*:nombreProyecto/text(),'</nombre>',
+         '<descripcion>',$proyectoDataResponse//*:Gpa013Proyecto/*:descProyecto/text(),'</descripcion>',
+         '<estatusProyecto>',$proyectoDataResponse//*:Gpa013Proyecto/*:estado/*:idEstado/text(),'</estatusProyecto>',
+         '<presupuestoAprob>',$proyectoDataResponse//*:Gpa013Proyecto/*:presupuestoAprobado/text(),'</presupuestoAprob>',
+         '<presupuestoDisponible>',$proyectoDataResponse//*:Gpa013Proyecto/*:presupuestoDisponible/text(),'</presupuestoDisponible>',
+         '<numParcialidades>',$proyectoDataResponse//*:Gpa013Proyecto/*:parcialidades/text(),'</numParcialidades>',
+         '<condicionPago>',$proyectoDataResponse//*:Gpa013Proyecto/*:idCondicionesPago/text(),'</condicionPago>',
+         '<idSolicitud>',$source/v1:ActualizarProyectoRequest/v1:Input/v1:servicio/v11:idSolicitud,'</idSolicitud>',
+         '<idPrestador>',$proyectoDataResponse//*:Gpa013Proyecto/*:idPrestador/text(),'</idPrestador>',
+         '<centroCostos>',$proyectoDataResponse//*:Gpa013Proyecto/*:centroCosto/text(),'</centroCostos>',
+         '<claveOficina>',$proyectoDataResponse//*:Gpa013Proyecto/*:cveOficina/text(),'</claveOficina>',
+         '<descOficina>',$proyectoDataResponse//*:Gpa013Proyecto/*:descOficina/text(),'</descOficina>',
+         '<descArea xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">',$proyectoDataResponse//*:Gpa013Proyecto/*:descArea/text(),'</descArea>',
+         '<responsableArea xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">',$proyectoDataResponse//*:Gpa013Proyecto/*:responsableArea/text(),'</responsableArea>',
+         '<OperationResponse>',
+            '<codigoOperacionoper xmlns="http://qualitas.com.mx/comunes/objetosComunes/v1/"/>',
+            '<codigoRespuesta xmlns="http://qualitas.com.mx/comunes/objetosComunes/v1/">0</codigoRespuesta>',
+            '<descripcionRespuesta xmlns="http://qualitas.com.mx/comunes/objetosComunes/v1/">Se actualizo el proyecto de manera correcta</descripcionRespuesta>',
+            '<tiempoRespuesta xmlns="http://qualitas.com.mx/comunes/objetosComunes/v1/"/>',
+            '<fecha xmlns="http://qualitas.com.mx/comunes/objetosComunes/v1/">',fn:current-dateTime(),'</fecha>',
+         '</OperationResponse>',
+      '</ActualizarProyectoResponse>'
+))]]></con:xqueryText>
+                                            </con:expr>
+                                        </con:replace>
+                                    </con:responseTransform>
+                                </con:wsCallout>
+                            </con:actions>
+                        </con:case>
+                        <con:case>
+                            <con:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">xs:int($source/v1:ActualizarProyectoRequest/v1:Input/v1:idTipoServicio)=3 and 
+xs:int($source/v1:ActualizarProyectoRequest/v1:Input/v1:tipoOperacion) = 2</con:xqueryText>
+                            </con:condition>
+                            <con:actions>
+                                <con:replace varName="body" contents-only="true">
+                                    <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.N5f.15a23fe2137.N7ffd</con1:id>
+                                    <con:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                    </con:location>
+                                    <con:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat(
+      '<ActualizarProyectoResponse xmlns="http://qualitas.com.mx/Comun/Servicio/ActualizarProyecto/v1/">',
+         '<idProyecto>',$proyectoId,'</idProyecto>',
+         '<nombre></nombre>',
+         '<descripcion></descripcion>',
+         '<estatusProyecto></estatusProyecto>',
+         '<presupuestoAprob></presupuestoAprob>',
+         '<numParcialidades></numParcialidades>',
+         '<condicionPago></condicionPago>',
+         '<idSolicitud>',$source/v1:ActualizarProyectoRequest/v1:Input/v1:servicio/v11:idSolicitud,'</idSolicitud>',
+         '<idPrestador></idPrestador>',
+         '<centroCostos></centroCostos>',
+         '<claveOficina></claveOficina>',
+         '<descOficina></descOficina>',
+         '<descArea xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>',
+         '<responsableArea xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>',
+         '<OperationResponse>',
+            '<codigoOperacionoper xmlns="http://qualitas.com.mx/comunes/objetosComunes/v1/"/>',
+            '<codigoRespuesta xmlns="http://qualitas.com.mx/comunes/objetosComunes/v1/">0</codigoRespuesta>',
+            '<descripcionRespuesta xmlns="http://qualitas.com.mx/comunes/objetosComunes/v1/">Se elimino el proyecto de manera correcta</descripcionRespuesta>',
+            '<tiempoRespuesta xmlns="http://qualitas.com.mx/comunes/objetosComunes/v1/"/>',
+            '<fecha xmlns="http://qualitas.com.mx/comunes/objetosComunes/v1/">',fn:current-dateTime(),'</fecha>',
+         '</OperationResponse>',
+      '</ActualizarProyectoResponse>'
+))]]></con:xqueryText>
+                                    </con:expr>
+                                </con:replace>
+                            </con:actions>
+                        </con:case>
+                        <con:default>
+                            <con:replace varName="body" contents-only="true">
+                                <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.N7a.15a1a9c3cf8.N7ff8</con1:id>
+                                <con:location>
+                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                </con:location>
+                                <con:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat(
+      '<ActualizarProyectoResponse xmlns="http://qualitas.com.mx/Comun/Servicio/ActualizarProyecto/v1/">',
+         '<idProyecto>',$proyectoId,'</idProyecto>',
+         '<nombre></nombre>',
+         '<descripcion></descripcion>',
+         '<estatusProyecto></estatusProyecto>',
+         '<presupuestoAprob></presupuestoAprob>',
+         '<numParcialidades></numParcialidades>',
+         '<condicionPago></condicionPago>',
+         '<idSolicitud>',$source/v1:ActualizarProyectoRequest/v1:Input/v1:servicio/v11:idSolicitud,'</idSolicitud>',
+         '<idPrestador></idPrestador>',
+         '<centroCostos></centroCostos>',
+         '<claveOficina></claveOficina>',
+         '<descOficina></descOficina>',
+         '<descArea xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>',
+         '<responsableArea xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>',
+         '<OperationResponse>',
+            '<codigoOperacionoper xmlns="http://qualitas.com.mx/comunes/objetosComunes/v1/"/>',
+            '<codigoRespuesta xmlns="http://qualitas.com.mx/comunes/objetosComunes/v1/">1</codigoRespuesta>',
+            '<descripcionRespuesta xmlns="http://qualitas.com.mx/comunes/objetosComunes/v1/">Error, no se pudo actualizar el proyecto</descripcionRespuesta>',
+            '<tiempoRespuesta xmlns="http://qualitas.com.mx/comunes/objetosComunes/v1/"/>',
+            '<fecha xmlns="http://qualitas.com.mx/comunes/objetosComunes/v1/">',fn:current-dateTime(),'</fecha>',
+         '</OperationResponse>',
+      '</ActualizarProyectoResponse>'
+))]]></con:xqueryText>
+                                </con:expr>
+                            </con:replace>
+                        </con:default>
+                    </con:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="PipelinePairNode1">
+                <con:request>PipelinePairNode1_request</con:request>
+                <con:response>PipelinePairNode1_response</con:response>
+            </con:pipeline-node>
+            <con:route-node name="Actualizar Proyecto">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="v11" namespace="http://qualitas.com.mx/Comun/Servicio/v1/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="v12" namespace="http://qualitas.com.mx/Comun/Servicio/ProyectoData/v1/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="v13" namespace="http://qualitas.com.mx/comunes/objetosComunes/v1/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="v1" namespace="http://qualitas.com.mx/Comun/Servicio/ActualizarProyecto/v1/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.N6a.15a1d743127.N7ff9</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">xs:int($body/v1:ActualizarProyectoRequest/v1:Input/v1:idTipoServicio)=3 and 
+xs:int($body/v1:ActualizarProyectoRequest/v1:Input/v1:tipoOperacion) = 1</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con2:route xmlns:con2="http://www.bea.com/wli/sb/stages/routing/config">
+                                    <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.N53.15a2e308531.N8000</con3:id>
+                                    <con2:service ref="Finance/AP/GPA/Data/BusinessSvc/ProyectoDataSvc" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                    <con2:operation>merge</con2:operation>
+                                    <con2:outboundTransform>
+                                        <con1:replace varName="body" contents-only="true">
+                                            <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.N56.15a2bb79ab9.N7ffe</con3:id>
+                                            <con1:location>
+                                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                            </con1:location>
+                                            <con1:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat(
+'<proy:Gpa013ProyectoCollection xmlns:proy="http://xmlns.oracle.com/pcbpel/adapter/db/top/ProyectoDataSvc">',
+         '<proy:Gpa013Proyecto>',
+            '<proy:idProyecto>',$proyectoId,'</proy:idProyecto>',
+            '<proy:descProyecto>',$body/v1:ActualizarProyectoRequest/v1:Input/v1:servicio/v11:proyecto/v12:descripcion,'</proy:descProyecto>',
+            '<proy:presupuestoAprobado>',$body/v1:ActualizarProyectoRequest/v1:Input/v1:servicio/v11:proyecto/v12:presupuestoAprob,'</proy:presupuestoAprobado>',
+            '<proy:parcialidades>',$body/v1:ActualizarProyectoRequest/v1:Input/v1:servicio/v11:proyecto/v12:numParcialidades,'</proy:parcialidades>',
+            '<proy:idCondicionesPago>',$body/v1:ActualizarProyectoRequest/v1:Input/v1:servicio/v11:proyecto/v12:condicionPago,'</proy:idCondicionesPago>',
+
+            '<proy:centroCosto>',$body/v1:ActualizarProyectoRequest/v1:Input/v1:servicio/v11:proyecto/v12:centroCostos,'</proy:centroCosto>',
+            '<proy:descOficina>',$body/v1:ActualizarProyectoRequest/v1:Input/v1:servicio/v11:proyecto/v12:descOficina,'</proy:descOficina>',
+            '<proy:descArea>',$body/v1:ActualizarProyectoRequest/v1:Input/v1:servicio/v11:proyecto/v12:descArea,'</proy:descArea>',
+            '<proy:responsableArea>',$body/v1:ActualizarProyectoRequest/v1:Input/v1:servicio/v11:proyecto/v12:responsableArea,'</proy:responsableArea>',
+            '<proy:nombreProyecto>',$body/v1:ActualizarProyectoRequest/v1:Input/v1:servicio/v11:proyecto/v12:nombre,'</proy:nombreProyecto>',
+            '<proy:cveOficina>',$body/v1:ActualizarProyectoRequest/v1:Input/v1:servicio/v11:proyecto/v12:claveOficina,'</proy:cveOficina>',
+'<proy:presupuestoDisponible>',$body/v1:ActualizarProyectoRequest/v1:Input/v1:servicio/v11:proyecto/v12:presupuestoAprob,'</proy:presupuestoDisponible>',
+            '<proy:parcialidadActual>0</proy:parcialidadActual>',
+            '<proy:estado>',
+               '<proy:idEstado>',$estadoProyecto,'</proy:idEstado>',
+            '</proy:estado>',
+          '</proy:Gpa013Proyecto>',
+      '</proy:Gpa013ProyectoCollection>'
+))]]></con:xqueryText>
+                                            </con1:expr>
+                                        </con1:replace>
+                                    </con2:outboundTransform>
+                                    <con2:responseTransform/>
+                                </con2:route>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">xs:int($body/v1:ActualizarProyectoRequest/v1:Input/v1:idTipoServicio)=3 and 
+xs:int($body/v1:ActualizarProyectoRequest/v1:Input/v1:tipoOperacion) = 2</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con2:route xmlns:con2="http://www.bea.com/wli/sb/stages/routing/config">
+                                    <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.N52.15a2e5f2140.N8000</con3:id>
+                                    <con2:service ref="Finance/AP/GPA/Data/BusinessSvc/ProyectoDataSvc" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                    <con2:operation>merge</con2:operation>
+                                    <con2:outboundTransform>
+                                        <con1:replace varName="body" contents-only="true">
+                                            <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.N5a.15a2a1ad06d.N7fff</con3:id>
+                                            <con1:location>
+                                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                            </con1:location>
+                                            <con1:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat(
+'<proy:Gpa013ProyectoCollection xmlns:proy="http://xmlns.oracle.com/pcbpel/adapter/db/top/ProyectoDataSvc">',
+         '<proy:Gpa013Proyecto>',
+            '<proy:idProyecto>',$proyectoId,'</proy:idProyecto>',
+    '<proy:idProyectomarco>',$proyectoId,'</proy:idProyectomarco>',
+    '<proy:responsableArea>',$proyectoDataResponse//*:Gpa013Proyecto/*:idProyectomarco/text(),'</proy:responsableArea>',
+    '<proy:procesable>0</proy:procesable>',            
+    '<proy:estado>',
+    '<proy:idEstado>19</proy:idEstado>',
+    '</proy:estado>',
+    '</proy:Gpa013Proyecto>',
+    '</proy:Gpa013ProyectoCollection>'
+))]]></con:xqueryText>
+                                            </con1:expr>
+                                        </con1:replace>
+                                    </con2:outboundTransform>
+                                    <con2:responseTransform/>
+                                </con2:route>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:route-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

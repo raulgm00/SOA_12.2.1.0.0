@@ -1,0 +1,65 @@
+<wsdl:definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Service/NotificacionPartidas" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Service/NotificacionPartidas" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:noti="http://servicios.montedepiedad.com.mx/NMP/Schema/NotificacionPartidas" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NotificacionPartidas" schemaLocation="../Schemas/NMPNotificaPartidasXSD.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="notificaTrasladoPartidaRequest">
+    <wsdl:part name="request" element="noti:notificaTrasladoPartidaRequest"/>
+  </wsdl:message>
+  <wsdl:message name="notificaTrasladoPartidaResponse">
+    <wsdl:part name="response" element="noti:notificaTrasladoPartidaResponse"/>
+  </wsdl:message>
+  <wsdl:message name="NMPHeaderRequest">
+    <wsdl:part name="headerReq" element="NMPsh:headerMessage"/>
+  </wsdl:message>
+  <wsdl:message name="NMPFaultMessage">
+    <wsdl:part name="error" element="NMPsm:messageError"/>
+  </wsdl:message>
+  <wsdl:message name="NMPHeaderResponse">
+    <wsdl:part name="headerRes" element="NMPsh:headerMessageResponse"/>
+  </wsdl:message>
+  <wsdl:portType name="notificacionPartidasPortType">
+    <wsdl:operation name="notificacionTrasladoPartida">
+      <wsdl:input message="tns:notificaTrasladoPartidaRequest"/>
+      <wsdl:output message="tns:notificaTrasladoPartidaResponse"/>
+      <wsdl:fault message="tns:NMPFaultMessage" name="notificaTrasladoPartidaFault"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="notificacionPartidasPTSOAP11Binding" type="tns:notificacionPartidasPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="notificacionTrasladoPartida">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/NotificacionPartidas/notificacionTrasladoPartida"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="request"/>
+        <soap:header message="tns:NMPHeaderRequest" part="headerReq" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="response"/>
+        <soap:header message="tns:NMPHeaderResponse" part="headerRes" use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="notificaTrasladoPartidaFault">
+        <soap:fault name="notificaTrasladoPartidaFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="notificacionPartidasPTSOAP12Binding" type="tns:notificacionPartidasPortType">
+    <soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="notificacionTrasladoPartida">
+      <soap12:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/NotificacionPartidas/notificacionTrasladoPartida"/>
+      <wsdl:input>
+        <soap12:body use="literal" parts="request"/>
+        <soap12:header message="tns:NMPHeaderRequest" part="headerReq" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" parts="response"/>
+        <soap12:header message="tns:NMPHeaderResponse" part="headerRes" use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="notificaTrasladoPartidaFault">
+        <soap12:fault name="notificaTrasladoPartidaFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+</wsdl:definitions>

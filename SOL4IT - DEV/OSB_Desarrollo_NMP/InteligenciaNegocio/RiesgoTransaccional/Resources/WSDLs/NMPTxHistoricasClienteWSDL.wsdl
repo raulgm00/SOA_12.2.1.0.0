@@ -1,0 +1,48 @@
+<wsdl:definitions name="TxHistoricasCliente" targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/RT_DB/RT_DB/TxHistoricasCliente" xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/RT_DB/RT_DB/TxHistoricasCliente" xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/" xmlns:NMPSM="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:NMPSH="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:db="http://xmlns.oracle.com/pcbpel/adapter/db/TxHistoricasCliente" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/TxHistoricasCliente" schemaLocation="../Schemas/BITxHistoricasClienteXSD.xsd"/>
+               <import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+      <import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+    </schema>
+  </wsdl:types>
+  <wsdl:message name="TxHistoricasClienteInput_msg">
+    <wsdl:part name="TxHistoricasClienteInput_msg" element="db:TxHistoricasClienteInput"/>
+  </wsdl:message>
+  <wsdl:message name="TxHistoricasClienteOutputCollection_msg">
+    <wsdl:part name="TxHistoricasClienteOutputCollection" element="db:TxHistoricasClienteOutputCollection"/>
+  </wsdl:message>
+   <wsdl:message name="standardMessageFault">
+    <wsdl:part name="fault" element="NMPSM:messageError"/>
+  </wsdl:message>
+  <wsdl:message name="standardMessageHeader">
+    <wsdl:part name="headerReq" element="NMPSH:headerMessage"/>
+  </wsdl:message>
+  <wsdl:message name="standardMessageHeaderResponse">
+    <wsdl:part name="headerRes" element="NMPSH:headerMessageResponse"/>
+  </wsdl:message>
+  <wsdl:portType name="TxHistoricasClientePortType">
+    <wsdl:operation name="getTxHistoricasClienteBI">
+      <wsdl:input message="tns:TxHistoricasClienteInput_msg"/>
+      <wsdl:output message="tns:TxHistoricasClienteOutputCollection_msg"/>
+      <wsdl:fault name="fault" message="tns:standardMessageFault"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="TxHistoricasClienteBinding" type="tns:TxHistoricasClientePortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getTxHistoricasClienteBI">
+      <soap:operation style="document" soapAction="http://xmlns.oracle.com/pcbpel/adapter/db/RT_DB/RT_DB/TxHistoricasCliente/getTxHistoricasClienteBI"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="TxHistoricasClienteInput_msg"/>
+        <soap:header message="tns:standardMessageHeader" part="headerReq" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="TxHistoricasClienteOutputCollection"/>
+         <soap:header message="tns:standardMessageHeaderResponse" part="headerRes" use="literal"/>
+      </wsdl:output>
+       <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+</wsdl:definitions>

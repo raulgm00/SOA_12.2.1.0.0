@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:wsdl ref="OperacionPrendaria/Inventario/Resources/WSDLs/NMPAgilirionProductoQueueErrorSvcWSDL"/>
+            <con:binding>
+                <con:name>ArticulosQueueErrorBinding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Servicios/NMPPublicarArticulosErrorQueue</con:namespace>
+            </con:binding>
+        </con:binding>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router errorHandler="_onErrorHandler-a1e030f.830c5ee.46.15e507413ff.N8000">
+        <con:pipeline name="PipelinePairNode1_request" type="request">
+            <con:stage name="stage_IndexarErrorQueue">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="seg" namespace="http://www.bea.com/wli/sb/services/security/config" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="nmp" namespace=" http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPlataformacomercial" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPlataformacomercial" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="nmp2" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPlataformacomercialError" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="puerto" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.3d.15e4ef4e247.N7fff</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">dvm:lookupValue('OperacionPrendaria/Inventario/Resources/DVMs/ConfiguracionServicioIndexarArticulo', 'Llave','Puerto','Valor1', '16865',('Parametro','Queue'))</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="servidor" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.3d.15e4ef4e247.N7ffe</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">dvm:lookupValue('OperacionPrendaria/Inventario/Resources/DVMs/ConfiguracionServicioIndexarArticulo', 'Llave','Servidor','Valor1', 'sl-us-south-1-portal.0.dblayer.com',('Parametro','Queue'))</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="contextoURL" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.3d.15e4ef4e247.N7ffd</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">dvm:lookupValue('OperacionPrendaria/Inventario/Resources/DVMs/ConfiguracionServicioIndexarArticulo', 'Llave','ContextoURL','Valor1', 'bmix-dal-yp-793e8944-9402-421f-a2f7-292e283c4412',('Parametro','Queue'))</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="nombreQueue" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.3d.15e4ef4e247.N7ffc</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">dvm:lookupValue('OperacionPrendaria/Inventario/Resources/DVMs/ConfiguracionServicioIndexarArticuloError', 'Llave','1','Valor1', '0',('Parametro','Queue'))</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="credenciales" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.3d.15e4ef4e247.N7ffb</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:lookupBasicCredentials('OperacionPrendaria/Inventario/Resources/ServiceAccount/BMIXQueueSA')</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="username" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.3d.15e4ef4e247.N7ffa</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$credenciales/seg:username/text()</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="pass" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.3d.15e4ef4e247.N7ff9</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$credenciales/seg:password/text()</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="guid" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.3d.15e4ef4e247.N7ff8</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$header/nmp:trazabilidad/nmp:GUID/text()</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="partidaArticuloQueue1" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.3d.15e4ef4e247.N7ff7</con2:id>
+                        <con1:expr>
+                            <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="OperacionPrendaria/Inventario/Resources/Transformations/TrArticulosIndexarJsonToMotorFormulasErrorQueue"/>
+                                <con:input>$body/nmp2:obteneArticuloAgilirionErrorResponse</con:input>
+                            </con:xsltTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con2:nxsdTranslation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con1:id>_ActionId-a1e030f.830c5ee.3d.15e4ef4e247.N7ff6</con1:id>
+                        <con2:type>XML-To-Native</con2:type>
+                        <con2:sourceExpr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$partidaArticuloQueue1</con:xqueryText>
+                        </con2:sourceExpr>
+                        <con2:nxsd ref="OperacionPrendaria/Inventario/Resources/Schemas/NMPAgilirionProductoNXSD"/>
+                        <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/SchemaNXSD/NMPArticulo">nmp:resolverArticuloAsincronoRequest</con2:schemaElement>
+                        <con2:assign-variable>partidaArticuloJSON</con2:assign-variable>
+                        <con2:enforceSchemaOrder>false</con2:enforceSchemaOrder>
+                    </con2:nxsdTranslation>
+                    <con2:assign varName="partidaClienteQueue" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con1:id>_ActionId-a1e030f.830c5ee.3d.15e4ef4e247.N7ff5</con1:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:binary-to-text($partidaArticuloJSON,'UTF-8')</con:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con1:assign varName="partidaArticulostring" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.3d.15e4ef4e247.N7ff4</con2:id>
+                        <con2:disabled xmlns:con2="http://www.bea.com/wli/sb/stages/config">true</con2:disabled>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:serialize($partidaArticuloQueue)</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con2:javaCallout varName="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con1:id>_ActionId-a1e030f.830c5ee.3d.15e4ef4e247.N7ff3</con1:id>
+                        <con2:archive ref="OperacionPrendaria/Inventario/Resources/JARs/publicarMensajesQueueCloudProductos"/>
+                        <con2:className>publicarmensajesqueuecloudProductos.PublicarPartidasToQueueProductos</con2:className>
+                        <con2:method>public static void publicarPartidas(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)</con2:method>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$username</con:xqueryText>
+                        </con2:expr>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$pass</con:xqueryText>
+                        </con2:expr>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$servidor</con:xqueryText>
+                        </con2:expr>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$puerto</con:xqueryText>
+                        </con2:expr>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$contextoURL</con:xqueryText>
+                        </con2:expr>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$nombreQueue</con:xqueryText>
+                        </con2:expr>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$nombreQueue</con:xqueryText>
+                        </con2:expr>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$nombreQueue</con:xqueryText>
+                        </con2:expr>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$partidaClienteQueue</con:xqueryText>
+                        </con2:expr>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$guid</con:xqueryText>
+                        </con2:expr>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$header/nmp:trazabilidad/nmp:urlCallBack/text()</con:xqueryText>
+                        </con2:expr>
+                        <con2:return-param-as-ref>false</con2:return-param-as-ref>
+                    </con2:javaCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode1_response" type="response"/>
+        <con:pipeline name="_onErrorHandler-a1e030f.830c5ee.46.15e507413ff.N8000" type="error">
+            <con:stage id="_StageId-af10088.N6c7317d1.0.15d52d5bcf3.N7b17" name="StageFallos" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                <con:context/>
+                <con:actions>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-a1e030f.830c5ee.34.15e4dd63b60.N7ffc</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="PipelinePairNode1">
+                <con:request>PipelinePairNode1_request</con:request>
+                <con:response>PipelinePairNode1_response</con:response>
+            </con:pipeline-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

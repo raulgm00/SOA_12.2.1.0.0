@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+            xmlns="http://servicios.montedepiedad.com.mx/NMP/Schema/commons/AE"
+            xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Schema/commons/AE"
+            targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/commons/AE" 
+            elementFormDefault="qualified">
+  <xsd:element name="solicMinistracion" type="tns:ministracionType" />
+  <xsd:element name="pagoChequeTrans" type="tns:pagoChequeTransType" />
+  <xsd:element name="creacionLayout" type="tns:layoutType" />
+  <xsd:element name="dispersion" type="tns:dispersionType" />
+  <xsd:element name="actulizaEstado" type="tns:actulizaEstadoType" />
+  <xsd:element name="infoClienteCRM" type="tns:infoClienteType" />
+  <xsd:element name="consultaDesembolso" type="tns:consultaDesembolsoType" />
+  <xsd:element name="almacenarDesembolsosTR" type="tns:resultadoSAPType" />
+  <xsd:element name="resultado" type="tns:resultadoType"/>
+  <xsd:element name="resultadoCRM" type="tns:resultadoCRMType" />
+  <xsd:element name="resultadoMidas" type="tns:resultadoMidasType" />
+  <xsd:element name="resultadoSAP" type="tns:resultadoSAPType" />
+  
+  
+  <xsd:complexType name="inicioGestionSolMinType">
+    <xsd:sequence>
+      <xsd:element name="idSolicitud" type="tns:idSolMinType"/>
+      <xsd:element name="fechaSolMin" type="xsd:date"/>
+      <xsd:element name="fechaEntrMin" type="xsd:date"/>
+      <xsd:element name="usuario" type="xsd:string"/>
+      <xsd:element name="montoSol" type="xsd:float" />
+      <xsd:element name="tipoSolMin" type="xsd:string" />
+      <xsd:element name="urgente" type="xsd:boolean"/>
+      <xsd:element name="idSucursal" type="xsd:int" />
+      <xsd:element name="nomSucursal" type="xsd:string" />
+      <xsd:element name="idUsuario" type="xsd:int" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="idSolMinType">
+    <xsd:sequence>
+      <xsd:element name="idSolicitud" type="xsd:int"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  
+  <xsd:complexType name="ministracionType">
+    <xsd:sequence>
+      <xsd:element name="idTrazabilidad" type="tns:idTrazabilidadType"/>
+      <xsd:element name="tipoSolMinistracion" type="xsd:string"/>
+      <xsd:element name="modoMinistracion" type="xsd:string"/>
+      <xsd:element name="comentariosMinistracion" type="xsd:string"/>
+      <xsd:element name="fechaSolicitudMinistracion" type="xsd:date"/>
+      <xsd:element name="fechaEntregaMinistracion" type="xsd:date"/>
+      <xsd:element name="procesado" type="xsd:boolean"/>
+      <xsd:element name="denominaciones" type="tns:denominacionesType"/>
+      <xsd:element name="totalMinistracion" type="xsd:float"/>
+      <xsd:element name="montoAprobado" type="xsd:float"/>
+      <xsd:element name="solicitante" type="xsd:string"/>
+      <xsd:element name="referenciaPago" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="pagoChequeTransType">
+    <xsd:sequence>
+      <xsd:element name="idTrazabilidad" type="tns:idTrazabilidadType"/>
+      <xsd:element name="tipoMinistracion" type="xsd:string"/>
+      <xsd:element name="cuentaBancaria" type="xsd:string"/>
+      <xsd:element name="banco" type="xsd:string"/>
+      <xsd:element name="plaza" type="xsd:string"/>
+      <xsd:element name="nombreTitularCuenta" type="xsd:string"/>
+      <xsd:element name="sucursal" type="xsd:int"/>
+      <xsd:element name="referencia" type="xsd:string"/>
+      <xsd:element name="montoPago" type="xsd:float"/>
+      <xsd:element name="fechaSolicitudMinistracion" type="xsd:date"/>
+      <xsd:element name="comentarios" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="resultadoType">
+    <xsd:sequence>
+      <xsd:element name="exitoso" type="xsd:boolean"/>
+      <xsd:element name="descripcion" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="resultadoCRMType">
+    <xsd:sequence>
+      <xsd:element name="nombreTitular" type="xsd:string"/>
+      <xsd:element name="clabe" type="xsd:string"/>
+      <xsd:element name="banco" type="xsd:string"/>
+      <xsd:element name="numeroCuentaCliente" type="xsd:int"/>
+      <xsd:element name="identificacionOficial" type="xsd:int"/>
+      <xsd:element name="urlDocumento1" type="xsd:string"/>
+      <xsd:element name="urlDocumento2" type="xsd:string"/>
+      <xsd:element name="urlDocumento3" type="xsd:string"/>
+      <xsd:element name="resultado" type="tns:resultadoType" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="resultadoSAPType">
+    <xsd:sequence>
+      <xsd:element name="nroDocumentoContable" type="xsd:string"/>
+      <xsd:element name="nroCuenta" type="xsd:string"/>
+      <xsd:element name="idTransaccion" type="xsd:string"/>
+      <xsd:element name="fecha" type="xsd:date"/>
+      <xsd:element name="monto" type="xsd:float"/>
+      <xsd:element name="estatusDesembolso" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="resultadoMidasType">
+    <xsd:sequence>
+      <xsd:element name="idTrazabilidad" type="tns:idTrazabilidadType"/>
+      <xsd:element name="idPartida" type="xsd:string"/>
+      <xsd:element name="idCliente" type="tns:infoClienteType"/>
+      <xsd:element name="resultado" type="tns:resultadoType" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="layoutType">
+    <xsd:sequence>
+      <xsd:element name="idTrazabilidad" type="tns:idTrazabilidadType"/>
+      <xsd:element name="codigoBanco" type="xsd:string" />
+      <xsd:element name="cuentaBanco" type="xsd:int" />
+      <xsd:element name="montoTotal" type="xsd:float" />
+      <xsd:element name="denominaciones" type="tns:denominacionesType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  
+  <xsd:complexType name="dispersionType">
+    <xsd:sequence>
+      <xsd:element name="idTrazabilidad" type="tns:idTrazabilidadType"/>
+      <xsd:element name="codigoBanco" type="xsd:string" />
+      <xsd:element name="cuentaBanco" type="xsd:int" />
+      <xsd:element name="montoTotal" type="xsd:float" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="actulizaEstadoType">
+    <xsd:sequence>
+      <xsd:element name="idTrazabilidad" type="tns:idTrazabilidadType"/>
+      <xsd:element name="idPartida" type="xsd:string" />
+      <xsd:element name="statusNuevo" type="xsd:string" />
+      <xsd:element name="montoNuevo" type="xsd:float" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="idTrazabilidadType">
+    <xsd:sequence>
+      <xsd:element name="idTrazabilidad" type="xsd:int"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  
+  <xsd:complexType name="infoClienteType">
+    <xsd:sequence>
+      <xsd:element name="idCliente" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  
+  <xsd:complexType name="consultaDesembolsoType">
+    <xsd:sequence>
+      <xsd:element name="fecha" type="xsd:date" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="denominacionesType">
+    <xsd:sequence>
+      <xsd:element name="centavosDiez" type="xsd:float" />
+      <xsd:element name="centavosVeinte" type="xsd:float" />
+      <xsd:element name="centavosCincuenta" type="xsd:float" />
+      <xsd:element name="unPeso" type="xsd:int" />
+      <xsd:element name="dosPesos" type="xsd:int" />
+      <xsd:element name="cincoPesos" type="xsd:int" />
+      <xsd:element name="diezPesos" type="xsd:int" />
+      <xsd:element name="billetesVeinte" type="xsd:int" />
+      <xsd:element name="billetesCincuenta" type="xsd:int" />
+      <xsd:element name="billetesCien" type="xsd:int" />
+      <xsd:element name="billetesDoscientos" type="xsd:int" />
+      <xsd:element name="billetesQuinientos" type="xsd:int" />
+      <xsd:element name="billetesMil" type="xsd:int" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <!-- Configuracion de catalogos AE -->
+  
+  <xsd:complexType name="configCatalogHorarioType">
+    <xsd:sequence>
+      <xsd:element name="idHorario" type="xsd:int" />
+      <xsd:element name="desCorta" type="xsd:string"/>
+      <xsd:element name="descripcion" type="xsd:string"/>
+      <xsd:element name="horarioNormal" type="xsd:date"/>
+      <xsd:element name="horarioUrgente" type="xsd:date"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="configCatalogLayoutType">
+    <xsd:sequence>
+      <xsd:element name="idLayout" type="xsd:int" />
+      <xsd:element name="desCorta" type="xsd:string" />
+      <xsd:element name="desLarga" type="xsd:string" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="configCatalogCtaBancType">
+    <xsd:sequence>
+      <xsd:element name="idCtaBanc" type="xsd:int" />
+      <xsd:element name="cuenta" type="xsd:string" />
+      <xsd:element name="descripcion" type="xsd:string" />
+      <xsd:element name="sucBancaria" type="xsd:string" />
+      <xsd:element name="idlayout" type="xsd:string" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="configCatalogModelAgrupType" >
+    <xsd:sequence>
+      <xsd:element name="idModelAgrup" type="xsd:int" />
+      <xsd:element name="desCorta" type="xsd:string" />
+      <xsd:element name="descripcion" type="xsd:string" />
+      <xsd:element name="zona" type="xsd:string" />
+      <xsd:element name="agrupacion" type="xsd:string" />
+      <xsd:element name="idCuenta" type="xsd:int" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="configCatalogSucType">
+    <xsd:sequence>
+      <xsd:element name="idSucursal" type="xsd:int"/>
+      <xsd:element name="foa" type="xsd:float"/>
+      <xsd:element name="umbralInferior" type="xsd:int"/>
+      <xsd:element name="umbralSuperior" type="xsd:int"/>
+      <xsd:element name="idModelo" type="xsd:int"/>
+      <xsd:element name="idHorario" type="xsd:int"/>
+      <xsd:element name="idAnalistaIngreso" type="xsd:int"/>
+      <xsd:element name="idAnalistaEgreso" type="xsd:int"/>
+      <xsd:element name="empresaTraslado" type="xsd:string"/>
+      <xsd:element name="unidadNegocio" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="tipoOperacion">
+    <xsd:sequence>
+      <xsd:element name="tipoOperacion" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+</xsd:schema>

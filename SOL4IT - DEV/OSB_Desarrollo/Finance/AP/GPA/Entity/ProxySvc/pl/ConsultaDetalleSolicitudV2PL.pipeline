@@ -1,0 +1,941 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:wsdl ref="Finance/AP/GPA/Entity/Resources/ConsultaDetalleSolicitud/ConsultaDetalleSolicitudV1WSDL"/>
+            <con:binding>
+                <con:name>consultarDetalleSolicitudBPELBindingSOAP</con:name>
+                <con:namespace>http://qualitas.com.mx/Solicitud/ConsultarDetalleSolicitud/</con:namespace>
+            </con:binding>
+        </con:binding>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:pipeline name="PipelinePairNode1_request" type="request">
+            <con:stage name="PrepararConsulta">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="sol" namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/SolicitudDB"/>
+                    <con1:userNsDecl prefix="coun" namespace="http://xmlns.oracle.com/pcbpel/adapter/db/CountProyectosSolicitudDB"/>
+                    <con1:userNsDecl prefix="countsol" namespace="http://xmlns.oracle.com/pcbpel/adapter/db/CountServiciosSolicitud"/>
+                    <con1:userNsDecl prefix="proy" namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/ProyectoDB"/>
+                    <con1:userNsDecl prefix="ser" namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/ServicioDB"/>
+                    <con1:userNsDecl prefix="obt" namespace="http://xmlns.oracle.com/ObtenerPrestadorApp/ObtenerPrestadorPrj/ObtenerPrestadorBPEL"/>
+                    <con1:varNsDecl prefix="v1" namespace="http://qualitas.com.mx/ConsultarDetalleSolicitud/v1/"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="idSolicitud" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.14.15a810b7df2.N7ffe</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/v1:consultarDetalleSolicitudRequest/idSolicitud</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con2:replace varName="body" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.14.15a810b7df2.N7ffd</con3:id>
+                        <con2:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(
+fn:concat(
+      '&lt;sol:Gpa001SolicitudPrimaryKey xmlns:sol="http://xmlns.oracle.com/pcbpel/adapter/db/top/SolicitudDataSvc">',
+         '&lt;sol:idSolicitud>',$body/v1:consultarDetalleSolicitudRequest/idSolicitud,'&lt;/sol:idSolicitud>',
+      '&lt;/sol:Gpa001SolicitudPrimaryKey>'
+))</con:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode1_response" type="response">
+            <con:stage name="ConfigRespuesta">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="sol" namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/SolicitudDB"/>
+                    <con1:userNsDecl prefix="ser" namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/ServicioDB"/>
+                    <con1:userNsDecl prefix="proy" namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/ProyectoDB"/>
+                    <con1:userNsDecl prefix="obt" namespace="http://xmlns.oracle.com/ObtenerPrestadorApp/ObtenerPrestadorPrj/ObtenerPrestadorBPEL"/>
+                    <con1:varNsDecl prefix="v1" namespace="http://qualitas.com.mx/ConsultarDetalleSolicitud/v1/"/>
+                </con:context>
+                <con:actions>
+                    <con1:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.29.15ab2d33fb2.N7ff7</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">xs:int($solicitudExiste)=1</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:ifThenElse>
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.29.15ab2d33fb2.N7ff6</con2:id>
+                                    <con1:case>
+                                        <con1:condition>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">xs:int($tipoSolicitud) =1 or xs:int($tipoSolicitud) =2  or xs:int($tipoSolicitud) =3</con:xqueryText>
+                                        </con1:condition>
+                                        <con1:actions>
+                                            <con1:replace varName="body" contents-only="true">
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.29.15ab2d33fb2.N7ff5</con2:id>
+                                                <con1:location>
+                                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                                </con1:location>
+                                                <con1:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<consultarDetalleSolicitudResponse xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:ns4="http://qualitas.com.mx/comunes/objetosComunes/v1/" xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/db/ConsultarDetalleSolicitudApp/ConsultarDetalleSolicitudPrj/SPObtenerSolicitudDB" xmlns:ns6="http://qualitas.com.mx/Importes/v1/" xmlns:ns5="http://xmlns.oracle.com/pcbpel/adapter/db/ConsultarDetalleSolicitudApp/ConsultarDetalleSolicitudPrj/SelImportesCCDB" xmlns:ns8="http://qualitas.com.mx/Comun/Servicio/v1/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns7="http://qualitas.com.mx/comunes/" xmlns:ns9="http://qualitas.com.mx/Pagos/CuentasContables/v1/" xmlns:ns10="http://qualitas.com.mx/Comun/Servicio/ProyectoData/v1/" xmlns:client="http://qualitas.com.mx/Solicitud/ConsultarDetalleSolicitud/" xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://qualitas.com.mx/ConsultarDetalleSolicitud/v1/" xmlns="http://qualitas.com.mx/ConsultarDetalleSolicitud/v1/">
+         <pagoServicios xmlns="">
+            <servicio>
+               <ns8:idTpServicio>{$tipoSolicitud}</ns8:idTpServicio>
+               <ns8:idPrestador>{$prestadorOutput//*:numeroPrestador/text()}</ns8:idPrestador>
+               <ns8:CentroDeCosto>{$centroCosto}</ns8:CentroDeCosto>
+               <ns8:cveOficina>{$cveOficina}</ns8:cveOficina>
+               <ns8:descOficina>{$oficinaOrigenDesc}</ns8:descOficina>
+               <ns8:descArea>{$descArea}</ns8:descArea>
+               <ns8:respArea>{$responsableArea}</ns8:respArea>
+               <ns8:servicioData>
+                  <ns8:idServicio>{$body//*:servicio/*:idServicio/text()}</ns8:idServicio>
+                  <ns8:descripcion>{$descripcionServicio}</ns8:descripcion>
+                  <ns8:tipoMoneda>{$tipoMonedaSvc}</ns8:tipoMoneda>
+               </ns8:servicioData>
+               <ns8:proyecto>
+                  <ns10:idProyecto>{$body//*:proyecto/*:idProyecto/text()}</ns10:idProyecto>
+                  <ns10:descripcion>{$body//*:proyecto/*:descProyecto/text()}</ns10:descripcion>
+                  <ns10:nombre>{$body//*:proyecto/*:nombreProyecto/text()}</ns10:nombre>
+                  <ns10:presupuestoAprob>{$body//*:proyecto/*:presupuestoAprobado/text()}</ns10:presupuestoAprob>
+                  <ns10:totalParcialidades>{$body//*:proyecto/*:parcialidades/text()}</ns10:totalParcialidades>
+                  <ns10:numParcialidad>{$body//*:proyecto/*:parcialidadActual/text()}</ns10:numParcialidad>
+                  <ns10:idcondicionPago>{$body//*:proyecto/*:idCondicionesPago/text()}</ns10:idcondicionPago>
+                  <ns10:condicionPago>{$condicionPago}</ns10:condicionPago>
+                  <ns10:CentroDeCosto>{$centroCosto}</ns10:CentroDeCosto>
+
+                  <ns10:tipoMoneda>{$tipoMoneda}</ns10:tipoMoneda>
+                  <ns10:complemento>0</ns10:complemento>
+               </ns8:proyecto>
+            </servicio>
+
+{
+let $importeDATA := $body//*:Gpa002Importes
+return 
+for $impItem in ($importeDATA) return 
+<Importes>
+               <ns6:idImportes>{$impItem/*:idImportes/text()}</ns6:idImportes>
+               <ns6:nombreDocumento>{$impItem/*:nombreDocumento/text()}</ns6:nombreDocumento>
+               <ns6:subtotal>{$impItem/*:subtotal/text()}</ns6:subtotal>
+               <ns6:montoIva>{$impItem/*:montoIva/text()}</ns6:montoIva>
+               <ns6:tasaIva>{$impItem/*:tasaIva/text()}</ns6:tasaIva>
+               <ns6:retencionIsr>{$impItem/*:montoRetencionIsr/text()}</ns6:retencionIsr>
+               <ns6:retencionIva>{$impItem/*:montoRetencionIva/text()}</ns6:retencionIva>
+               <ns6:otrosImpuestos>{$impItem/*:otrosImpuestos/text()}</ns6:otrosImpuestos>
+               <ns6:total>{$impItem/*:total/text()}</ns6:total>
+
+               <ns6:observaciones>{$impItem/*:observaciones/text()}</ns6:observaciones>
+               <ns6:xmlFactura>{$impItem/*:xmlFactura/text()}</ns6:xmlFactura>
+               <ns6:tipoMoneda>{$tipoMonedaSvc}{$tipoMoneda}</ns6:tipoMoneda>
+               <ns6:folioFiscal>{$impItem/*:folioFiscal/text()}</ns6:folioFiscal>
+</Importes>
+}
+
+            <Prestador>
+               <numeroPrestador>{$prestadorOutput//*:numeroPrestador/text()}</numeroPrestador>
+               <nombre>{$prestadorOutput//*:nombrePrestador/text()}</nombre>
+               <rfc>{$prestadorOutput//*:rfc/text()}</rfc>
+               <tipoPersona>
+                  <codigo>{$prestadorOutput//*:cveTipoPersona/text()}</codigo>
+                  <descripcion>{$prestadorOutput//*:tipoPersona/text()}</descripcion>
+               </tipoPersona>
+               <claveEntidad>{$prestadorOutput//*:cveEntidad/text()}</claveEntidad>
+               <entidad>{$prestadorOutput//*:entidad/text()}</entidad>
+               <nacionalidad>{$prestadorOutput//*:cveNacionalidad/text()}</nacionalidad>
+            </Prestador>
+
+{
+let $ccDATA := $ctaContableOutput//*:CtaContableDBOutput
+return 
+for $ccItem in ($ccDATA) return 
+<ccontables>
+               <ns9:idCcontable>{$ccItem/*:ID_IMP_CC/text()}</ns9:idCcontable>
+               <ns9:idImportes>{$ccItem/*:ID_IMPORTES/text()}</ns9:idImportes>
+               <ns9:descPago>{$ccItem/*:DESC_PAGO/text()}</ns9:descPago>
+               <ns9:idDescIVA>{$ccItem/*:ID_DESC_IVA/text()}</ns9:idDescIVA>
+               <ns9:idUsuario>{$ccItem/*:ID_USUARIO/text()}</ns9:idUsuario>
+               <ns9:ccSubtotal>{$ccItem/*:CC_SUBTOTAL/text()}</ns9:ccSubtotal>
+               <ns9:ccIva>{$ccItem/*:CC_IVA/text()}</ns9:ccIva>
+               <ns9:ccRetencionISR>{$ccItem/*:CC_RETENCION_ISR/text()}</ns9:ccRetencionISR>
+               <ns9:ccRetencionIVA>{$ccItem/*:CC_RETENCION_IVA/text()}</ns9:ccRetencionIVA>
+               <ns9:ccOtrosImpuestos>{$ccItem/*:CC_OTROS_IMPUESTOS/text()}</ns9:ccOtrosImpuestos>
+
+</ccontables>
+}
+            <Solicitud>
+               <idSolicitud>{$body//*:Gpa001Solicitud/*:idSolicitud/text()}</idSolicitud>
+               <totalPagar>{$body//*:Gpa001Solicitud/*:totalPagar/text()}</totalPagar>
+               <idUsuario>{$body//*:Gpa001Solicitud/*:idUsuario/text()}</idUsuario>
+               <estado><codigo>{$body//*:Gpa001Solicitud/*:estado/*:idEstado/text()}</codigo></estado>
+               <numEmpleado>{$body//*:Gpa001Solicitud/*:nuEmpleado/text()}</numEmpleado>
+               <nomEmpleado>{$body//*:Gpa001Solicitud/*:nombreEmpleado/text()}</nomEmpleado>
+               <cveOfiDestino>{$body//*:Gpa001Solicitud/*:oficina/*:cvOficina/text()}</cveOfiDestino>
+               <desOfDestino>{$oficinaDestinoDesc}</desOfDestino>
+            </Solicitud>
+
+         </pagoServicios>
+      </consultarDetalleSolicitudResponse>]]></con:xqueryText>
+                                                </con1:expr>
+                                            </con1:replace>
+                                        </con1:actions>
+                                    </con1:case>
+                                    <con1:default>
+                                        <con1:replace varName="body" contents-only="true">
+                                            <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.29.15ab2d33fb2.N7ff4</con2:id>
+                                            <con1:location>
+                                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                            </con1:location>
+                                            <con1:expr>
+                                                <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config"><![CDATA[<consultarDetalleSolicitudResponse xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:ns4="http://qualitas.com.mx/comunes/objetosComunes/v1/" xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/db/ConsultarDetalleSolicitudApp/ConsultarDetalleSolicitudPrj/SPObtenerSolicitudDB" xmlns:ns6="http://qualitas.com.mx/Importes/v1/" xmlns:ns5="http://xmlns.oracle.com/pcbpel/adapter/db/ConsultarDetalleSolicitudApp/ConsultarDetalleSolicitudPrj/SelImportesCCDB" xmlns:ns8="http://qualitas.com.mx/Comun/Servicio/v1/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns7="http://qualitas.com.mx/comunes/" xmlns:ns9="http://qualitas.com.mx/Pagos/CuentasContables/v1/" xmlns:ns10="http://qualitas.com.mx/Comun/Servicio/ProyectoData/v1/" xmlns:client="http://qualitas.com.mx/Solicitud/ConsultarDetalleSolicitud/" xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://qualitas.com.mx/ConsultarDetalleSolicitud/v1/" xmlns="http://qualitas.com.mx/ConsultarDetalleSolicitud/v1/">
+
+
+      <pagoViaticosCargoDeudor xmlns="">
+
+
+            <Solicitud>
+               <idSolicitud>{$body//*:Gpa001Solicitud/*:idSolicitud/text()}</idSolicitud>
+               <totalPagar>{$body//*:Gpa001Solicitud/*:totalPagar/text()}</totalPagar>
+               <idUsuario>{$body//*:Gpa001Solicitud/*:idUsuario/text()}</idUsuario>
+               <estado><codigo>{$body//*:Gpa001Solicitud/*:estado/*:idEstado/text()}</codigo></estado>
+               <numEmpleado>{$body//*:Gpa001Solicitud/*:nuEmpleado/text()}</numEmpleado>
+               <nomEmpleado>{$body//*:Gpa001Solicitud/*:nombreEmpleado/text()}</nomEmpleado>
+               <cveOfiDestino>{$body//*:Gpa001Solicitud/*:oficina/*:cvOficina/text()}</cveOfiDestino>
+               <desOfDestino>{$body//*:Gpa001Solicitud/*:oficina/*:descOficina/text()}</desOfDestino>
+            </Solicitud>
+
+
+            <idTpServicio>{$tipoSolicitud}</idTpServicio>
+            <id>{$body//*:servicio/*:viatico/*:idViatico/text()}</id>
+            <cuentaDeudora>{$body//*:servicio/*:viatico/*:ctadeudora/*:idCedudoras/text()}</cuentaDeudora>
+            <fechaInicioViaje>{$body//*:servicio/*:viatico/*:fhInicioViaje/text()}</fechaInicioViaje>
+            <fechaFinViaje>{$body//*:servicio/*:viatico/*:fhFinViaje/text()}</fechaFinViaje>
+            <justificacionViaje>{$body//*:servicio/*:viatico/*:justificacion/text()}</justificacionViaje>
+            <kilometros>{$body//*:servicio/*:viatico/*:nroKms/text()}</kilometros>
+            <loginAutorizador>{$body//*:servicio/*:viatico/*:loginAutorizador/text()}</loginAutorizador>
+            <emailAutorizador>{$body//*:servicio/*:viatico/*:loginAutorizador/text()}@qualitas.com</emailAutorizador>
+            <maxComplementos>2</maxComplementos>
+            <nroDiasViaje>{$body//*:servicio/*:viatico/*:nroDiasViaje/text()}</nroDiasViaje>
+            <subtotal>{$body//*:servicio/*:viatico/*:valorAnticipo/text()}</subtotal>
+
+
+{
+let $categoriaDATA := $body//*:Gpa001Solicitud/*:servicio/*:viatico/*:categorias/*:Gpa023CatViaticos
+return 
+for $xItem in ($categoriaDATA) return 
+<detalleGastosViaticos>
+               <codigo>{$xItem/*:codigoTarifa/text()}</codigo>
+               <nombre>{dvm:lookupValue('MasterData/Tarifas/Resources/DVMs/TarifaViaticos', 'Codigo', $xItem/*:codigoTarifa, 'Nombre', '', '')}</nombre>
+               <descripcion>{dvm:lookupValue('MasterData/Tarifas/Resources/DVMs/TarifaViaticos', 'Codigo', $xItem/*:codigoTarifa, 'Descripcion', '', '')}</descripcion>		   
+               <subtotal>{$xItem/*:valorAnticipo/text()}</subtotal>
+               <tarifa>{$xItem/*:valorTarifa/text()}</tarifa>
+</detalleGastosViaticos>
+}
+
+
+
+{
+let $complementoDATA := $body//*:Gpa001Solicitud/*:servicio/*:viatico/*:complementos/*:Gpa022Viaticos
+return 
+for $comItem in ($complementoDATA) return 
+    <complemento>
+
+            <id>{$comItem/*:idViatico/text()}</id>
+            <fechaInicioViaje>{$comItem/*:fhInicioViaje/text()}</fechaInicioViaje>
+            <fechaFinViaje>{$comItem/*:fhFinViaje/text()}</fechaFinViaje>
+            <justificacionViaje>{$comItem/*:justificacion/text()}</justificacionViaje>
+            <kilometros>{$comItem/*:nroKms/text()}</kilometros>
+            <nroDiasViaje>{$comItem/*:nroDiasViaje/text()}</nroDiasViaje>
+            <subtotal>{$comItem/*:valorAnticipo/text()}</subtotal>
+
+{
+let $compCategoriaDATA := $comItem//*:categorias/*:Gpa023CatViaticos
+return 
+for $subcatItem in ($compCategoriaDATA) return 
+<detalleGastosViaticos>
+               <codigo>{$subcatItem/*:codigoTarifa/text()}</codigo>
+               <nombre>{dvm:lookupValue('MasterData/Tarifas/Resources/DVMs/TarifaViaticos', 'Codigo', $subcatItem /*:codigoTarifa, 'Nombre', '', '')}</nombre>
+               <descripcion>{dvm:lookupValue('MasterData/Tarifas/Resources/DVMs/TarifaViaticos', 'Codigo', $subcatItem /*:codigoTarifa, 'Descripcion', '', '')}</descripcion>
+               <subtotal>{$subcatItem/*:valorAnticipo/text()}</subtotal>
+               <tarifa>{$subcatItem/*:valorTarifa/text()}</tarifa>
+</detalleGastosViaticos>
+}
+
+     </complemento>
+}
+
+
+
+     </pagoViaticosCargoDeudor>
+ </consultarDetalleSolicitudResponse>]]></con2:xqueryText>
+                                            </con1:expr>
+                                        </con1:replace>
+                                    </con1:default>
+                                </con1:ifThenElse>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:default>
+                            <con1:replace varName="body" contents-only="true">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.29.15ab2d33fb2.N7ff3</con2:id>
+                                <con1:location>
+                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                </con1:location>
+                                <con1:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<consultarDetalleSolicitudResponse xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:ns4="http://qualitas.com.mx/comunes/objetosComunes/v1/" xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/db/ConsultarDetalleSolicitudApp/ConsultarDetalleSolicitudPrj/SPObtenerSolicitudDB" xmlns:ns6="http://qualitas.com.mx/Importes/v1/" xmlns:ns5="http://xmlns.oracle.com/pcbpel/adapter/db/ConsultarDetalleSolicitudApp/ConsultarDetalleSolicitudPrj/SelImportesCCDB" xmlns:ns8="http://qualitas.com.mx/Comun/Servicio/v1/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns7="http://qualitas.com.mx/comunes/" xmlns:ns9="http://qualitas.com.mx/Pagos/CuentasContables/v1/" xmlns:ns10="http://qualitas.com.mx/Comun/Servicio/ProyectoData/v1/" xmlns:client="http://qualitas.com.mx/Solicitud/ConsultarDetalleSolicitud/" xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://qualitas.com.mx/ConsultarDetalleSolicitud/v1/" xmlns="http://qualitas.com.mx/ConsultarDetalleSolicitud/v1/">
+         <pagoServicios xmlns="">
+            <Prestador>
+               <numeroPrestador/>
+               <nombre/>
+               <tipoPersona>
+                  <codigo/>
+                  <descripcion/>
+               </tipoPersona>
+               <claveEntidad/>
+               <entidad/>
+               <nacionalidad/>
+            </Prestador>
+            <Solicitud>
+               <idSolicitud>{$idSolicitud}</idSolicitud>
+               <totalPagar/>
+               <idUsuario/>
+               <numEmpleado/>
+               <nomEmpleado/>
+               <cveOfiDestino/>
+               <desOfDestino/>
+            </Solicitud>
+         </pagoServicios>
+      </consultarDetalleSolicitudResponse>]]></con:xqueryText>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:default>
+                    </con1:ifThenElse>
+                    <con1:log xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.29.15ab2d33fb2.N7ff2</con2:id>
+                        <con1:logLevel>warning</con1:logLevel>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con1:expr>
+                        <con1:message>ConsultaDetalleResponse</con1:message>
+                    </con1:log>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="PipelinePairNode1">
+                <con:request>PipelinePairNode1_request</con:request>
+                <con:response>PipelinePairNode1_response</con:response>
+            </con:pipeline-node>
+            <con:route-node name="RouteNode1">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="sol" namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/SolicitudDB"/>
+                    <con1:userNsDecl prefix="coun" namespace="http://xmlns.oracle.com/pcbpel/adapter/db/CountProyectosSolicitudDB"/>
+                    <con1:userNsDecl prefix="countsol" namespace="http://xmlns.oracle.com/pcbpel/adapter/db/CountServiciosSolicitud"/>
+                    <con1:userNsDecl prefix="proy" namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/ProyectoDB"/>
+                    <con1:userNsDecl prefix="ser" namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/ServicioDB"/>
+                    <con1:userNsDecl prefix="obt" namespace="http://xmlns.oracle.com/ObtenerPrestadorApp/ObtenerPrestadorPrj/ObtenerPrestadorBPEL"/>
+                    <con1:userNsDecl prefix="v11" namespace="http://qualitas.com.mx/Comun/Servicio/v1/"/>
+                    <con1:userNsDecl prefix="v12" namespace="http://qualitas.com.mx/Comun/Servicio/ServicioData/v1/"/>
+                    <con1:userNsDecl prefix="v13" namespace="http://qualitas.com.mx/Comun/Servicio/ProyectoData/v1/"/>
+                    <con1:userNsDecl prefix="v14" namespace="http://qualitas.com.mx/comunes/objetosComunes/v1/"/>
+                    <con1:varNsDecl prefix="v1" namespace="http://qualitas.com.mx/ConsultarDetalleSolicitud/v1/"/>
+                    <con1:varNsDecl prefix="v15" namespace="http://qualitas.com.mx/ConsultarDetalleSolicitud/v1/"/>
+                </con:context>
+                <con:actions>
+                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7ff7</con2:id>
+                        <con1:service ref="Finance/AP/GPA/Data/ProxySvc/SolicitudDataSvcPxy" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                        <con1:operation>selectByPrimaryKey</con1:operation>
+                        <con1:outboundTransform/>
+                        <con1:responseTransform>
+                            <con2:ifThenElse xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7ff6</con3:id>
+                                <con2:case>
+                                    <con2:condition>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:string-length($body//*:Gpa001Solicitud/*:idSolicitud/text()) > 0</con:xqueryText>
+                                    </con2:condition>
+                                    <con2:actions>
+                                        <con2:assign varName="solicitudExiste">
+                                            <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7ff5</con3:id>
+                                            <con2:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">1</con:xqueryText>
+                                            </con2:expr>
+                                        </con2:assign>
+                                        <con2:ifThenElse>
+                                            <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7ff4</con3:id>
+                                            <con2:case>
+                                                <con2:condition>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:string-length($body//*:Gpa001Solicitud/*:proyecto/*:idPrestador/text())>0</con:xqueryText>
+                                                </con2:condition>
+                                                <con2:actions>
+                                                    <con2:assign varName="idPrestador">
+                                                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7ff3</con3:id>
+                                                        <con2:expr>
+                                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body//*:Gpa001Solicitud/*:proyecto/*:idPrestador/text()</con:xqueryText>
+                                                        </con2:expr>
+                                                    </con2:assign>
+                                                    <con2:assign varName="tipoSolicitud">
+                                                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7ff2</con3:id>
+                                                        <con2:expr>
+                                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">3</con:xqueryText>
+                                                        </con2:expr>
+                                                    </con2:assign>
+                                                    <con2:assign varName="centroCosto">
+                                                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7ff1</con3:id>
+                                                        <con2:expr>
+                                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body//*:proyecto/*:centroCosto/text()</con:xqueryText>
+                                                        </con2:expr>
+                                                    </con2:assign>
+                                                    <con2:assign varName="descripcionServicio">
+                                                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7ff0</con3:id>
+                                                        <con2:expr>
+                                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">''</con:xqueryText>
+                                                        </con2:expr>
+                                                    </con2:assign>
+                                                    <con2:ifThenElse>
+                                                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fef</con3:id>
+                                                        <con2:case>
+                                                            <con2:condition>
+                                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body//*:proyecto/*:idCondicionesPago/text()='1'</con:xqueryText>
+                                                            </con2:condition>
+                                                            <con2:actions>
+                                                                <con2:assign varName="condicionPago">
+                                                                    <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fee</con3:id>
+                                                                    <con2:expr>
+                                                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'PAGO EN UNA SOLA EXHIBICION'</con:xqueryText>
+                                                                    </con2:expr>
+                                                                </con2:assign>
+                                                            </con2:actions>
+                                                        </con2:case>
+                                                        <con2:default>
+                                                            <con2:assign varName="condicionPago">
+                                                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fed</con3:id>
+                                                                <con2:expr>
+                                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'PAGO EN PARCIALIDADES'</con:xqueryText>
+                                                                </con2:expr>
+                                                            </con2:assign>
+                                                        </con2:default>
+                                                    </con2:ifThenElse>
+                                                </con2:actions>
+                                            </con2:case>
+                                            <con2:case>
+                                                <con2:condition>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:string-length($body//*:Gpa001Solicitud/*:servicio/*:idPrestador/text())>0</con:xqueryText>
+                                                </con2:condition>
+                                                <con2:actions>
+                                                    <con2:assign varName="idPrestador">
+                                                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fec</con3:id>
+                                                        <con2:expr>
+                                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body//*:Gpa001Solicitud/*:servicio/*:idPrestador/text()</con:xqueryText>
+                                                        </con2:expr>
+                                                    </con2:assign>
+                                                    <con2:assign varName="tipoSolicitud">
+                                                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7feb</con3:id>
+                                                        <con2:expr>
+                                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body//*:Gpa001Solicitud/*:servicio/*:idTpServicio/text()</con:xqueryText>
+                                                        </con2:expr>
+                                                    </con2:assign>
+                                                    <con2:assign varName="centroCosto">
+                                                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fea</con3:id>
+                                                        <con2:expr>
+                                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body//*:servicio/*:centroCosto/text()</con:xqueryText>
+                                                        </con2:expr>
+                                                    </con2:assign>
+                                                    <con2:assign varName="descripcionServicio">
+                                                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fe9</con3:id>
+                                                        <con2:expr>
+                                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body//*:Gpa001Solicitud/*:servicio/*:descServicio/text()</con:xqueryText>
+                                                        </con2:expr>
+                                                    </con2:assign>
+                                                    <con2:ifThenElse>
+                                                        <con3:comment xmlns:con3="http://www.bea.com/wli/sb/stages/config">SI Solicitud es Tipo Gasto Fijo (1) Consultar ID del Subtipo en Base al Nombre (MALA PRACTICA, debe ajustarse después para que almacene SubTipo de Servicio y no recuperarlo de esta manera)</con3:comment>
+                                                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fe8</con3:id>
+                                                        <con2:case>
+                                                            <con2:condition>
+                                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">xs:int($tipoSolicitud)=xs:int(1)</con:xqueryText>
+                                                            </con2:condition>
+                                                            <con2:actions>
+                                                                <con2:wsCallout>
+                                                                    <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fe7</con3:id>
+                                                                    <con2:service ref="MasterData/Catalog/GPA/ProxySvc/SubTipoServicioDataSvcPxy" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                                                    <con2:operation>SubTipoServicioDataSvcSelect</con2:operation>
+                                                                    <con2:request>
+                                                                        <con2:body wrapped="false">subTipoInput</con2:body>
+                                                                        <con2:header/>
+                                                                    </con2:request>
+                                                                    <con2:response>
+                                                                        <con2:body wrapped="false">subTipoOutput</con2:body>
+                                                                        <con2:header/>
+                                                                    </con2:response>
+                                                                    <con2:requestTransform>
+                                                                        <con2:assign varName="subTipoInput">
+                                                                            <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fe6</con3:id>
+                                                                            <con2:expr>
+                                                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat(
+      '<sub:SubTipoServicioDataSvcSelect_pNombre_pTipoInputParameters xmlns:sub="http://xmlns.oracle.com/pcbpel/adapter/db/top/SubTipoServicioDataSvc">',
+         '<sub:pNombre>',$descripcionServicio,'</sub:pNombre>',
+         '<sub:pTipo>1</sub:pTipo>',
+      '</sub:SubTipoServicioDataSvcSelect_pNombre_pTipoInputParameters>'
+))]]></con:xqueryText>
+                                                                            </con2:expr>
+                                                                        </con2:assign>
+                                                                    </con2:requestTransform>
+                                                                    <con2:responseTransform>
+                                                                        <con2:assign varName="descripcionServicio">
+                                                                            <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fe5</con3:id>
+                                                                            <con2:expr>
+                                                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$subTipoOutput//*:Gpa012SubtipoServicio/*:idSubtipoServicio/text()</con:xqueryText>
+                                                                            </con2:expr>
+                                                                        </con2:assign>
+                                                                    </con2:responseTransform>
+                                                                </con2:wsCallout>
+                                                            </con2:actions>
+                                                        </con2:case>
+                                                    </con2:ifThenElse>
+                                                </con2:actions>
+                                            </con2:case>
+                                            <con2:case>
+                                                <con2:condition>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">xs:int($body//*:Gpa001Solicitud/*:servicio/*:idTpServicio/text())=4 or xs:int($body//*:Gpa001Solicitud/*:servicio/*:idTpServicio/text()) = 5</con:xqueryText>
+                                                </con2:condition>
+                                                <con2:actions>
+                                                    <con2:assign varName="tipoSolicitud">
+                                                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fe4</con3:id>
+                                                        <con2:expr>
+                                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body//*:Gpa001Solicitud/*:servicio/*:idTpServicio/text()</con:xqueryText>
+                                                        </con2:expr>
+                                                    </con2:assign>
+                                                </con2:actions>
+                                            </con2:case>
+                                            <con2:default>
+                                                <con2:assign varName="idPrestador">
+                                                    <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fe3</con3:id>
+                                                    <con2:expr>
+                                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">0</con:xqueryText>
+                                                    </con2:expr>
+                                                </con2:assign>
+                                            </con2:default>
+                                        </con2:ifThenElse>
+                                        <con2:ifThenElse>
+                                            <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fe2</con3:id>
+                                            <con2:case>
+                                                <con2:condition>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">xs:int($idPrestador)>0</con:xqueryText>
+                                                </con2:condition>
+                                                <con2:actions>
+                                                    <con1:wsCallout xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fe1</con2:id>
+                                                        <con1:service ref="MasterData/Prestadores/ProxySvc/ObtenerPrestadorPxy" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                                        <con1:operation>processRequest</con1:operation>
+                                                        <con1:request>
+                                                            <con1:body wrapped="false">prestadorInput</con1:body>
+                                                            <con1:header/>
+                                                        </con1:request>
+                                                        <con1:response>
+                                                            <con1:body wrapped="false">prestadorOutput</con1:body>
+                                                            <con1:header/>
+                                                        </con1:response>
+                                                        <con1:requestTransform>
+                                                            <con1:assign varName="prestadorInput">
+                                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fe0</con2:id>
+                                                                <con1:expr>
+                                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(
+fn:concat(
+      '&lt;obt:process xmlns:obt="http://xmlns.oracle.com/ObtenerPrestadorApp/ObtenerPrestadorPrj/ObtenerPrestadorBPEL">',
+         '&lt;obt:numeroPrestador>',$idPrestador,'&lt;/obt:numeroPrestador>',
+      '&lt;/obt:process>'
+)
+)</con:xqueryText>
+                                                                </con1:expr>
+                                                            </con1:assign>
+                                                        </con1:requestTransform>
+                                                        <con1:responseTransform/>
+                                                    </con1:wsCallout>
+                                                </con2:actions>
+                                            </con2:case>
+                                        </con2:ifThenElse>
+                                        <con2:ifThenElse>
+                                            <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fdf</con3:id>
+                                            <con2:case>
+                                                <con2:condition>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">xs:int($tipoSolicitud) =1 or xs:int($tipoSolicitud) =2 or xs:int($tipoSolicitud) =3</con:xqueryText>
+                                                </con2:condition>
+                                                <con2:actions>
+                                                    <con1:wsCallout xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                                                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fde</con3:id>
+                                                        <con1:service ref="Finance/AP/GPA/Entity/ProxySvc/db/CtaContableDBPxy" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                                        <con1:operation>CtaContableDB</con1:operation>
+                                                        <con1:request>
+                                                            <con1:body wrapped="false">ctaContableInput</con1:body>
+                                                            <con1:header/>
+                                                        </con1:request>
+                                                        <con1:response>
+                                                            <con1:body wrapped="false">ctaContableOutput</con1:body>
+                                                            <con1:header/>
+                                                        </con1:response>
+                                                        <con1:requestTransform>
+                                                            <con1:assign varName="ctaContableInput">
+                                                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fdd</con3:id>
+                                                                <con1:expr>
+                                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(
+fn:concat(
+      '&lt;ctac:CtaContableDBInput xmlns:ctac="http://xmlns.oracle.com/pcbpel/adapter/db/CtaContableDB">',
+         '&lt;ctac:pSolicitudId>',$idSolicitud,'&lt;/ctac:pSolicitudId>',
+      '&lt;/ctac:CtaContableDBInput>'
+)
+)</con:xqueryText>
+                                                                </con1:expr>
+                                                            </con1:assign>
+                                                            <con2:log>
+                                                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fdc</con3:id>
+                                                                <con4:disabled xmlns:con4="http://www.bea.com/wli/sb/stages/config">true</con4:disabled>
+                                                                <con2:logLevel>warning</con2:logLevel>
+                                                                <con2:expr>
+                                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$ctaContableInput</con:xqueryText>
+                                                                </con2:expr>
+                                                                <con2:message>CtaContablePayloadInput</con2:message>
+                                                            </con2:log>
+                                                        </con1:requestTransform>
+                                                        <con1:responseTransform/>
+                                                    </con1:wsCallout>
+                                                </con2:actions>
+                                            </con2:case>
+                                        </con2:ifThenElse>
+                                        <con1:ifThenElse xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                                            <con3:comment xmlns:con3="http://www.bea.com/wli/sb/stages/config">SI Solicitud esta asociada a un Proyecto Obtener información primaria del nodo /proyecto. SINO Obtener del nodo /servicio</con3:comment>
+                                            <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fdb</con3:id>
+                                            <con1:case>
+                                                <con1:condition>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">xs:int($tipoSolicitud)=1 or xs:int($tipoSolicitud)=2</con:xqueryText>
+                                                </con1:condition>
+                                                <con1:actions>
+                                                    <con1:assign varName="cveOficina">
+                                                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fda</con3:id>
+                                                        <con1:expr>
+                                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body//*:Gpa001Solicitud/*:servicio/*:cveOficina/text()</con:xqueryText>
+                                                        </con1:expr>
+                                                    </con1:assign>
+                                                    <con1:assign varName="descOficina">
+                                                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fd9</con3:id>
+                                                        <con1:expr>
+                                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body//*:Gpa001Solicitud/*:servicio/*:descOficina/text()</con:xqueryText>
+                                                        </con1:expr>
+                                                    </con1:assign>
+                                                    <con1:assign varName="descArea">
+                                                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fd8</con3:id>
+                                                        <con1:expr>
+                                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body//*:Gpa001Solicitud/*:servicio/*:descArea/text()</con:xqueryText>
+                                                        </con1:expr>
+                                                    </con1:assign>
+                                                    <con1:assign varName="responsableArea">
+                                                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fd7</con3:id>
+                                                        <con1:expr>
+                                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body//*:Gpa001Solicitud/*:servicio/*:responsableArea/text()</con:xqueryText>
+                                                        </con1:expr>
+                                                    </con1:assign>
+                                                    <con1:assign varName="tipoMonedaSvc">
+                                                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fd6</con3:id>
+                                                        <con1:expr>
+                                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body//*:Gpa002Importes/*:tpMoneda/text()</con:xqueryText>
+                                                        </con1:expr>
+                                                    </con1:assign>
+                                                    <con1:assign varName="tipoMoneda">
+                                                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fd5</con3:id>
+                                                        <con1:expr>
+                                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">''</con:xqueryText>
+                                                        </con1:expr>
+                                                    </con1:assign>
+                                                </con1:actions>
+                                            </con1:case>
+                                            <con1:case>
+                                                <con1:condition>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">xs:int($tipoSolicitud)=3</con:xqueryText>
+                                                </con1:condition>
+                                                <con1:actions>
+                                                    <con1:assign varName="cveOficina">
+                                                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fd4</con3:id>
+                                                        <con1:expr>
+                                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body//*:proyecto/*:cveOficina/text()</con:xqueryText>
+                                                        </con1:expr>
+                                                    </con1:assign>
+                                                    <con1:assign varName="descOficina">
+                                                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fd3</con3:id>
+                                                        <con1:expr>
+                                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body//*:proyecto/*:descOficina/text()</con:xqueryText>
+                                                        </con1:expr>
+                                                    </con1:assign>
+                                                    <con1:assign varName="descArea">
+                                                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fd2</con3:id>
+                                                        <con1:expr>
+                                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body//*:proyecto/*:descArea/text()</con:xqueryText>
+                                                        </con1:expr>
+                                                    </con1:assign>
+                                                    <con1:assign varName="responsableArea">
+                                                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fd1</con3:id>
+                                                        <con1:expr>
+                                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body//*:proyecto/*:responsableArea/text()</con:xqueryText>
+                                                        </con1:expr>
+                                                    </con1:assign>
+                                                    <con1:assign varName="tipoMoneda">
+                                                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fd0</con3:id>
+                                                        <con1:expr>
+                                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body//*:proyecto/*:tipoMoneda/text()</con:xqueryText>
+                                                        </con1:expr>
+                                                    </con1:assign>
+                                                    <con1:assign varName="tipoMonedaSvc">
+                                                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fcf</con3:id>
+                                                        <con1:expr>
+                                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">''</con:xqueryText>
+                                                        </con1:expr>
+                                                    </con1:assign>
+                                                </con1:actions>
+                                            </con1:case>
+                                            <con1:case>
+                                                <con1:condition>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">xs:int($tipoSolicitud) =4 or xs:int($tipoSolicitud) =5</con:xqueryText>
+                                                </con1:condition>
+                                                <con1:actions>
+                                                    <con1:assign varName="descOficina">
+                                                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fce</con3:id>
+                                                        <con1:expr>
+                                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body//*:Gpa001Solicitud/*:oficina/*:descOficina/text()</con:xqueryText>
+                                                        </con1:expr>
+                                                    </con1:assign>
+                                                </con1:actions>
+                                            </con1:case>
+                                        </con1:ifThenElse>
+                                        <con2:ifThenElse>
+                                            <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fcd</con3:id>
+                                            <con2:case>
+                                                <con2:condition>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">xs:int($tipoSolicitud) =1 or xs:int($tipoSolicitud) =2  or xs:int($tipoSolicitud) =3</con:xqueryText>
+                                                </con2:condition>
+                                                <con2:actions>
+                                                    <con1:wsCallout xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                                                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fcc</con3:id>
+                                                        <con1:service ref="MasterData/Oficinas/ProxySvc/ObtenerOficinaPxy" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                                        <con3:operation>process</con3:operation>
+                                                        <con1:request>
+                                                            <con3:body wrapped="false">oficinaInput</con3:body>
+                                                            <con3:header/>
+                                                        </con1:request>
+                                                        <con1:response>
+                                                            <con3:body wrapped="false">oficinaOutput</con3:body>
+                                                            <con3:header/>
+                                                        </con1:response>
+                                                        <con1:requestTransform>
+                                                            <con1:assign varName="oficinaInput">
+                                                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fcb</con3:id>
+                                                                <con1:expr>
+                                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(
+      fn:concat(
+'<v1:obtenerOficinaPorClaveRequest xmlns:v1="http://qualitas.com.mx/Comun/Oficina/obtenerOficinaPorClave/v1/">',
+         '<v1:Input>',
+            '<v1:claveOficina>',$body//*:Gpa001Solicitud/*:oficina/*:cvOficina/text(),'</v1:claveOficina>',
+         '</v1:Input>',
+      '</v1:obtenerOficinaPorClaveRequest>'
+)
+)]]></con:xqueryText>
+                                                                </con1:expr>
+                                                            </con1:assign>
+                                                        </con1:requestTransform>
+                                                        <con1:responseTransform>
+                                                            <con1:assign varName="oficinaDestinoDesc">
+                                                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fca</con3:id>
+                                                                <con1:expr>
+                                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$oficinaOutput//*:descOficina/text()</con:xqueryText>
+                                                                </con1:expr>
+                                                            </con1:assign>
+                                                        </con1:responseTransform>
+                                                    </con1:wsCallout>
+                                                </con2:actions>
+                                            </con2:case>
+                                        </con2:ifThenElse>
+                                        <con2:ifThenElse>
+                                            <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fc9</con3:id>
+                                            <con2:case>
+                                                <con2:condition>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:string-length($cveOficina)=0 and fn:string-length($centroCosto) > 0</con:xqueryText>
+                                                </con2:condition>
+                                                <con2:actions>
+                                                    <con1:wsCallout xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fc8</con2:id>
+                                                        <con1:service ref="MasterData/CentrosCostos/ProxySvc/ConsultaCentroCostoSvcPxy" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                                        <con1:operation>process</con1:operation>
+                                                        <con1:request>
+                                                            <con1:body wrapped="false">xccInput</con1:body>
+                                                            <con1:header/>
+                                                        </con1:request>
+                                                        <con1:response>
+                                                            <con1:body wrapped="false">xccOutput</con1:body>
+                                                            <con1:header/>
+                                                        </con1:response>
+                                                        <con1:requestTransform>
+                                                            <con1:assign varName="xccInput">
+                                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fc7</con2:id>
+                                                                <con1:expr>
+                                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat(
+'<v1:ValidarCentroCostosRequest xmlns:v1="http://qualitas.com.mx/Comun/CentroCostos/validarCentroCostos/v1/"><v1:Input>',
+            '<v1:centroCostos>',$centroCosto,'</v1:centroCostos>',
+            '<v1:idTipoServicio>3</v1:idTipoServicio>',
+         '</v1:Input></v1:ValidarCentroCostosRequest>'
+))]]></con:xqueryText>
+                                                                </con1:expr>
+                                                            </con1:assign>
+                                                        </con1:requestTransform>
+                                                        <con1:responseTransform>
+                                                            <con1:assign varName="xccTipo">
+                                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fc6</con2:id>
+                                                                <con1:expr>
+                                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">xs:int($xccOutput//*:idTipoCC/text())</con:xqueryText>
+                                                                </con1:expr>
+                                                            </con1:assign>
+                                                            <con1:assign varName="xcveOficina">
+                                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fc5</con2:id>
+                                                                <con1:expr>
+                                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">xs:int($xccOutput//*:claveOficina/text())</con:xqueryText>
+                                                                </con1:expr>
+                                                            </con1:assign>
+                                                            <con1:assign varName="xccDescOficina">
+                                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fc4</con2:id>
+                                                                <con1:expr>
+                                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$xccOutput//*:descOficina/text()</con:xqueryText>
+                                                                </con1:expr>
+                                                            </con1:assign>
+                                                            <con1:assign varName="xccDescArea">
+                                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fc3</con2:id>
+                                                                <con1:expr>
+                                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$xccOutput//*:descArea/text()</con:xqueryText>
+                                                                </con1:expr>
+                                                            </con1:assign>
+                                                            <con1:assign varName="xccResponsArea">
+                                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fc2</con2:id>
+                                                                <con1:expr>
+                                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$xccOutput//*:responsableArea/text()</con:xqueryText>
+                                                                </con1:expr>
+                                                            </con1:assign>
+                                                            <con2:log xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config">
+                                                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fc1</con3:id>
+                                                                <con2:logLevel>warning</con2:logLevel>
+                                                                <con2:expr>
+                                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:concat(
+'ccDescOficina=', $xccOutput,'*',
+'ccDescArea =', $xccOutput,'*',
+'ccResponsArea =', $xccOutput,'*',
+'cveOficina=', $xcveOficina
+)</con:xqueryText>
+                                                                </con2:expr>
+                                                                <con2:message>Consulta de Centro de Costo</con2:message>
+                                                            </con2:log>
+                                                            <con1:ifThenElse>
+                                                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fc0</con3:id>
+                                                                <con1:case>
+                                                                    <con1:condition>
+                                                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">(fn:string-length($cveOficina)=0) and (fn:string-length($xcveOficina) > 0)</con:xqueryText>
+                                                                    </con1:condition>
+                                                                    <con1:actions>
+                                                                        <con1:assign varName="cveOficina">
+                                                                            <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fbf</con3:id>
+                                                                            <con1:expr>
+                                                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$xcveOficina</con:xqueryText>
+                                                                            </con1:expr>
+                                                                        </con1:assign>
+                                                                    </con1:actions>
+                                                                </con1:case>
+                                                            </con1:ifThenElse>
+                                                            <con2:ifThenElse>
+                                                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fbe</con3:id>
+                                                                <con2:case>
+                                                                    <con2:condition>
+                                                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:string-length($descOficina)=0 and fn:string-length($xccDescOficina) > 0</con:xqueryText>
+                                                                    </con2:condition>
+                                                                    <con2:actions>
+                                                                        <con2:assign varName="descOficina">
+                                                                            <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fbd</con3:id>
+                                                                            <con2:expr>
+                                                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$xccDescOficina</con:xqueryText>
+                                                                            </con2:expr>
+                                                                        </con2:assign>
+                                                                    </con2:actions>
+                                                                </con2:case>
+                                                            </con2:ifThenElse>
+                                                        </con1:responseTransform>
+                                                    </con1:wsCallout>
+                                                </con2:actions>
+                                            </con2:case>
+                                        </con2:ifThenElse>
+                                        <con2:ifThenElse>
+                                            <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fbc</con3:id>
+                                            <con2:case>
+                                                <con2:condition>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:string-length($descOficina)=0</con:xqueryText>
+                                                </con2:condition>
+                                                <con2:actions>
+                                                    <con1:wsCallout xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                                                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fbb</con3:id>
+                                                        <con1:service ref="MasterData/Oficinas/ProxySvc/ObtenerOficinaPxy" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                                        <con3:operation>process</con3:operation>
+                                                        <con1:request>
+                                                            <con3:body wrapped="false">oficinaOrigenInput</con3:body>
+                                                            <con3:header/>
+                                                        </con1:request>
+                                                        <con1:response>
+                                                            <con3:body wrapped="false">oficinaOrigenOutput</con3:body>
+                                                            <con3:header/>
+                                                        </con1:response>
+                                                        <con1:requestTransform>
+                                                            <con1:assign varName="oficinaOrigenInput">
+                                                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fba</con3:id>
+                                                                <con1:expr>
+                                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(
+      fn:concat(
+'<v1:obtenerOficinaPorClaveRequest xmlns:v1="http://qualitas.com.mx/Comun/Oficina/obtenerOficinaPorClave/v1/">',
+         '<v1:Input>',
+            '<v1:claveOficina>',$cveOficina,'</v1:claveOficina>',
+         '</v1:Input>',
+      '</v1:obtenerOficinaPorClaveRequest>'
+)
+)]]></con:xqueryText>
+                                                                </con1:expr>
+                                                            </con1:assign>
+                                                        </con1:requestTransform>
+                                                        <con1:responseTransform>
+                                                            <con1:assign varName="oficinaOrigenDesc">
+                                                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fb9</con3:id>
+                                                                <con1:expr>
+                                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$oficinaOrigenOutput//*:descOficina/text()</con:xqueryText>
+                                                                </con1:expr>
+                                                            </con1:assign>
+                                                        </con1:responseTransform>
+                                                    </con1:wsCallout>
+                                                </con2:actions>
+                                            </con2:case>
+                                            <con2:default>
+                                                <con2:assign varName="oficinaOrigenDesc">
+                                                    <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fb8</con3:id>
+                                                    <con2:expr>
+                                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$descOficina</con:xqueryText>
+                                                    </con2:expr>
+                                                </con2:assign>
+                                            </con2:default>
+                                        </con2:ifThenElse>
+                                    </con2:actions>
+                                </con2:case>
+                                <con2:default>
+                                    <con2:assign varName="solicitudExiste">
+                                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1e.15a91b0d721.N7fb7</con3:id>
+                                        <con2:expr>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">0</con:xqueryText>
+                                        </con2:expr>
+                                    </con2:assign>
+                                </con2:default>
+                            </con2:ifThenElse>
+                        </con1:responseTransform>
+                    </con1:route>
+                </con:actions>
+            </con:route-node>
+        </con:flow>
+    </con:router>
+    <aler:alertRules xsi:nil="true" xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+</con:pipelineEntry>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="PoC/AutosSinResguardo/CotizadorMidas/Resources/WSDL/NmpCotizadorAutomovilWSDL"/>
+            <con:binding>
+                <con:name>CotizadorAutomovilWSHttpBinding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Service/CotizadorAutomovil</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:tracingEnabled>true</oper:tracingEnabled>
+            <oper:monitoring enabled="true" level="service" aggregationInterval="10"/>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:pipeline name="PipelinePairNode1_request" type="request">
+            <con:stage name="stage1">
+                <con:context>
+                    <con1:userNsDecl prefix="cot" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/CotizadorAutomovil"/>
+                </con:context>
+                <con:actions>
+                    <con3:assign varName="bodyMidas">
+                        <con1:id>_ActionId-a1e030f.N4089bba8.16.15592c56f3e.N7ffd</con1:id>
+                        <con3:expr>
+                            <con1:xqueryText>$body</con1:xqueryText>
+                        </con3:expr>
+                    </con3:assign>
+                    <con3:rename varName="body">
+                        <con1:id>_ActionId-a1e030f.N4089bba8.11.155927087b6.N7fff</con1:id>
+                        <con3:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.//*</con:xpathText>
+                        </con3:location>
+                        <con3:namespace>urn:mx.com.nmp.midas</con3:namespace>
+                    </con3:rename>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode1_response" type="response"/>
+        <con:flow>
+            <con:pipeline-node name="PipelinePairNode1">
+                <con:request>PipelinePairNode1_request</con:request>
+                <con:response>PipelinePairNode1_response</con:response>
+            </con:pipeline-node>
+            <con:route-node name="RouteNodeMidasCotizadorAuto">
+                <con:context>
+                    <con1:userNsDecl prefix="cot" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/CotizadorAutomovil"/>
+                </con:context>
+                <con:actions>
+                    <con2:route>
+                        <con1:id>_ActionId-N3f57c7ff.N1bf6c237.0.155e9f74ba1.N7f9d</con1:id>
+                        <con2:service ref="PoC/AutosSinResguardo/CotizadorMidas/Business Service/MidasCotizadorAutomovilBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation passThrough="true"/>
+                        <con2:outboundTransform/>
+                        <con2:responseTransform>
+                            <con3:rename varName="body">
+                                <con1:id>_ActionId-a1e030f.N4089bba8.16.15592c56f3e.N7ffe</con1:id>
+                                <con3:location>
+                                    <con1:xpathText>.//*</con1:xpathText>
+                                </con3:location>
+                                <con3:namespace>http://servicios.montedepiedad.com.mx/NMP/Schema/CotizadorAutomovil</con3:namespace>
+                            </con3:rename>
+                        </con2:responseTransform>
+                    </con2:route>
+                </con:actions>
+            </con:route-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

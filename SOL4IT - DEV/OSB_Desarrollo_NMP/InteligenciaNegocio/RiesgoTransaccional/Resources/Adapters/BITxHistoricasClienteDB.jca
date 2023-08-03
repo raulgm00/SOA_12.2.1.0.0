@@ -1,0 +1,67 @@
+<adapter-config name="TxHistoricasCliente" adapter="db" wsdlLocation="../WSDLs/BITxHistoricasClienteDBWSDL.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  
+  <connection-factory UIConnectionName="BI_DEV" location="eis/DB/bi_prendario"/>
+  
+  
+  
+  <endpoint-interaction portType="TxHistoricasCliente_ptt" operation="TxHistoricasCliente">
+    <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+      <property name="SqlString" value="select           sk_movimiento,   num_folio,          desc_movimiento,   'Empenio' Desc_importe,         sk_sucursalactual,   fch_operacion,          imp_prestamo from nmprendario.HEC_PRENDARIO        where sk_clientedwh=#idCliente        and desc_movimiento='PP' and fch_operacion>=sysdate-#rangoDias and rownum&lt;=#numeroFilas"/>
+      <property name="QueryTimeout" value="10"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  
+   <endpoint-interaction portType="TxHistoricasCliente_ptt" operation="TxHistoricasCliente_DS">
+    <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+      <property name="SqlString" value="select    sk_movimiento,   num_folio,   desc_movimiento,   'Desempenio' Desc_importe,   sk_sucursalactual,   fch_operacion,   imp_prestamo from nmprendario.HEC_PRENDARIO where sk_clientedwh=#idCliente and desc_movimiento='DS' and fch_operacion>=sysdate-#rangoDias and rownum&lt;=#numeroFilas"/>
+ <property name="QueryTimeout" value="10"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  
+  
+     <endpoint-interaction portType="TxHistoricasCliente_ptt" operation="TxHistoricasCliente_RF">
+    <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+      <property name="SqlString" value="select    sk_movimiento,   num_folio,   desc_movimiento,   'Refrendo' Desc_importe,   sk_sucursalactual,   fch_operacion,   imp_prestamo from nmprendario.HEC_PRENDARIO where sk_clientedwh=#idCliente and desc_movimiento='RF' and fch_operacion>=sysdate-#rangoDias and rownum&lt;=#numeroFilas"/>
+ <property name="QueryTimeout" value="10"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  
+  
+  
+     <endpoint-interaction portType="TxHistoricasCliente_ptt" operation="TxHistoricasCliente_IA">
+    <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+      <property name="SqlString" value="select    sk_movimiento,   num_folio,   desc_movimiento,   'Pase' Desc_importe,   sk_sucursalactual,   fch_operacion,   imp_prestamo from nmprendario.HEC_PRENDARIO where sk_clientedwh=#idCliente and desc_movimiento='IA' and fch_operacion>=sysdate-#rangoDias and rownum&lt;=#numeroFilas"/>
+ <property name="QueryTimeout" value="10"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  
+ <endpoint-interaction portType="TxHistoricasCliente_ptt" operation="TxHistoricasCliente_DP">
+    <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+      <property name="SqlString" value="select    sk_movimiento,   num_folio,   desc_movimiento,   'Deposito' Desc_importe,   sk_sucursalactual,   fch_operacion,   imp_prestamo from NMPRENDARIO.HEC_PRENDARIO_AUX where sk_clientedwh=#idCliente and desc_movimiento='DP' and fch_operacion=to_date(to_char(sysdate-#rangoDias,'dd/mm/yy'),'dd/mm/yy') and rownum&lt;=#numeroFilas"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+      <property name="QueryTimeout" value="10"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  
+     <endpoint-interaction portType="TxHistoricasCliente_ptt" operation="TxHistoricasCliente_VB">
+    <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+      <property name="SqlString" value="select    sk_movimiento,   num_folio,   desc_movimiento,   'Venta_Billete' Desc_importe,   sk_sucursalactual,   fch_operacion,   imp_prestamo from nmprendario.HEC_COMERCIAL where sk_clientedwh=#idCliente and desc_movimiento='VB' and fch_operacion>=sysdate-#rangoDias and rownum&lt;=#numeroFilas"/>
+ <property name="QueryTimeout" value="10"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  
+  
+     <endpoint-interaction portType="TxHistoricasCliente_ptt" operation="TxHistoricasCliente_VP">
+    <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+      <property name="SqlString" value="select    sk_movimiento,   num_folio,   desc_movimiento,   'Venta_Publico' Desc_importe,   sk_sucursalactual,   fch_operacion,   imp_prestamo from nmprendario.HEC_COMERCIAL where sk_clientedwh=#idCliente and desc_movimiento='VP' and fch_operacion>=sysdate-#rangoDias and rownum&lt;=#numeroFilas"/>
+ <property name="QueryTimeout" value="10"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+
+</adapter-config>

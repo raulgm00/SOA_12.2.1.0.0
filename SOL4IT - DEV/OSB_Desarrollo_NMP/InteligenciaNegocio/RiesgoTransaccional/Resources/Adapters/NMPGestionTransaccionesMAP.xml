@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-persistence xmlns="http://www.eclipse.org/eclipselink/xsds/persistence" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:eclipselink="http://www.eclipse.org/eclipselink/xsds/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="Eclipse Persistence Services - 2.5.2.v20140319-9ad6abd">
+   <name>NmpTransacciones-OR</name>
+   <class-mapping-descriptors>
+      <class-mapping-descriptor xsi:type="object-relational-class-mapping-descriptor">
+         <class>NmpTransacciones.NmpTransacciones</class>
+         <alias>NMP_TRANSACCIONES</alias>
+         <primary-key>
+            <field table="NMP_TRANSACCIONES" name="ID" xsi:type="column"/>
+         </primary-key>
+         <events/>
+         <querying>
+            <queries>
+               <query name="NmpTransaccionesSelect" xsi:type="read-all-query">
+                  <arguments>
+                     <argument name="idClienteVar">
+                        <type>java.lang.String</type>
+                     </argument>
+                  </arguments>
+                  <!--Se quito el codigo CODIGO_TIPO-->
+                   <call xsi:type="sql-call">
+                     <sql>SELECT ID, ID_CLIENTE, ES_CANCELACION, ID_SUCURSAL, FECHA_TX, MONTO, ES_REEMPENO, PROCESADO, FECHA_PROCESAR FROM NMP_TRANSACCIONES WHERE (ID_CLIENTE = #idClienteVar and trunc(FECHA_TX) = trunc(sysdate)) order by id desc</sql>
+                  </call>
+                  <reference-class>NmpTransacciones.NmpTransacciones</reference-class>
+                  <container xsi:type="list-container-policy">
+                     <collection-type>java.util.Vector</collection-type>
+                  </container>
+               </query>
+			   <query name="NmpTransaccionesSelectById" xsi:type="read-all-query">
+                  <arguments>
+                     <argument name="idTransaccion">
+                        <type>java.lang.String</type>
+                     </argument>
+                  </arguments>
+                  <!--Se quito el codigo CODIGO_TIPO-->
+                  <call xsi:type="sql-call">
+                     <sql>SELECT ID, ID_CLIENTE, ES_CANCELACION, ID_SUCURSAL, FECHA_TX, MONTO, ES_REEMPENO, PROCESADO, FECHA_PROCESAR FROM NMP_TRANSACCIONES WHERE (ID = #idTransaccion)</sql>
+                  </call>
+                  <reference-class>NmpTransacciones.NmpTransacciones</reference-class>
+                  <container xsi:type="list-container-policy">
+                     <collection-type>java.util.Vector</collection-type>
+                  </container>
+               </query>
+            </queries>
+            <timeout>3</timeout>
+         </querying>
+         <attribute-mappings>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>id</attribute-name>
+               <field table="NMP_TRANSACCIONES" name="ID" xsi:type="column"/>
+               <attribute-classification>java.lang.Long</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idCliente</attribute-name>
+               <field table="NMP_TRANSACCIONES" name="ID_CLIENTE" xsi:type="column"/>
+               <attribute-classification>java.lang.Long</attribute-classification>
+            </attribute-mapping>
+            <!--attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>codigoTipo</attribute-name>
+               <field table="NMP_TRANSACCIONES" name="CODIGO_TIPO" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping-->
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>esCancelacion</attribute-name>
+               <field table="NMP_TRANSACCIONES" name="ES_CANCELACION" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idSucursal</attribute-name>
+               <field table="NMP_TRANSACCIONES" name="ID_SUCURSAL" xsi:type="column"/>
+               <attribute-classification>java.lang.Integer</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>fechaTx</attribute-name>
+               <field table="NMP_TRANSACCIONES" name="FECHA_TX" xsi:type="column"/>
+               <attribute-classification>java.sql.Timestamp</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>monto</attribute-name>
+               <field table="NMP_TRANSACCIONES" name="MONTO" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>esReempeno</attribute-name>
+               <field table="NMP_TRANSACCIONES" name="ES_REEMPENO" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+			<attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>procesado</attribute-name>
+               <field table="NMP_TRANSACCIONES" name="PROCESADO" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>fechaProcesar</attribute-name>
+               <field table="NMP_TRANSACCIONES" name="FECHA_PROCESAR" xsi:type="column"/>
+               <attribute-classification>java.sql.Timestamp</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="one-to-many-mapping">
+               <attribute-name>nmpPartidasCollection</attribute-name>
+               <reference-class>NmpTransacciones.NmpPartidas</reference-class>
+               <private-owned>true</private-owned>
+               <target-foreign-key>
+                  <field-reference>
+                     <source-field table="NMP_PARTIDAS" name="ID_TRANSACCION" xsi:type="column"/>
+                     <target-field table="NMP_TRANSACCIONES" name="ID" xsi:type="column"/>
+                  </field-reference>
+               </target-foreign-key>
+               <batch-reading>true</batch-reading>
+               <container xsi:type="list-container-policy">
+                  <collection-type>org.eclipse.persistence.indirection.IndirectList</collection-type>
+               </container>
+               <indirection xsi:type="value-holder-indirection-policy"/>
+               <selection-query xsi:type="read-all-query">
+                  <reference-class>NmpTransacciones.NmpPartidas</reference-class>
+                  <container xsi:type="list-container-policy">
+                     <collection-type>org.eclipse.persistence.indirection.IndirectList</collection-type>
+                  </container>
+               </selection-query>
+            </attribute-mapping>
+         </attribute-mappings>
+         <descriptor-type>independent</descriptor-type>
+         <caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+            <always-refresh>true</always-refresh>
+         </caching>
+         <remote-caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+         </remote-caching>
+         <instantiation/>
+         <copying xsi:type="instantiation-copy-policy"/>
+         <tables>
+            <table name="NMP_TRANSACCIONES"/>
+         </tables>
+         <structure>structureName</structure>
+      </class-mapping-descriptor>
+      <class-mapping-descriptor xsi:type="object-relational-class-mapping-descriptor">
+         <class>NmpTransacciones.NmpPartidas</class>
+         <alias>NMP_PARTIDAS</alias>
+         <primary-key>
+            <field table="NMP_PARTIDAS" name="ID" xsi:type="column"/>
+         </primary-key>
+         <events/>
+         <querying>
+            <timeout>3</timeout>
+         </querying>
+         <attribute-mappings>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>id</attribute-name>
+               <field table="NMP_PARTIDAS" name="ID" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>nroPartida</attribute-name>
+               <field table="NMP_PARTIDAS" name="NRO_PARTIDA" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idTransaccion</attribute-name>
+               <read-only>true</read-only>
+               <properties>
+                  <property name="fkPlaceholder">
+                     <value>true</value>
+                  </property>
+               </properties>
+               <field table="NMP_PARTIDAS" name="ID_TRANSACCION" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>monto</attribute-name>
+               <field table="NMP_PARTIDAS" name="MONTO" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idTipoProducto</attribute-name>
+               <field table="NMP_PARTIDAS" name="ID_TIPO_PRODUCTO" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>caracteristica1</attribute-name>
+               <field table="NMP_PARTIDAS" name="CARACTERISTICA1" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>caracteristica2</attribute-name>
+               <field table="NMP_PARTIDAS" name="CARACTERISTICA2" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>ramo</attribute-name>
+               <field table="NMP_PARTIDAS" name="RAMO" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>subramo</attribute-name>
+               <field table="NMP_PARTIDAS" name="SUBRAMO" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>claveValuador</attribute-name>
+               <field table="NMP_PARTIDAS" name="CLAVE_VALUADOR" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>codigoTipoOperacion</attribute-name>
+               <field table="NMP_PARTIDAS" name="TIPO_OPERACION" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>fechaComercializacion</attribute-name>
+               <field table="NMP_PARTIDAS" name="FECHA_COMERCIALIZACION" xsi:type="column"/>
+               <attribute-classification>java.sql.Timestamp</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>caracteristica3</attribute-name>
+               <field table="NMP_PARTIDAS" name="CARACTERISTICA3" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="one-to-one-mapping">
+               <attribute-name>idTransaccion</attribute-name>
+               <reference-class>NmpTransacciones.NmpTransacciones</reference-class>
+               <private-owned>true</private-owned>
+               <foreign-key>
+                  <field-reference>
+                     <source-field table="NMP_PARTIDAS" name="ID_TRANSACCION" xsi:type="column"/>
+                     <target-field table="NMP_TRANSACCIONES" name="ID" xsi:type="column"/>
+                  </field-reference>
+               </foreign-key>
+               <foreign-key-fields>
+                  <field table="NMP_PARTIDAS" name="ID_TRANSACCION" xsi:type="column"/>
+               </foreign-key-fields>
+               <batch-reading>true</batch-reading>
+               <indirection xsi:type="value-holder-indirection-policy"/>
+               <selection-query xsi:type="read-object-query">
+                  <reference-class>NmpTransacciones.NmpTransacciones</reference-class>
+               </selection-query>
+            </attribute-mapping>
+         </attribute-mappings>
+         <descriptor-type>independent</descriptor-type>
+         <caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+            <always-refresh>true</always-refresh>
+         </caching>
+         <remote-caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+         </remote-caching>
+         <instantiation/>
+         <copying xsi:type="instantiation-copy-policy"/>
+         <tables>
+            <table name="NMP_PARTIDAS"/>
+         </tables>
+         <structure>structureName</structure>
+      </class-mapping-descriptor>
+   </class-mapping-descriptors>
+   <login xsi:type="database-login">
+      <platform-class>org.eclipse.persistence.platform.database.oracle.Oracle9Platform</platform-class>
+      <connection-url></connection-url>
+   </login>
+</object-persistence>

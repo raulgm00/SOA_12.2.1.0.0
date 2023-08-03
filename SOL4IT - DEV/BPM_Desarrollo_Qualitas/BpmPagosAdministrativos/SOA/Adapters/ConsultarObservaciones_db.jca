@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<adapter-config name="ConsultarObservaciones" adapter="db" wsdlLocation="../WSDLs/ConsultarObservaciones.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+   <connection-factory UIConnectionName="GPAConnDB" location="eis/DB/GPAConnDB"/>
+   <endpoint-interaction portType="ConsultarObservaciones_ptt" operation="ConsultarObservaciones">
+      <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+         <property name="SqlString" value="select o.TX_COMENTARIO, t.DESCRIPCION  from  GPA007_OBSERVACIONES o  JOIN GPA005_SEGUIMIENTO E  ON o.ID_SEGUIMIENTO = e.ID_SEGUIMIENTO JOIN GPA008_TP_OBSERVACIONES t ON t.ID_TP_OBSERVACIONES = o.ID_TP_OBSERVACIONES WHERE E.ID_SOLICITUD = #idSolicitud"/>
+         <property name="GetActiveUnitOfWork" value="false"/>
+      </interaction-spec>
+   </endpoint-interaction>
+</adapter-config>

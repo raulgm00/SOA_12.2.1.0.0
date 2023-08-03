@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ser:proxyServiceEntry xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:oper="http://xmlns.oracle.com/servicebus/proxy/operations" xmlns:oper1="http://xmlns.oracle.com/servicebus/operations" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ser:coreEntry isAutoPublish="false">
+        <ser:description>Interfaz principal del servicio Score, para el intercambio de las calificaciones de los clientes de Nacional Monte de Piedad con el resto de aplicaciones para las que es relevante esta información</ser:description>
+        <ser:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config" xmlns:con3="http://www.bea.com/wli/sb/stages/publish/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con4="http://www.bea.com/wli/sb/stages/logging/config" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+            <con:wsdl ref="GestionClientes/Score/Resources/WSDLs/NMPScoreSvcWSDL"/>
+            <con:port>
+                <con:name>ScorePort</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Services/Score</con:namespace>
+            </con:port>
+            <con:selector type="SOAP body"/>
+            <con:WSI-compliant>false</con:WSI-compliant>
+        </ser:binding>
+        <oper:operations enabled="true">
+            <oper:messageTracing enabled="false">
+                <oper1:detailsLevel>full</oper1:detailsLevel>
+                <oper1:maxSize>8192</oper1:maxSize>
+            </oper:messageTracing>
+            <oper:monitoring enabled="true" aggregationInterval="1440"/>
+        </oper:operations>
+        <ser:ws-policy xmlns:con3="http://www.bea.com/wli/sb/stages/publish/config" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con4="http://www.bea.com/wli/sb/stages/logging/config" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+            <ser:binding-mode>wsdl-policy-attachments</ser:binding-mode>
+        </ser:ws-policy>
+        <ser:invoke ref="GestionClientes/Score/Pipeline/NMPScorePL" xsi:type="con:PipelineRef" xmlns:con="http://www.bea.com/wli/sb/pipeline/config"/>
+    </ser:coreEntry>
+    <ser:endpointConfig xmlns:con3="http://www.bea.com/wli/sb/stages/publish/config" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con4="http://www.bea.com/wli/sb/stages/logging/config" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+        <tran:provider-id>http</tran:provider-id>
+        <tran:inbound>true</tran:inbound>
+        <tran:URI>
+            <env:value xmlns:env="http://www.bea.com/wli/config/env">/NMP/Integracion/Score/Proxy_Services/ScorePXY</env:value>
+        </tran:URI>
+        <tran:inbound-properties/>
+        <tran:all-headers>false</tran:all-headers>
+        <tran:provider-specific xsi:type="http:HttpEndPointConfiguration" xmlns:http="http://www.bea.com/wli/sb/transports/http">
+            <http:inbound-properties/>
+        </tran:provider-specific>
+    </ser:endpointConfig>
+</ser:proxyServiceEntry>

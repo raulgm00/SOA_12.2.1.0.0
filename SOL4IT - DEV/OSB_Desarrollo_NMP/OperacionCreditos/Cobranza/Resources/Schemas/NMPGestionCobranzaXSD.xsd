@@ -1,0 +1,491 @@
+<xsd:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza"
+            elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCobranza"
+            xmlns:doc="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc"
+            xmlns:gestM="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilTipos">
+  
+  <xsd:element name="notificaGestionCobranzaRequest" type="tns:notificaGestionType"/>
+  <xsd:element name="notificaGestionCobranzaResponse" type="tns:notificaGestionResType"/>
+  <xsd:element name="recepcionGestionRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Cobranza">
+          <xsd:complexType>
+            <xsd:sequence>
+              <!--xsd:element name="usuario" type="xsd:string"/-->
+              <xsd:element name="cliente" type="tns:clienteCbzType"/>
+              <xsd:element name="referencias" minOccurs="0">
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element name="referencia" maxOccurs="unbounded" type="tns:referenciaCbzType" minOccurs="0"/>
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+              <xsd:element name="avales" minOccurs="0">
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element name="aval" maxOccurs="unbounded" type="tns:avalCbzType" minOccurs="0"/>
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+              <xsd:element name="datosFinancieros" type="tns:datosFinancierosType" minOccurs="0"/>
+              <xsd:element name="resultadoGestion" type="tns:recepcionGestionType" minOccurs="0"/>
+              <xsd:element name="FormiikResponseSource" type="xsd:string" minOccurs="0"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:sequence>
+      <xsd:attributeGroup ref="tns:attributeGroupGestion"/>      
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="recepcionGestionResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="resultado" type="xsd:string"/>
+        <xsd:element name="descripcion" type="xsd:string"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="revocarGestionRequest" type="tns:revocarGestionType"/>
+  <xsd:element name="revocarGestionResponse" type="tns:notificaGestionResType"/>
+  <xsd:element name="actualizarGestionRequest" type="tns:gestionType"/>
+  <xsd:element name="actualizarGestionResponse" type="tns:notificaGestionResType"/>
+  <xsd:complexType name="revocarGestionType">
+    <xsd:sequence>
+      <xsd:element name="gestion">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="orden" maxOccurs="unbounded">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="idExternal" type="xsd:string"/>
+                  <xsd:element name="gestor" type="xsd:string"/>
+                  <xsd:element name="accion" type="xsd:string"/>
+                  <xsd:element name="comentarios" type="xsd:string" minOccurs="0"/>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="cliente" type="tns:clienteCbzType"/>
+          </xsd:sequence>
+          <xsd:attribute name="idProducto" type="xsd:string"/>
+          <xsd:attribute name="idCliente" type="xsd:string"/>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="gestionType">
+    <xsd:sequence>
+      <xsd:element name="gestion">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="cliente" type="tns:clienteCbzType"/>
+            <xsd:element name="datosFinancieros" type="tns:datosFinancierosType"/>
+            <xsd:element name="resultadoGestion" type="tns:resultadoGestionType"/>
+          </xsd:sequence>
+          <xsd:attributeGroup ref="tns:attributeGroupGestion"/>          
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+    
+  </xsd:complexType>
+  <xsd:complexType name="recepcionGestionType">
+    <xsd:sequence>
+      <xsd:element name="fotos" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="foto" type="tns:fotoType" maxOccurs="unbounded" minOccurs="0"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="gestorGestiono" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="accion" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="gestionCobranza" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="comentarios" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="montoPromesaPago" type="xsd:float" minOccurs="0"/>
+      <xsd:element name="fechaPromesaPago" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="correoElectronico" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="direccion" type="tns:DireccionCT" minOccurs="0"/>
+      <xsd:element name="telefonos" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="telefono" type="tns:TelefonoCT"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="tipoNegociacion" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="periodicidadCondonacion" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="periodicidadLiquidacion" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="numPagos" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="montoNegociacion" type="xsd:float" minOccurs="0"/>
+      <xsd:element name="gps" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="idCampana" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="fotoType">
+    <xsd:sequence>
+      <xsd:element name="tipo" type="tns:fotoType" minOccurs="0"/>
+      <xsd:element name="url" type="xsd:string"/>
+      <xsd:element name="nombre" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="clienteCbzType">
+    <xsd:sequence>
+      <xsd:element name="idCliente" type="xsd:integer"/>
+      <xsd:element name="idContrato" type="xsd:integer"/>
+      <xsd:element name="primerNombre" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="segundoNombre" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="apellidoMaterno" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="apellidoPaterno" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="actividad" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="sector" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="actividadEconomica" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="genero" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="estadoCivil" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="rfc" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="curp" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="riesgoMorosidad" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="direcciones" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="direccion" maxOccurs="unbounded" type="tns:DireccionCT" minOccurs="0"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="telefonos" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="telefono" type="tns:TelefonoCT" maxOccurs="unbounded" minOccurs="0"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="correoElectronico" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="nombreEmpleo" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="referenciaCbzType">
+    <xsd:sequence>
+      <xsd:element name="idReferencia" type="xsd:integer"/>
+      <xsd:element name="parentesco" type="xsd:string"/>
+      <xsd:element name="primerNombre" type="xsd:string"/>
+      <xsd:element name="segundoNombre" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="apellidoMaterno" type="xsd:string"/>
+      <xsd:element name="apellidoPaterno" type="xsd:string"/>
+      <xsd:element name="telefonos" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="telefono" type="tns:TelefonoCT" minOccurs="0"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="direcciones" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="direccion" type="tns:direccionCortaType" minOccurs="0"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="avalCbzType">
+    <xsd:sequence>
+      <xsd:element name="idAval" type="xsd:integer"/>
+      <xsd:element name="parentesco" type="xsd:string"/>
+      <xsd:element name="primerNombre" type="xsd:string"/>
+      <xsd:element name="segundoNombre" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="apellidoMaterno" type="xsd:string"/>
+      <xsd:element name="apellidoPaterno" type="xsd:string"/>
+      <xsd:element name="telefonos" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="telefono" type="tns:TelefonoCT" minOccurs="0"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="direccion" type="tns:direccionCortaType" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="direccionCortaType">
+    <xsd:sequence>
+      <xsd:element name="domicilio" type="xsd:string"/>
+      <xsd:element name="colonia" type="xsd:string"/>
+      <xsd:element name="ciudad" type="xsd:string"/>
+      <xsd:element name="estado" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="resultadoGestionType">
+    <xsd:sequence>
+      <xsd:element name="documentos" type="tns:documentosType" minOccurs="0"/>
+      <xsd:element name="gestorGestiono" type="xsd:string"/>
+      <xsd:element name="accion" type="xsd:string"/>
+      <xsd:element name="gestionCobranza" type="xsd:string"/>
+      <xsd:element name="causaNoPago" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="comentarios" type="xsd:string"/>
+      <xsd:element name="montoPromesaPago" type="xsd:integer" minOccurs="0"/>
+      <xsd:element name="fechaPromesaPago" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="correoElectronico" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="direccion" type="tns:DireccionCT" minOccurs="0"/>
+      <xsd:element name="telefonos" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="telefono" type="tns:TelefonoCT" minOccurs="0" maxOccurs="unbounded"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="tipoNegociacion" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="periodicidadCondonacion" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="periodicidadLiquidacion" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="numPagos" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="montoNegociacion" type="xsd:float" minOccurs="0"/>
+      <xsd:element name="fechaPago" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="periodicidad" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="pagos" type="xsd:integer" minOccurs="0"/>
+      <xsd:element name="gps" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="datosFinancierosType">
+    <xsd:sequence>
+      <xsd:element name="fechaAsignacion" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="rangoAsignacion" type="xsd:integer" minOccurs="0" nillable="true"/>
+      <xsd:element name="ctaFacturacion" type="xsd:integer" minOccurs="0"/>
+      <xsd:element name="ctaServicio" type="xsd:integer" minOccurs="0"/>
+      <xsd:element name="status" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="idProducto" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="merkm" type="xsd:integer" minOccurs="0"/>
+      <xsd:element name="saldo" type="xsd:float" minOccurs="0"/>
+      <xsd:element name="fechaProximoPago" type="tns:dateType" minOccurs="0"/>
+      <xsd:element name="refer" type="xsd:integer" minOccurs="0"/>
+      <xsd:element name="capitalVigente" type="xsd:float" minOccurs="0"/>
+      <xsd:element name="interesOrdinarios" type="xsd:float" minOccurs="0"/>
+      <xsd:element name="intereseMoratorios" type="xsd:float" minOccurs="0"/>
+      <xsd:element name="cuotasVencidas" type="xsd:integer" minOccurs="0"/>
+      <xsd:element name="diasMora" type="xsd:integer" minOccurs="0"/>
+      <xsd:element name="saldoVigenciaVencido" type="xsd:float" minOccurs="0"/>
+      <xsd:element name="saldoVencido30" type="xsd:float" minOccurs="0"/>
+      <xsd:element name="saldoVencido60" type="xsd:float" minOccurs="0"/>
+      <xsd:element name="saldoVencido90" type="xsd:float" minOccurs="0"/>
+      <xsd:element name="saldoVencido120" type="xsd:float" minOccurs="0"/>
+      <xsd:element name="saldoVencido150" type="xsd:float" minOccurs="0"/>
+      <xsd:element name="saldoVencido180" type="xsd:float" minOccurs="0"/>
+      <xsd:element name="probabilidadIncumpOrig" type="xsd:float" minOccurs="0"/>
+      <xsd:element name="probabilidadImcumpSegui" type="xsd:float" minOccurs="0"/>
+      <xsd:element name="probabilidadIncumpCob" type="xsd:float" minOccurs="0"/>
+      <xsd:element name="probabilidadIncumpCom" type="xsd:float" minOccurs="0"/>
+      <xsd:element name="severidadPerOrig" type="xsd:float" minOccurs="0"/>
+      <xsd:element name="severidadPerSegui" type="xsd:float" minOccurs="0"/>
+      <xsd:element name="severidadPerCom" type="xsd:float" minOccurs="0"/>
+      <xsd:element name="vidaCredito" type="xsd:integer" minOccurs="0"/>
+      <xsd:element name="fechaUltimoPago" type="tns:dateType" minOccurs="0"/>
+      <xsd:element name="importeUltimoPago" type="xsd:float" minOccurs="0"/>
+      <xsd:element name="saldoVencido" type="xsd:float" minOccurs="0"/>
+      <xsd:element name="vigenciaVisita" type="xsd:integer" minOccurs="0"/>
+      <xsd:element name="cuotaMensual" type="xsd:float" minOccurs="0"/>
+      <xsd:element name="tipoTarea" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="gestorAsignado" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="montoCondonacion" type="xsd:float" minOccurs="0"/>
+      <xsd:element name="montoLiquidacion1" type="xsd:float" minOccurs="0"/>
+      <xsd:element name="montoLiquidacion3" type="xsd:float" minOccurs="0"/>
+      <xsd:element name="montoLiquidacion6" type="xsd:float" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="documentosType">
+    <xsd:sequence>
+      <xsd:element name="documento" maxOccurs="unbounded" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="tipo" type="tns:tipoDocumento"/>
+            <xsd:element name="proceso" type="tns:procesoType"/>
+            <xsd:element name="nombre" type="xsd:string"/>
+            <xsd:element name="contenido" type="xsd:base64Binary" nillable="false"/>
+            <xsd:element name="size" type="xsd:int" minOccurs="0"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="documentoEnlace" minOccurs="0" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="tipo" type="tns:tipoDocumento"/>
+            <xsd:element name="url" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="notificaGestionType">
+    <xsd:sequence>
+      <xsd:element name="Cobranza" type="tns:gestionCbzType"/>
+    </xsd:sequence>
+    <xsd:attribute name="ProductId" type="xsd:string" use="required"/>
+    <xsd:attribute name="ExternalId" type="xsd:string" use="required"/>
+    <xsd:attribute name="ExternalType" type="tns:procesoType" use="required"/>
+    <xsd:attribute name="AssignedTo" type="xsd:string" use="required"/>
+    <xsd:attribute name="InitialDate" type="tns:dateTimeType" use="required"/>
+    <xsd:attribute name="FinalDate" type="tns:dateTimeType" use="required"/>
+    <xsd:attribute name="ResponseDate" type="tns:dateTimeType" use="required"/>
+    <xsd:attribute name="InitialLatitude" type="xsd:float" use="required"/>
+    <xsd:attribute name="FinalLatitude" type="xsd:float" use="required"/>
+    <xsd:attribute name="InitialLongitude" type="xsd:float" use="required"/>
+    <xsd:attribute name="FinalLongitude" type="xsd:float" use="required"/>
+    <xsd:attribute name="FormiikResponseSource" type="xsd:string" use="required"/>
+  </xsd:complexType>
+  <xsd:complexType name="gestionCbzType">
+    <xsd:sequence>
+      <xsd:element name="cliente" type="tns:clienteCbzType" minOccurs="1"/>
+      <xsd:element name="referencias">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="referencia" maxOccurs="unbounded" type="tns:referenciaCbzType" minOccurs="0"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="avales">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="aval" maxOccurs="unbounded" type="tns:avalCbzType" minOccurs="0"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="datosFinancieros" type="tns:datosFinancierosType"/>
+      <xsd:element name="resultadoGestion" type="tns:resultadoGestionType"/>
+      <xsd:element name="FormiikResponseSource" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="notificaGestionResType">
+    <xsd:sequence>
+      <xsd:element name="respuesta" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="sistemaDestino" type="xsd:string"/>
+            <xsd:element name="resultado" type="xsd:string"/>
+            <xsd:element name="descripcion" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="DireccionCT">
+    <xsd:sequence>
+      <xsd:element name="nombreDelaCalle" type="xsd:string" minOccurs="1"/>
+      <xsd:element name="numeroExterior" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="numeroInterior" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="entreCalle1" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="entreCalle2" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="estado" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="delegacionMunicipio" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="colonia" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="codigoPostal" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="tipoDomicilio" type="tns:tipoDireccion" minOccurs="1"/>
+      <xsd:element name="ciudadPoblacion" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="manzana" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="lote" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="localidad" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="gps" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="TelefonoCT">
+    <xsd:sequence>
+      <xsd:element name="codigoPais" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="codigoArea" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="numeroTelefonico" type="xsd:string" minOccurs="1"/>
+      <xsd:element name="extension" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="tipoTelefono" minOccurs="1" type="tns:tipoTelefono"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="tipoDocumento">
+    <xsd:annotation>
+      <xsd:documentation>FCO=Foto de comprobante, ICL=Informacion del cliente, FTD=Foto del domicilio</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="FCO"/>
+      <xsd:enumeration value="ICL"/>
+      <xsd:enumeration value="FTD"/>
+      <xsd:maxLength value="10"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="tipoDireccion">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="Casa"/>
+      <xsd:enumeration value="Trabajo"/>
+      <xsd:enumeration value="Negocio"/>
+      <!--xsd:enumeration value="GestionCobranza"/-->
+      <xsd:maxLength value="15"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="tipoTelefono">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="Casa"/>
+      <xsd:enumeration value="Oficina"/>
+      <xsd:enumeration value="Recado"/>
+      <xsd:enumeration value="Negocio"/>
+      <xsd:enumeration value="Trabajo"/>
+      <xsd:enumeration value="Celular"/>
+      <xsd:enumeration value="Fax"/>
+      <xsd:enumeration value="Otro"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="tipoFoto">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="comprobante"/>
+      <xsd:enumeration value="domicilio"/>
+      <xsd:maxLength value="10"/>
+    </xsd:restriction>
+  </xsd:simpleType>  
+  <xsd:simpleType name="procesoType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="Negociacion"/>
+      <xsd:enumeration value="Cobranza"/>
+      <xsd:enumeration value="Recuperacion"/>
+      <xsd:enumeration value="Negociado"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="dateTimeType">
+    <xsd:annotation>
+      <xsd:documentation>Formato de Fecha YYYY-MM-DD H24:MI:SS</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\d{4}(/|-)(0[1-9]|1[012])(/|-)(0[1-9]|[12][0-9]|3[01]) (0[0-9]|1[0-9]|2[0-4]):(0[0-9]|[1-5][0-9]|6[0]):(0[0-9]|[1-5][0-9]|6[0])"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="dateTimeUSType">
+    <xsd:annotation>
+      <xsd:documentation>Formato Fecha MM/DD/YYYY H24:MI:SS</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="(0[1-9]|1[012])(/|-)(0[1-9]|[12][0-9]|3[01])(/|-)\d{4} (0[0-9]|1[0-9]|2[0-4]):(0[0-9]|[1-5][0-9]|6[0]):(0[0-9]|[1-5][0-9]|6[0])"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="dateUSType">
+    <xsd:annotation>
+      <xsd:documentation>Formato Fecha MM/DD/YYYY</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="(0[1-9]|1[012])(/|-)(0[1-9]|[12][0-9]|3[01])(/|-)\d{4}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="dateType">
+    <xsd:annotation>
+      <xsd:documentation>Formato de fecha DD/MM/YYYY</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="(0[1-9]|[12][0-9]|3[01])(/|-)(0[1-9]|1[012])(/|-)\d{4}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:attributeGroup name="attributeGroupGestion">
+    <xsd:attribute name="idProducto" type="xsd:string" use="optional"/>
+      <xsd:attribute name="idExternal" type="xsd:string" use="required"/>
+      <xsd:attribute name="idCliente" type="xsd:string" use="optional"/>
+      <xsd:attribute name="externalType" type="tns:procesoType" use="required"/>
+      <xsd:attribute name="assignedTo" type="xsd:string" use="required"/>
+      <xsd:attribute name="fechaInicial" type="xsd:dateTime" use="optional"/>
+      <xsd:attribute name="fechaFinal" type="xsd:dateTime" use="optional"/>
+      <xsd:attribute name="fechaRespuesta" type="xsd:dateTime" use="optional"/>
+      <xsd:attribute name="latitudInicial" type="xsd:float" use="optional"/>
+      <xsd:attribute name="latitudFinal" type="xsd:float" use="optional"/>
+      <xsd:attribute name="longitudInicial" type="xsd:float" use="optional"/>
+      <xsd:attribute name="longitudFinal" type="xsd:float" use="optional"/>
+      <xsd:attribute name="version" type="xsd:string" use="optional"/>
+      <xsd:attribute name="prioridad" type="xsd:int" use="optional"/>
+      <xsd:attribute name="fechaAsignacion" type="xsd:dateTime" use="optional"/>
+      <xsd:attribute name="fechaExpiracion" type="xsd:dateTime" use="optional"/>
+      <xsd:attribute name="fechaCancelacion" type="xsd:dateTime" use="optional"/>
+  </xsd:attributeGroup>
+</xsd:schema>

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+    <con:coreEntry>
+        <con:binding type="Native REST" xsi:type="con:NativeRestBindingType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:pipeline name="PipelinePairActualizarProducto_request" type="request">
+            <con:stage name="RequestStage">
+                <con:comment/>
+                <con:context/>
+                <con:actions>
+                    <con1:assign varName="bodyTmp" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.3b.15df6c24476.N8000</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/*</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/publish/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.3a.15df6c208e3.N8000</con2:id>
+                        <con1:service ref="OperacionPrendaria/Articulo/BusinessServices/NMPProductosAgilironRestPxyBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                        <con1:outboundTransform>
+                            <con1:routing-options xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                                <con2:id>_ActionId-a1e030f.1ce659b8.3c.15df6c32646.N8000</con2:id>
+                                <con1:restOptions>
+                                    <con1:verb>PUT</con1:verb>
+                                    <con1:relPath>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'Productos'</con:xqueryText>
+                                    </con1:relPath>
+                                </con1:restOptions>
+                            </con1:routing-options>
+                        </con1:outboundTransform>
+                    </con1:route>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairDefault_request" type="request"/>
+        <con:pipeline name="PipelinePairCrearProducto_request" type="request"/>
+        <con:pipeline name="PipelinePairActualizarProducto_response" type="response">
+            <con:stage name="ResponseStage">
+                <con:comment/>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.3e.15df6daa26a.N8000</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML("<response>
+		<status>Exito</status>
+		<Message>Mensaje Recibido</Message>
+</response>")]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairDefault_response" type="response">
+            <con:stage name="ErrorStage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                <con:comment/>
+                <con:context/>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-a1e030f.830c5ee.38.15e4e7255f2.N8000</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'{
+"error":"Operacion NO valida"
+}'</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairCrearProducto_response" type="response">
+            <con:stage name="ResponseStage">
+                <con:comment/>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.3f.15df6dc90cb.N8000</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML("<response>
+		<status>Exito</status>
+		<Message>Mensaje Recibido</Message>
+</response>")]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairEliminarProducto_response" type="response">
+            <con:stage name="ResponseStage">
+                <con:comment/>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.1ce659b8.40.15df6dce614.N8000</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML("<response>
+		<status>Exito</status>
+		<Message>Mensaje Recibido</Message>
+</response>")]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairEliminarProducto_request" type="request"/>
+        <con:flow>
+            <con:branch-node type="rest" name="BranchNotificacionMidasArticulo">
+                <con:comment/>
+                <con:branch-table>
+                    <con:branch name="CrearProducto">
+                        <con:operator>equals</con:operator>
+                        <con:rest-values>
+                            <con:path>Notificacion</con:path>
+                            <con:verb>POST</con:verb>
+                        </con:rest-values>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairCrearProducto">
+                                <con:comment/>
+                                <con:request>PipelinePairCrearProducto_request</con:request>
+                                <con:response>PipelinePairCrearProducto_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="ActualizarProducto">
+                        <con:operator>equals</con:operator>
+                        <con:rest-values>
+                            <con:path>Notificacion</con:path>
+                            <con:verb>PUT</con:verb>
+                        </con:rest-values>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairActualizarProducto">
+                                <con:comment/>
+                                <con:request>PipelinePairActualizarProducto_request</con:request>
+                                <con:response>PipelinePairActualizarProducto_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="EliminarProducto">
+                        <con:operator>equals</con:operator>
+                        <con:rest-values>
+                            <con:path>Notificacion/{id}</con:path>
+                            <con:verb>DELETE</con:verb>
+                        </con:rest-values>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairEliminarProducto">
+                                <con:comment/>
+                                <con:request>PipelinePairEliminarProducto_request</con:request>
+                                <con:response>PipelinePairEliminarProducto_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairDefault">
+                                <con:comment/>
+                                <con:request>PipelinePairDefault_request</con:request>
+                                <con:response>PipelinePairDefault_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

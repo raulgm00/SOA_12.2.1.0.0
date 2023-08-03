@@ -1,0 +1,86 @@
+<xsd:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPrestamo" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPrestamo" xmlns:NMPPrest="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPrestamo" xmlns:NMPOfertaP="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Oferta/Prendario" xmlns:NMPCanalP="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Canal/Prendario">
+  <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Oferta/Prendario" schemaLocation="../../../../Common/XSD/NMPOfertaPrendario_TIPOS.xsd"/>
+  <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Canal/Prendario" schemaLocation="../../../../Common/XSD/NMPCanalPrendario_TIPOS.xsd"/>
+  <xsd:complexType name="EventoPrestamoType">
+    <xsd:sequence>
+      <xsd:element name="idCliente" type="xsd:int"/>
+      <xsd:element name="fechaOperacion" type="xsd:dateTime"/>
+      <xsd:element name="idSucursal" type="xsd:int"/>
+      <xsd:element name="esCancelacion" type="xsd:boolean" minOccurs="0"/>
+      <xsd:element name="esReempeno" type="xsd:boolean" minOccurs="0"/>
+      <xsd:element name="guidCanalOrigen" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="guidCampania" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="ListaOperaciones" type="ListaOperacionesType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="updatePrestamoRequest" type="NMPPrest:EventoPrestamoType"/>
+  <xsd:element name="updatePrestamoResponse" type="NMPPrest:updatePrestamoResponseType"/>
+  <xsd:complexType name="updatePrestamoResponseType">
+    <xsd:sequence>
+      <xsd:element name="respuesta" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="RechazoType">
+    <xsd:sequence>
+      <xsd:element name="idMotivo" type="xsd:int"/>
+      <xsd:element name="motivo" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="OperacionType">
+    <xsd:sequence>
+      <xsd:element name="Prestamo" type="PrestamoType" minOccurs="0"/>
+      <xsd:element name="Contabilidad" type="ContabilidadType" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ListaOperacionesType">
+    <xsd:sequence>
+      <xsd:element name="Operacion" maxOccurs="unbounded" type="OperacionType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="PrestamoType">
+    <xsd:sequence>
+      <xsd:element name="folioPartida" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="idClientePrenda" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="cveValuador" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="fechaComercializacion" type="xsd:date" minOccurs="0"/>
+      <xsd:element name="ramo" type="xsd:string"/>
+      <xsd:element name="subramo" type="xsd:string"/>
+      <xsd:element name="valorOperacion" type="xsd:decimal"/>
+      <xsd:element name="tipoOperacion" type="xsd:string"/>
+      <xsd:element name="existenciaAlMoneda" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="montoAvaluo" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="montoPrestamo" type="xsd:decimal"/>
+      <xsd:element name="caracteristica1" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="caracteristica2" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="caracteristica3" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="tipoProducto" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="producto" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="DatosRechazo" minOccurs="0" maxOccurs="1" type="RechazoType"/>
+      <xsd:element name="tipoOferta" minOccurs="0" maxOccurs="1" type="NMPOfertaP:tipoOfertaType"/>
+      <xsd:element name="canalIngreso" minOccurs="0" maxOccurs="1" type="NMPCanalP:tipoCanalIngresoType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ContabilidadType">
+    <xsd:sequence>
+      <xsd:element name="esquemaCobro" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="idSucursalPartida" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="interesAlmoneda" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="comisionAlmacenaje" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="comisionComercializacion" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="comisionDesempenioExtemporaneo" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="interesDeposito" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="interesDepositoCancelado" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="interesDevengadoAnteriorPorPeriodo" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="interesDevengadoPorPeriodo" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="fechaDecremento" type="xsd:dateTime" minOccurs="0"/>
+      <xsd:element name="saldoFavor" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="iva" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="saldoInsoluto" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="precioVenta" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="montoAvaluoComercial" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="idSucursalIngreso" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="amortizacion" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="montoDemasia" type="xsd:decimal" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>

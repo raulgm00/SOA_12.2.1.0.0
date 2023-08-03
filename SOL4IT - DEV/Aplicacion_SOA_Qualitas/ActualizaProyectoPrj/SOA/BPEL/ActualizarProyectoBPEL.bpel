@@ -1,0 +1,247 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Thu Jan 05 14:10:51 CST 2017
+  Author:  Sol4IT Mexico
+  Type: BPEL 2.0 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="ActualizarProyectoBPEL"
+               targetNamespace="http://xmlns.oracle.com/ActualizaProyecto/ActualizaProyectoPrj/ActualizarProyectoBPEL"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/ActualizaProyecto/ActualizaProyectoPrj/ActualizarProyectoBPEL"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:ui="http://xmlns.oracle.com/soa/designer"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/ActualizaProyecto/ActualizaProyectoPrj/UpdateProyecto"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/db/updateProyecto"
+         xmlns:ns4="http://qualitas.com.mx/comunes/objetosComunes/v1/"
+         xmlns:ns3="http://qualitas.com.mx/Comun/Servicio/ActualizarProyecto/v1/"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns5="http://qualitas.com.mx/Comun/Servicio/v1/"
+         xmlns:ns6="http://qualitas.com.mx/Comun/Servicio/ProyectoData/v1/"
+         xmlns:ns7="http://xmlns.oracle.com/pcbpel/adapter/db/ActualizaProyecto/ActualizaProyectoPrj/ActualizaProyectoDB"
+         xmlns:ns8="http://xmlns.oracle.com/pcbpel/adapter/db/ActualizaProyectoDB"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ess="http://xmlns.oracle.com/scheduler" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:ns9="http://xmlns.oracle.com/pcbpel/adapter/db/ActualizaProyecto/ActualizaProyectoPrj/actProyecto"
+         xmlns:ns10="http://xmlns.oracle.com/pcbpel/adapter/db/ActualizaProyecto/ActualizaProyectoPrj/dbReference"
+         xmlns:ns11="http://xmlns.oracle.com/pcbpel/adapter/db/ActualizaProyecto/ActualizaProyectoPrj/updateProyectoDB"
+         xmlns:ns12="http://xmlns.oracle.com/pcbpel/adapter/db/actProyecto"
+         xmlns:ns13="http://xmlns.oracle.com/pcbpel/adapter/db/updateProyectoDB"
+         xmlns:ns14="http://xmlns.oracle.com/pcbpel/adapter/db/ActualizaProyecto/ActualizaProyectoPrj/SelProyectoUpdDB"
+         xmlns:ns15="http://xmlns.oracle.com/pcbpel/adapter/db/top/SelProyectoUpdDB">
+
+    <import ui:processWSDL="true" namespace="http://xmlns.oracle.com/ActualizaProyecto/ActualizaProyectoPrj/ActualizarProyectoBPEL" location="../WSDLs/ActualizarProyectoBPEL.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="ActualizarProyectoService" partnerLinkType="client:ActualizarProyectoBPEL" myRole="ActualizarProyectoBPELProvider"/>
+    <partnerLink name="updateProyectoDB" partnerLinkType="ns11:updateProyectoDB_plt"
+                 partnerRole="updateProyectoDB_role"/>
+    <partnerLink name="SelProyectoUpdDB" partnerLinkType="ns14:SelProyectoUpdDB_plt"
+                 partnerRole="SelProyectoUpdDB_role"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:ActualizarProyectoBPELRequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:ActualizarProyectoBPELResponseMessage"/>
+    <variable name="UpdateProyectoDB_InputVariable" messageType="ns11:Gpa013ProyectoCollection_msg"/>
+    <variable name="SelProyectoUpdInvoke_InputVariable" messageType="ns14:SelProyectoUpdDBSelect_inputParameters"/>
+    <variable name="SelProyectoUpdInvoke_OutputVariable" messageType="ns14:Gpa013ProyectoCollection_msg"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in ActualizarProyectoBPEL.wsdl) -->
+    <receive name="receiveInput" partnerLink="ActualizarProyectoService" portType="client:ActualizarProyectoBPEL" operation="process" variable="inputVariable" createInstance="yes"/>
+    <if name="If1">
+      <documentation>
+        <![CDATA[Actualiza Proyecto]]>
+      </documentation>
+      <condition>$inputVariable.payload/ns3:Input/ns3:idTipoServicio = 3 and $inputVariable.payload/ns3:Input/ns3:tipoOperacion = 1</condition>
+      <sequence>
+        <assign name="TransUpProyecto">
+          <bpelx:annotation>
+            <bpelx:pattern patternName="bpelx:transformation"></bpelx:pattern>
+          </bpelx:annotation>
+          <copy>
+            <from>ora:doXSLTransformForDoc("../Transformations/TransUpProyecto.xsl", $inputVariable.payload)</from>
+            <to variable="UpdateProyectoDB_InputVariable" part="Gpa013ProyectoCollection"/>
+          </copy>
+        </assign>
+        <invoke name="Invoe_UpdateProyectoDB" partnerLink="updateProyectoDB"
+                portType="ns11:updateProyectoDB_ptt" operation="update" inputVariable="UpdateProyectoDB_InputVariable"
+                bpelx:invokeAsDetail="no"/>
+        <assign name="GetProyecto">
+          <copy>
+            <from>$inputVariable.payload/ns3:Input/ns3:servicio/ns5:idSolicitud</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$SelProyectoUpdInvoke_InputVariable.SelProyectoUpdDBSelect_inputParameters/ns15:idSolicitud</to>
+          </copy>
+        </assign>
+        <invoke name="SelProyectoUpdInvoke" partnerLink="SelProyectoUpdDB"
+                portType="ns14:SelProyectoUpdDB_ptt" operation="SelProyectoUpdDBSelect"
+                inputVariable="SelProyectoUpdInvoke_InputVariable"
+                outputVariable="SelProyectoUpdInvoke_OutputVariable" bpelx:invokeAsDetail="no"/>
+        <assign name="Assign_Actualizacion">
+          <copy>
+            <from>0</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$outputVariable.payload/ns3:OperationResponse/ns4:codigoRespuesta</to>
+          </copy>
+          <copy>
+            <from>$SelProyectoUpdInvoke_OutputVariable.Gpa013ProyectoCollection/ns15:Gpa013Proyecto/ns15:presupuestoAprobado</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$outputVariable.payload/ns3:presupuestoAprob</to>
+          </copy>
+          <copy>
+            <from>$SelProyectoUpdInvoke_OutputVariable.Gpa013ProyectoCollection/ns15:Gpa013Proyecto/ns15:parcialidades</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$outputVariable.payload/ns3:numParcialidades</to>
+          </copy>
+          <copy>
+            <from>$SelProyectoUpdInvoke_OutputVariable.Gpa013ProyectoCollection/ns15:Gpa013Proyecto/ns15:idCondicionesPago</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$outputVariable.payload/ns3:condicionPago</to>
+          </copy>
+          <copy>
+            <from>$SelProyectoUpdInvoke_OutputVariable.Gpa013ProyectoCollection/ns15:Gpa013Proyecto/ns15:centroCosto</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$outputVariable.payload/ns3:centroCostos</to>
+          </copy>
+          <copy>
+            <from>$SelProyectoUpdInvoke_OutputVariable.Gpa013ProyectoCollection/ns15:Gpa013Proyecto/ns15:descOficina</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$outputVariable.payload/ns3:descOficina</to>
+          </copy>
+          <copy>
+            <from>$SelProyectoUpdInvoke_OutputVariable.Gpa013ProyectoCollection/ns15:Gpa013Proyecto/ns15:cveOficina</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$outputVariable.payload/ns3:claveOficina</to>
+          </copy>
+          <copy>
+            <from>$SelProyectoUpdInvoke_OutputVariable.Gpa013ProyectoCollection/ns15:Gpa013Proyecto/ns15:responsableArea</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$outputVariable.payload/ns3:responsableArea</to>
+          </copy>
+          <copy>
+            <from>$SelProyectoUpdInvoke_OutputVariable.Gpa013ProyectoCollection/ns15:Gpa013Proyecto/ns15:descArea</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$outputVariable.payload/ns3:descArea</to>
+          </copy>
+          <copy>
+            <from>$SelProyectoUpdInvoke_OutputVariable.Gpa013ProyectoCollection/ns15:Gpa013Proyecto/ns15:idProyecto</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$outputVariable.payload/ns3:idProyecto</to>
+          </copy>
+          <copy>
+            <from>"Se actualizo el proyecto de manera correcta"</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$outputVariable.payload/ns3:OperationResponse/ns4:descripcionRespuesta</to>
+          </copy>
+          <copy>
+            <from>$SelProyectoUpdInvoke_OutputVariable.Gpa013ProyectoCollection/ns15:Gpa013Proyecto/ns15:descProyecto</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$outputVariable.payload/ns3:descripcion</to>
+          </copy>
+          <copy>
+            <from>$SelProyectoUpdInvoke_OutputVariable.Gpa013ProyectoCollection/ns15:Gpa013Proyecto/ns15:nombreProyecto</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$outputVariable.payload/ns3:nombre</to>
+          </copy>
+          <copy>
+            <from>$SelProyectoUpdInvoke_OutputVariable.Gpa013ProyectoCollection/ns15:Gpa013Proyecto/ns15:stProyecto</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$outputVariable.payload/ns3:estatusProyecto</to>
+          </copy>
+          <copy>
+            <from>$SelProyectoUpdInvoke_OutputVariable.Gpa013ProyectoCollection/ns15:Gpa013Proyecto/ns15:idSolicitud</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$outputVariable.payload/ns3:idSolicitud</to>
+          </copy>
+          <copy>
+            <from>$SelProyectoUpdInvoke_OutputVariable.Gpa013ProyectoCollection/ns15:Gpa013Proyecto/ns15:idPrestador</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$outputVariable.payload/ns3:idPrestador</to>
+          </copy>
+          <copy>
+            <from>ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$outputVariable.payload/ns3:OperationResponse/ns4:fecha</to>
+          </copy>
+        </assign>
+      </sequence>
+      <elseif>
+        <documentation>
+          <![CDATA[Elimina Proyecto]]>
+        </documentation>
+        <condition>$inputVariable.payload/ns3:Input/ns3:idTipoServicio = 3 and $inputVariable.payload/ns3:Input/ns3:tipoOperacion = 2</condition>
+        <sequence name="Sequence1">
+          <assign name="TransDelProyecto">
+            <bpelx:annotation>
+              <bpelx:pattern patternName="bpelx:transformation"></bpelx:pattern>
+            </bpelx:annotation>
+            <copy>
+              <from>ora:doXSLTransformForDoc("../Transformations/TransDelProyecto.xsl", $inputVariable.payload)</from>
+              <to variable="UpdateProyectoDB_InputVariable" part="Gpa013ProyectoCollection"/>
+            </copy>
+          </assign>
+          <invoke name="Invoke_DeleteProyecto" partnerLink="updateProyectoDB" portType="ns11:updateProyectoDB_ptt"
+                  operation="update" inputVariable="UpdateProyectoDB_InputVariable" bpelx:invokeAsDetail="no"/>
+          <assign name="Assign_Elimina">
+            <copy>
+              <from>0</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$outputVariable.payload/ns3:OperationResponse/ns4:codigoRespuesta</to>
+            </copy>
+            <copy>
+              <from>ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$outputVariable.payload/ns3:OperationResponse/ns4:fecha</to>
+            </copy>
+            <copy>
+              <from>"Se elimino el proyecto de manera correcta"</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$outputVariable.payload/ns3:OperationResponse/ns4:descripcionRespuesta</to>
+            </copy>
+          </assign>
+        </sequence>
+      </elseif>
+      <else>
+        <assign name="Assign_Error">
+          <copy>
+            <from>1</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$outputVariable.payload/ns3:OperationResponse/ns4:codigoRespuesta</to>
+          </copy>
+          <copy>
+            <from>"Error, no se pudo actualizar el proyecto"</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$outputVariable.payload/ns3:OperationResponse/ns4:descripcionRespuesta</to>
+          </copy>
+          <copy>
+            <from>ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$outputVariable.payload/ns3:OperationResponse/ns4:fecha</to>
+          </copy>
+        </assign>
+      </else>
+    </if>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="ActualizarProyectoService" portType="client:ActualizarProyectoBPEL" operation="process" variable="outputVariable"/>
+  </sequence>
+</process>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con3="http://www.bea.com/wli/sb/stages/routing/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="PoC/AutosSinResguardo/GetContentsOT/Resources/WSDL/GetContent"/>
+            <con:binding>
+                <con:name>getContent_bind</con:name>
+                <con:namespace>http://xmlns.oracle.com/OpenText/GeContentsOT/GetContent</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:logging enabled="false" level="debug"/>
+            <oper:reporting>false</oper:reporting>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:pipeline type="request" name="request-af10c87.N63ef243e.0.156c2a721bb.N7ffe">
+            <con:stage id="_StageId-af10c87.N63ef243e.0.156c2a721bb.N7ffc" name="Request">
+                <con:context>
+                    <con1:userNsDecl prefix="open" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSrv"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="token">
+                        <con1:id>_ActionId-af10c87.N63ef243e.0.156c2a721bb.N7ff8</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$body/open:ContentRequest/open:Input/open:token/text()</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:assign varName="nodeId">
+                        <con1:id>_ActionId-af10c87.N63ef243e.0.156c2a721bb.N7ff5</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$body/open:ContentRequest/open:Input/open:nodeId/text()</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:assign varName="version">
+                        <con1:id>_ActionId-af10c87.N63ef243e.0.156c2a721bb.N7ff2</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$body/open:ContentRequest/open:Input/open:version/text()</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:replace varName="header" contents-only="true">
+                        <con1:id>_ActionId-af10c87.N63ef243e.0.156c2a721bb.N7fec</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xqueryText>&lt;urn:OTAuthentication xmlns:urn="urn:api.ecm.opentext.com">
+        
+         &lt;urn:AuthenticationToken>{$token}&lt;/urn:AuthenticationToken>
+      &lt;/urn:OTAuthentication></con1:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-af10c87.N63ef243e.0.156c2a721bb.N7fef</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xqueryText><![CDATA[<urn1:GetVersionContents xmlns:urn1="urn:DocMan.service.livelink.opentext.com">
+         <urn1:ID>{$nodeId}</urn1:ID>
+         <urn1:versionNum>{$version}</urn1:versionNum>
+      </urn1:GetVersionContents>]]></con1:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af10c87.N63ef243e.0.156c2a721bb.N7ffd">
+            <con:stage id="_StageId-af10c87.N63ef243e.0.156c2a721bb.N7ffb" name="Response">
+                <con:context>
+                    <con1:userNsDecl prefix="urn" namespace="Core.service.livelink.opentext.com"/>
+                    <con1:userNsDecl prefix="open" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSrv"/>
+                </con:context>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-af10c87.N63ef243e.0.156c2a721bb.N7fd3</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="PoC/AutosSinResguardo/GetContentsOT/Resources/XSLT/OpenTextResp"/>
+                                <con1:input>$body</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="PipelinePairNode1">
+                <con:request>request-af10c87.N63ef243e.0.156c2a721bb.N7ffe</con:request>
+                <con:response>response-af10c87.N63ef243e.0.156c2a721bb.N7ffd</con:response>
+            </con:pipeline-node>
+            <con:route-node name="RouteToOpenText">
+                <con:context/>
+                <con:actions>
+                    <con3:route>
+                        <con1:id>_ActionId-af10c87.N63ef243e.0.156c2a721bb.N7fe8</con1:id>
+                        <con3:service ref="PoC/AutosSinResguardo/GetContentsOT/Business Service/OpenTextBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con3:operation>GetVersionContents</con3:operation>
+                        <con3:outboundTransform/>
+                        <con3:responseTransform/>
+                    </con3:route>
+                </con:actions>
+            </con:route-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

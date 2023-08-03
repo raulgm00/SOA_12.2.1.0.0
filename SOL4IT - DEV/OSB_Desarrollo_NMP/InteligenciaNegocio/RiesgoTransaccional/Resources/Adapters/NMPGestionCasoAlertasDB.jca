@@ -1,0 +1,70 @@
+<adapter-config name="CasoAlertas" adapter="db" wsdlLocation="../WSDLs/NMPGestionCasosAlertasRTWSDL.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  <connection-factory UIConnectionName="RtUser_Dev" location="eis/DB/rtuser"/>
+  <endpoint-interaction portType="CasoAlertasDb_ptt" operation="insertCasoAlerta">
+    <interaction-spec className="oracle.tip.adapter.db.DBWriteInteractionSpec">
+      <property name="DescriptorName" value="CasoAlertas.RtCasos"/>
+      <property name="DmlType" value="insert"/>
+      <property name="MappingsMetaDataURL" value="NMPGestionCasosAlertasMAP.xml"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+      <property name="DetectOmissions" value="true"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  <endpoint-interaction portType="CasoAlertasDb_ptt" operation="updateCasoAlerta">
+    <interaction-spec className="oracle.tip.adapter.db.DBWriteInteractionSpec">
+      <property name="DescriptorName" value="CasoAlertas.RtCasos"/>
+      <property name="DmlType" value="update"/>
+      <property name="MappingsMetaDataURL" value="NMPGestionCasosAlertasMAP.xml"/>
+      <property name="DetectOmissions" value="true"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  <endpoint-interaction portType="CasoAlertasDb_ptt" operation="SelectCasoAlertasCliente">
+    <interaction-spec className="oracle.tip.adapter.db.DBReadInteractionSpec">
+      <property name="DescriptorName" value="CasoAlertas.RtCasos"/>
+      <property name="QueryName" value="CasoAlertasSelect"/>
+      <property name="MappingsMetaDataURL" value="NMPGestionCasosAlertasMAP.xml"/>
+      <property name="ReturnSingleResultSet" value="false"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  <endpoint-interaction portType="CasoAlertasDb_ptt" operation="validaCaso">
+    <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+      <property name="SqlString" value="select id, fecha_registro, count(ID) numcasos                                    from rt_casos                                    where id_cliente=:idCliente                                   and codigo_estado='ANALISIS'                         group by id, fecha_registro                         order by fecha_registro desc"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  <endpoint-interaction portType="CasoAlertasDb_ptt" operation="calculoCalificacion">
+    <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+      <property name="SqlString" value="SELECT rtc.id_cliente, SUM (rta.calificacion) suma                      FROM rt_casos rtc, rt_alertas rta                     WHERE rtc.id = RTA.ID_CASO AND rtc.id_cliente = :idCliente                     and rtc.id=:idCaso GROUP BY rtc.id_cliente"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  <endpoint-interaction portType="CasoAlertasDb_ptt" operation="getCasosPeriodoEva">
+    <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+      <property name="SqlString" value="select id id_caso, id_cliente, 'RAC' modo, nro_credencial    from rt_casos                        where trunc(fecha_reevaluacion)=trunc(sysdate)                        and codigo_estado='CERRAR'"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  <endpoint-interaction portType="CasoAlertasDb_ptt" operation="validaPeriodoEvaluacion">
+    <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+      <property name="SqlString" value="select id id_caso, id_cliente, 'RAC' modo, nro_credencial    from rt_casos                        where trunc(fecha_reevaluacion)&lt;=trunc(sysdate)                        and codigo_estado='CERRADO'"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  <endpoint-interaction portType="CasoAlertasDb_ptt" operation="GetSumaCalificacionAlertas">
+    <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+      <property name="SqlString" value="select                                           rtc.id id_caso,                                         sum(rtta.calificacion) suma                                         from                                         RT_CASOS rtc,                                          rt_alertas rta,                                         rt_tipos_alertas rtta                                         where RTc.ID = RTA.ID_CASO                                         and RTTA.CODIGO = RTA.CODIGO_TIPO                                         and rtc.id= :idCaso                                         group by rtc.id"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  
+  
+  <endpoint-interaction portType="CasoAlertasDb_ptt" operation="getCasosDiferenteAnalisis">
+    <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+      <property name="SqlString" value="select id, CODIGO_ESTADO        from RT_CASOS where ID_CLIENTE =:idCliente and CODIGO_ESTADO not in ('ANALISIS')       order by id desc"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  
+  
+</adapter-config>

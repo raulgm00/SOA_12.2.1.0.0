@@ -1,0 +1,53 @@
+<wsdl:definitions name="NMPAppMonteSvcWSDL" targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/GestionClientes/AppMonte" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:NMPAppMonteE="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/AppMonte" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Servicios/GestionClientes/AppMonte" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+    <wsdl:types>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+            <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+            <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/AppMonte" schemaLocation="../Schemas/NMPAppMonteSvcElementosXSD.xsd"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="NMPHeaderRequest">
+        <wsdl:part name="requestHeader" element="NMPsh:headerMessage"/>
+    </wsdl:message>
+    <wsdl:message name="NMPHeaderResponse">
+        <wsdl:part name="responseHeader" element="NMPsh:headerMessageResponse"/>
+    </wsdl:message>
+    <wsdl:message name="RegistrarClienteAppRequestMessage">
+        <wsdl:part name="Request" element="NMPAppMonteE:registrarClienteAppRequest"/>
+    </wsdl:message>
+    <wsdl:message name="RegistrarClienteAppResponseMessage">
+        <wsdl:part name="Response" element="NMPAppMonteE:registrarClienteAppResponse"/>
+    </wsdl:message>
+    <wsdl:message name="AppMonteFaultMessage">
+        <wsdl:part name="AppMonteFault" element="NMPsm:messageError"/>
+    </wsdl:message>
+    <wsdl:portType name="AppMonte_ptt">
+        <wsdl:operation name="registrarClienteApp">
+            <wsdl:input message="tns:RegistrarClienteAppRequestMessage"/>
+            <wsdl:output message="tns:RegistrarClienteAppResponseMessage"/>
+            <wsdl:fault message="tns:AppMonteFaultMessage" name="Fault"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="AppMonte_bind" type="tns:AppMonte_ptt">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="registrarClienteApp">
+            <soap:operation style="document" soapAction="registrarClienteAppRequest"/>
+            <wsdl:input>
+                <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:header message="tns:NMPHeaderResponse" part="responseHeader" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="Fault">
+                <wsdlsoap:fault name="Fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="AppMonte">
+        <wsdl:port name="AppMonte_port" binding="tns:AppMonte_bind">
+            <soap:address location=""/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

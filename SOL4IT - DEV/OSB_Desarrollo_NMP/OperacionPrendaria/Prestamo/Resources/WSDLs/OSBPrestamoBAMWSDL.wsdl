@@ -1,0 +1,37 @@
+<!--Eliminar esta acción cuando se de de baja BAM 11g--><wsdl:definitions name="BPELLoanStatusBAM" targetNamespace="http://xmlns.oracle.com/NMP_SOA_App/BAMProject/BPELLoanStatusBAM" xmlns:ns1="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPrestamo" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:client="http://xmlns.oracle.com/NMP_SOA_App/BAMProject/BPELLoanStatusBAM" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:documentation>
+<abstractWSDL>http://10.30.2.38:8001/soa-infra/services/nmp/BAMProject!2.0/BPELLoanStatusBAM.wsdl</abstractWSDL>
+</wsdl:documentation>
+  <plnk:partnerLinkType name="BPELLoanStatusBAM">
+    <plnk:role name="BPELLoanStatusBAMProvider">
+      <plnk:portType name="client:BPELLoanStatusBAM"/>
+    </plnk:role>
+  </plnk:partnerLinkType>
+  <wsdl:types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPrestamo" schemaLocation="../Schemas/PrestamoSvcXSD.xsd"/>
+    </schema>
+  </wsdl:types>
+  <wsdl:message name="BPELLoanStatusBAMRequestMessage">
+    <wsdl:part name="payload" element="ns1:updatePrestamoRequest"/>
+  </wsdl:message>
+  <wsdl:portType name="BPELLoanStatusBAM">
+    <wsdl:operation name="process">
+      <wsdl:input message="client:BPELLoanStatusBAMRequestMessage"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BPELLoanStatusBAMBinding" type="client:BPELLoanStatusBAM">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="process">
+      <soap:operation style="document" soapAction="process"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="bpelloanstatus_client_ep">
+    <wsdl:port name="BPELLoanStatusBAM_pt" binding="client:BPELLoanStatusBAMBinding">
+      <soap:address location="http://10.30.2.38:8001/soa-infra/services/nmp/BAMProject/bpelloanstatus_client_ep"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

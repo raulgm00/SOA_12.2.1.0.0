@@ -1,0 +1,636 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1" xmlns:af="http://xmlns.oracle.com/adf/faces/rich"
+          xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html">
+    <!--<af:resource type="javascript" source="/resources/javascript/employeepurchase.js"/>-->
+    <af:panelGroupLayout id="pgl1" layout="scroll">
+    <!-- ============= PANEL CRITERIOS OBLIGATORIOS ================= -->
+        <af:panelAccordion discloseMany="false" id="pa1" styleClass="AFStretchWidth" inlineStyle="height:155px;"
+                           binding="#{backingBeanScope.capturaCriteriosBean.panelAcordionProyectoEtapa}">
+            <af:showDetailItem id="Proyecto_Etapa" text="Proyecto y Etapa"
+                               binding="#{backingBeanScope.capturaCriteriosBean.showDetailItemProyectoEtapa}"
+                               inflexibleHeight="105">
+                <af:panelFormLayout id="pfl1" binding="#{backingBeanScope.capturaCriteriosBean.panelPE}">
+                    <af:outputFormatted value="ID Proyecto : #{bindings.Proyecto.inputValue}" id="of3" visible="false"/>
+                    <af:inputText value="#{bindings.ProyectoPantalla.inputValue}" label="* Proyeto "
+                                  required="#{bindings.ProyectoPantalla.hints.mandatory}"
+                                  columns="#{bindings.ProyectoPantalla.hints.displayWidth}"
+                                  maximumLength="#{bindings.ProyectoPantalla.hints.precision}"
+                                  shortDesc="#{bindings.ProyectoPantalla.hints.tooltip}" id="it7" readOnly="true">
+                        <f:validator binding="#{bindings.ProyectoPantalla.validator}"/>
+                    </af:inputText>
+                    <af:outputText value="#{bindings.IdRol.inputValue}" shortDesc="#{bindings.IdRol.hints.tooltip}"
+                                   id="ot13" visible="false">
+                        <af:convertNumber groupingUsed="false" pattern="#{bindings.IdRol.format}"/>
+                    </af:outputText>
+                    <af:selectOneRadio value="#{bindings.NuevaEtapa.inputValue}" label="* &#191;Es Nueva Etapa?"
+                                       shortDesc="#{bindings.NuevaEtapa.hints.tooltip}" id="sor2"
+                                       binding="#{backingBeanScope.capturaCriteriosBean.selectedRadioGroupEsNuevaEtapa}"
+                                       autoSubmit="true"
+                                       valueChangeListener="#{backingBeanScope.capturaCriteriosBean.changeOption}"
+                                       visible="true">
+                        <f:selectItems value="#{bindings.NuevaEtapa.items}" id="si2"/>
+                        <f:validator binding="#{bindings.NuevaEtapa.validator}"/>
+                    </af:selectOneRadio>
+                    <af:inputText label="* &#191;Es nueva Etapa ?" id="it10" value="Si" readOnly="true" visible="false"
+                                  rendered="false"/>
+                    <af:selectOneChoice id="soc1" visible="false"
+                                        binding="#{backingBeanScope.capturaCriteriosBean.selectOneChoiseEtapa}"
+                                        partialTriggers="si2 sor2"
+                                        valueChangeListener="#{backingBeanScope.capturaCriteriosBean.selectOneChoiseEtapa}"
+                                        autoSubmit="true" valuePassThru="true" value="#{bindings.EtapaCbo.inputValue}"
+                                        label="* Etapa">
+                        <f:selectItems value="#{backingBeanScope.CatalogosBean.listEtapa}" id="si3"/>
+                    </af:selectOneChoice>
+                    <af:inputText label="* Etapa" columns="20" id="it1"
+                                  binding="#{backingBeanScope.capturaCriteriosBean.inputTextEtapa}"
+                                  partialTriggers="si2 sor2" readOnly="true" value="#{bindings.Etapa1.inputValue}"
+                                  visible="false">
+                        <af:convertNumber groupingUsed="false"/>
+                    </af:inputText>
+                    <af:inputText value="#{bindings.SubEtapa.inputValue}" label="* Sub Etapa" columns="20"
+                                  maximumLength="#{bindings.SubEtapa.hints.precision}"
+                                  shortDesc="#{bindings.SubEtapa.hints.tooltip}" id="it2"
+                                  binding="#{backingBeanScope.capturaCriteriosBean.inputTextSubEtapa}"
+                                  partialTriggers="sor2 si2 soc1 si3" readOnly="true" visible="false">
+                        <f:validator binding="#{bindings.SubEtapa.validator}"/>
+                        <af:convertNumber groupingUsed="false" pattern="#{bindings.SubEtapa.format}"/>
+                    </af:inputText>
+                    <af:inputDate value="#{bindings.FechaSolicitud.inputValue}" label="* Fecha Solicitud"
+                                  required="#{bindings.FechaSolicitud.hints.mandatory}" columns="20"
+                                  shortDesc="#{bindings.FechaSolicitud.hints.tooltip}" id="id1"
+                                  binding="#{backingBeanScope.capturaCriteriosBean.compFechaSolicitud}" readOnly="true">
+                        <f:validator binding="#{bindings.FechaSolicitud.validator}"/>
+                        <af:convertDateTime pattern="#{bindings.FechaSolicitud.format}" type="both"/>
+                    </af:inputDate>
+                    <af:inputDate value="#{bindings.FechaEjecucion.inputValue}" label="* Fecha Ejecuci&#243;n"
+                                  required="#{bindings.FechaEjecucion.hints.mandatory}" columns="20"
+                                  shortDesc="#{bindings.FechaEjecucion.hints.tooltip}" id="id2"
+                                  binding="#{backingBeanScope.capturaCriteriosBean.compFechaEjecucion}">
+                        <f:validator binding="#{bindings.FechaEjecucion.validator}"/>
+                        <af:convertDateTime pattern="#{bindings.FechaEjecucion.format}" type="both"/>
+                    </af:inputDate>
+                    <af:selectOneChoice label="* Canal de Venta" id="soc3" value="#{bindings.CanalVenta.inputValue}"
+                                        rendered="#{bindings.ProyectoPantalla.inputValue eq 'Compra Cumplido' }"
+                                        binding="#{backingBeanScope.capturaCriteriosBean.selectecCanalVenta}" contentStyle="margin-top: 10px;">
+                        <f:selectItems value="#{backingBeanScope.CatalogosBean.listCatalogoCanalVenta}" id="si20"/>
+                    </af:selectOneChoice>
+                </af:panelFormLayout>
+            </af:showDetailItem>
+        </af:panelAccordion>
+        <af:separator id="s1"/>
+        <af:outputFormatted value="Los campos marcados con (*) son de car&#225;cter obligatorio" id="of1"
+                            inlineStyle="color:Red;"
+                            binding="#{backingBeanScope.capturaCriteriosBean.outPutFormattedParametrosObli}"/>
+        <!--partialTriggers="PanelCriteriosGenerales PanelSucursalExpendio PanelNumeroPartida sdi1"/>-->
+        <af:separator id="s18"/>
+        <!-- ============= PANEL CRITERIOS ================= -->
+        <af:panelAccordion discloseMany="false" id="pa2" styleClass="AFStretchWidth" inlineStyle="height:450px;"
+                           dimensionsFrom="parent" rendered="true"
+                           binding="#{backingBeanScope.capturaCriteriosBean.panelAcordionPesta&#241;as}">
+            <af:showDetailItem id="Criterios" text="Criterios" inflexibleHeight="100">
+                <af:panelTabbed position="above" id="pt1" styleClass="AFStretchWidth" inlineStyle="height: 420px;"
+                                dimensionsFrom="parent">
+                    <af:showDetailItem id="PanelCriteriosGenerales" text="Criterios Generales"
+                                       binding="#{backingBeanScope.capturaCriteriosBean.crgenerales}" rendered="true">
+                        <af:panelGroupLayout id="pgl11" layout="horizontal" valign="top"
+                                             inlineStyle="margin-top:10px; height:80px;" rendered="true">
+                            <af:panelFormLayout id="pfl2" inlineStyle="height:395px;">
+                                <af:selectOneChoice value="#{bindings.OperadorFechaIngresoAlmoneda.inputValue}"
+                                                    label="#{bindings.ProyectoPantalla.inputValue eq 'Concentradora' ? 'Operador Fecha Ingreso Almoneda' : '* Operador Fecha Ingreso Almoneda'}"
+                                                    required="#{bindings.OperadorFechaIngresoAlmoneda.hints.mandatory}"
+                                                    shortDesc="#{bindings.OperadorFechaIngresoAlmoneda.hints.tooltip}"
+                                                    id="soc6" autoSubmit="true"
+                                                    binding="#{backingBeanScope.capturaCriteriosBean.operadorFechaAlmoChoiseList}"
+                                                    valueChangeListener="#{backingBeanScope.capturaCriteriosBean.vclOperadorFechaAlmo}">
+                                    <f:selectItems value="#{bindings.OperadorFechaIngresoAlmoneda.items}" id="si11"/>
+                                    <f:validator binding="#{bindings.OperadorFechaIngresoAlmoneda.validator}"/>
+                                </af:selectOneChoice>
+                                <af:panelGroupLayout id="pgl8" layout="horizontal"
+                                                     inlineStyle="margin-left:-205px; width:184px;">
+                                    <af:inputDate value="#{bindings.FechaIngresoAlmoneda.inputValue}"
+                                                  label="#{bindings.ProyectoPantalla.inputValue eq 'Concentradora' ? 'Fecha de Ingreso Almoneda' : '* Fecha de Ingreso Almoneda'}"
+                                                  required="#{bindings.FechaIngresoAlmoneda.hints.mandatory}"
+                                                  shortDesc="#{bindings.FechaIngresoAlmoneda.hints.tooltip}" id="id3"
+                                                  binding="#{backingBeanScope.capturaCriteriosBean.compFechaAlmoneda}"
+                                                  visible="#{bindings.OperadorFechaIngresoAlmoneda.inputValue ne null}"
+                                                  contentStyle="width:100px;">
+                                        <f:validator binding="#{bindings.FechaIngresoAlmoneda.validator}"/>
+                                        <af:convertDateTime pattern="#{bindings.FechaIngresoAlmoneda.format}"
+                                                            type="both"/>
+                                    </af:inputDate>
+                                    <af:spacer width="2" height="25" id="s8"/>
+                                    <af:inputDate value="#{bindings.FechaIngresoAlmonedaFin.inputValue}"
+                                                  visible='#{bindings.OperadorFechaIngresoAlmoneda.inputValue eq "6"}'
+                                                  partialTriggers="soc6"
+                                                  required="#{bindings.FechaIngresoAlmonedaFin.hints.mandatory}"
+                                                  shortDesc="#{bindings.FechaIngresoAlmonedaFin.hints.tooltip}" id="id4"
+                                                  binding="#{backingBeanScope.capturaCriteriosBean.compFechaAlmonedaFin}"
+                                                  contentStyle="width:100px;">
+                                        <f:validator binding="#{bindings.FechaIngresoAlmonedaFin.validator}"/>
+                                        <af:convertDateTime pattern="dd/MM/yyyy"/>
+                                    </af:inputDate>
+                                </af:panelGroupLayout>
+                                <af:panelGroupLayout id="pgl20" inlineStyle="margin-left:-205px; margin-top:5px;" layout="vertical">
+                                    <af:selectOneChoice value="#{bindings.Fuente.inputValue}" label="Fuente"
+                                                        shortDesc="#{bindings.Fuente.hints.tooltip}" id="soc357"
+                                                        binding="#{backingBeanScope.capturaCriteriosBean.selectecFuente}"
+                                                        rendered="true">
+                                        <f:selectItems value="#{backingBeanScope.CatalogosBean.listCatalogoFuentes}"
+                                                       id="si5"/>
+                                    </af:selectOneChoice>
+                                </af:panelGroupLayout>
+                                <af:panelGroupLayout id="pgl13" layout="vertical"
+                                                     inlineStyle="margin-left:-205px; margin-top:-5px;"
+                                                     binding="#{backingBeanScope.capturaCriteriosBean.panelVRamoSub}"
+                                                     visible="true" rendered="true">
+                                    <af:spacer width="10" height="1" id="s4"/>
+                                    <af:selectOneChoice label="Ramo" id="soc11" value="#{bindings.Ramo.inputValue}"
+                                                        valueChangeListener="#{backingBeanScope.CatalogosBean.changeRamo}"
+                                                        autoSubmit="true" valuePassThru="true"
+                                                        binding="#{backingBeanScope.capturaCriteriosBean.ramoC}">
+                                        <f:selectItems value="#{backingBeanScope.CatalogosBean.listCatalogoRamo}"
+                                                       id="si13"/>
+                                    </af:selectOneChoice>
+                                    <af:spacer width="10" height="1" id="s5"/>
+                                    <af:selectManyChoice label="SubRamo" id="smc2" partialTriggers="soc11"
+                                                         valueChangeListener="#{backingBeanScope.capturaCriteriosBean.vclSubRamo}"
+                                                         binding="#{backingBeanScope.capturaCriteriosBean.gsubRamo}"
+                                                         autoSubmit="true"
+                                                         rendered="#{bindings.Ramo.inputValue ne null}">
+                                        <f:selectItems value="#{backingBeanScope.CatalogosBean.listCatalogoSubRamo}"
+                                                       id="si1333"/>
+                                    </af:selectManyChoice>
+                                    <af:spacer width="10" height="1" id="s29"/>
+                                    <af:selectOneChoice label="Factor" id="soc7" value="#{bindings.Factor.inputValue}"
+                                                        valuePassThru="true"
+                                                        visible="#{(bindings.Ramo.inputValue eq 1) or (bindings.Ramo.inputValue eq 6)}"
+                                                        partialTriggers="soc11"
+                                                        binding="#{backingBeanScope.capturaCriteriosBean.selectecFactor}">
+                                        <f:selectItems value="#{backingBeanScope.CatalogosBean.listCatalogoFactor}"
+                                                       id="si9"/>
+                                    </af:selectOneChoice>
+                                    <!--<af:selectManyChoice label="Factor" id="smc_con1"
+                                     rendered="#{bindings.ProyectoPantalla.inputValue eq 'Concentradora' }"
+                                     visible="#{(bindings.Ramo.inputValue eq 1) or (bindings.Ramo.inputValue eq 6)}"
+                                     partialTriggers="soc11" autoSubmit="true"
+                                     valueChangeListener="#{backingBeanScope.capturaCriteriosBean.vclFactor}"
+                                     binding="#{backingBeanScope.capturaCriteriosBean.selectecFactorCon}">
+                  <f:selectItems value="#{backingBeanScope.CatalogosBean.listCatalogoFactor}" id="si10"/>
+                </af:selectManyChoice>-->
+                                </af:panelGroupLayout>
+                                <af:panelGroupLayout id="pgl21" layout="vertical"
+                                                     inlineStyle="margin-left:-205px; margin-top:2px; height:140px;">
+                                    <af:inputText label="Canal de Ingreso" id="it9" value="CU Cumplido" readOnly="true"
+                                                  rendered="#{bindings.ProyectoPantalla.inputValue eq 'Compra Cumplido' }"
+                                                  contentStyle="padding-left: 26px; padding-top: 8px;"/>
+                                    <af:selectOneChoice label="Canal de Ingreso" id="soc4"
+                                                        value="#{bindings.CanalIngreso.inputValue}" valuePassThru="true"
+                                                        binding="#{backingBeanScope.capturaCriteriosBean.canalIngresoChoiseList}"
+                                                        rendered="#{bindings.ProyectoPantalla.inputValue eq 'Concentradora' }">
+                                        <f:selectItems value="#{backingBeanScope.CatalogosBean.listCatalogoCanalIngreso}"
+                                                       id="si6"/>
+                                    </af:selectOneChoice>
+                                    <af:spacer width="10" height="1" id="s28"/>
+                                    <af:inputText value="#{bindings.Refrendos.inputValue}" label="Refrendos"
+                                                  maximumLength="2" id="it3" autoSubmit="true" editable="always"
+                                                  binding="#{backingBeanScope.capturaCriteriosBean.inputRefrendo}"
+                                                  valueChangeListener="#{backingBeanScope.capturaCriteriosBean.validarEntero}"
+                                                  converter="javax.faces.Integer">
+                                        
+                                    </af:inputText>
+                                    <af:spacer width="10" height="1" id="s20"/>
+                                    <!--<af:inputText value="#{bindings.Refrendos.inputValue}" label="Refrendos" id="it122"
+                              binding="#{backingBeanScope.capturaCriteriosBean.inputRefres2}" autoSubmit="true"
+                              valueChangeListener="#{backingBeanScope.capturaCriteriosBean.vclRefrendos}"
+                              rendered="#{bindings.ProyectoPantalla.inputValue eq 'Concentradora'}"/>-->
+                                    <af:inputText label="Edo. Prenda" id="it8" value="AL Almoneda" readOnly="true"
+                                                  rendered="#{bindings.ProyectoPantalla.inputValue eq 'Compra Cumplido' }"
+                                                  contentStyle="padding-left: 26px; padding-top: 8px;"/>
+                                    <af:selectOneChoice label="Edo. Prenda" id="soc5"
+                                                        value="#{bindings.EdoPrenda.inputValue}" valuePassThru="true"
+                                                        binding="#{backingBeanScope.capturaCriteriosBean.selectEdoPrenda}"
+                                                        rendered="#{bindings.ProyectoPantalla.inputValue eq 'Concentradora' }">
+                                        <f:selectItems value="#{backingBeanScope.CatalogosBean.listCatalogoEdoPrenda}"
+                                                       id="si7"/>
+                                    </af:selectOneChoice>
+                                </af:panelGroupLayout>
+                            </af:panelFormLayout>
+                            <af:panelGroupLayout id="pgl12" inlineStyle="width:330px; height:75px;" layout="vertical">
+                                <af:selectOneRadio label="Seleccion de Sucursales" id="sor3"
+                                                   inlineStyle="margin-left:10px;"
+                                                   valueChangeListener="#{backingBeanScope.capturaCriteriosBean.vclTipoSucGral}"
+                                                   autoSubmit="true"
+                                                   binding="#{backingBeanScope.capturaCriteriosBean.radioButtonSucursales}"
+                                                   layout="vertical">
+                                    <af:selectItem label="Una Sucursal" value="1" id="si18"/>
+                                    <af:selectItem label="Multiples Sucursales" value="2" id="si19"/>
+                                </af:selectOneRadio>
+                                <af:panelAccordion discloseMany="true" id="pa3"
+                                                   inlineStyle=" margin-left:10px; margin-top:10px; width:505px; height:100px;"
+                                                   binding="#{backingBeanScope.capturaCriteriosBean.panelSucUni}"
+                                                   partialTriggers="sor3" visible="false">
+                                    <af:showDetailItem id="pane1" text="Seleccione una sucursal"
+                                                       inlineStyle=" margin-left:0px; margin-top:0px; width:200px; height:80px;">
+                                        <af:selectOneChoice label="Sucursal" id="soc13"
+                                                            value="#{bindings.Sucursal.inputValue}" autoSubmit="true"
+                                                            valueChangeListener="#{backingBeanScope.CatalogosBean.changeSucursalGenerales}"
+                                                            valuePassThru="true"
+                                                            binding="#{backingBeanScope.capturaCriteriosBean.selectSucursal}"
+                                                            inlineStyle="margin-left:10px; margin-top:10px;">
+                                            <f:selectItems value="#{backingBeanScope.CatalogosBean.listCatalogoSucursal}"
+                                                           id="si15"/>
+                                        </af:selectOneChoice>
+                                        <af:selectManyChoice label="Expendio" id="smc1" partialTriggers="soc13"
+                                                             valueChangeListener="#{backingBeanScope.capturaCriteriosBean.vclExpendioGenerales}"
+                                                             binding="#{backingBeanScope.capturaCriteriosBean.gExpendios}"
+                                                             autoSubmit="true"
+                                                             rendered="#{bindings.Sucursal.inputValue ne null}"
+                                                             inlineStyle="margin-left:10px; margin-top:10px;">
+                                            <f:selectItems value="#{backingBeanScope.CatalogosBean.listCatalogoExpendio}"
+                                                           id="si8"/>
+                                        </af:selectManyChoice>
+                                    </af:showDetailItem>
+                                </af:panelAccordion>
+                                <af:panelAccordion discloseMany="true" id="pa4"
+                                                   inlineStyle=" margin-left:0px; margin-top:0px; width:630px;"
+                                                   binding="#{backingBeanScope.capturaCriteriosBean.panelSucMulti}"
+                                                   partialTriggers="sor3" visible="false">
+                                    <af:showDetailItem id="pane2" text="Seleccione multiples sucursales">
+                                        <af:panelGroupLayout id="pgl14" layout="horizontal" halign="center"
+                                                             inlineStyle="margin-top:5px;margin-bottom:5px;">
+                                            <af:outputText value="Sucursales Disponibles" id="ot10"
+                                                           inlineStyle="font-weight:bold;"/>
+                                            <af:spacer width="200px" height="10" id="s12"/>
+                                            <af:outputText value="Sucursales Seleccionadas" id="ot11"
+                                                           inlineStyle="font-weight:bold;"/>
+                                        </af:panelGroupLayout>
+                                        <af:selectManyShuttle id="sms1"
+                                                              binding="#{backingBeanScope.capturaCriteriosBean.shuttleSucursales}"
+                                                              inlineStyle="width: 615px; height:auto;" autoSubmit="true"
+                                                              valueChangeListener="#{backingBeanScope.capturaCriteriosBean.vclShuttle}">
+                                            <f:selectItems value="#{backingBeanScope.CatalogosBean.listCatalogoSucursal}"
+                                                           id="si178"/>
+                                        </af:selectManyShuttle>
+                                    </af:showDetailItem>
+                                </af:panelAccordion>
+                            </af:panelGroupLayout>
+                        </af:panelGroupLayout>
+                    </af:showDetailItem>
+                    <af:showDetailItem id="PanelSucursalExpendio" text="Sucursal-Expendio"
+                                       binding="#{backingBeanScope.capturaCriteriosBean.sucexp}" rendered="true">
+                        <af:panelFormLayout id="pfl3">
+                            <af:panelGroupLayout id="pgl3" inlineStyle="margin-top:0px; height: 300px;"
+                                                 layout="vertical">
+                                <af:selectOneChoice label="Sucursal" id="soc9x"
+                                                    value="#{bindings.sucursalStr1.inputValue}" autoSubmit="true"
+                                                    valueChangeListener="#{backingBeanScope.CatalogosBean.changeSucursal}"
+                                                    valuePassThru="true">
+                                    <f:selectItems value="#{backingBeanScope.CatalogosBean.listCatalogoSucursal}"
+                                                   id="si12"/>
+                                </af:selectOneChoice>
+                                <af:spacer width="10" height="10" id="s21"/>
+                                <af:selectOneChoice label="Expendio" id="soc9y"
+                                                    value="#{bindings.expendioStr1.inputValue}" partialTriggers="soc9x"
+                                                    valuePassThru="true">
+                                    <af:selectItem label="Todos" id="si16" value="Todos"/>
+                                    <f:selectItems value="#{backingBeanScope.CatalogosBean.listCatalogoExpendio}"
+                                                   id="si14"/>
+                                </af:selectOneChoice>
+                                <af:spacer width="10" height="10" id="s22"/>
+                                <af:button text="Ingresar" disabled="#{!bindings.ingresarTabSucExp1.enabled}" id="b5"
+                                           action="#{backingBeanScope.capturaCriteriosBean.addSucursalExpendio}"
+                                           partialSubmit="false"/>
+                                <af:spacer width="10" height="10" id="s23"/>
+                                <af:table value="#{bindings.TabSucExpVO1.collectionModel}" var="row"
+                                          rows="#{bindings.TabSucExpVO1.rangeSize}"
+                                          emptyText="#{bindings.TabSucExpVO1.viewable ? 'No data to display.' : 'Access Denied.'}"
+                                          rowBandingInterval="0"
+                                          selectedRowKeys="#{bindings.TabSucExpVO1.collectionModel.selectedRow}"
+                                          selectionListener="#{bindings.TabSucExpVO1.collectionModel.makeCurrent}"
+                                          rowSelection="single" fetchSize="#{bindings.TabSucExpVO1.rangeSize}" id="t1"
+                                          inlineStyle="height:162px;" partialTriggers="b2" autoHeightRows="3"
+                                          width="225">
+                                    <?audit suppress oracle.adf.faces.compreqsummary?><?audit suppress oracle.adf.faces.tableneedsrowheader?>
+                                    <af:column headerText="Sucursal" id="c1" width="58">
+                                        <af:inputText value="#{row.bindings.Sucursal.inputValue}"
+                                                      label="#{bindings.TabSucExpVO1.hints.Sucursal.label}"
+                                                      required="#{bindings.TabSucExpVO1.hints.Sucursal.mandatory}"
+                                                      columns="#{bindings.TabSucExpVO1.hints.Sucursal.displayWidth}"
+                                                      maximumLength="#{bindings.TabSucExpVO1.hints.Sucursal.precision}"
+                                                      shortDesc="#{bindings.TabSucExpVO1.hints.Sucursal.tooltip}"
+                                                      id="it13" readOnly="true">
+                                            <f:validator binding="#{row.bindings.Sucursal.validator}"/>
+                                            <af:convertNumber groupingUsed="false"
+                                                              pattern="#{bindings.TabSucExpVO1.hints.Sucursal.format}"/>
+                                        </af:inputText>
+                                    </af:column>
+                                    <af:column headerText="Expendio" id="c5" width="57">
+                                        <af:inputText value="#{row.bindings.NumeroExpendio.inputValue}"
+                                                      label="#{bindings.TabSucExpVO1.hints.NumeroExpendio.label}"
+                                                      required="#{bindings.TabSucExpVO1.hints.NumeroExpendio.mandatory}"
+                                                      columns="#{bindings.TabSucExpVO1.hints.NumeroExpendio.displayWidth}"
+                                                      maximumLength="#{bindings.TabSucExpVO1.hints.NumeroExpendio.precision}"
+                                                      shortDesc="#{bindings.TabSucExpVO1.hints.NumeroExpendio.tooltip}"
+                                                      id="it16" readOnly="true">
+                                            <f:validator binding="#{row.bindings.NumeroExpendio.validator}"/>
+                                            <af:convertNumber groupingUsed="false"
+                                                              pattern="#{bindings.TabSucExpVO1.hints.NumeroExpendio.format}"/>
+                                        </af:inputText>
+                                    </af:column>
+                                    <af:column headerText="Opci&#243;n" id="c3" width="51">
+                                        <af:button text="Borrar" disabled="#{!bindings.Delete.enabled}" id="b2"
+                                                   actionListener="#{bindings.Delete.execute}"/>
+                                    </af:column>
+                                </af:table>
+                            </af:panelGroupLayout>
+                        </af:panelFormLayout>
+                    </af:showDetailItem>
+                    <af:showDetailItem id="PanelNumeroPartida" text="N&#250;mero de Partida"
+                                       binding="#{backingBeanScope.capturaCriteriosBean.numpartida}"
+                                       inlineStyle=" height: 800px;">
+                        <af:panelFormLayout id="pfl4">
+                            <af:panelGroupLayout id="pgl4" inlineStyle="height:750px; width:1209px;"
+                                                 layout="scroll"
+                                                 binding="#{backingBeanScope.capturaCriteriosBean.panelGroupLayoutNumeroPartidas}">
+                                <af:panelGroupLayout id="pgl5" layout="horizontal"
+                                                     inlineStyle="margin-top:-5px; margin-bottom:10px; margin-left:5px; width:1117px;">
+                                    <af:panelHeader text="Ingresar una partida" id="ph1" size="2" headerLevel="1"
+                                                    inlineStyle="height:352px;">
+                                        <f:facet name="context"/>
+                                        <f:facet name="menuBar"/>
+                                        <f:facet name="toolbar"/>
+                                        <f:facet name="legend"/>
+                                        <f:facet name="info"/>
+                                        <af:panelGroupLayout id="pgl6" layout="horizontal">
+                                            <af:inputText maximumLength="9" id="it15"
+                                                          editable="always"
+                                                          binding="#{backingBeanScope.capturaCriteriosBean.inputTextNumeroPartida}" autoSubmit="true"
+                                                          converter="javax.faces.Integer"/>
+                                            <af:spacer width="10" height="10" id="s9"/>
+                                            <af:button text="Ingresar" id="b3"
+                                                       action="#{backingBeanScope.capturaCriteriosBean.addNumeroPartida}"/>
+                                        </af:panelGroupLayout>
+                                        <af:spacer width="10" height="10" id="s6"/>
+                                        <af:panelGroupLayout id="pgl22" layout="vertical">
+                                            <af:panelGroupLayout id="pgl7" inlineStyle="margin-top:20px;">
+                                                <af:button text="Limpiar Tabla" id="b1"
+                                                           action="#{backingBeanScope.capturaCriteriosBean.limpiarTalbSucExpButton}"/>
+                                                <af:spacer width="50px" height="10" id="s10"/>
+                                                <af:outputText id="ot1" value="N&#250;mero de Registros: "
+                                                               inlineStyle="font-size:14px;margin-top:10px;"/>
+                                                <af:outputFormatted value="#{bindings.TabNumPartVO1Iterator.estimatedRowCount}"
+                                                                    id="of2"
+                                                                    inlineStyle="color:Red; font-size:14px; margin-top:10px;"
+                                                                    partialTriggers="b3 t2:b4 b1"/>
+                                            </af:panelGroupLayout>
+                                            <af:table value="#{bindings.TabNumPartVO1.collectionModel}" var="row"
+                                                      rows="#{bindings.TabNumPartVO1.rangeSize}"
+                                                      emptyText="#{bindings.TabNumPartVO1.viewable ? 'No data to display.' : 'Access Denied.'}"
+                                                      rowBandingInterval="0"
+                                                      selectedRowKeys="#{bindings.TabNumPartVO1.collectionModel.selectedRow}"
+                                                      selectionListener="#{bindings.TabNumPartVO1.collectionModel.makeCurrent}"
+                                                      rowSelection="single"
+                                                      fetchSize="#{bindings.TabNumPartVO1.rangeSize}" id="t2"
+                                                      partialTriggers="::b3 ::t2 b4"
+                                                      inlineStyle="height:150px;margin-top:15px;" autoHeightRows="5"
+                                                      maxClientRows="-1" width="233"
+                                                      binding="#{backingBeanScope.capturaCriteriosBean.tablaNumPart}">
+                                                <af:column headerText="N&#250;mero de Partida" id="c4" width="134">
+                                                    <af:inputText value="#{row.bindings.NumPartida.inputValue}"
+                                                                  label="#{bindings.TabNumPartVO1.hints.NumPartida.label}"
+                                                                  required="#{bindings.TabNumPartVO1.hints.NumPartida.mandatory}"
+                                                                  columns="#{bindings.TabNumPartVO1.hints.NumPartida.displayWidth}"
+                                                                  maximumLength="#{bindings.TabNumPartVO1.hints.NumPartida.precision}"
+                                                                  shortDesc="#{bindings.TabNumPartVO1.hints.NumPartida.tooltip}"
+                                                                  id="it17" converter="javax.faces.Number"
+                                                                  readOnly="true">
+                                                        <f:validator binding="#{row.bindings.NumPartida.validator}"/>
+                                                        <af:convertNumber groupingUsed="false"
+                                                                          pattern="#{bindings.TabNumPartVO1.hints.NumPartida.format}"/>
+                                                    </af:inputText>
+                                                </af:column>
+                                                <af:column headerText="Opci&#243;n" id="c51" width="60">
+                                                    <af:button text="Borrar" disabled="#{!bindings.Delete1.enabled}"
+                                                               id="b4" actionListener="#{bindings.Delete1.execute}"/>
+                                                </af:column>
+                                            </af:table>
+                                        </af:panelGroupLayout>
+                                    </af:panelHeader>
+                                    <af:spacer width="10" height="10" id="s7"/>
+                                    <af:panelHeader text="Cargar partidas masivas" id="ph2" size="2" headerLevel="1"
+                                                    inlineStyle="height:217px;margin-top:-125px;">
+                                        <f:facet name="context"/>
+                                        <f:facet name="menuBar"/>
+                                        <f:facet name="toolbar"/>
+                                        <f:facet name="legend"/>
+                                        <f:facet name="info"/>
+                                        <af:inputFile id="if1"
+                                                      valueChangeListener="#{backingBeanScope.capturaCriteriosBean.fileVCL}"
+                                                      binding="#{backingBeanScope.capturaCriteriosBean.cagarFile}"
+                                                      autoSubmit="true" label="Archivo" uploadType="manual"
+                                                      inlineStyle="margin-right: 340px;"/>
+                                    </af:panelHeader>
+                                </af:panelGroupLayout>
+                            </af:panelGroupLayout>
+                        </af:panelFormLayout>
+                    </af:showDetailItem>
+                    <af:showDetailItem text="Desmarcar Partidas" id="sdi1"
+                                       binding="#{backingBeanScope.capturaCriteriosBean.tapDesmarcado}"
+                                       disclosureListener="#{backingBeanScope.capturaCriteriosBean.disclosListenerDesmarcar}"
+                                       rendered="false">
+                        <af:panelFormLayout id="pfl5">
+                            <f:facet name="footer">
+                                <af:panelGroupLayout id="pgl2">
+                                    <af:spacer width="104" height="28" id="s3"/>
+                                    <af:button text="Desmarcar" id="b13"
+                                               binding="#{backingBeanScope.capturaCriteriosBean.btnDesmarcar}"
+                                               visible="false" icon="/resources/images/notes.png"
+                                               action="#{backingBeanScope.capturaCriteriosBean.guardarPartidasDesmarcar}"/>
+                                </af:panelGroupLayout>
+                            </f:facet>
+                            <af:panelGroupLayout id="pgl15" layout="scroll">
+                                <af:panelGroupLayout id="pgl16" layout="horizontal">
+                                    <af:spacer width="10" height="10" id="s15"/>
+                                    <af:panelHeader text="Carga masiva de partidas a desmarcar" id="ph3" size="2"
+                                                    headerLevel="1">
+                                        <f:facet name="context"/>
+                                        <f:facet name="toolbar"/>
+                                        <f:facet name="menuBar"/>
+                                        <f:facet name="legend"/>
+                                        <f:facet name="info"/>
+                                        <af:inputFile label="Cargar archivo" id="if2" autoSubmit="true"
+                                                      valueChangeListener="#{backingBeanScope.capturaCriteriosBean.loadFileVCLDesmarcado}"
+                                                      binding="#{backingBeanScope.capturaCriteriosBean.cargaFileDesmarcado}"/>
+                                    </af:panelHeader>
+                                </af:panelGroupLayout>
+                                <af:panelGroupLayout id="pgl17" layout="horizontal">
+                                    <af:spacer width="10" height="30" id="s17"/>
+                                    <af:button text="Limpiar Tabla" id="b11"
+                                               action="#{backingBeanScope.capturaCriteriosBean.limpiarTabDescartarNumPart}"/>
+                                    <af:spacer width="50" height="10" id="s16"/>
+                                    <af:outputText value="N&#250;mero de Registros: " id="ot3"/>
+                                    <af:outputFormatted value="#{bindings.TabNumPartDesVO1Iterator.estimatedRowCount}"
+                                                        id="of4" inlineStyle="color:Red; font-size:14px;"
+                                                        partialTriggers="t3 t3:b12 b11"/>
+                                </af:panelGroupLayout>
+                                <af:panelGroupLayout id="pgl19" inlineStyle="width:200px;">
+                                    <af:spacer width="20" height="10" id="s19"/>
+                                    <af:table value="#{bindings.TabNumPartDesVO1.collectionModel}" var="row"
+                                              rows="#{bindings.TabNumPartDesVO1.rangeSize}"
+                                              emptyText="#{bindings.TabNumPartDesVO1.viewable ? 'No data to display.' : 'Access Denied.'}"
+                                              rowBandingInterval="0" fetchSize="#{bindings.TabNumPartDesVO1.rangeSize}"
+                                              id="t3" width="181" partialTriggers="b12" rowSelection="single"
+                                              autoHeightRows="7" maxClientRows="-1"
+                                              selectionListener="#{bindings.TabNumPartDesVO1.collectionModel.makeCurrent}"
+                                              selectedRowKeys="#{bindings.TabNumPartDesVO1.collectionModel.selectedRow}">
+                                        <af:column headerText="N&#250;mero de Partida" id="c6" width="100">
+                                            <af:outputText value="#{row.NumPartDes}"
+                                                           shortDesc="#{bindings.TabNumPartDesVO1.hints.NumPartDes.tooltip}"
+                                                           id="ot12">
+                                                <af:convertNumber groupingUsed="false"
+                                                                  pattern="#{bindings.TabNumPartDesVO1.hints.NumPartDes.format}"/>
+                                            </af:outputText>
+                                        </af:column>
+                                        <af:column headerText="Opci&#243;n" id="c7" width="53">
+                                            <af:button actionListener="#{bindings.Delete2.execute}" text="Borrar"
+                                                       disabled="#{!bindings.Delete2.enabled}" id="b12"/>
+                                        </af:column>
+                                    </af:table>
+                                </af:panelGroupLayout>
+                            </af:panelGroupLayout>
+                        </af:panelFormLayout>
+                    </af:showDetailItem>
+                </af:panelTabbed>
+            </af:showDetailItem>
+        </af:panelAccordion>
+        <af:spacer width="260" height="10" id="s2"/>
+        <af:panelGroupLayout id="pgl10" layout="horizontal"
+                             binding="#{backingBeanScope.capturaCriteriosBean.panelGroupLayoutBotonesFinales}">
+            <af:button text="Enviar Criterios" id="b6" icon="/resources/images/accept-icon.png"
+                       action="#{backingBeanScope.capturaCriteriosBean.guardar}"
+                       binding="#{backingBeanScope.capturaCriteriosBean.btnEnvioCriterios}"/>
+            <af:spacer width="20" height="10" id="s11"/>
+            <!--<af:button text="Simular" id="b10" icon="/resources/images/search.png"
+                 rendered="#{bindings.ProyectoPantalla.inputValue eq 'Concentradora'}"
+                 binding="#{backingBeanScope.capturaCriteriosBean.btnSimulaMarcado}"
+                 action="#{backingBeanScope.capturaCriteriosBean.btnSimular}" disabled="false"/>-->
+            <af:spacer width="25" height="10" id="s14"/>
+            <af:button text="Limpiar Criterios" id="b9"
+                       action="#{backingBeanScope.capturaCriteriosBean.limpiarFormulario}"
+                       icon="/resources/images/delete_ena.png"/>
+        </af:panelGroupLayout>
+        <!-- =============POPUP CONFIRMACION================= -->
+        <af:popup childCreation="deferred" autoCancel="disabled" id="p11"
+                  binding="#{backingBeanScope.capturaCriteriosBean.popupConfirmar}" contentDelivery="lazyUncached">
+            <af:dialog id="d22" title="Confirmacion" titleIconSource="/afr/info.png" type="cancel"
+                       cancelTextAndAccessKey="No" noTextAndAccessKey="No" inlineStyle="width:480px;">
+                <af:outputText value="&#191;Est&#225; seguro de que desea enviar los criterios?" id="ot15"/>
+                <f:facet name="buttonBar">
+                    <af:commandButton id="cb55" text="Si"
+                                      action="#{backingBeanScope.capturaCriteriosBean.botonConfirmar}"/>
+                </f:facet>
+            </af:dialog>
+        </af:popup>
+        
+        <!-- =============SUCCESS OPERATION ================= -->
+        
+        <af:popup childCreation="deferred" autoCancel="disabled" id="p1"
+                  binding="#{backingBeanScope.capturaCriteriosBean.popupMensajes}" contentDelivery="lazyUncached">
+            <af:dialog id="d2" title="Success Operation" titleIconSource="/afr/confirmation.png" type="none"
+                       inlineStyle="height:120px;">
+                <f:facet name="buttonBar">
+                    <af:commandButton id="cb5" text="Aceptar"
+                                      action="#{backingBeanScope.capturaCriteriosBean.btnCerrarPopups}"/>
+                </f:facet>
+                <af:panelStretchLayout id="psl2" inlineStyle="width:480px; height:50px;" startWidth="5px" endWidth="5px"
+                                       topHeight="5px" bottomHeight="5px">
+                    <f:facet name="center">
+                        <af:panelGroupLayout id="pgl18" halign="left" valign="middle" styleClass="AFStretchWidth">
+                            <af:panelLabelAndMessage id="plam2" label="#{pageFlowScope.msgSucess}"/>
+                        </af:panelGroupLayout>
+                    </f:facet>
+                </af:panelStretchLayout>
+            </af:dialog>
+        </af:popup>
+        <!-- ============= ERROR AL ENVIAR CRITERIOS ================= -->
+        <af:popup id="p4" contentDelivery="lazyUncached" binding="#{backingBeanScope.capturaCriteriosBean.errorPopup}">
+            <af:dialog id="d4" title="Error al enviar criterios" titleIconSource="/afr/error.png" type="none">
+                <af:panelStretchLayout id="psl1" inlineStyle="width:480px; height:80px;">
+                    <f:facet name="center">
+                        <af:panelGroupLayout id="pgl5is" styleClass="AFStretchWidth" halign="left" valign="middle"
+                                             layout="vertical">
+                            <af:outputText value="Error en los par&#225;metros recibidos" id="ot1is"
+                                           inlineStyle="font-weight:bold;"/>
+                            <af:spacer width="10" height="10" id="s7is"/>
+                            <af:separator id="s6is"/>
+                            <af:outputText value="Mensaje del Servicio :" id="ot2" inlineStyle="font-weight:bold;"/>
+                            <af:outputText value="#{pageFlowScope.msgError}" id="ot9"/>
+                        </af:panelGroupLayout>
+                    </f:facet>
+                </af:panelStretchLayout>
+                <f:facet name="buttonBar">
+                    <af:commandButton id="cb4" text="Aceptar"
+                                      action="#{backingBeanScope.capturaCriteriosBean.btnCerrarPopupsFail}"/>
+                </f:facet>
+            </af:dialog>
+        </af:popup>
+        <!-- ============= RELOJ DE ARENA ================= -->
+        <af:popup id="p6" contentDelivery="lazyUncached"
+                  binding="#{backingBeanScope.capturaCriteriosBean.popupLoading}">
+            <af:dialog id="d6" title="Esperando confirmaci&#243;n de Midas" type="none"
+                       inlineStyle="Width:280px;Height:100px;">
+                <f:facet name="buttonBar"/>
+                <af:spacer width="100" height="10" id="s13"/>
+                <af:image source="/resources/images/ajax-loader.gif" shortDesc="En espera" id="i1"
+                          inlineStyle="width:30px; height:30px;"/>
+            </af:dialog>
+        </af:popup>
+        <!-- ============= ERROR ETAPAS EXISTENTE EN LOCAL ================= -->
+        <af:popup id="p5" contentDelivery="lazyUncached" binding="#{backingBeanScope.capturaCriteriosBean.popupEtapa}">
+            <af:dialog id="d5" type="cancel" title="Confirmacion" affirmativeTextAndAccessKey="Yes"
+                       cancelTextAndAccessKey="No" inlineStyle="width:310px; height:25px;">
+                <af:outputText id="ot4"
+                               value="El n&#250;mero de etapa  #{bindings.Etapa1.inputValue} ya se encuentra registrado.  &#191;Desea utilizar la siguiente etapa "/>
+                <af:outputText id="ot6" binding="#{backingBeanScope.capturaCriteriosBean.etapaNext}"/>
+                <af:outputText value=" en el envio de los Criterios ?" id="ot8"/>
+                <f:facet name="buttonBar">
+                    <af:commandButton id="cb1" text="Si"
+                                      action="#{backingBeanScope.capturaCriteriosBean.confirmaNuevaEtapa}"/>
+                </f:facet>
+            </af:dialog>
+        </af:popup>
+        <!-- ============= ERROR ================= -->
+        <af:popup childCreation="deferred" autoCancel="disabled" id="p2"
+                  binding="#{backingBeanScope.capturaCriteriosBean.fechasPopup}" contentDelivery="lazyUncached">
+            <af:dialog id="d1" type="ok" titleIconSource="/afr/error.png" title="Error:"
+                       affirmativeTextAndAccessKey="Cerrar">
+                <f:facet name="buttonBar"/>
+                <af:panelStretchLayout id="psl3" inlineStyle="width:399px; height:25px;" bottomHeight="10px"
+                                       endWidth="80px">
+                    <f:facet name="bottom"/>
+                    <f:facet name="center">
+                        <af:panelGroupLayout id="pgl9" styleClass="AFStretchWidth" halign="center" valign="middle">
+                            <af:outputText value="#{pageFlowScope.msgError}" id="ot5" inlineStyle="margin-left:10px"/>
+                        </af:panelGroupLayout>
+                    </f:facet>
+                    <f:facet name="start"/>
+                    <f:facet name="end"/>
+                    <f:facet name="top"/>
+                </af:panelStretchLayout>
+            </af:dialog>
+        </af:popup>
+        <!-- ============= CONFIRMACION DE PARTIDAS A DESMARCAR ================= -->
+        <af:popup id="p7" binding="#{backingBeanScope.capturaCriteriosBean.popupConfirmaPartidasDescartar}"
+                  contentDelivery="lazyUncached">
+            <af:dialog id="d7" type="cancel" title="Confirmacion de partidas a desmarcar"
+                       titleIconSource="/afr/info.png" affirmativeTextAndAccessKey="Yes" cancelTextAndAccessKey="No"
+                       inlineStyle="width:310px; height:25px;">
+                <af:outputText value="&#191;Est&#225; seguro de que desea desmarcar las partidas?" id="ot14"/>
+                <f:facet name="buttonBar">
+                    <af:commandButton id="cb3" text="Si"
+                                      action="#{backingBeanScope.capturaCriteriosBean.btnConfirmarPartiDes}"/>
+                </f:facet>
+            </af:dialog>
+        </af:popup>
+    </af:panelGroupLayout>
+</jsp:root>

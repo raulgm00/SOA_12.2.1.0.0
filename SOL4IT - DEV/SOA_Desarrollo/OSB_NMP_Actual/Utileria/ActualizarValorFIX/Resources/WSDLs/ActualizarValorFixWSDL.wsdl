@@ -1,0 +1,56 @@
+<wsdl:definitions name="ActualizarValorFIX" targetNamespace="http://xmlns.oracle.com/nmp/ActualizarValorFIX/ActualizarValorFIX" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:client="http://xmlns.oracle.com/nmp/ActualizarValorFIX/ActualizarValorFIX" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+    <plnk:partnerLinkType name="ActualizarValorFIX">
+        <plnk:role name="ActualizarValorFIXProvider" portType="client:ActualizarValorFIX"/>
+    </plnk:partnerLinkType>
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlns.oracle.com/nmp/ActualizarValorFIX/ActualizarValorFIX" schemaLocation="../Schemas/ActualizarValorFixXSD.xsd"/>
+			<import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+			<import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+        </schema>
+    </wsdl:types>
+	<wsdl:message name="NMPHeaderRequest">
+		<wsdl:part name="requestHeader" element="NMPsh:headerMessage"/>
+    </wsdl:message>
+    <wsdl:message name="NMPHeaderResponse">
+		<wsdl:part name="responseHeader" element="NMPsh:headerMessageResponse"/>
+    </wsdl:message>
+    <wsdl:message name="ActualizarValorFIXRequestMessage">
+        <wsdl:part name="messageRequest" element="client:messageRequest"/>
+    </wsdl:message>
+    <wsdl:message name="ActualizarValorFIXResponseMessage">
+        <wsdl:part name="messageResponse" element="client:messageResponse"/>
+    </wsdl:message>
+	<wsdl:message name="ActualizarValorFIXFaultMessage">
+		<wsdl:part name="actualizarValorFixFault" element="NMPsm:messageError"/>
+    </wsdl:message>
+    <wsdl:portType name="ActualizarValorFIX">
+        <wsdl:operation name="actualizaFIX">
+            <wsdl:input message="client:ActualizarValorFIXRequestMessage"/>
+            <wsdl:output message="client:ActualizarValorFIXResponseMessage"/>
+			<wsdl:fault message="client:ActualizarValorFIXFaultMessage" name="ActualizarValorFixFault"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="ActualizarValorFIXBinding" type="client:ActualizarValorFIX">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="actualizaFIX">
+            <soap:operation style="document" soapAction="actualizaFIX"/>
+            <wsdl:input>
+                <soap:body use="literal" parts="messageRequest"/>
+				<soap:header message="client:NMPHeaderRequest" part="requestHeader" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" parts="messageResponse"/>
+				<soap:header message="client:NMPHeaderResponse" part="responseHeader" use="literal"/>
+            </wsdl:output>
+			<wsdl:fault name="ActualizarValorFixFault">
+				<soap:fault name="ActualizarValorFixFault" use="literal"/>
+			</wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="actualizarvalorfix_client_ep">
+        <wsdl:port name="ActualizarValorFIX_pt" binding="client:ActualizarValorFIXBinding">
+            <soap:address location=""/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

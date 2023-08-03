@@ -1,0 +1,35 @@
+<wsdl:definitions name="BPELSIGOClientes" targetNamespace="http://xmlns.oracle.com/SIGO/SIGOClientes/BPELSIGOClientes" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:client="http://xmlns.oracle.com/SIGO/SIGOClientes/BPELSIGOClientes" xmlns:ns1="http://www.nmp.com.mx/bam/clientesDO" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+    <wsdl:documentation>
+        <abstractWSDL>http://10.30.3.15:8001/soa-infra/services/SIGO/SIGOClientes!1.0/WSDLs/BPELSIGOClientes.wsdl</abstractWSDL>
+    </wsdl:documentation>
+    <plnk:partnerLinkType name="BPELSIGOClientes">
+        <plnk:role name="BPELSIGOClientesProvider" portType="client:BPELSIGOClientes"/>
+    </plnk:partnerLinkType>
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://www.nmp.com.mx/bam/clientesDO" schemaLocation="../Schemas/SIGOClientesXSD.xsd"/>
+        </schema>
+    </wsdl:types>
+    <wsdl:message name="BPELSIGOClientesRequestMessage">
+        <wsdl:part name="payload" element="ns1:BAM"/>
+    </wsdl:message>
+    <wsdl:portType name="BPELSIGOClientes">
+        <wsdl:operation name="process">
+            <wsdl:input message="client:BPELSIGOClientesRequestMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="BPELSIGOClientesBinding" type="client:BPELSIGOClientes">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="process">
+            <soap:operation style="document" soapAction="process"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="bpelsigoclientes_client_ep">
+        <wsdl:port name="BPELSIGOClientes_pt" binding="client:BPELSIGOClientesBinding">
+            <soap:address location="http://10.30.3.15:8001/soa-infra/services/SIGO/SIGOClientes/bpelsigoclientes_client_ep"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

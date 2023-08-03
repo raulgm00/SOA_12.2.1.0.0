@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/routing/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="OperacionPrendaria/Avaluo/Resources/WSDLs/NMPAvaluoWSDL"/>
+            <con:binding>
+                <con:name>AvaluoAutoWSHttpBinding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Service/Avaluo</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:logging enabled="false" level="debug"/>
+            <oper:reporting>false</oper:reporting>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router errorHandler="error-N53effc65.772be8f6.0.15a5e2ac698.N7e35">
+        <con:pipeline type="request" name="request-N53effc65.772be8f6.0.15a5e2ac698.N7fcf">
+            <con:stage id="_StageId-N53effc65.772be8f6.0.15a5e2ac698.N7fcd" name="StageValidaHeader">
+                <con:context/>
+                <con:actions>
+                    <con1:validate>
+                        <con2:id>_ActionId-N53effc65.772be8f6.0.15a5e2ac698.N7f99</con2:id>
+                        <con1:schema ref="Common/XSD/NMPStandardHeader"/>
+                        <con1:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con1:schemaElement>
+                        <con1:varName>header</con1:varName>
+                        <con1:location>
+                            <con2:xpathText>./*</con2:xpathText>
+                        </con1:location>
+                    </con1:validate>
+                    <con4:assign varName="headerTmp" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+                        <con2:id>_ActionId-N53effc65.772be8f6.0.15a5e2ac698.N7f96</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$header</con:xqueryText>
+                        </con1:expr>
+                    </con4:assign>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N53effc65.772be8f6.0.15a5e2ac698.N7f30" name="StageValidaBody" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                <con:context>
+                    <con4:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas" xmlns:con4="http://www.bea.com/wli/sb/stages/config"/>
+                    <con4:userNsDecl prefix="aval" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Avaluo" xmlns:con4="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con2:validate>
+                        <con4:id xmlns:con4="http://www.bea.com/wli/sb/stages/config">_ActionId-N53effc65.772be8f6.0.15a5e2ac698.N7f2f</con4:id>
+                        <con2:schema ref="OperacionPrendaria/Avaluo/Resources/Schemas/NMPAvaluoXSD"/>
+                        <con2:schemaElement xmlns:aval="http://servicios.montedepiedad.com.mx/NMP/Schema/Avaluo">aval:obtenerAvaluoAuto</con2:schemaElement>
+                        <con2:varName>body</con2:varName>
+                        <con2:location>
+                            <con4:xpathText xmlns:con4="http://www.bea.com/wli/sb/stages/config">./aval:obtenerAvaluoAuto</con4:xpathText>
+                        </con2:location>
+                    </con2:validate>
+                    <con2:replace varName="body" contents-only="true">
+                        <con4:id xmlns:con4="http://www.bea.com/wli/sb/stages/config">_ActionId-N53efff2b.N319f0ae3.0.15a6dcd176a.N7fce</con4:id>
+                        <con2:expr>
+                            <con4:xsltTransform xmlns:con4="http://www.bea.com/wli/sb/stages/config">
+                                <con4:resource ref="OperacionPrendaria/Avaluo/Resources/Transformations/TRAvaluoAutoReqToMIDASCotizadorReq"/>
+                                <con4:input>$body/aval:obtenerAvaluoAuto</con4:input>
+                            </con4:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N53effc65.772be8f6.0.15a5e2ac698.N7fce">
+            <con:stage id="_StageId-N53efff2b.N319f0ae3.0.15a6dcd176a.N7f65" name="StageSalida">
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="header" contents-only="true" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con4:id xmlns:con4="http://www.bea.com/wli/sb/stages/config">_ActionId-N53efff2b.N319f0ae3.0.15a6dcd176a.N7f62</con4:id>
+                        <con2:expr>
+                            <con4:xqueryText xmlns:con4="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("<nmp:headerMessageResponse xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader'>
+         <nmp:usuario>",$headerTmp//*:usuario,"</nmp:usuario>
+         <nmp:idConsumidor>",$headerTmp//*:idConsumidor,"</nmp:idConsumidor>
+         <nmp:idDestino>",$headerTmp//*:idDestino,"</nmp:idDestino>
+		 <nmp:codigoRespuesta>0</nmp:codigoRespuesta>
+		 <nmp:descripcionRespuesta>OK</nmp:descripcionRespuesta>
+      </nmp:headerMessageResponse>"))]]></con4:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                    <con2:replace varName="body" contents-only="true" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con4:id xmlns:con4="http://www.bea.com/wli/sb/stages/config">_ActionId-N53efff2b.N319f0ae3.0.15a6dcd176a.N7f67</con4:id>
+                        <con2:expr>
+                            <con4:xqueryText xmlns:con4="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(fn:concat('&lt;tns:obtenerAvaluoAutoResponse xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Schema/Avaluo">
+   &lt;tns:montoAvaluo>',$body//*:avaluo,'&lt;/tns:montoAvaluo>
+&lt;/tns:obtenerAvaluoAutoResponse>'))</con4:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N53effc65.772be8f6.0.15a5e2ac698.N7e35">
+            <con:stage id="_StageId-N53effc65.772be8f6.0.15a5e2ac698.N7ce2" name="StageErrorHandler">
+                <con:context/>
+                <con:actions>
+                    <con4:delete varName="header" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N53effc65.772be8f6.0.15a5e2ac698.N7ce1</con2:id>
+                    </con4:delete>
+                    <con4:ifThenElse xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N53effc65.772be8f6.0.15a5e2ac698.N7ce0</con2:id>
+                        <con4:case id="_BranchId-N53effc65.772be8f6.0.15a5e2ac698.N7cdf">
+                            <con4:condition>
+                                <con2:xqueryText>$body/soap-env:Fault</con2:xqueryText>
+                            </con4:condition>
+                            <con4:actions>
+                                <con4:ifThenElse>
+                                    <con2:id>_ActionId-N53effe47.N6a4a35a8.0.15a67811636.N7dc1</con2:id>
+                                    <con4:case id="_BranchId-N53effe47.N6a4a35a8.0.15a67811636.N7dc0">
+                                        <con4:condition>
+                                            <con2:xqueryText>$body//*:faultactor</con2:xqueryText>
+                                        </con4:condition>
+                                        <con4:actions>
+                                            <con4:replace varName="body" contents-only="true">
+                                                <con2:id>_ActionId-N53effe47.N6a4a35a8.0.15a67811636.N7d8b</con2:id>
+                                                <con1:expr>
+                                                    <con2:xsltTransform>
+                                                        <con2:resource ref="OperacionPrendaria/Avaluo/Resources/Transformations/TRAvaluosFault"/>
+                                                        <con2:input>$fault</con2:input>
+                                                        <con2:param name="AppErrorCode">
+                                                            <con2:path>$body//*:faultcode</con2:path>
+                                                        </con2:param>
+                                                        <con2:param name="AppErrorString">
+                                                            <con2:path>$body//*:faultactor</con2:path>
+                                                        </con2:param>
+                                                    </con2:xsltTransform>
+                                                </con1:expr>
+                                            </con4:replace>
+                                        </con4:actions>
+                                    </con4:case>
+                                    <con4:default>
+                                        <con4:replace varName="body" contents-only="true">
+                                            <con2:id>_ActionId-N53effc65.772be8f6.0.15a5e2ac698.N7cde</con2:id>
+                                            <con1:expr>
+                                                <con2:xsltTransform>
+                                                    <con2:resource ref="OperacionPrendaria/Avaluo/Resources/Transformations/TRAvaluosFault"/>
+                                                    <con2:input>$fault</con2:input>
+                                                    <con2:param name="AppErrorCode">
+                                                        <con2:path>$body//*:faultcode</con2:path>
+                                                    </con2:param>
+                                                    <con2:param name="AppErrorString">
+                                                        <con2:path>$body//*:faultstring</con2:path>
+                                                    </con2:param>
+                                                </con2:xsltTransform>
+                                            </con1:expr>
+                                        </con4:replace>
+                                    </con4:default>
+                                </con4:ifThenElse>
+                            </con4:actions>
+                        </con4:case>
+                        <con4:default>
+                            <con4:replace varName="body" contents-only="true">
+                                <con2:id>_ActionId-N53effc65.772be8f6.0.15a5e2ac698.N7cdd</con2:id>
+                                <con1:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="OperacionPrendaria/Avaluo/Resources/Transformations/TRAvaluosFault"/>
+                                        <con2:input>$fault</con2:input>
+                                        <con2:param name="AppErrorCode">
+                                            <con2:path>''</con2:path>
+                                        </con2:param>
+                                        <con2:param name="AppErrorString">
+                                            <con2:path>''</con2:path>
+                                        </con2:param>
+                                    </con2:xsltTransform>
+                                </con1:expr>
+                            </con4:replace>
+                        </con4:default>
+                    </con4:ifThenElse>
+                    <con1:log xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N53effc65.772be8f6.0.15a5e2ac698.N7cdc</con2:id>
+                        <con1:logLevel>warning</con1:logLevel>
+                        <con1:expr>
+                            <con2:xqueryText>fn:concat("AVALUO: Error=", $body//*:descripcionError)</con2:xqueryText>
+                        </con1:expr>
+                        <con1:message/>
+                    </con1:log>
+                    <con2:reply isError="true">
+                        <con2:id>_ActionId-N53effc65.772be8f6.0.15a5e2ac698.N7cdb</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="PipelinePairAvaluo">
+                <con:request>request-N53effc65.772be8f6.0.15a5e2ac698.N7fcf</con:request>
+                <con:response>response-N53effc65.772be8f6.0.15a5e2ac698.N7fce</con:response>
+            </con:pipeline-node>
+            <con:route-node name="RouteToMidas">
+                <con:context/>
+                <con:actions>
+                    <con3:route>
+                        <con2:id>_ActionId-N53effc65.772be8f6.0.15a5e2ac698.N7e67</con2:id>
+                        <con3:service ref="OperacionPrendaria/Avaluo/Business Services/MIDASCotizadorAutomovilBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con3:operation>obtenerSubMarcas</con3:operation>
+                        <con3:outboundTransform/>
+                        <con3:responseTransform/>
+                    </con3:route>
+                </con:actions>
+            </con:route-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

@@ -1,0 +1,42 @@
+<wsdl:definitions name="GuardarSolicitudBPEL" targetNamespace="http://qualitas.com.mx/GuardarSolicitudApp/GuardarSolicitudPrj/GuardarSolicitudBPEL" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:client="http://qualitas.com.mx/GuardarSolicitudApp/GuardarSolicitudPrj/GuardarSolicitudBPEL" xmlns:ns1="http://qualitas.com.mx/Solicitud/GuardarSolicitud/v1/" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+    <wsdl:documentation>
+        <abstractWSDL>http://11.50.0.20:7007/soa-infra/services/GPADomain/GuardarSolicitudPrj!1.0/WSDLs/GuardarSolicitudBPEL.wsdl</abstractWSDL>
+    </wsdl:documentation>
+    <plnk:partnerLinkType name="GuardarSolicitudBPEL">
+        <plnk:role name="GuardarSolicitudBPELProvider" portType="client:GuardarSolicitudBPEL"/>
+    </plnk:partnerLinkType>
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://qualitas.com.mx/Solicitud/GuardarSolicitud/v1/" schemaLocation="GuardarSolicitudSchema.xsd"/>
+        </schema>
+    </wsdl:types>
+    <wsdl:message name="GuardarSolicitudBPELRequestMessage">
+        <wsdl:part name="payload" element="ns1:GuardarSolicitudRequest"/>
+    </wsdl:message>
+    <wsdl:message name="GuardarSolicitudBPELResponseMessage">
+        <wsdl:part name="payload" element="ns1:GuardarSolicitudResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="GuardarSolicitudBPEL">
+        <wsdl:operation name="process">
+            <wsdl:input message="client:GuardarSolicitudBPELRequestMessage"/>
+            <wsdl:output message="client:GuardarSolicitudBPELResponseMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="GuardarSolicitudBPELBinding" type="client:GuardarSolicitudBPEL">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="process">
+            <soap:operation style="document" soapAction="process"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="guardarsolicitudbpel_client_ep">
+        <wsdl:port name="GuardarSolicitudBPEL_pt" binding="client:GuardarSolicitudBPELBinding">
+            <soap:address location="http://11.50.0.20:7007/soa-infra/services/GPADomain/GuardarSolicitudPrj/guardarsolicitudbpel_client_ep"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

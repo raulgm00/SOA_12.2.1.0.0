@@ -1,0 +1,27 @@
+<wsdl:definitions name="PagoDataSvc" targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/QualitasGPABus/SolicitudesBDQry/PagoDataSvc" xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/QualitasGPABus/SolicitudesBDQry/PagoDataSvc" xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/" xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:top="http://xmlns.oracle.com/pcbpel/adapter/db/top/PagoDataSvc" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <plt:partnerLinkType name="PagoDataSvc_plt">
+    <plt:role name="PagoDataSvc_role">
+      <plt:portType name="tns:PagoDataSvc_ptt"/>
+    </plt:role>
+  </plt:partnerLinkType>
+    <wsdl:types>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema">
+        <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/PagoDataSvc" schemaLocation="PagoDataSvc_table.xsd"/>
+      </schema>
+    </wsdl:types>
+    <wsdl:message name="selectByPrimaryKey_inputParameters">
+        <wsdl:part name="selectByPrimaryKey_inputParameters" element="top:Gpa019PagosPrimaryKey"/>
+    </wsdl:message>
+    <wsdl:message name="Gpa019PagosCollection_msg">
+        <wsdl:part name="Gpa019PagosCollection" element="top:Gpa019PagosCollection"/>
+    </wsdl:message>
+    <wsdl:portType name="PagoDataSvc_ptt">
+        <wsdl:operation name="merge">
+            <wsdl:input message="tns:Gpa019PagosCollection_msg"/>
+        </wsdl:operation>
+        <wsdl:operation name="selectByPrimaryKey">
+            <wsdl:input message="tns:selectByPrimaryKey_inputParameters"/>
+            <wsdl:output message="tns:Gpa019PagosCollection_msg"/>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>

@@ -1,0 +1,339 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Tue Nov 29 20:59:08 CST 2016
+  Author:  Soaint
+  Type: BPEL 2.0 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="ObtenerGenericoBPEL" targetNamespace="http://qualitas.com.mx/ObtenerGenericoApp/ObtenerGenericoPrj/ObtenerGenericoBPEL" xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:client="http://qualitas.com.mx/ObtenerGenericoApp/ObtenerGenericoPrj/ObtenerGenericoBPEL" xmlns:ora="http://schemas.oracle.com/xpath/extension" xmlns:ui="http://xmlns.oracle.com/soa/designer" xmlns:bpelx="http://schemas.oracle.com/bpel/extension" xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xml:id="id_1"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ess="http://xmlns.oracle.com/scheduler" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/ObtenerGenericoApp/ObtenerGenericoPrj/CatTipoServicioDB"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/db/ObtenerGenericoApp/ObtenerGenericoPrj/CatTipoSolicitudDB"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/db/ObtenerGenericoApp/ObtenerGenericoPrj/CatSubtipoServicioDB"
+         xmlns:ns4="http://xmlns.oracle.com/pcbpel/adapter/db/ObtenerGenericoApp/ObtenerGenericoPrj/SelCatTipoCContables"
+         xmlns:ns5="http://xmlns.oracle.com/pcbpel/adapter/db/ObtenerGenericoApp/ObtenerGenericoPrj/SelCatTpObservaciones"
+         xmlns:ns6="http://xmlns.oracle.com/pcbpel/adapter/db/ObtenerGenericoApp/ObtenerGenericoPrj/SPObtenerCContablesDB"
+         xmlns:ns7="http://xmlns.oracle.com/pcbpel/adapter/db/ObtenerGenerico/ObtenerGenericoPrj/CatConceptoIVA"
+         xmlns:ns8="http://xmlns.oracle.com/pcbpel/adapter/db/ObtenerGenerico/ObtenerGenericoPrj/catRespSolicitud"
+         xmlns:ns9="http://xmlns.oracle.com/pcbpel/adapter/db/ObtenerGenerico/ObtenerGenericoPrj/CatCDeudoras">
+
+    <import ui:processWSDL="true" namespace="http://qualitas.com.mx/ObtenerGenericoApp/ObtenerGenericoPrj/ObtenerGenericoBPEL" location="../WSDLs/ObtenerGenericoBPEL.wsdl" importType="http://schemas.xmlsoap.org/wsdl/" xml:id="id_2"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks xml:id="id_3">
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="obtenergenericobpel_client" partnerLinkType="client:ObtenerGenericoBPEL" myRole="ObtenerGenericoBPELProvider" xml:id="id_4"/>
+    <partnerLink name="CatTipoServicioDB" partnerLinkType="ns1:CatTipoServicioDB_plt"
+                 partnerRole="CatTipoServicioDB_role" xml:id="id_26"/>
+    <partnerLink name="CatTipoSolicitudDB" partnerLinkType="ns2:CatTipoSolicitudDB_plt"
+                 partnerRole="CatTipoSolicitudDB_role" xml:id="id_27"/>
+    <partnerLink name="CatSubtipoServicioDB" partnerLinkType="ns3:CatSubtipoServicioDB_plt"
+                 partnerRole="CatSubtipoServicioDB_role" xml:id="id_28"/>
+    <partnerLink name="SelCatTipoCContablesPL" partnerLinkType="ns4:SelCatTipoCContables_plt"
+                 partnerRole="SelCatTipoCContables_role" xml:id="id_75"/>
+    <partnerLink name="SelCatTpObservaciones" partnerLinkType="ns5:SelCatTpObservaciones_plt"
+                 partnerRole="SelCatTpObservaciones_role" xml:id="id_86"/>
+    <partnerLink name="SPObtenerCContablesDB" partnerLinkType="ns6:SPObtenerCContablesDB_plt"
+                 partnerRole="SPObtenerCContablesDB_role" xml:id="id_109"/>
+    <partnerLink name="CatConceptoIVA" partnerLinkType="ns7:CatConceptoIVA_plt" partnerRole="CatConceptoIVA_role"
+                 xml:id="id_137"/>
+    <partnerLink name="catRespSolicitud" partnerLinkType="ns8:catRespSolicitud_plt"
+                 partnerRole="catRespSolicitud_role" xml:id="id_154"/>
+    <partnerLink name="CatCDeudoras" partnerLinkType="ns9:CatCDeudoras_plt" partnerRole="CatCDeudoras_role"
+                 xml:id="id_155"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables xml:id="id_5">
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:ObtenerGenericoBPELRequestMessage" xml:id="id_6"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:ObtenerGenericoBPELResponseMessage" xml:id="id_7"/>
+    <variable name="CatTipoServicioInvoke_InputVariable" messageType="ns1:CatTipoServicioDBInput_msg" xml:id="id_42"/>
+    <variable name="CatTipoServicioInvoke_OutputVariable" messageType="ns1:CatTipoServicioDBOutputCollection_msg"
+              xml:id="id_43"/>
+    <variable name="CatTipoSolicitudInvoke_InputVariable" messageType="ns2:CatTipoSolicitudDBInput_msg" xml:id="id_44"/>
+    <variable name="CatTipoSolicitudInvoke_OutputVariable" messageType="ns2:CatTipoSolicitudDBOutputCollection_msg"
+              xml:id="id_45"/>
+    <variable name="CatSubTipoServicioInvoke_InputVariable" messageType="ns3:CatSubtipoServicioDBInput_msg"
+              xml:id="id_46"/>
+    <variable name="CatSubTipoServicioInvoke_OutputVariable"
+              messageType="ns3:CatSubtipoServicioDBOutputCollection_msg" xml:id="id_47"/>
+    <variable name="CatTipoCContablesInvoke_InputVariable" messageType="ns4:SelCatTipoCContablesInput_msg"
+              xml:id="id_77"/>
+    <variable name="CatTipoCContablesInvoke_OutputVariable" messageType="ns4:SelCatTipoCContablesOutputCollection_msg"
+              xml:id="id_78"/>
+    <variable name="CatTpObservacionInvoke_OutputVariable" messageType="ns5:SelCatTpObservacionesOutputCollection_msg"
+              xml:id="id_97"/>
+    <variable name="CatTpObservacionInvoke_InputVariable" messageType="ns5:SelCatTpObservacionesInput_msg"
+              xml:id="id_101"/>
+    <variable name="ObtenerCContablesInvoke_InputVariable" messageType="ns6:args_in_msg" xml:id="id_111"/>
+    <variable name="ObtenerCContablesInvoke_OutputVariable" messageType="ns6:args_out_msg" xml:id="id_112"/>
+    <variable name="CatConceptoIVA_InVar" messageType="ns7:CatConceptoIVAInput_msg" xml:id="id_139"/>
+    <variable name="CatConceptoIVA_OutVar" messageType="ns7:CatConceptoIVAOutputCollection_msg" xml:id="id_140"/>
+    <variable name="CatRespSolicitud_InVar" messageType="ns8:catRespSolicitudInput_msg" xml:id="id_158"/>
+    <variable name="CatRespSolicitud_OutVar" messageType="ns8:catRespSolicitudOutputCollection_msg" xml:id="id_159"/>
+    <variable name="CatCDeudoras_InVar" messageType="ns9:CatCDeudorasInput_msg" xml:id="id_160"/>
+    <variable name="CatCDeudoras_OutVar" messageType="ns9:CatCDeudorasOutputCollection_msg" xml:id="id_161"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main" xml:id="id_8">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in ObtenerGenericoBPEL.wsdl) -->
+    <receive name="receiveInput" partnerLink="obtenergenericobpel_client" portType="client:ObtenerGenericoBPEL" operation="process" variable="inputVariable" createInstance="yes" xml:id="id_9"/>
+    <if name="If" xml:id="id_11">
+      <documentation xml:id="id_48">
+        <![CDATA[GPA010]]>
+      </documentation>
+      <condition xml:id="id_23">string($inputVariable.payload/client:claveCatalogo)='GPA010'</condition>
+      <scope name="Scope1" xml:id="id_15">
+        <sequence name="Sequence1" xml:id="id_19">
+          <invoke name="CatTipoServicioInvoke" xml:id="id_29"
+                  partnerLink="CatTipoServicioDB" portType="ns1:CatTipoServicioDB_ptt" operation="CatTipoServicioDB"
+                  inputVariable="CatTipoServicioInvoke_InputVariable"
+                  outputVariable="CatTipoServicioInvoke_OutputVariable" bpelx:invokeAsDetail="no"/>
+          <assign name="OutputTipoServicio" xml:id="id_52">
+            <bpelx:annotation xml:id="id_53">
+              <bpelx:pattern patternName="bpelx:transformation" xml:id="id_54"></bpelx:pattern>
+            </bpelx:annotation>
+            <copy xml:id="id_61">
+              <from xml:id="id_62">ora:doXSLTransformForDoc("../Transformations/OutoutDataTipoServicio.xsl", $CatTipoServicioInvoke_OutputVariable.CatTipoServicioDBOutputCollection)</from>
+              <to xml:id="id_63" variable="outputVariable" part="payload"/>
+            </copy>
+          </assign>
+        </sequence>
+      </scope>
+      <elseif xml:id="id_13">
+        <documentation xml:id="id_49">
+          <![CDATA[GPA011]]>
+        </documentation>
+        <condition xml:id="id_24">string($inputVariable.payload/client:claveCatalogo)='GPA011'</condition>
+        <scope name="Scope2" xml:id="id_16">
+          <sequence name="Sequence2" xml:id="id_20">
+            <invoke name="CatTipoSolicitudInvoke" xml:id="id_31"
+                    partnerLink="CatTipoSolicitudDB" portType="ns2:CatTipoSolicitudDB_ptt"
+                    operation="CatTipoSolicitudDB" inputVariable="CatTipoSolicitudInvoke_InputVariable"
+                    outputVariable="CatTipoSolicitudInvoke_OutputVariable" bpelx:invokeAsDetail="no"/>
+            <assign name="OutputTipoSolicitud" xml:id="id_55">
+              <bpelx:annotation xml:id="id_56">
+                <bpelx:pattern patternName="bpelx:transformation" xml:id="id_57"></bpelx:pattern>
+              </bpelx:annotation>
+              <copy xml:id="id_64">
+                <from xml:id="id_65">ora:doXSLTransformForDoc("../Transformations/OutputDataTipoSolicitud.xsl", $CatTipoSolicitudInvoke_OutputVariable.CatTipoSolicitudDBOutputCollection)</from>
+                <to xml:id="id_66" variable="outputVariable" part="payload"/>
+              </copy>
+            </assign>
+          </sequence>
+        </scope>
+      </elseif>
+      <elseif xml:id="id_14">
+        <documentation xml:id="id_50">
+          <![CDATA[GPA012]]>
+        </documentation>
+        <condition xml:id="id_25">string($inputVariable.payload/client:claveCatalogo)='GPA012'</condition>
+        <scope name="Scope3" xml:id="id_17">
+          <sequence name="Sequence3" xml:id="id_21">
+            <invoke name="CatSubTipoServicioInvoke" xml:id="id_30"
+                    partnerLink="CatSubtipoServicioDB" portType="ns3:CatSubtipoServicioDB_ptt"
+                    operation="CatSubtipoServicioDB" inputVariable="CatSubTipoServicioInvoke_InputVariable"
+                    outputVariable="CatSubTipoServicioInvoke_OutputVariable" bpelx:invokeAsDetail="no"/>
+            <assign name="OutputSubTipoServ" xml:id="id_58">
+              <bpelx:annotation xml:id="id_59">
+                <bpelx:pattern patternName="bpelx:transformation" xml:id="id_60"></bpelx:pattern>
+              </bpelx:annotation>
+              <copy xml:id="id_67">
+                <from xml:id="id_68">ora:doXSLTransformForDoc("../Transformations/OutputDataSubTipoServicio.xsl", $CatSubTipoServicioInvoke_OutputVariable.CatSubtipoServicioDBOutputCollection)</from>
+                <to xml:id="id_69" variable="outputVariable" part="payload"/>
+              </copy>
+            </assign>
+          </sequence>
+        </scope>
+      </elseif>
+      <elseif xml:id="id_70">
+        <documentation xml:id="id_71">
+          <![CDATA[GPA004]]>
+        </documentation>
+        <condition xml:id="id_72">string($inputVariable.payload/client:claveCatalogo)='GPA004'</condition>
+        <scope name="Scope5" xml:id="id_73">
+          <sequence name="Sequence5" xml:id="id_74">
+            <invoke name="CatTipoCContablesInvoke" xml:id="id_76"
+                    partnerLink="SelCatTipoCContablesPL" portType="ns4:SelCatTipoCContables_ptt"
+                    operation="SelCatTipoCContables" inputVariable="CatTipoCContablesInvoke_InputVariable"
+                    outputVariable="CatTipoCContablesInvoke_OutputVariable" bpelx:invokeAsDetail="no"/>
+            <assign name="OutTpCContables" xml:id="id_80">
+              <bpelx:annotation xml:id="id_81">
+                <bpelx:pattern patternName="bpelx:transformation" xml:id="id_82"></bpelx:pattern>
+              </bpelx:annotation>
+              <copy xml:id="id_83">
+                <from xml:id="id_84">ora:doXSLTransformForDoc("../Transformations/OutputCContablesTransf.xsl", $CatTipoCContablesInvoke_OutputVariable.SelCatTipoCContablesOutputCollection)</from>
+                <to xml:id="id_85" variable="outputVariable" part="payload"/>
+              </copy>
+            </assign>
+          </sequence>
+        </scope>
+      </elseif>
+      <elseif xml:id="id_87">
+        <documentation xml:id="id_88">
+          <![CDATA[GPA003]]>
+        </documentation>
+        <condition xml:id="id_91">string($inputVariable.payload/client:claveCatalogo)='GPA003A' or string($inputVariable.payload/client:claveCatalogo)='GPA003S' or string($inputVariable.payload/client:claveCatalogo)='GPA003O'</condition>
+        <scope name="Scope6" xml:id="id_92">
+          <sequence name="Sequence6" xml:id="id_93">
+            <assign name="InputTpCC" xml:id="id_106">
+              <bpelx:annotation xml:id="id_107">
+                <bpelx:pattern patternName="bpelx:transformation" xml:id="id_108"></bpelx:pattern>
+              </bpelx:annotation>
+              <copy xml:id="id_113">
+                <from xml:id="id_114">ora:doXSLTransformForDoc("../Transformations/InputTpCCTransf.xsl", $inputVariable.payload)</from>
+                <to xml:id="id_115" variable="ObtenerCContablesInvoke_InputVariable" part="InputParameters"/>
+              </copy>
+            </assign>
+            <invoke name="ObtenerCContablesInvoke" xml:id="id_110" bpelx:invokeAsDetail="no"
+                    partnerLink="SPObtenerCContablesDB" portType="ns6:SPObtenerCContablesDB_ptt"
+                    operation="SPObtenerCContablesDB" inputVariable="ObtenerCContablesInvoke_InputVariable"
+                    outputVariable="ObtenerCContablesInvoke_OutputVariable"/>
+            <assign name="OutCContables" xml:id="id_128">
+              <bpelx:annotation xml:id="id_129">
+                <bpelx:pattern patternName="bpelx:transformation" xml:id="id_130"></bpelx:pattern>
+              </bpelx:annotation>
+              <copy xml:id="id_131">
+                <from xml:id="id_132">ora:doXSLTransformForDoc("../Transformations/OutCContables.xsl", $ObtenerCContablesInvoke_OutputVariable.OutputParameters)</from>
+                <to xml:id="id_133" variable="outputVariable" part="payload"/>
+              </copy>
+            </assign>
+          </sequence>
+        </scope>
+      </elseif>
+      <elseif xml:id="id_89">
+        <documentation xml:id="id_90">
+          <![CDATA[GPA008]]>
+        </documentation>
+        <condition xml:id="id_105">$inputVariable.payload/client:claveCatalogo='GPA008'</condition>
+        <scope name="Scope7" xml:id="id_94">
+          <sequence name="Sequence7" xml:id="id_95">
+            <invoke name="CatTpObservacionInvoke" xml:id="id_96"
+                    partnerLink="SelCatTpObservaciones" portType="ns5:SelCatTpObservaciones_ptt"
+                    operation="SelCatTpObservaciones" outputVariable="CatTpObservacionInvoke_OutputVariable" inputVariable="CatTpObservacionInvoke_InputVariable"
+                    bpelx:invokeAsDetail="no"/>
+            <assign name="OutPutObservacion" xml:id="id_98">
+              <bpelx:annotation xml:id="id_99">
+                <bpelx:pattern patternName="bpelx:transformation" xml:id="id_100"></bpelx:pattern>
+              </bpelx:annotation>
+              <copy xml:id="id_102">
+                <from xml:id="id_103">ora:doXSLTransformForDoc("../Transformations/ObservacionTransf.xsl", $CatTpObservacionInvoke_OutputVariable.SelCatTpObservacionesOutputCollection)</from>
+                <to xml:id="id_104" variable="outputVariable" part="payload"/>
+              </copy>
+            </assign>
+          </sequence>
+        </scope>
+      </elseif>
+      <elseif xml:id="id_134">
+        <documentation xml:id="id_135">
+          <![CDATA[GPA016]]>
+        </documentation>
+        <condition xml:id="id_136">$inputVariable.payload/client:claveCatalogo='GPA016'</condition>
+        <sequence name="Sequence8" xml:id="id_141">
+          <invoke name="CatConceptoIVA" xml:id="id_138" partnerLink="CatConceptoIVA" portType="ns7:CatConceptoIVA_ptt"
+                  operation="CatConceptoIVA" inputVariable="CatConceptoIVA_InVar" outputVariable="CatConceptoIVA_OutVar"
+                  bpelx:invokeAsDetail="no"/>
+          <assign name="OutConceptoIVA" xml:id="id_142">
+            <bpelx:annotation xml:id="id_143">
+              <bpelx:pattern patternName="bpelx:transformation" xml:id="id_144"></bpelx:pattern>
+            </bpelx:annotation>
+            <copy xml:id="id_145">
+              <from xml:id="id_146">ora:doXSLTransformForDoc("../Transformations/TransOutConceptoIVA.xsl", $CatConceptoIVA_OutVar.CatConceptoIVAOutputCollection)</from>
+              <to xml:id="id_147" variable="outputVariable" part="payload"/>
+            </copy>
+          </assign>
+        </sequence>
+      </elseif>
+      <elseif xml:id="id_148">
+        <documentation xml:id="id_150">
+          <![CDATA[GPA017]]>
+        </documentation>
+        <condition xml:id="id_152">$inputVariable.payload/client:claveCatalogo='GPA017'</condition>
+        <sequence name="Sequence9" xml:id="id_162">
+          <invoke name="CatRespSolicitud" xml:id="id_156" partnerLink="catRespSolicitud"
+                  portType="ns8:catRespSolicitud_ptt" operation="catRespSolicitud"
+                  inputVariable="CatRespSolicitud_InVar" outputVariable="CatRespSolicitud_OutVar"
+                  bpelx:invokeAsDetail="no"/>
+          <assign name="OutRespSolicitud" xml:id="id_163">
+            <bpelx:annotation xml:id="id_164">
+              <bpelx:pattern patternName="bpelx:transformation" xml:id="id_165"></bpelx:pattern>
+            </bpelx:annotation>
+            <copy xml:id="id_170">
+              <from xml:id="id_171">ora:doXSLTransformForDoc("../Transformations/OutRespSolicitud.xsl", $CatRespSolicitud_OutVar.catRespSolicitudOutputCollection)</from>
+              <to xml:id="id_172" variable="outputVariable" part="payload"/>
+            </copy>
+          </assign>
+        </sequence>
+      </elseif>
+      <elseif xml:id="id_149">
+        <documentation xml:id="id_151">
+          <![CDATA[GPA018]]>
+        </documentation>
+        <condition xml:id="id_153">$inputVariable.payload/client:claveCatalogo='GPA018'</condition>
+        <sequence name="Sequence10" xml:id="id_166">
+          <invoke name="CatCDeudoras" xml:id="id_157" partnerLink="CatCDeudoras" portType="ns9:CatCDeudoras_ptt"
+                  operation="CatCDeudoras" inputVariable="CatCDeudoras_InVar" outputVariable="CatCDeudoras_OutVar"
+                  bpelx:invokeAsDetail="no"/>
+          <assign name="OutCDeudoras" xml:id="id_167">
+            <bpelx:annotation xml:id="id_168">
+              <bpelx:pattern patternName="bpelx:transformation" xml:id="id_169"></bpelx:pattern>
+            </bpelx:annotation>
+            <copy xml:id="id_173">
+              <from xml:id="id_174">ora:doXSLTransformForDoc("../Transformations/OutCDeudoras.xsl", $CatCDeudoras_OutVar.CatCDeudorasOutputCollection)</from>
+              <to xml:id="id_175" variable="outputVariable" part="payload"/>
+            </copy>
+          </assign>
+        </sequence>
+      </elseif>
+      <else xml:id="id_12">
+        <documentation xml:id="id_51">
+          <![CDATA[EMPTY]]>
+        </documentation>
+        <scope name="Scope4" xml:id="id_18">
+          <sequence name="Sequence4" xml:id="id_22">
+            <empty name="CatalogoEmpty" xml:id="id_32"/>
+          </sequence>
+        </scope>
+      </else>
+    </if>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="obtenergenericobpel_client" portType="client:ObtenerGenericoBPEL" operation="process" variable="outputVariable" xml:id="id_10"/>
+  </sequence>
+</process>

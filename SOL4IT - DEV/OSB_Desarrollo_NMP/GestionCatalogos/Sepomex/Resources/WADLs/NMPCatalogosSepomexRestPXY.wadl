@@ -1,0 +1,116 @@
+<application xmlns:soa="http://www.oracle.com/soa/rest" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con="http://servicios.montedepiedad.com.mx/NMP/Schema/Elementos/NMPCatalogosSepomex" xmlns="http://wadl.dev.java.net/2009/02">
+   <doc title="NMPCatalogosSepomexRest">RestService</doc>
+   <grammars>
+      <xsd:schema xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Services/NMPCatalogosSepomex" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage">
+      <xsd:import schemaLocation="../Schemas/NMPCatalogosSepomexSvc.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Elementos/NMPCatalogosSepomex"/>
+    </xsd:schema>
+      <xsd:schema xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Services/NMPCatalogosSepomex" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage">
+      <xsd:import schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+    </xsd:schema>
+      <xsd:schema xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Services/NMPCatalogosSepomex" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage">
+      <xsd:import schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+    </xsd:schema>
+   </grammars>
+   <resources>
+      <resource path="/Localidad">
+         <method name="GET" soa:wsdlOperation="catalogoLocalidad">
+            <request soa:paramElement="pns:catalogoLocalidadRequest" xmlns:pns="http://servicios.montedepiedad.com.mx/NMP/Schema/Elementos/NMPCatalogosSepomex">
+               <param name="estado" style="query" soa:expression="$msg.part/con:estado" type="xsd:string"/>
+            </request>
+            <response status="200">
+               <representation mediaType="application/json" element="cns:catalogoLocalidadResponse" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/Elementos/NMPCatalogosSepomex"/>
+            </response>
+            <response status="500" soa:wsdlFaultName="catalogoSepomexFault">
+               <representation mediaType="application/json" element="cns:messageError" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+            </response>
+         </method>
+      </resource>
+      <resource path="/Municipio">
+         <method name="GET" soa:wsdlOperation="catalogoMunicipio">
+            <request soa:paramElement="pns:catalogoMunicipioRequest" xmlns:pns="http://servicios.montedepiedad.com.mx/NMP/Schema/Elementos/NMPCatalogosSepomex">
+               <param name="pais" style="query" soa:expression="$msg.part/con:pais" type="xsd:string"/>
+               <param name="estado" style="query" soa:expression="$msg.part/con:estado" type="xsd:string"/>
+            </request>
+            <response status="200">
+               <representation mediaType="application/json" element="cns:catalogoMunicipioResponse" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/Elementos/NMPCatalogosSepomex"/>
+            </response>
+            <response status="500" soa:wsdlFaultName="catalogoSepomexFault">
+               <representation mediaType="application/json" element="cns:messageError" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+            </response>
+         </method>
+      </resource>
+      <resource path="/Paises">
+         <method name="GET" soa:wsdlOperation="catalogoPaises">
+            <request soa:paramElement="pns:catalogoPaisesRequest" xmlns:pns="http://servicios.montedepiedad.com.mx/NMP/Schema/Elementos/NMPCatalogosSepomex"/>
+            <response status="200">
+               <representation mediaType="application/json" element="cns:catalogoPaisesResponse" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/Elementos/NMPCatalogosSepomex"/>
+            </response>
+            <response status="500" soa:wsdlFaultName="catalogoSepomexFault">
+               <representation mediaType="application/json" element="cns:messageError" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+            </response>
+         </method>
+      </resource>
+      <resource path="/CodigoPostal">
+         <method name="GET" soa:wsdlOperation="catalogoCodigoPostal">
+            <request soa:paramElement="pns:catalogoCodigoPostalRequest" xmlns:pns="http://servicios.montedepiedad.com.mx/NMP/Schema/Elementos/NMPCatalogosSepomex">
+               <param name="estado" style="query" soa:expression="$msg.part/con:estado" type="xsd:string"/>
+               <param name="municipio" style="query" soa:expression="$msg.part/con:municipio" type="xsd:string"/>
+            </request>
+            <response status="200">
+               <representation mediaType="application/json" element="cns:catalogoCodigoPostalResponse" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/Elementos/NMPCatalogosSepomex"/>
+            </response>
+            <response status="500" soa:wsdlFaultName="catalogoSepomexFault">
+               <representation mediaType="application/json" element="cns:messageError" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+            </response>
+         </method>
+      </resource>
+      <resource path="/Estados">
+         <method name="GET" soa:wsdlOperation="catalogoEstados">
+            <request soa:paramElement="pns:catalogoEstadosRequest" xmlns:pns="http://servicios.montedepiedad.com.mx/NMP/Schema/Elementos/NMPCatalogosSepomex">
+               <param name="pais" style="query" soa:expression="$msg.part/con:pais" type="xsd:string"/>
+            </request>
+            <response status="200">
+               <representation mediaType="application/json" element="cns:catalogoEstadosResponse" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/Elementos/NMPCatalogosSepomex"/>
+            </response>
+            <response status="500" soa:wsdlFaultName="catalogoSepomexFault">
+               <representation mediaType="application/json" element="cns:messageError" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+            </response>
+         </method>
+      </resource>
+      <resource path="/GiroComercial">
+         <method name="GET" soa:wsdlOperation="catalogoGiroComercial">
+            <request soa:paramElement="pns:catalogoGiroComercialRequest" xmlns:pns="http://servicios.montedepiedad.com.mx/NMP/Schema/Elementos/NMPCatalogosSepomex"/>
+            <response status="200">
+               <representation mediaType="application/json" element="cns:catalogoGiroComercialResponse" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/Elementos/NMPCatalogosSepomex"/>
+            </response>
+            <response status="500" soa:wsdlFaultName="catalogoSepomexFault">
+               <representation mediaType="application/json" element="cns:messageError" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+            </response>
+         </method>
+      </resource>
+      <resource path="/Colonias">
+         <method name="GET" soa:wsdlOperation="catalogoColonias">
+            <request soa:paramElement="pns:catalogoColoniasRequest" xmlns:pns="http://servicios.montedepiedad.com.mx/NMP/Schema/Elementos/NMPCatalogosSepomex">
+               <param name="codigoPostal" style="query" soa:expression="$msg.part/con:codigoPostal" type="xsd:string"/>
+            </request>
+            <response status="200">
+               <representation mediaType="application/json" element="cns:catalogoColoniasResponse" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/Elementos/NMPCatalogosSepomex"/>
+            </response>
+            <response status="500" soa:wsdlFaultName="catalogoSepomexFault">
+               <representation mediaType="application/json" element="cns:messageError" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+            </response>
+         </method>
+      </resource>
+      <resource path="/SectorNMP">
+         <method name="GET" soa:wsdlOperation="catalogoSectorNMP">
+            <request soa:paramElement="pns:catalogoSectorNMPRequest" xmlns:pns="http://servicios.montedepiedad.com.mx/NMP/Schema/Elementos/NMPCatalogosSepomex"/>
+            <response status="200">
+               <representation mediaType="application/json" element="cns:catalogoSectorNMPResponse" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/Elementos/NMPCatalogosSepomex"/>
+            </response>
+            <response status="500" soa:wsdlFaultName="catalogoSepomexFault">
+               <representation mediaType="application/json" element="cns:messageError" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+            </response>
+         </method>
+      </resource>
+   </resources>
+</application>

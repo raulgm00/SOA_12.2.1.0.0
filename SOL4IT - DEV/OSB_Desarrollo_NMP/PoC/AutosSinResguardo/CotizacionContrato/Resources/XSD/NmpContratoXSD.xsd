@@ -1,0 +1,68 @@
+<xsd:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Contrato" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://servicios.montedepiedad.com.mx/NMP/Schema/Contrato" xmlns:comm="http://servicios.montedepiedad.com.mx/NMP/Schema/commons/AutoSinResguardo">
+  <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/commons/AutoSinResguardo" schemaLocation="NmpASRCommonsXSD.xsd"/>
+  <xsd:complexType name="ContratoType">
+    <xsd:sequence>
+      <xsd:element name="Sociedad" type="comm:char4"/>
+      <xsd:element name="Producto" type="comm:char3"/>
+      <xsd:element name="MontoSolicitado" type="comm:curr13.2"/>
+      <xsd:element name="Frecuencia" type="comm:numeric2"/>
+      <xsd:element name="Plazo" type="comm:numeric2"/>
+      <xsd:element name="TasaInteres" type="comm:decimal10.7"/>
+      <xsd:element name="FechaDesembolso" type="comm:date10"/>
+      <xsd:element name="FechaPrimerCobro" type="comm:date10"/>
+      <xsd:element name="MultMoratorio" type="comm:decimal10.7"/>
+      <xsd:element name="Origen" type="comm:char4"/>
+      <xsd:element name="Destino" type="comm:char2"/>
+      <xsd:element name="TipoDePago" type="comm:char6"/>
+      <xsd:element name="DiasGracia" type="comm:numeric6"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ClienteType">
+    <xsd:sequence>
+      <xsd:element name="PrimerNombre" type="comm:char40"/>
+      <xsd:element name="SegundoNombre" type="comm:char40"/>
+      <xsd:element name="ApellidoPaterno" type="comm:char40"/>
+      <xsd:element name="ApellidoMaterno" type="comm:char40"/>
+      <xsd:element name="FechaNacimiento" type="comm:date10"/>
+      <xsd:element name="Rfc" type="comm:char20"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="DomicilioType">
+    <xsd:sequence>
+      <xsd:element name="Calle" type="comm:char60"/>
+      <xsd:element name="NumExt" type="comm:char10"/>
+      <xsd:element name="NumInt" type="comm:char10"/>
+      <xsd:element name="IdColonia" type="comm:char5"/>
+      <xsd:element name="Cp" type="comm:numeric5"/>
+      <xsd:element name="IdMunicipio" type="comm:char3"/>
+      <xsd:element name="IdEstado" type="comm:char2"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="DatosClienteType">
+    <xsd:sequence>
+      <xsd:element name="IdCliente" type="comm:char10"/>
+      <xsd:element name="Folio" type="xsd:string"/>
+      <xsd:element name="Proceso" type="xsd:string"/>
+	  <xsd:element name="Credencial" type="xsd:string"/>
+      <xsd:element name="Cliente" type="ClienteType"/>
+      <xsd:element name="Domicilio" type="DomicilioType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="ContratoRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="DatosCliente" type="DatosClienteType"/>
+        <xsd:element name="DatosContrato" type="ContratoType"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="ContratoResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="IdContrato" type="comm:char13"/>
+        <xsd:element name="DatosCliente" type="DatosClienteType"/>
+        <xsd:element name="DatosContrato" type="ContratoType"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>

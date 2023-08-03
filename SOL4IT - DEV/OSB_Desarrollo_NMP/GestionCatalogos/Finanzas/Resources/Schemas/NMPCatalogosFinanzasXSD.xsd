@@ -1,0 +1,73 @@
+<xsd:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Catalogos/Finanzas" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:NMPCFinan="http://servicios.montedepiedad.com.mx/NMP/Schema/Catalogos/Finanzas" xmlns:NMPComun="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Comun">
+  <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Comun" schemaLocation="../../../../Common/XSD/NMPComun_TIPOS.xsd"/>                      
+  <xsd:complexType name="TasaPlazo">
+    <xsd:sequence>
+      <xsd:element ref="NMPCFinan:producto"/>
+      <xsd:element ref="NMPCFinan:subProducto" maxOccurs="1"/>
+      <xsd:element ref="NMPCFinan:frecuencia" maxOccurs="1"/>
+      <xsd:element ref="NMPCFinan:plazo" maxOccurs="1"/>
+      <xsd:element ref="NMPCFinan:calificacionBuroMinimo" maxOccurs="1"/>
+      <xsd:element ref="NMPCFinan:calificacionBuroMaximo" maxOccurs="1"/>
+      <xsd:element ref="NMPCFinan:probabilidadIncumplimientoMinimo" minOccurs="1"/>
+      <xsd:element ref="NMPCFinan:probabilidadIncumplimientoMaximo" minOccurs="1"/>
+      <xsd:element ref="NMPCFinan:tasa" maxOccurs="1"/>
+      <xsd:element ref="NMPCFinan:tasaMinimo" maxOccurs="1"/>
+      <xsd:element ref="NMPCFinan:tasaMaximo" maxOccurs="1"/>
+      <xsd:element ref="NMPCFinan:clasificacionRiesgo" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="obtenerTasaPlazoRequest">
+    <xsd:sequence>
+      <xsd:element ref="NMPCFinan:producto" minOccurs="0"/>
+      <xsd:element ref="NMPCFinan:subProducto" minOccurs="0"/>
+      <xsd:element ref="NMPCFinan:frecuencia" minOccurs="0"/>
+      <xsd:element ref="NMPCFinan:plazo" minOccurs="0"/>
+      <xsd:element ref="NMPCFinan:calificacionBuro" minOccurs="0"/>
+      <xsd:element ref="NMPCFinan:probabilidadIncumplimiento" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="obtenerTasaPlazoRequest" type="NMPCFinan:obtenerTasaPlazoRequest"/>
+  <xsd:element name="obtenerTasaPlazoResponse">
+    <xsd:complexType>     
+        <xsd:sequence>
+          <xsd:element name="tasaPlazo" type="NMPCFinan:TasaPlazo" maxOccurs="unbounded"/>
+        </xsd:sequence>      
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:simpleType name="productoType">
+    <xsd:restriction base="xsd:int">
+      <xsd:totalDigits value="3"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="subProductoTipo">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="10"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="calificacionBuroType">
+    <xsd:restriction base="xsd:int">
+      <xsd:totalDigits value="4"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="intType">
+    <xsd:restriction base="xsd:int">
+      <xsd:totalDigits value="2"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:element name="producto" type="NMPCFinan:productoType">
+  
+  </xsd:element>
+  <xsd:element name="subProducto" type="NMPCFinan:subProductoTipo"/>
+  <xsd:element name="frecuencia" type="NMPCFinan:intType"/>
+  <xsd:element name="plazo" type="NMPCFinan:intType"/>
+  <xsd:element name="calificacionBuro" type="NMPCFinan:calificacionBuroType"/>
+  <xsd:element name="probabilidadIncumplimiento" type="NMPComun:decimalType"/>
+  <xsd:element name="calificacionBuroMinimo" type="NMPCFinan:calificacionBuroType"/>
+  <xsd:element name="calificacionBuroMaximo" type="NMPCFinan:calificacionBuroType"/>
+  <xsd:element name="tasa" type="NMPComun:decimalType"/>
+  <xsd:element name="tasaMinimo" type="NMPComun:decimalType"/>
+  <xsd:element name="tasaMaximo" type="NMPComun:decimalType"/>
+  <xsd:element name="clasificacionRiesgo" type="xsd:string"/>
+   <xsd:element name="probabilidadIncumplimientoMinimo" type="NMPComun:decimalType"/>
+  <xsd:element name="probabilidadIncumplimientoMaximo" type="NMPComun:decimalType"/>
+</xsd:schema>

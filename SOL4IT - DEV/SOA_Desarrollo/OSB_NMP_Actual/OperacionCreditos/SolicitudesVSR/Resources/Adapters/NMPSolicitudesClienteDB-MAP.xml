@@ -1,0 +1,790 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-persistence xmlns="http://www.eclipse.org/eclipselink/xsds/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:eclipselink="http://www.eclipse.org/eclipselink/xsds/persistence" version="Eclipse Persistence Services - 2.6.1.v20150916-55dc7c3">
+   <name>NMPSolicitudesClienteDB-OR</name>
+   <class-mapping-descriptors>
+      <class-mapping-descriptor xsi:type="object-relational-class-mapping-descriptor">
+         <class>NMPSolicitudesClienteDB.NmpDocumentosSolicitudInfo</class>
+         <alias>NMP_DOCUMENTOS_SOLICITUD_INFO</alias>
+         <primary-key>
+            <field table="NMP_DOCUMENTOS_SOLICITUD_INFO" name="NOMBRE_DOCUMENTO" xsi:type="column"/>
+         </primary-key>
+         <events/>
+         <querying>
+            <queries>
+               <query name="NMPSolicitudesClienteDBSelect" xsi:type="read-all-query">
+                  <reference-class>NMPSolicitudesClienteDB.NmpDocumentosSolicitudInfo</reference-class>
+                  <container xsi:type="list-container-policy">
+                     <collection-type>java.util.Vector</collection-type>
+                  </container>
+               </query>
+            </queries>
+            <timeout>3</timeout>
+         </querying>
+         <attribute-mappings>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>nombreDocumento</attribute-name>
+               <field table="NMP_DOCUMENTOS_SOLICITUD_INFO" name="NOMBRE_DOCUMENTO" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>numCredencial</attribute-name>
+               <read-only>true</read-only>
+               <properties>
+                  <property name="fkPlaceholder">
+                     <value>true</value>
+                  </property>
+               </properties>
+               <field table="NMP_DOCUMENTOS_SOLICITUD_INFO" name="NUM_CREDENCIAL" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>folioTramite</attribute-name>
+               <read-only>true</read-only>
+               <properties>
+                  <property name="fkPlaceholder">
+                     <value>true</value>
+                  </property>
+               </properties>
+               <field table="NMP_DOCUMENTOS_SOLICITUD_INFO" name="FOLIO_TRAMITE" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>tipoDocumento</attribute-name>
+               <field table="NMP_DOCUMENTOS_SOLICITUD_INFO" name="TIPO_DOCUMENTO" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>url</attribute-name>
+               <field table="NMP_DOCUMENTOS_SOLICITUD_INFO" name="URL" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>creadoPor</attribute-name>
+               <field table="NMP_DOCUMENTOS_SOLICITUD_INFO" name="CREADO_POR" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>fechaCreacion</attribute-name>
+               <field table="NMP_DOCUMENTOS_SOLICITUD_INFO" name="FECHA_CREACION" xsi:type="column"/>
+               <attribute-classification>java.sql.Timestamp</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>actualizadoPor</attribute-name>
+               <field table="NMP_DOCUMENTOS_SOLICITUD_INFO" name="ACTUALIZADO_POR" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>fechaActualizacion</attribute-name>
+               <field table="NMP_DOCUMENTOS_SOLICITUD_INFO" name="FECHA_ACTUALIZACION" xsi:type="column"/>
+               <attribute-classification>java.sql.Timestamp</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="one-to-one-mapping">
+               <attribute-name>rfkSolicitudesDocumentos</attribute-name>
+               <reference-class>NMPSolicitudesClienteDB.NmpSolicitudesClientesInfo</reference-class>
+               <private-owned>true</private-owned>
+               <foreign-key>
+                  <field-reference>
+                     <source-field table="NMP_DOCUMENTOS_SOLICITUD_INFO" name="FOLIO_TRAMITE" xsi:type="column"/>
+                     <target-field table="NMP_SOLICITUDES_CLIENTES_INFO" name="FOLIO_TRAMITE" xsi:type="column"/>
+                  </field-reference>
+                  <field-reference>
+                     <source-field table="NMP_DOCUMENTOS_SOLICITUD_INFO" name="NUM_CREDENCIAL" xsi:type="column"/>
+                     <target-field table="NMP_SOLICITUDES_CLIENTES_INFO" name="NUM_CREDENCIAL" xsi:type="column"/>
+                  </field-reference>
+               </foreign-key>
+               <foreign-key-fields>
+                  <field table="NMP_DOCUMENTOS_SOLICITUD_INFO" name="FOLIO_TRAMITE" xsi:type="column"/>
+                  <field table="NMP_DOCUMENTOS_SOLICITUD_INFO" name="NUM_CREDENCIAL" xsi:type="column"/>
+               </foreign-key-fields>
+               <batch-reading>true</batch-reading>
+               <indirection xsi:type="value-holder-indirection-policy"/>
+               <selection-query xsi:type="read-object-query">
+                  <reference-class>NMPSolicitudesClienteDB.NmpSolicitudesClientesInfo</reference-class>
+               </selection-query>
+            </attribute-mapping>
+         </attribute-mappings>
+         <descriptor-type>independent</descriptor-type>
+         <caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+            <always-refresh>true</always-refresh>
+         </caching>
+         <remote-caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+         </remote-caching>
+         <instantiation/>
+         <copying xsi:type="instantiation-copy-policy"/>
+         <tables>
+            <table name="NMP_DOCUMENTOS_SOLICITUD_INFO"/>
+         </tables>
+         <structure>structureName</structure>
+      </class-mapping-descriptor>
+      <class-mapping-descriptor xsi:type="object-relational-class-mapping-descriptor">
+         <class>NMPSolicitudesClienteDB.NmpFormasPago</class>
+         <alias>NMP_FORMAS_PAGO</alias>
+         <primary-key>
+            <field table="NMP_FORMAS_PAGO" name="PLAZO" xsi:type="column"/>
+         </primary-key>
+         <events/>
+         <querying>
+            <timeout>3</timeout>
+         </querying>
+         <attribute-mappings>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>plazo</attribute-name>
+               <field table="NMP_FORMAS_PAGO" name="PLAZO" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>numCredencial</attribute-name>
+               <read-only>true</read-only>
+               <properties>
+                  <property name="fkPlaceholder">
+                     <value>true</value>
+                  </property>
+               </properties>
+               <field table="NMP_FORMAS_PAGO" name="NUM_CREDENCIAL" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>folioTramite</attribute-name>
+               <read-only>true</read-only>
+               <properties>
+                  <property name="fkPlaceholder">
+                     <value>true</value>
+                  </property>
+               </properties>
+               <field table="NMP_FORMAS_PAGO" name="FOLIO_TRAMITE" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>montoCredito</attribute-name>
+               <field table="NMP_FORMAS_PAGO" name="MONTO_CREDITO" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>pagoMensual</attribute-name>
+               <field table="NMP_FORMAS_PAGO" name="PAGO_MENSUAL" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>taza</attribute-name>
+               <field table="NMP_FORMAS_PAGO" name="TAZA" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>creadoPor</attribute-name>
+               <field table="NMP_FORMAS_PAGO" name="CREADO_POR" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>fechaCreacion</attribute-name>
+               <field table="NMP_FORMAS_PAGO" name="FECHA_CREACION" xsi:type="column"/>
+               <attribute-classification>java.sql.Timestamp</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>actualizadoPor</attribute-name>
+               <field table="NMP_FORMAS_PAGO" name="ACTUALIZADO_POR" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>fechaActualizacion</attribute-name>
+               <field table="NMP_FORMAS_PAGO" name="FECHA_ACTUALIZACION" xsi:type="column"/>
+               <attribute-classification>java.sql.Timestamp</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="one-to-one-mapping">
+               <attribute-name>rfkFormasPagoSolicitud</attribute-name>
+               <reference-class>NMPSolicitudesClienteDB.NmpSolicitudesClientesInfo</reference-class>
+               <private-owned>true</private-owned>
+               <foreign-key>
+                  <field-reference>
+                     <source-field table="NMP_FORMAS_PAGO" name="FOLIO_TRAMITE" xsi:type="column"/>
+                     <target-field table="NMP_SOLICITUDES_CLIENTES_INFO" name="FOLIO_TRAMITE" xsi:type="column"/>
+                  </field-reference>
+                  <field-reference>
+                     <source-field table="NMP_FORMAS_PAGO" name="NUM_CREDENCIAL" xsi:type="column"/>
+                     <target-field table="NMP_SOLICITUDES_CLIENTES_INFO" name="NUM_CREDENCIAL" xsi:type="column"/>
+                  </field-reference>
+               </foreign-key>
+               <foreign-key-fields>
+                  <field table="NMP_FORMAS_PAGO" name="FOLIO_TRAMITE" xsi:type="column"/>
+                  <field table="NMP_FORMAS_PAGO" name="NUM_CREDENCIAL" xsi:type="column"/>
+               </foreign-key-fields>
+               <batch-reading>true</batch-reading>
+               <indirection xsi:type="value-holder-indirection-policy"/>
+               <selection-query xsi:type="read-object-query">
+                  <reference-class>NMPSolicitudesClienteDB.NmpSolicitudesClientesInfo</reference-class>
+               </selection-query>
+            </attribute-mapping>
+         </attribute-mappings>
+         <descriptor-type>independent</descriptor-type>
+         <caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+            <always-refresh>true</always-refresh>
+         </caching>
+         <remote-caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+         </remote-caching>
+         <instantiation/>
+         <copying xsi:type="instantiation-copy-policy"/>
+         <tables>
+            <table name="NMP_FORMAS_PAGO"/>
+         </tables>
+         <structure>structureName</structure>
+      </class-mapping-descriptor>
+      <class-mapping-descriptor xsi:type="object-relational-class-mapping-descriptor">
+         <class>NMPSolicitudesClienteDB.NmpGrupoComplementos</class>
+         <alias>NMP_GRUPO_COMPLEMENTOS</alias>
+         <primary-key>
+            <field table="NMP_GRUPO_COMPLEMENTOS" name="ID_COMPLEMENTO" xsi:type="column"/>
+            <field table="NMP_GRUPO_COMPLEMENTOS" name="NUM_CREDENCIAL" xsi:type="column"/>
+            <field table="NMP_GRUPO_COMPLEMENTOS" name="FOLIO_TRAMITE" xsi:type="column"/>
+            <field table="NMP_GRUPO_COMPLEMENTOS" name="VIN" xsi:type="column"/>
+         </primary-key>
+         <events/>
+         <querying>
+            <timeout>3</timeout>
+         </querying>
+         <attribute-mappings>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idComplemento</attribute-name>
+               <field table="NMP_GRUPO_COMPLEMENTOS" name="ID_COMPLEMENTO" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>descripcion</attribute-name>
+               <field table="NMP_GRUPO_COMPLEMENTOS" name="DESCRIPCION" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>vin</attribute-name>
+               <read-only>true</read-only>
+               <properties>
+                  <property name="fkPlaceholder">
+                     <value>true</value>
+                  </property>
+               </properties>
+               <field table="NMP_GRUPO_COMPLEMENTOS" name="VIN" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>numCredencial</attribute-name>
+               <read-only>true</read-only>
+               <properties>
+                  <property name="fkPlaceholder">
+                     <value>true</value>
+                  </property>
+               </properties>
+               <field table="NMP_GRUPO_COMPLEMENTOS" name="NUM_CREDENCIAL" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>folioTramite</attribute-name>
+               <read-only>true</read-only>
+               <properties>
+                  <property name="fkPlaceholder">
+                     <value>true</value>
+                  </property>
+               </properties>
+               <field table="NMP_GRUPO_COMPLEMENTOS" name="FOLIO_TRAMITE" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="one-to-one-mapping">
+               <attribute-name>rfkComplementosVehiculos</attribute-name>
+               <reference-class>NMPSolicitudesClienteDB.NmpVehiculoInfo</reference-class>
+               <private-owned>true</private-owned>
+               <foreign-key>
+                  <field-reference>
+                     <source-field table="NMP_GRUPO_COMPLEMENTOS" name="NUM_CREDENCIAL" xsi:type="column"/>
+                     <target-field table="NMP_VEHICULO_INFO" name="NUM_CREDENCIAL" xsi:type="column"/>
+                  </field-reference>
+                  <field-reference>
+                     <source-field table="NMP_GRUPO_COMPLEMENTOS" name="FOLIO_TRAMITE" xsi:type="column"/>
+                     <target-field table="NMP_VEHICULO_INFO" name="FOLIO_TRAMITE" xsi:type="column"/>
+                  </field-reference>
+                  <field-reference>
+                     <source-field table="NMP_GRUPO_COMPLEMENTOS" name="VIN" xsi:type="column"/>
+                     <target-field table="NMP_VEHICULO_INFO" name="VIN" xsi:type="column"/>
+                  </field-reference>
+               </foreign-key>
+               <foreign-key-fields>
+                  <field table="NMP_GRUPO_COMPLEMENTOS" name="NUM_CREDENCIAL" xsi:type="column"/>
+                  <field table="NMP_GRUPO_COMPLEMENTOS" name="FOLIO_TRAMITE" xsi:type="column"/>
+                  <field table="NMP_GRUPO_COMPLEMENTOS" name="VIN" xsi:type="column"/>
+               </foreign-key-fields>
+               <batch-reading>true</batch-reading>
+               <indirection xsi:type="value-holder-indirection-policy"/>
+               <selection-query xsi:type="read-object-query">
+                  <reference-class>NMPSolicitudesClienteDB.NmpVehiculoInfo</reference-class>
+               </selection-query>
+            </attribute-mapping>
+         </attribute-mappings>
+         <descriptor-type>independent</descriptor-type>
+         <caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+            <always-refresh>true</always-refresh>
+         </caching>
+         <remote-caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+         </remote-caching>
+         <instantiation/>
+         <copying xsi:type="instantiation-copy-policy"/>
+         <tables>
+            <table name="NMP_GRUPO_COMPLEMENTOS"/>
+         </tables>
+         <structure>structureName</structure>
+      </class-mapping-descriptor>
+      <class-mapping-descriptor xsi:type="object-relational-class-mapping-descriptor">
+         <class>NMPSolicitudesClienteDB.NmpSolicitudesClientesInfo</class>
+         <alias>NMP_SOLICITUDES_CLIENTES_INFO</alias>
+         <primary-key>
+            <field table="NMP_SOLICITUDES_CLIENTES_INFO" name="FOLIO_TRAMITE" xsi:type="column"/>
+            <field table="NMP_SOLICITUDES_CLIENTES_INFO" name="NUM_CREDENCIAL" xsi:type="column"/>
+         </primary-key>
+         <events/>
+         <querying>
+            <queries>
+               <query name="NMPSolicitudesClienteDBSelect" xsi:type="read-all-query">
+                  <reference-class>NMPSolicitudesClienteDB.NmpSolicitudesClientesInfo</reference-class>
+                  <container xsi:type="list-container-policy">
+                     <collection-type>java.util.Vector</collection-type>
+                  </container>
+               </query>
+               <query name="NMPSolicitudesClienteSelect" xsi:type="read-all-query">
+                  <arguments>
+                     <argument name="numCredencial">
+                        <type>java.lang.String</type>
+                     </argument>
+                     <argument name="fechaInicial">
+                        <type>java.sql.Timestamp</type>
+                     </argument>
+                     <argument name="fechaFinal">
+                        <type>java.sql.Timestamp</type>
+                     </argument>
+                  </arguments>
+                  <call xsi:type="sql-call">
+                     <sql>SELECT NUM_CREDENCIAL, FOLIO_TRAMITE, MONTO_PRESTAMO, MONTO_AVALUO, MONTO_AVALUO_DICTAMINADOR, PRESTAMO_SOLICITADO, PLAZO, ESTADO_SOLICITUD, ESTADO_FLUJO, COMENTARIOS, ID_CONTRATO, CREADO_POR, FECHA_CREACION, ACTUALIZADO_POR, FECHA_ACTUALIZACION FROM NMP_SOLICITUDES_CLIENTES_INFO WHERE ((NUM_CREDENCIAL = #numCredencial) AND (FECHA_CREACION >= nvl(#fechaInicial,FECHA_CREACION)) AND (FECHA_CREACION &lt;= nvl(#fechaFinal,FECHA_CREACION)))</sql>
+                  </call>
+                  <reference-class>NMPSolicitudesClienteDB.NmpSolicitudesClientesInfo</reference-class>
+                  <container xsi:type="list-container-policy">
+                     <collection-type>java.util.Vector</collection-type>
+                  </container>
+               </query> 
+            </queries>
+            <timeout>3</timeout>
+         </querying>
+         <attribute-mappings>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>numCredencial</attribute-name>
+               <field table="NMP_SOLICITUDES_CLIENTES_INFO" name="NUM_CREDENCIAL" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>folioTramite</attribute-name>
+               <field table="NMP_SOLICITUDES_CLIENTES_INFO" name="FOLIO_TRAMITE" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>montoPrestamo</attribute-name>
+               <field table="NMP_SOLICITUDES_CLIENTES_INFO" name="MONTO_PRESTAMO" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>montoAvaluo</attribute-name>
+               <field table="NMP_SOLICITUDES_CLIENTES_INFO" name="MONTO_AVALUO" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>montoAvaluoDictaminador</attribute-name>
+               <field table="NMP_SOLICITUDES_CLIENTES_INFO" name="MONTO_AVALUO_DICTAMINADOR" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>prestamoSolicitado</attribute-name>
+               <field table="NMP_SOLICITUDES_CLIENTES_INFO" name="PRESTAMO_SOLICITADO" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>plazo</attribute-name>
+               <field table="NMP_SOLICITUDES_CLIENTES_INFO" name="PLAZO" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>estadoSolicitud</attribute-name>
+               <field table="NMP_SOLICITUDES_CLIENTES_INFO" name="ESTADO_SOLICITUD" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>estadoFlujo</attribute-name>
+               <field table="NMP_SOLICITUDES_CLIENTES_INFO" name="ESTADO_FLUJO" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>comentarios</attribute-name>
+               <field table="NMP_SOLICITUDES_CLIENTES_INFO" name="COMENTARIOS" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idContrato</attribute-name>
+               <field table="NMP_SOLICITUDES_CLIENTES_INFO" name="ID_CONTRATO" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>creadoPor</attribute-name>
+               <field table="NMP_SOLICITUDES_CLIENTES_INFO" name="CREADO_POR" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>fechaCreacion</attribute-name>
+               <field table="NMP_SOLICITUDES_CLIENTES_INFO" name="FECHA_CREACION" xsi:type="column"/>
+               <attribute-classification>java.sql.Timestamp</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>actualizadoPor</attribute-name>
+               <field table="NMP_SOLICITUDES_CLIENTES_INFO" name="ACTUALIZADO_POR" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>fechaActualizacion</attribute-name>
+               <field table="NMP_SOLICITUDES_CLIENTES_INFO" name="FECHA_ACTUALIZACION" xsi:type="column"/>
+               <attribute-classification>java.sql.Timestamp</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="one-to-many-mapping">
+               <attribute-name>nmpDocumentosSolicitudInfoCollection</attribute-name>
+               <reference-class>NMPSolicitudesClienteDB.NmpDocumentosSolicitudInfo</reference-class>
+               <private-owned>true</private-owned>
+               <target-foreign-key>
+                  <field-reference>
+                     <source-field table="NMP_DOCUMENTOS_SOLICITUD_INFO" name="FOLIO_TRAMITE" xsi:type="column"/>
+                     <target-field table="NMP_SOLICITUDES_CLIENTES_INFO" name="FOLIO_TRAMITE" xsi:type="column"/>
+                  </field-reference>
+                  <field-reference>
+                     <source-field table="NMP_DOCUMENTOS_SOLICITUD_INFO" name="NUM_CREDENCIAL" xsi:type="column"/>
+                     <target-field table="NMP_SOLICITUDES_CLIENTES_INFO" name="NUM_CREDENCIAL" xsi:type="column"/>
+                  </field-reference>
+               </target-foreign-key>
+               <batch-reading>true</batch-reading>
+               <container xsi:type="list-container-policy">
+                  <collection-type>org.eclipse.persistence.indirection.IndirectList</collection-type>
+               </container>
+               <indirection xsi:type="value-holder-indirection-policy"/>
+               <selection-query xsi:type="read-all-query">
+                  <reference-class>NMPSolicitudesClienteDB.NmpDocumentosSolicitudInfo</reference-class>
+                  <container xsi:type="list-container-policy">
+                     <collection-type>org.eclipse.persistence.indirection.IndirectList</collection-type>
+                  </container>
+               </selection-query>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="one-to-many-mapping">
+               <attribute-name>nmpFormasPagoCollection</attribute-name>
+               <reference-class>NMPSolicitudesClienteDB.NmpFormasPago</reference-class>
+               <private-owned>true</private-owned>
+               <target-foreign-key>
+                  <field-reference>
+                     <source-field table="NMP_FORMAS_PAGO" name="FOLIO_TRAMITE" xsi:type="column"/>
+                     <target-field table="NMP_SOLICITUDES_CLIENTES_INFO" name="FOLIO_TRAMITE" xsi:type="column"/>
+                  </field-reference>
+                  <field-reference>
+                     <source-field table="NMP_FORMAS_PAGO" name="NUM_CREDENCIAL" xsi:type="column"/>
+                     <target-field table="NMP_SOLICITUDES_CLIENTES_INFO" name="NUM_CREDENCIAL" xsi:type="column"/>
+                  </field-reference>
+               </target-foreign-key>
+               <batch-reading>true</batch-reading>
+               <container xsi:type="list-container-policy">
+                  <collection-type>org.eclipse.persistence.indirection.IndirectList</collection-type>
+               </container>
+               <indirection xsi:type="value-holder-indirection-policy"/>
+               <selection-query xsi:type="read-all-query">
+                  <reference-class>NMPSolicitudesClienteDB.NmpFormasPago</reference-class>
+                  <container xsi:type="list-container-policy">
+                     <collection-type>org.eclipse.persistence.indirection.IndirectList</collection-type>
+                  </container>
+               </selection-query>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="one-to-many-mapping">
+               <attribute-name>nmpVehiculoInfoCollection</attribute-name>
+               <reference-class>NMPSolicitudesClienteDB.NmpVehiculoInfo</reference-class>
+               <private-owned>true</private-owned>
+               <target-foreign-key>
+                  <field-reference>
+                     <source-field table="NMP_VEHICULO_INFO" name="FOLIO_TRAMITE" xsi:type="column"/>
+                     <target-field table="NMP_SOLICITUDES_CLIENTES_INFO" name="FOLIO_TRAMITE" xsi:type="column"/>
+                  </field-reference>
+                  <field-reference>
+                     <source-field table="NMP_VEHICULO_INFO" name="NUM_CREDENCIAL" xsi:type="column"/>
+                     <target-field table="NMP_SOLICITUDES_CLIENTES_INFO" name="NUM_CREDENCIAL" xsi:type="column"/>
+                  </field-reference>
+               </target-foreign-key>
+               <batch-reading>true</batch-reading>
+               <container xsi:type="list-container-policy">
+                  <collection-type>org.eclipse.persistence.indirection.IndirectList</collection-type>
+               </container>
+               <indirection xsi:type="value-holder-indirection-policy"/>
+               <selection-query xsi:type="read-all-query">
+                  <reference-class>NMPSolicitudesClienteDB.NmpVehiculoInfo</reference-class>
+                  <container xsi:type="list-container-policy">
+                     <collection-type>org.eclipse.persistence.indirection.IndirectList</collection-type>
+                  </container>
+               </selection-query>
+            </attribute-mapping>
+         </attribute-mappings>
+         <descriptor-type>independent</descriptor-type>
+         <caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+            <always-refresh>true</always-refresh>
+         </caching>
+         <remote-caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+         </remote-caching>
+         <instantiation/>
+         <copying xsi:type="instantiation-copy-policy"/>
+         <tables>
+            <table name="NMP_SOLICITUDES_CLIENTES_INFO"/>
+         </tables>
+         <structure>structureName</structure>
+      </class-mapping-descriptor>
+      <class-mapping-descriptor xsi:type="object-relational-class-mapping-descriptor">
+         <class>NMPSolicitudesClienteDB.NmpVehiculoInfo</class>
+         <alias>NMP_VEHICULO_INFO</alias>
+         <primary-key>
+            <field table="NMP_VEHICULO_INFO" name="NUM_CREDENCIAL" xsi:type="column"/>
+            <field table="NMP_VEHICULO_INFO" name="FOLIO_TRAMITE" xsi:type="column"/>
+            <field table="NMP_VEHICULO_INFO" name="VIN" xsi:type="column"/>
+         </primary-key>
+         <events/>
+         <querying>
+            <timeout>3</timeout>
+         </querying>
+         <attribute-mappings>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>vin</attribute-name>
+               <field table="NMP_VEHICULO_INFO" name="VIN" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>serieMotor</attribute-name>
+               <field table="NMP_VEHICULO_INFO" name="SERIE_MOTOR" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>tipoVehiculo</attribute-name>
+               <field table="NMP_VEHICULO_INFO" name="TIPO_VEHICULO" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>placas</attribute-name>
+               <field table="NMP_VEHICULO_INFO" name="PLACAS" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>numCredencial</attribute-name>
+               <read-only>true</read-only>
+               <properties>
+                  <property name="fkPlaceholder">
+                     <value>true</value>
+                  </property>
+               </properties>
+               <field table="NMP_VEHICULO_INFO" name="NUM_CREDENCIAL" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>folioTramite</attribute-name>
+               <read-only>true</read-only>
+               <properties>
+                  <property name="fkPlaceholder">
+                     <value>true</value>
+                  </property>
+               </properties>
+               <field table="NMP_VEHICULO_INFO" name="FOLIO_TRAMITE" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>descripcionMarca</attribute-name>
+               <field table="NMP_VEHICULO_INFO" name="MARCA" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idMarca</attribute-name>
+               <field table="NMP_VEHICULO_INFO" name="ID_MARCA" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>descripcionSubMarca</attribute-name>
+               <field table="NMP_VEHICULO_INFO" name="SUBMARCA" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>	
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idSubMarca</attribute-name>
+               <field table="NMP_VEHICULO_INFO" name="ID_SUBMARCA" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>descripcionModelo</attribute-name>
+               <field table="NMP_VEHICULO_INFO" name="MODELO" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idModelo</attribute-name>
+               <field table="NMP_VEHICULO_INFO" name="ID_MODELO" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>descripcionVersion</attribute-name>
+               <field table="NMP_VEHICULO_INFO" name="VERSION" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idVersion</attribute-name>
+               <field table="NMP_VEHICULO_INFO" name="ID_VERSION" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>descripcionKilometraje</attribute-name>
+               <field table="NMP_VEHICULO_INFO" name="KILOMETRAJE" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idKilometraje</attribute-name>
+               <field table="NMP_VEHICULO_INFO" name="ID_KILOMETRAJE" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>color</attribute-name>
+               <field table="NMP_VEHICULO_INFO" name="COLOR" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>serieChasis</attribute-name>
+               <field table="NMP_VEHICULO_INFO" name="SERIE_CHASIS" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>numeroTarjetaCirculacion</attribute-name>
+               <field table="NMP_VEHICULO_INFO" name="NUM_TARJETA_CIRCULACION" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>numeroFactura</attribute-name>
+               <field table="NMP_VEHICULO_INFO" name="NUM_FACTURA" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>rfcEmisor</attribute-name>
+               <field table="NMP_VEHICULO_INFO" name="RFC_EMISOR" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>agenciaOrigen</attribute-name>
+               <field table="NMP_VEHICULO_INFO" name="AGENCIA_ORIGEN" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>comentarios</attribute-name>
+               <field table="NMP_VEHICULO_INFO" name="COMENTARIOS" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>creadoPor</attribute-name>
+               <field table="NMP_VEHICULO_INFO" name="CREADO_POR" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>fechaCreacion</attribute-name>
+               <field table="NMP_VEHICULO_INFO" name="FECHA_CREACION" xsi:type="column"/>
+               <attribute-classification>java.sql.Timestamp</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>actualizadoPor</attribute-name>
+               <field table="NMP_VEHICULO_INFO" name="ACTUALIZADO_POR" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>fechaActualizacion</attribute-name>
+               <field table="NMP_VEHICULO_INFO" name="FECHA_ACTUALIZACION" xsi:type="column"/>
+               <attribute-classification>java.sql.Timestamp</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="one-to-many-mapping">
+               <attribute-name>nmpGrupoComplementosCollection</attribute-name>
+               <reference-class>NMPSolicitudesClienteDB.NmpGrupoComplementos</reference-class>
+               <private-owned>true</private-owned>
+               <target-foreign-key>
+                  <field-reference>
+                     <source-field table="NMP_GRUPO_COMPLEMENTOS" name="NUM_CREDENCIAL" xsi:type="column"/>
+                     <target-field table="NMP_VEHICULO_INFO" name="NUM_CREDENCIAL" xsi:type="column"/>
+                  </field-reference>
+                  <field-reference>
+                     <source-field table="NMP_GRUPO_COMPLEMENTOS" name="FOLIO_TRAMITE" xsi:type="column"/>
+                     <target-field table="NMP_VEHICULO_INFO" name="FOLIO_TRAMITE" xsi:type="column"/>
+                  </field-reference>
+                  <field-reference>
+                     <source-field table="NMP_GRUPO_COMPLEMENTOS" name="VIN" xsi:type="column"/>
+                     <target-field table="NMP_VEHICULO_INFO" name="VIN" xsi:type="column"/>
+                  </field-reference>
+               </target-foreign-key>
+               <batch-reading>true</batch-reading>
+               <container xsi:type="list-container-policy">
+                  <collection-type>org.eclipse.persistence.indirection.IndirectList</collection-type>
+               </container>
+               <indirection xsi:type="value-holder-indirection-policy"/>
+               <selection-query xsi:type="read-all-query">
+                  <reference-class>NMPSolicitudesClienteDB.NmpGrupoComplementos</reference-class>
+                  <container xsi:type="list-container-policy">
+                     <collection-type>org.eclipse.persistence.indirection.IndirectList</collection-type>
+                  </container>
+               </selection-query>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="one-to-one-mapping">
+               <attribute-name>rfkSolicitudesVehiculos</attribute-name>
+               <reference-class>NMPSolicitudesClienteDB.NmpSolicitudesClientesInfo</reference-class>
+               <private-owned>true</private-owned>
+               <foreign-key>
+                  <field-reference>
+                     <source-field table="NMP_VEHICULO_INFO" name="FOLIO_TRAMITE" xsi:type="column"/>
+                     <target-field table="NMP_SOLICITUDES_CLIENTES_INFO" name="FOLIO_TRAMITE" xsi:type="column"/>
+                  </field-reference>
+                  <field-reference>
+                     <source-field table="NMP_VEHICULO_INFO" name="NUM_CREDENCIAL" xsi:type="column"/>
+                     <target-field table="NMP_SOLICITUDES_CLIENTES_INFO" name="NUM_CREDENCIAL" xsi:type="column"/>
+                  </field-reference>
+               </foreign-key>
+               <foreign-key-fields>
+                  <field table="NMP_VEHICULO_INFO" name="FOLIO_TRAMITE" xsi:type="column"/>
+                  <field table="NMP_VEHICULO_INFO" name="NUM_CREDENCIAL" xsi:type="column"/>
+               </foreign-key-fields>
+               <batch-reading>true</batch-reading>
+               <indirection xsi:type="value-holder-indirection-policy"/>
+               <selection-query xsi:type="read-object-query">
+                  <reference-class>NMPSolicitudesClienteDB.NmpSolicitudesClientesInfo</reference-class>
+               </selection-query>
+            </attribute-mapping>
+         </attribute-mappings>
+         <descriptor-type>independent</descriptor-type>
+         <caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+            <always-refresh>true</always-refresh>
+         </caching>
+         <remote-caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+         </remote-caching>
+         <instantiation/>
+         <copying xsi:type="instantiation-copy-policy"/>
+         <tables>
+            <table name="NMP_VEHICULO_INFO"/>
+         </tables>
+         <structure>structureName</structure>
+      </class-mapping-descriptor>
+   </class-mapping-descriptors>
+   <login xsi:type="database-login">
+      <platform-class>org.eclipse.persistence.platform.database.oracle.Oracle9Platform</platform-class>
+      <connection-url></connection-url>
+   </login>
+</object-persistence>

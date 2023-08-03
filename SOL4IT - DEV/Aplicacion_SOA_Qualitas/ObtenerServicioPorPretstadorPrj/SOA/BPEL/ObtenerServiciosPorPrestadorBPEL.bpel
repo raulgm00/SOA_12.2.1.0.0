@@ -1,0 +1,138 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Wed Dec 07 17:40:00 CST 2016
+  Author:  Soaint
+  Type: BPEL 2.0 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="ObtenerServiciosPorPrestadorBPEL" targetNamespace="http://xmlns.oracle.com/ObtenerServicioPorPrestadorApp/ObtenerServicioPorPretstadorPrj/ObtenerServiciosPorPrestadorBPEL" xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:client="http://xmlns.oracle.com/ObtenerServicioPorPrestadorApp/ObtenerServicioPorPretstadorPrj/ObtenerServiciosPorPrestadorBPEL" xmlns:ora="http://schemas.oracle.com/xpath/extension" xmlns:ui="http://xmlns.oracle.com/soa/designer" xmlns:bpelx="http://schemas.oracle.com/bpel/extension" xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xml:id="id_1"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/ObtenerServicioPorPrestadorApp/ObtenerServicioPorPretstadorPrj/SPServiciosPrestadorDB"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/db/sp/SPServiciosPrestadorDB"
+         xmlns:ns2="http://qualitas.com.mx/comunes/objetosComunes/v1/"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:ns4="http://qualitas.com.mx/ValidarCentroDeCostosApp/ValidarCentrosDeCostosPrj/ValidarCentroDeCostosBPEL"
+         xmlns:ns5="http://qualitas.com.mx/Comun/CentroCostos/validarCentroCostos/v1/"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns6="http://xmlns.oracle.com/pcbpel/adapter/db/ObtenerServicioPorPrestadorApp/ObtenerServicioPorPretstadorPrj/SPObtenerServPrestador"
+         xmlns:ns7="http://xmlns.oracle.com/pcbpel/adapter/db/sp/SPObtenerServPrestador"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ess="http://xmlns.oracle.com/scheduler" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap">
+
+    <import ui:processWSDL="true" namespace="http://xmlns.oracle.com/ObtenerServicioPorPrestadorApp/ObtenerServicioPorPretstadorPrj/ObtenerServiciosPorPrestadorBPEL" location="../WSDLs/ObtenerServiciosPorPrestadorBPEL.wsdl" importType="http://schemas.xmlsoap.org/wsdl/" xml:id="id_2"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks xml:id="id_3">
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="obtenerserviciosporprestadorbpel_client" partnerLinkType="client:ObtenerServiciosPorPrestadorBPEL" myRole="ObtenerServiciosPorPrestadorBPELProvider" xml:id="id_4"/>
+    <partnerLink name="SPObtenerServPrestador" partnerLinkType="ns6:SPObtenerServPrestador_plt"
+                 partnerRole="SPObtenerServPrestador_role" xml:id="id_56"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables xml:id="id_5">
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:ObtenerServiciosPorPrestadorBPELRequestMessage" xml:id="id_6"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:ObtenerServiciosPorPrestadorBPELResponseMessage" xml:id="id_7"/>
+    <variable name="ObtenerServPrestadorInvoke_InputVariable" messageType="ns6:args_in_msg" xml:id="id_58"/>
+    <variable name="ObtenerServPrestadorInvoke_OutputVariable" messageType="ns6:args_out_msg" xml:id="id_59"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main" xml:id="id_8">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in ObtenerServiciosPorPrestadorBPEL.wsdl) -->
+    <receive name="receiveInput" partnerLink="obtenerserviciosporprestadorbpel_client" portType="client:ObtenerServiciosPorPrestadorBPEL" operation="process" variable="inputVariable" createInstance="yes" xml:id="id_9"/>
+    <scope name="Scope1" xml:id="id_69">
+      <sequence xml:id="id_70">
+        <assign name="InputGetServicePrestador" xml:id="id_13">
+          <copy xml:id="id_60">
+            <from xml:id="id_61">$inputVariable.payload/client:numempleado</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_62">$ObtenerServPrestadorInvoke_InputVariable.InputParameters/ns7:P_NUMEMPLEADO</to>
+          </copy>
+          <copy xml:id="id_63">
+            <from xml:id="id_64">$inputVariable.payload/client:idPrestador</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_65">$ObtenerServPrestadorInvoke_InputVariable.InputParameters/ns7:P_IDPRESTADOR</to>
+          </copy>
+        </assign>
+        <invoke name="ObtenerServPrestadorInvoke" xml:id="id_57" partnerLink="SPObtenerServPrestador"
+                portType="ns6:SPObtenerServPrestador_ptt" operation="SPObtenerServPrestador"
+                inputVariable="ObtenerServPrestadorInvoke_InputVariable"
+                outputVariable="ObtenerServPrestadorInvoke_OutputVariable" bpelx:invokeAsDetail="no"/>
+      </sequence>
+    </scope>
+    <if name="If" xml:id="id_71">
+      <documentation xml:id="id_78">
+        <![CDATA[RECORD SET IS NOT EMPTY]]>
+      </documentation>
+      <condition xml:id="id_77">$ObtenerServPrestadorInvoke_OutputVariable.OutputParameters/ns7:P_OUTCVE = 0 or $ObtenerServPrestadorInvoke_OutputVariable.OutputParameters/ns7:P_OUTCVE = 2 </condition>
+      <scope name="Scope2" xml:id="id_73">
+        <sequence name="Sequence2" xml:id="id_75">
+          <assign name="OutServiciosPrestador" xml:id="id_66">
+            <bpelx:annotation xml:id="id_67">
+              <bpelx:pattern patternName="bpelx:transformation" xml:id="id_68"></bpelx:pattern>
+            </bpelx:annotation>
+            <copy xml:id="id_79">
+              <from xml:id="id_80">ora:doXSLTransformForDoc("../Transformations/OutServPrestTransf.xsl", $ObtenerServPrestadorInvoke_OutputVariable.OutputParameters)</from>
+              <to xml:id="id_81" variable="outputVariable" part="payload"/>
+            </copy>
+          </assign>
+        </sequence>
+      </scope>
+      <else xml:id="id_72">
+        <scope name="Scope3" xml:id="id_74">
+          <sequence name="Sequence3" xml:id="id_76">
+            <assign name="OutputError" xml:id="id_82">
+              <copy xml:id="id_83">
+                <from xml:id="id_84">string($ObtenerServPrestadorInvoke_OutputVariable.OutputParameters/ns7:P_OUTCVE)</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_85">$outputVariable.payload/client:OperationResponse/ns2:codigoRespuesta</to>
+              </copy>
+              <copy xml:id="id_86">
+                <from xml:id="id_87">'NO SE ENCONTRARON DATOS'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_88">$outputVariable.payload/client:OperationResponse/ns2:descripcionRespuesta</to>
+              </copy>
+              <copy xml:id="id_89">
+                <from xml:id="id_90">ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_91">$outputVariable.payload/client:OperationResponse/ns2:fecha</to>
+              </copy>
+            </assign>
+          </sequence>
+        </scope>
+      </else>
+    </if>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="obtenerserviciosporprestadorbpel_client" portType="client:ObtenerServiciosPorPrestadorBPEL" operation="process" variable="outputVariable" xml:id="id_10"/>
+  </sequence>
+</process>

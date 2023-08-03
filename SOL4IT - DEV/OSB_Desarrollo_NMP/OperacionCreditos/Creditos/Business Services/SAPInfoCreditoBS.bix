@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:businessServiceEntry xmlns:con="http://xmlns.oracle.com/servicebus/business/config" xmlns:oper="http://xmlns.oracle.com/servicebus/business/operations" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <con:coreEntry>
+        <con:description/>
+        <con1:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:con1="http://xmlns.oracle.com/servicebus/business/config">
+            <con:wsdl ref="OperacionCreditos/Creditos/Resources/WSDLs/SAPZlmWsInfoCredBpWSDL"/>
+            <con:port>
+                <con:name>ZLM_WS_INFO_CRED_BP</con:name>
+                <con:namespace>urn:sap-com:document:sap:soap:functions:mc-style</con:namespace>
+            </con:port>
+            <con:WSI-compliant>false</con:WSI-compliant>
+        </con1:binding>
+        <oper:operations enabled="true" xmlns:cus="http://www.bea.com/wli/config/customizations" xmlns:xt="http://www.bea.com/wli/config/xmltypes" xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert">
+            <oper:messageTracing enabled="false">
+                <oper1:detailsLevel xmlns:oper1="http://xmlns.oracle.com/servicebus/operations">full</oper1:detailsLevel>
+                <oper1:maxSize xmlns:oper1="http://xmlns.oracle.com/servicebus/operations">8192</oper1:maxSize>
+            </oper:messageTracing>
+            <oper:throttling enabled="false"/>
+            <oper:monitoring enabled="false" aggregationInterval="5"/>
+            <oper:resultCachingEnabled>true</oper:resultCachingEnabled>
+        </oper:operations>
+        <con:ws-policy xmlns:ser="http://www.bea.com/wli/sb/services">
+            <ser:binding-mode>wsdl-policy-attachments</ser:binding-mode>
+        </con:ws-policy>
+    </con:coreEntry>
+    <con:endpointConfig xmlns:ser="http://www.bea.com/wli/sb/services">
+        <tran:provider-id>http</tran:provider-id>
+        <tran:inbound>false</tran:inbound>
+        <tran:URI>
+            <env:value xmlns:env="http://www.bea.com/wli/config/env">http://dcpimsdsap01.nmp.com.mx:8000/sap/bc/srt/rfc/sap/zlm_ws_info_cred_bp/300/zlm_ws_info_cred_bp/zlm_ws_info_cred_bp</env:value>
+        </tran:URI>
+        <tran:outbound-properties>
+            <tran:load-balancing-algorithm>round-robin</tran:load-balancing-algorithm>
+            <tran:retry-count>3</tran:retry-count>
+            <tran:retry-interval>3</tran:retry-interval>
+            <tran:retry-application-errors>false</tran:retry-application-errors>
+        </tran:outbound-properties>
+        <tran:provider-specific xsi:type="http:HttpEndPointConfiguration" xmlns:http="http://www.bea.com/wli/sb/transports/http">
+            <http:outbound-properties>
+                <http:request-method>POST</http:request-method>
+                <http:timeout>10</http:timeout>
+                <http:connection-timeout>10</http:connection-timeout>
+                <http:follow-redirects>false</http:follow-redirects>
+                <http:chunked-streaming-mode>false</http:chunked-streaming-mode>
+                <http:session-sctikiness enabled="false" session-id-name="JSESSIONID"/>
+            </http:outbound-properties>
+            <http:dispatch-policy>SBDefaultResponseWorkManager</http:dispatch-policy>
+            <http:compression>
+                <http:compression-support>false</http:compression-support>
+            </http:compression>
+        </tran:provider-specific>
+    </con:endpointConfig>
+    <aler:alertRules xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert">
+        <aler:alertRule enabled="true" name="timeout_error_warning">
+            <aler:description>Lanza una alerta cuando el numero de errores del BS de SAP se encuentra en el umbral de aviso.</aler:description>
+            <aler:frequency>once-until-conditions-clear</aler:frequency>
+            <aler:severity>warning</aler:severity>
+            <aler:stopProcessing>false</aler:stopProcessing>
+            <aler:condition aggregation-interval="10">
+                <con1:logicalExpr logical-operator="or" xmlns:con1="http://xmlns.oracle.com/servicebus/monitoring/alert/condition">
+                    <con1:logicalExpr logical-operator="and">
+                        <con1:monCondExpr>
+                            <con1:function>count</con1:function>
+                            <con1:lhs>Transport.error-count</con1:lhs>
+                            <con1:operator>></con1:operator>
+                            <con1:rhs>4</con1:rhs>
+                        </con1:monCondExpr>
+                        <con1:monCondExpr>
+                            <con1:function>count</con1:function>
+                            <con1:lhs>Transport.error-count</con1:lhs>
+                            <con1:operator>&lt;</con1:operator>
+                            <con1:rhs>10</con1:rhs>
+                        </con1:monCondExpr>
+                    </con1:logicalExpr>
+                    <con1:logicalExpr logical-operator="and">
+                        <con1:monCondExpr>
+                            <con1:function>average</con1:function>
+                            <con1:lhs>Transport.response-time</con1:lhs>
+                            <con1:operator>></con1:operator>
+                            <con1:rhs>13000</con1:rhs>
+                        </con1:monCondExpr>
+                        <con1:monCondExpr>
+                            <con1:function>average</con1:function>
+                            <con1:lhs>Transport.response-time</con1:lhs>
+                            <con1:operator>&lt;</con1:operator>
+                            <con1:rhs>15000</con1:rhs>
+                        </con1:monCondExpr>
+                    </con1:logicalExpr>
+                </con1:logicalExpr>
+            </aler:condition>
+            <aler:alertDestination ref="Common/Alerts/SAPServiciosAlert"/>
+        </aler:alertRule>
+        <aler:alertRule enabled="true" name="timeout_error_major">
+            <aler:frequency>once-until-conditions-clear</aler:frequency>
+            <aler:severity>major</aler:severity>
+            <aler:stopProcessing>false</aler:stopProcessing>
+            <aler:condition aggregation-interval="10">
+                <con1:logicalExpr logical-operator="or" xmlns:con1="http://xmlns.oracle.com/servicebus/monitoring/alert/condition">
+                    <con1:logicalExpr logical-operator="and">
+                        <con1:monCondExpr>
+                            <con1:function>count</con1:function>
+                            <con1:lhs>Transport.error-count</con1:lhs>
+                            <con1:operator>></con1:operator>
+                            <con1:rhs>9</con1:rhs>
+                        </con1:monCondExpr>
+                        <con1:monCondExpr>
+                            <con1:function>count</con1:function>
+                            <con1:lhs>Transport.error-count</con1:lhs>
+                            <con1:operator>&lt;</con1:operator>
+                            <con1:rhs>20</con1:rhs>
+                        </con1:monCondExpr>
+                    </con1:logicalExpr>
+                    <con1:logicalExpr logical-operator="and">
+                        <con1:monCondExpr>
+                            <con1:function>average</con1:function>
+                            <con1:lhs>Transport.response-time</con1:lhs>
+                            <con1:operator>></con1:operator>
+                            <con1:rhs>14999</con1:rhs>
+                        </con1:monCondExpr>
+                        <con1:monCondExpr>
+                            <con1:function>average</con1:function>
+                            <con1:lhs>Transport.response-time</con1:lhs>
+                            <con1:operator>&lt;</con1:operator>
+                            <con1:rhs>18000</con1:rhs>
+                        </con1:monCondExpr>
+                    </con1:logicalExpr>
+                </con1:logicalExpr>
+            </aler:condition>
+            <aler:alertDestination ref="Common/Alerts/SAPServiciosAlert"/>
+        </aler:alertRule>
+        <aler:alertRule enabled="true" name="timeout_error_critical">
+            <aler:frequency>once-until-conditions-clear</aler:frequency>
+            <aler:severity>fatal</aler:severity>
+            <aler:stopProcessing>false</aler:stopProcessing>
+            <aler:condition aggregation-interval="10">
+                <con1:logicalExpr logical-operator="or" xmlns:con1="http://xmlns.oracle.com/servicebus/monitoring/alert/condition">
+                    <con1:monCondExpr>
+                        <con1:function>average</con1:function>
+                        <con1:lhs>Transport.response-time</con1:lhs>
+                        <con1:operator>></con1:operator>
+                        <con1:rhs>17999</con1:rhs>
+                    </con1:monCondExpr>
+                    <con1:monCondExpr>
+                        <con1:function>count</con1:function>
+                        <con1:lhs>Transport.error-count</con1:lhs>
+                        <con1:operator>></con1:operator>
+                        <con1:rhs>19</con1:rhs>
+                    </con1:monCondExpr>
+                </con1:logicalExpr>
+            </aler:condition>
+            <aler:alertDestination ref="Common/Alerts/SAPServiciosAlert"/>
+        </aler:alertRule>
+    </aler:alertRules>
+</con:businessServiceEntry>

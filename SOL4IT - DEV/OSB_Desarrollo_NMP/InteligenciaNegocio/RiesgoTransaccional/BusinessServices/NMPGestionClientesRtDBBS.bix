@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:businessServiceEntry xmlns:con="http://xmlns.oracle.com/servicebus/business/config">
+    <con:coreEntry>
+        <con:description>Servicio de base de datos (esquema RTUSER) usado para consultar, actualizar e insertar información en la tabla NMP_CLIENTES, la cual contiene información de los clientes.</con:description>
+        <con1:binding type="SOAP" xsi:type="con:SoapBindingType" isSoap12="false" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config" xmlns:con1="http://xmlns.oracle.com/servicebus/business/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:wsdl ref="InteligenciaNegocio/RiesgoTransaccional/Resources/WSDLs/NMPGestionClientesRTWSDL"/>
+            <con:binding>
+                <con:name>RTClientesDBSOAP11Binding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Service/RTClientesDbPXY</con:namespace>
+            </con:binding>
+            <con:WSI-compliant>false</con:WSI-compliant>
+        </con1:binding>
+        <oper:operations enabled="true" xmlns:oper="http://xmlns.oracle.com/servicebus/business/operations">
+            <oper:throttling enabled="false"/>
+            <oper:monitoring enabled="true" aggregationInterval="5"/>
+            <oper:resultCachingEnabled>true</oper:resultCachingEnabled>
+        </oper:operations>
+        <con:ws-policy>
+            <ser:binding-mode xmlns:ser="http://www.bea.com/wli/sb/services">no-policies</ser:binding-mode>
+        </con:ws-policy>
+        <con:result-caching isSupported="true">
+            <con:expressionContext>
+                <con1:varNsDecl prefix="rtt" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/RTTransaccionesDbXSD" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+            </con:expressionContext>
+            <con:tokenExpression>
+                <con1:xqueryText xmlns:con1="http://www.bea.com/wli/sb/stages/config">fn:data($body/rtt:ValidaClienteDB/rtt:idCliente)</con1:xqueryText>
+            </con:tokenExpression>
+            <con:ttlExpression source="request">
+                <con1:xqueryText xmlns:con1="http://www.bea.com/wli/sb/stages/config">'PT2M'</con1:xqueryText>
+            </con:ttlExpression>
+        </con:result-caching>
+        <con:xqConfiguration>
+            <ser:snippetVersion xmlns:ser="http://www.bea.com/wli/sb/services">1.0</ser:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:endpointConfig>
+        <tran:provider-id xmlns:tran="http://www.bea.com/wli/sb/transports">jca</tran:provider-id>
+        <tran:inbound xmlns:tran="http://www.bea.com/wli/sb/transports">false</tran:inbound>
+        <tran:URI xmlns:tran="http://www.bea.com/wli/sb/transports">
+            <env:value xmlns:env="http://www.bea.com/wli/config/env">jca://eis/DB/rtuser</env:value>
+        </tran:URI>
+        <tran:outbound-properties xmlns:tran="http://www.bea.com/wli/sb/transports">
+            <tran:load-balancing-algorithm>round-robin</tran:load-balancing-algorithm>
+            <tran:retry-count>0</tran:retry-count>
+            <tran:retry-interval>30</tran:retry-interval>
+            <tran:retry-application-errors>false</tran:retry-application-errors>
+        </tran:outbound-properties>
+        <tran:provider-specific xsi:type="jca:JCAEndPointConfiguration" xmlns:jca="http://www.bea.com/wli/sb/transports/jca" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <jca:jca-file ref="InteligenciaNegocio/RiesgoTransaccional/Resources/Adapters/NMPGestionClientesDB"/>
+            <jca:adapter-name>Database Adapter</jca:adapter-name>
+            <jca:adapter-type>db</jca:adapter-type>
+            <jca:dispatch-policy>SBDefaultResponseWorkManager</jca:dispatch-policy>
+            <jca:always-use-wsdl>false</jca:always-use-wsdl>
+            <jca:connection-mode>managed</jca:connection-mode>
+            <jca:outbound-properties>
+                <jca:operation-properties>
+                    <jca:operation-name>updateCliente</jca:operation-name>
+                    <jca:spec-properties>
+                        <jca:property>
+                            <jca:name>DetectOmissions</jca:name>
+                            <jca:value>true</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>DescriptorName</jca:name>
+                            <jca:value>ValidaClienteDB.NmpClientes</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>MappingsMetaDataURL</jca:name>
+                            <jca:value>servicebus:/RiesgoTransaccional/RTDB/Resources/JCA/NmpClientesDB-or-mappings.xml</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>DmlType</jca:name>
+                            <jca:value>update</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>GetActiveUnitOfWork</jca:name>
+                            <jca:value>false</jca:value>
+                        </jca:property>
+                    </jca:spec-properties>
+                </jca:operation-properties>
+                <jca:operation-properties>
+                    <jca:operation-name>ValidaCliente</jca:operation-name>
+                    <jca:spec-properties>
+                        <jca:property>
+                            <jca:name>ReturnSingleResultSet</jca:name>
+                            <jca:value>false</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>DescriptorName</jca:name>
+                            <jca:value>ValidaClienteDB.NmpClientes</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>MappingsMetaDataURL</jca:name>
+                            <jca:value>servicebus:/RiesgoTransaccional/RTDB/Resources/JCA/NmpClientesDB-or-mappings.xml</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>QueryName</jca:name>
+                            <jca:value>ValidaClienteDBSelect</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>GetActiveUnitOfWork</jca:name>
+                            <jca:value>true</jca:value>
+                        </jca:property>
+                    </jca:spec-properties>
+                </jca:operation-properties>
+                <jca:operation-properties>
+                    <jca:operation-name>InsertCliente</jca:operation-name>
+                    <jca:spec-properties>
+                        <jca:property>
+                            <jca:name>DetectOmissions</jca:name>
+                            <jca:value>true</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>DescriptorName</jca:name>
+                            <jca:value>ValidaClienteDB.NmpClientes</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>MappingsMetaDataURL</jca:name>
+                            <jca:value>servicebus:/RiesgoTransaccional/RTDB/Resources/JCA/NmpClientesDB-or-mappings.xml</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>DmlType</jca:name>
+                            <jca:value>insert</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>GetActiveUnitOfWork</jca:name>
+                            <jca:value>true</jca:value>
+                        </jca:property>
+                    </jca:spec-properties>
+                </jca:operation-properties>
+            </jca:outbound-properties>
+        </tran:provider-specific>
+    </con:endpointConfig>
+</con:businessServiceEntry>

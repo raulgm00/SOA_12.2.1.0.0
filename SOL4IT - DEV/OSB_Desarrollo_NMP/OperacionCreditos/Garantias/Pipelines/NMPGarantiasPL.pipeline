@@ -1,0 +1,620 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+    <con:coreEntry>
+        <con:description>Lógica del servicio de garantías con la que se:
+* crea una garantía en SAP
+* consulta una garantía en SAP</con:description>
+        <con:binding type="SOAP" isSoap12="true" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="OperacionCreditos/Garantias/Resources/WSDLs/NMPGarantiasSvcWSDL"/>
+            <con:binding>
+                <con:name>garantias_binding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Service/Garantias</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:tracingEnabled>true</oper:tracingEnabled>
+            <oper:logging enabled="true" level="warning"/>
+            <oper:monitoring enabled="true" level="service" aggregationInterval="10"/>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router errorHandler="error-N3f57c7ff.N7a67cea4.0.15dc79f8cd2.N7cc1">
+        <con:pipeline type="request" name="request-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7ffe">
+            <con:stage id="_StageId-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7ffc" name="StageValidaciones" errorHandler="error-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7ef9">
+                <con:comment>Validar los headers de la petición para creación de una garantía.</con:comment>
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPGarantias"/>
+                    <con1:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con2:validate>
+                        <con1:comment>Validar que la cabecera de la petición cumpla con la estructura definida en el esquema para NMP.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N77a4</con1:id>
+                        <con2:schema ref="Common/XSD/NMPStandardHeader"/>
+                        <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con2:schemaElement>
+                        <con2:varName>header</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./nmph:headerMessage</con1:xpathText>
+                        </con2:location>
+                    </con2:validate>
+                    <con2:ifThenElse>
+                        <con1:comment>Validar que exista una cabecera de tipo SOAP.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N77d9</con1:id>
+                        <con2:case id="_BranchId-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N77d8">
+                            <con2:condition>
+                                <con1:xqueryText>fn:empty($header/nmph:headerMessage/nmph:idConsumidor/text()) = fn:true() 
+or
+fn:empty($header/nmph:headerMessage/nmph:idDestino/text()) = fn:true()</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:Error>
+                                    <con1:comment>Generar excepción en caso de no encontrarse un identificador para el origen y destino (cabecera) en la petición.</con1:comment>
+                                    <con1:id>_ActionId-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N76db</con1:id>
+                                    <con2:errCode>USER_OSB-382505</con2:errCode>
+                                    <con2:message>Se debe especificar un identificador para el origen y destino en la cabecera de la petición.</con2:message>
+                                </con2:Error>
+                            </con2:actions>
+                        </con2:case>
+                    </con2:ifThenElse>
+                    <con2:validate>
+                        <con1:comment>Validar que la estructura de la petición cumpla con la definida en el esquema del servicio.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.N7a67cea4.0.15dc79f8cd2.N7ec5</con1:id>
+                        <con2:schema ref="OperacionCreditos/Garantias/Resources/Schemas/NMPGarantiasSvcXSD"/>
+                        <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPGarantias">nmp:crearGarantiaRequest</con2:schemaElement>
+                        <con2:varName>body</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./nmp:crearGarantiaRequest</con1:xpathText>
+                        </con2:location>
+                    </con2:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7fbf" name="StageCreacionGarantia" errorHandler="error-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7d9d">
+                <con:comment>Invocar servicio de SAP para la creación de una garantía.</con:comment>
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPGarantias"/>
+                    <con1:userNsDecl prefix="urn" namespace="urn:sap-com:document:sap:soap:functions:mc-style"/>
+                </con:context>
+                <con:actions>
+                    <con2:wsCallout>
+                        <con1:comment>Invocación a servicio SAP para la creación/modificación de una garantía.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7674</con1:id>
+                        <con2:service ref="OperacionCreditos/Garantias/Business Services/SAPCrearGarantiaBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>ZlmfmRfcCreaGarantia</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">crear_garantia_request</con2:body>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">crear_garantia_response</con2:body>
+                        </con2:response>
+                        <con2:requestTransform>
+                            <con2:assign varName="crear_garantia_request">
+                                <con1:comment>Utilizando una transformación XSTL se crea la petición para crear/modificar una garantía en SAP.</con1:comment>
+                                <con1:id>_ActionId-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7641</con1:id>
+                                <con2:expr>
+                                    <con1:xsltTransform>
+                                        <con1:resource ref="OperacionCreditos/Garantias/Resources/Transformations/TRCrearGarantiaRequestToSAP"/>
+                                        <con1:input>$body/nmp:crearGarantiaRequest</con1:input>
+                                    </con1:xsltTransform>
+                                </con2:expr>
+                            </con2:assign>
+                        </con2:requestTransform>
+                        <con2:responseTransform>
+                            <con2:replace contents-only="true" varName="body">
+                                <con1:comment>Generar la respuesta del servicio tomando la información devuelta por SAP.</con1:comment>
+                                <con1:id>_ActionId-N3f57c7ff.N7a67cea4.0.15dc79f8cd2.N7d8b</con1:id>
+                                <con2:location>
+                                    <con1:xpathText>.</con1:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con1:xqueryText>&lt;nmp:crearGarantiaResponse xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPGarantias">
+  &lt;nmp:numeroGarantia>{fn:data($crear_garantia_response/*:NumGarantia)}&lt;/nmp:numeroGarantia>
+&lt;/nmp:crearGarantiaResponse></con1:xqueryText>
+                                </con2:expr>
+                            </con2:replace>
+                        </con2:responseTransform>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7ffd">
+            <con:stage id="_StageId-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7ffb" name="StageRespuestaCrearGarantia">
+                <con:comment>Responder a la creación de una garantía.</con:comment>
+                <con:context/>
+                <con:actions>
+                    <con1:reply>
+                        <con1:comment>Responder al consumidor satisfactoriamente a la creación de una garantía</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7ff4</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7ffa">
+            <con:stage id="_StageId-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7ff8" name="StageValidaciones" errorHandler="error-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7e95">
+                <con:comment>Validar los headers de la petición para consultar una garantía.</con:comment>
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPGarantias"/>
+                    <con1:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con2:validate>
+                        <con1:comment>Validar que la cabecera de la petición cumpla con la estructura definida en el esquema para NMP.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.N7a67cea4.0.15dc79f8cd2.N7f68</con1:id>
+                        <con2:schema ref="Common/XSD/NMPStandardHeader"/>
+                        <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con2:schemaElement>
+                        <con2:varName>header</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./nmph:headerMessage</con1:xpathText>
+                        </con2:location>
+                    </con2:validate>
+                    <con2:ifThenElse>
+                        <con1:comment>Validar que exista una cabecera de tipo SOAP.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.N7a67cea4.0.15dc79f8cd2.N7efc</con1:id>
+                        <con2:case id="_BranchId-N3f57c7ff.N7a67cea4.0.15dc79f8cd2.N7efb">
+                            <con2:condition>
+                                <con1:xqueryText>fn:empty($header/nmph:headerMessage/nmph:idConsumidor/text()) = fn:true() 
+or
+fn:empty($header/nmph:headerMessage/nmph:idDestino/text()) = fn:true()</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:Error>
+                                    <con1:comment>Generar excepción en caso de no encontrarse un identificador para el origen y destino (cabecera) en la petición.</con1:comment>
+                                    <con1:id>_ActionId-N3f57c7ff.N7a67cea4.0.15dc79f8cd2.N7efa</con1:id>
+                                    <con2:errCode>USER_OSB-382505</con2:errCode>
+                                    <con2:message>Se debe especificar un identificador para el origen y destino en la cabecera de la petición.</con2:message>
+                                </con2:Error>
+                            </con2:actions>
+                        </con2:case>
+                    </con2:ifThenElse>
+                    <con2:validate>
+                        <con1:comment>Validar que la estructura de la petición cumpla con la definida en el esquema del servicio.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.N7a67cea4.0.15dc79f8cd2.N7e90</con1:id>
+                        <con2:schema ref="OperacionCreditos/Garantias/Resources/Schemas/NMPGarantiasSvcXSD"/>
+                        <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPGarantias">nmp:consultarGarantiaRequest</con2:schemaElement>
+                        <con2:varName>body</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>$body/nmp:consultarGarantiaRequest</con1:xpathText>
+                        </con2:location>
+                    </con2:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7f2b" name="StageConsultarGarantia" errorHandler="error-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7d6a">
+                <con:comment>Invocar servicio de SAP para la consulta de una garantía.</con:comment>
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPGarantias"/>
+                    <con1:userNsDecl prefix="urn" namespace="urn:sap-com:document:sap:soap:functions:mc-style"/>
+                </con:context>
+                <con:actions>
+                    <con2:wsCallout>
+                        <con1:comment>Invocación a servicio SAP para la consulta de una garantía.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.N7a67cea4.0.15dc79f8cd2.N7e28</con1:id>
+                        <con2:service ref="OperacionCreditos/Garantias/Business Services/SAPConsultarGarantiaBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>ZlmfmRfcLeeGarantia</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">consultar_garantia_request</con2:body>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">consultar_garantia_response</con2:body>
+                        </con2:response>
+                        <con2:requestTransform>
+                            <con2:assign varName="consultar_garantia_request">
+                                <con1:comment>Generar petición para consultar una garantía en SAP.</con1:comment>
+                                <con1:id>_ActionId-N3f57c7ff.N7a67cea4.0.15dc79f8cd2.N7d57</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText>&lt;urn:ZlmfmRfcLeeGarantia xmlns:urn="urn:sap-com:document:sap:soap:functions:mc-style">
+   &lt;IdGarantia>{fn:data($body/nmp:consultarGarantiaRequest/nmp:numeroGarantia)}&lt;/IdGarantia>
+&lt;/urn:ZlmfmRfcLeeGarantia></con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                        </con2:requestTransform>
+                        <con2:responseTransform>
+                            <con2:replace contents-only="true" varName="body">
+                                <con1:comment>Utilizando una transformación XSTL se crea la respuesta de la consulta tomando la información devuelta por SAP.</con1:comment>
+                                <con1:id>_ActionId-N3f57c7ff.N7a67cea4.0.15dc79f8cd2.N7df3</con1:id>
+                                <con2:location>
+                                    <con1:xpathText>.</con1:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con1:xsltTransform>
+                                        <con1:resource ref="OperacionCreditos/Garantias/Resources/Transformations/TRConsultarGarantiaResponseFromSAP"/>
+                                        <con1:input>$consultar_garantia_response</con1:input>
+                                    </con1:xsltTransform>
+                                </con2:expr>
+                            </con2:replace>
+                        </con2:responseTransform>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7ff9">
+            <con:stage id="_StageId-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7ff7" name="StageRespuestaConsultarGarantia">
+                <con:comment>Responder a la consulta de una garantía.</con:comment>
+                <con:context/>
+                <con:actions>
+                    <con1:reply>
+                        <con1:comment>Responder al consumidor satisfactoriamente a la consulta de una garantía</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7ff1</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7ef9">
+            <con:stage id="_StageId-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7ef8" name="StageErroresValidacion">
+                <con:comment>Manejador de errores de validación de la información de la petición</con:comment>
+                <con:context/>
+                <con:actions>
+                    <con2:replace contents-only="true" varName="body">
+                        <con1:comment>Propagar al consumidor error al validar la estructura de la cabecera de la petición.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7770</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionCreditos/Garantias/Resources/Transformations/TRGarantiasFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="operacionServicio">
+                                    <con1:path>$operation</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con3:report xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con1:comment>Reportar identificador de la petición en la que ocurrio un error.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.N2739b1a8.0.15df13eb28f.N7f8c</con1:id>
+                        <con3:labels>
+                            <con3:key>Garantia-Error</con3:key>
+                            <con3:varName>report_index</con3:varName>
+                            <con3:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                    <con3:log xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con1:comment>Mandar al log el identificador de la petición con error y el detalle de lo ocurrido.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.N2739b1a8.0.15df13eb28f.N7f79</con1:id>
+                        <con3:logLevel>warning</con3:logLevel>
+                        <con3:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:concat($report_index," - ",fn-bea:serialize($body))</con:xqueryText>
+                        </con3:expr>
+                        <con3:message/>
+                    </con3:log>
+                    <con1:reply isError="true">
+                        <con1:comment>Responder al consumidor con el error de validación.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7c3e</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7e95">
+            <con:stage id="_StageId-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7dcf" name="StageErroresValidacion">
+                <con:comment>Manejador de errores de validación de la información de la petición</con:comment>
+                <con:context/>
+                <con:actions>
+                    <con2:replace contents-only="true" varName="body">
+                        <con1:comment>Propagar al consumidor error al validar la estructura de la cabecera de la petición.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.N7a67cea4.0.15dc79f8cd2.N7f9c</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionCreditos/Garantias/Resources/Transformations/TRGarantiasFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="operacionServicio">
+                                    <con1:path>$operation</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con3:report xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con1:comment>Reportar identificador de la petición en la que ocurrio un error.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.N2739b1a8.0.15df13eb28f.N7f8a</con1:id>
+                        <con3:labels>
+                            <con3:key>Garantia-Error</con3:key>
+                            <con3:varName>report_index</con3:varName>
+                            <con3:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                    <con3:log xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con1:comment>Mandar al log el identificador de la petición con error y el detalle de lo ocurrido.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.N2739b1a8.0.15df13eb28f.N7f81</con1:id>
+                        <con3:logLevel>warning</con3:logLevel>
+                        <con3:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:concat($report_index," - ",fn-bea:serialize($body))</con:xqueryText>
+                        </con3:expr>
+                        <con3:message/>
+                    </con3:log>
+                    <con1:reply isError="true">
+                        <con1:comment>Responder al consumidor con el error de validación.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7c0a</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7d9d">
+            <con:stage id="_StageId-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7d06" name="StageErroresInvocacionExterna">
+                <con:comment>Manejador de errores en la invocación a servicio SAP para la creación de una garantía.</con:comment>
+                <con:context/>
+                <con:actions>
+                    <con2:replace contents-only="true" varName="body">
+                        <con1:comment>Propagar al consumidor error al crear/modificar una garantía en SAP.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N76a7</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionCreditos/Garantias/Resources/Transformations/TRGarantiasFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="operacionServicio">
+                                    <con1:path>$operation</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con3:report xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con1:comment>Reportar identificador de la petición en la que ocurrio un error.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.N2739b1a8.0.15df13eb28f.N7f86</con1:id>
+                        <con3:labels>
+                            <con3:key>Garantia-Error</con3:key>
+                            <con3:varName>report_index</con3:varName>
+                            <con3:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                    <con3:log xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con1:comment>Mandar al log el identificador de la petición con error y el detalle de lo ocurrido.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.N2739b1a8.0.15df13eb28f.N7f77</con1:id>
+                        <con3:logLevel>warning</con3:logLevel>
+                        <con3:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:concat($report_index," - ",fn-bea:serialize($body))</con:xqueryText>
+                        </con3:expr>
+                        <con3:message/>
+                    </con3:log>
+                    <con1:reply isError="true">
+                        <con1:comment>Responder al consumidor con el error al crear una garantía en SAP.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7bd6</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7d6a">
+            <con:stage id="_StageId-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7ca3" name="StageErroresInvocacionExterna">
+                <con:comment>Manejador de errores en la invocación a servicio SAP para la consulta de una garantía.</con:comment>
+                <con:context/>
+                <con:actions>
+                    <con2:replace contents-only="true" varName="body">
+                        <con1:comment>Propagar al consumidor error al consultar una garantía en SAP.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.N7a67cea4.0.15dc79f8cd2.N7dbf</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionCreditos/Garantias/Resources/Transformations/TRGarantiasFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="operacionServicio">
+                                    <con1:path>$operation</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con3:report xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con1:comment>Reportar identificador de la petición en la que ocurrio un error.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.N2739b1a8.0.15df13eb28f.N7f88</con1:id>
+                        <con3:labels>
+                            <con3:key>Garantia-Error</con3:key>
+                            <con3:varName>report_index</con3:varName>
+                            <con3:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                    <con3:log xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con1:comment>Mandar al log el identificador de la petición con error y el detalle de lo ocurrido.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.N2739b1a8.0.15df13eb28f.N7f7b</con1:id>
+                        <con3:logLevel>warning</con3:logLevel>
+                        <con3:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:concat($report_index," - ",fn-bea:serialize($body))</con:xqueryText>
+                        </con3:expr>
+                        <con3:message/>
+                    </con3:log>
+                    <con1:reply isError="true">
+                        <con1:comment>Responder al consumidor con el error al consultar una garantía en SAP.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7ba3</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7b9f">
+            <con:stage id="_StageId-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7b9d" name="StageExisteCabeceraTransporte" errorHandler="error-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7ad7">
+                <con:comment>Revisar cuando la cabecera de la petición sea http-transport-header o soap-header y asignar a la variable header para su manipulación.</con:comment>
+                <con:context>
+                    <con1:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="dateVar">
+                        <con1:comment>Obtener la fecha actual para generar un identificador en caso de error.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.N2739b1a8.0.15df13eb28f.N7f99</con1:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:string(fn:current-dateTime())</con:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:assign varName="report_index">
+                        <con1:comment>Generar identificador a reportar en caso de error.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.N2739b1a8.0.15df13eb28f.N7f96</con1:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(fn:concat("&lt;data>", fn:substring($dateVar,1,4),fn:substring($dateVar,6,2),fn:substring($dateVar,9,2),fn:substring($dateVar,12,2),fn:substring($dateVar,15,2),fn:substring($dateVar,18,2),"&lt;/data>"))</con:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:ifThenElse>
+                        <con1:comment>Verificar la presencia de una cabecera http-transport-header o soap-header</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7a6e</con1:id>
+                        <con2:case id="_BranchId-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7a6d">
+                            <con2:condition>
+                                <con1:xqueryText>fn:exists($inbound/ctx:transport/ctx:request/tp:headers/tp:user-header[@name='idConsumidor']/@value) = fn:true()
+and 
+fn:exists($inbound/ctx:transport/ctx:request/tp:headers/tp:user-header[@name='idDestino']/@value) = fn:true()</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace contents-only="true" varName="header">
+                                    <con1:comment>Crear SOAP header en caso de encontrarse user http-transport-header.</con1:comment>
+                                    <con1:id>_ActionId-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7906</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con1:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<nmph:headerMessage xmlns:nmph='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader'>",
+                              "<nmph:usuario>", $inbound/ctx:transport/ctx:request/tp:headers/tp:user-header[@name='usuario']/@value, "</nmph:usuario>",
+                              "<nmph:idConsumidor>", $inbound/ctx:transport/ctx:request/tp:headers/tp:user-header[@name='idConsumidor']/@value, "</nmph:idConsumidor>",
+                              "<nmph:idDestino>", $inbound/ctx:transport/ctx:request/tp:headers/tp:user-header[@name='idDestino']/@value, "</nmph:idDestino>",
+                            "</nmph:headerMessage>"))]]></con1:xqueryText>
+                                    </con2:expr>
+                                </con2:replace>
+                            </con2:actions>
+                        </con2:case>
+                    </con2:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7b9e"/>
+        <con:pipeline type="error" name="error-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7ad7">
+            <con:stage id="_StageId-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7ad6" name="StageObtenerCabeceraTransporte">
+                <con:comment>Responder al consumidor el error al intentar obtener la cabecera de la petición.</con:comment>
+                <con:context/>
+                <con:actions>
+                    <con2:replace contents-only="true" varName="body">
+                        <con1:comment>Propagar al consumidor error al no encontrar una cabecera en la petición.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7939</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionCreditos/Garantias/Resources/Transformations/TRGarantiasFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="operacionServicio">
+                                    <con1:path>$operation</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con3:report xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con1:comment>Reportar identificador de la petición en la que ocurrio un error.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.N2739b1a8.0.15df13eb28f.N7f92</con1:id>
+                        <con3:labels>
+                            <con3:key>Garantia-Error</con3:key>
+                            <con3:varName>report_index</con3:varName>
+                            <con3:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                    <con3:log xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con1:comment>Mandar al log el identificador de la petición con error y el detalle de lo ocurrido.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.N2739b1a8.0.15df13eb28f.N7f8f</con1:id>
+                        <con3:logLevel>warning</con3:logLevel>
+                        <con3:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:concat($report_index," - ",fn-bea:serialize($body))</con:xqueryText>
+                        </con3:expr>
+                        <con3:message/>
+                    </con3:log>
+                    <con1:reply isError="true">
+                        <con1:comment>Responder al consumidor con el error al tratar de obener la cabecera de la petición.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7aa3</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.N7a67cea4.0.15dc79f8cd2.N7cc1">
+            <con:stage id="_StageId-N3f57c7ff.N7a67cea4.0.15dc79f8cd2.N7cc0" name="StageErrorGeneral">
+                <con:comment>Manejador general para las excepciones que no se han podido tratar en el flujo de las operaciones</con:comment>
+                <con:context/>
+                <con:actions>
+                    <con2:replace contents-only="true" varName="body">
+                        <con1:comment>Propagar al consumidor el error que no se pudo manejar en el flujo de las operaciones del servicio.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.N7a67cea4.0.15dc79f8cd2.N7c89</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionCreditos/Garantias/Resources/Transformations/TRGarantiasFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="operacionServicio">
+                                    <con1:path>'NMPGarantiasSvc'</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con3:report xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con1:comment>Reportar identificador de la petición en la que ocurrio un error.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.N2739b1a8.0.15df13eb28f.N7f7e</con1:id>
+                        <con3:labels>
+                            <con3:key>Garantia-Error</con3:key>
+                            <con3:varName>report_index</con3:varName>
+                            <con3:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                    <con3:log xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con1:comment>Mandar al log el identificador de la petición con error y el detalle de lo ocurrido.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.N2739b1a8.0.15df13eb28f.N7f83</con1:id>
+                        <con3:logLevel>warning</con3:logLevel>
+                        <con3:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:concat($report_index," - ",fn-bea:serialize($body))</con:xqueryText>
+                        </con3:expr>
+                        <con3:message/>
+                    </con3:log>
+                    <con1:reply isError="true">
+                        <con1:comment>Responder al consumidor con el error al crear una garantía en SAP.</con1:comment>
+                        <con1:id>_ActionId-N3f57c7ff.N7a67cea4.0.15dc79f8cd2.N7c88</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="PipelinePairNodeObtenerCabecera">
+                <con:comment>Evaluar el tipo de cabecera de la petición.</con:comment>
+                <con:request>request-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7b9f</con:request>
+                <con:response>response-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7b9e</con:response>
+            </con:pipeline-node>
+            <con:branch-node type="operation" id="_FlowId-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N8000" name="BranchNodeOperaciones">
+                <con:context/>
+                <con:branch-table>
+                    <con:branch name="crearGarantia">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairNodeCrearGarantia">
+                                <con:comment>Lógica a ejecutar para la creación de una garantía en SAP.</con:comment>
+                                <con:request>request-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7ffe</con:request>
+                                <con:response>response-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7ffd</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="consultarGarantia">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairNodeConsultarGarantia">
+                                <con:comment>Lógica a ejecutar para la consulta de una garántía en SAP.</con:comment>
+                                <con:request>request-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7ffa</con:request>
+                                <con:response>response-N3f57c7ff.38ccbf9e.0.15dbda62dc9.N7ff9</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

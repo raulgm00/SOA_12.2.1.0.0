@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:wsdl ref="Commons/Resources/DirectorioExplorerSvcWSDL"/>
+            <con:binding>
+                <con:name>DirectorioExplorerSvcPortBinding</con:name>
+                <con:namespace>http://service.common.mx.com.qualitas/</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:tracingEnabled>true</oper:tracingEnabled>
+            <oper:monitoring enabled="true" level="service" aggregationInterval="10"/>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:pipeline name="PipelinePairNode1_response" type="response">
+            <con:stage name="stage1">
+                <con:context>
+                    <con1:varNsDecl prefix="ser" namespace="http://service.common.mx.com.qualitas/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.c.15a6c392db4.N8000</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<ns0:consultarEmpleadoResponse xmlns:ns0="http://service.common.mx.com.qualitas/">
+         <response>
+            <resultado>
+               <satisfactorio>true</satisfactorio>
+               <codigo/>
+               <nombre/>
+            </resultado>
+            <empleado numero="32423" login="ellogin">
+               <atributo nombre="validadorN1" valor="jmoreno"/>
+               <oficina>
+                  <codigo>021</codigo>
+               </oficina>
+               <area>
+                  <codigo>VTAS</codigo>
+                  <nombre>Ventas</nombre>
+               </area>
+               <centroCosto>
+                  <codigo>120000010</codigo>
+               </centroCosto>
+               <rol>
+                  <nombre>Encargado_Area</nombre>
+               </rol>
+               <rol>
+                  <uid>1487873688639</uid>
+                  <nombre>Analista_Contable</nombre>
+               </rol>
+            </empleado>
+         </response>
+      </ns0:consultarEmpleadoResponse>]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode2_response" type="response">
+            <con:stage name="ResponseLDAP">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="ser" namespace="http://service.common.mx.com.qualitas/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.3.15a65fefa26.N7fff</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">xs:int($xmlResult//*:result/text())=1</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.10.15a6c4c702d.N8000</con2:id>
+                                    <con1:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<ns0:consultarEmpleadoResponse xmlns:ns0="http://service.common.mx.com.qualitas/">
+         <response>
+            <resultado>
+               <satisfactorio>true</satisfactorio>
+               <codigo/>
+               <nombre/>
+            </resultado>
+            <empleado numero="1" login="{$xmlResult//*:atributo[@id='sAMAccountName']/text()}">
+
+{
+let $atrDATA := $xmlResult//*:atributo
+return 
+for $atrItem in ($atrDATA) return 
+               <atributo nombre="{$atrItem/@id}" valor="{$atrItem/text()}"/>
+}
+
+               <nombre>{$xmlResult//*:atributo[@id='displayName']/text()}</nombre>
+               <email>{$xmlResult//*:atributo[@id='userPrincipalName']/text()}</email>              
+               <rol>
+                  <nombre>{$xmlResult//*:atributo[@id='memberOf']/text()}</nombre>
+               </rol>
+            </empleado>
+         </response>
+      </ns0:consultarEmpleadoResponse>]]></con:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:default>
+                            <con1:replace varName="body" contents-only="true">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.e.15a6c4c59c9.N8000</con2:id>
+                                <con1:location>
+                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                </con1:location>
+                                <con1:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<ns0:consultarEmpleadoResponse xmlns:ns0="http://service.common.mx.com.qualitas/">
+         <response>
+            <resultado>
+               <satisfactorio>false</satisfactorio>
+               <codigo>{$xmlResult//*:result/@code}</codigo>
+               <nombre>{$xmlResult//*:result/@message}</nombre>
+            </resultado>
+            <empleado numero="0" login="administradorgpa">
+                   <atributo nombre="pager" valor="administradorgpa"/>
+                   <atributo nombre="homePhone" valor="administradorgpa"/>
+
+                   <nombre>Administrador GPA</nombre>
+                   <email>administradorgpa@qualitas.com.mx</email>             
+            </empleado>
+         </response>
+      </ns0:consultarEmpleadoResponse>]]></con:xqueryText>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:default>
+                    </con1:ifThenElse>
+                    <con1:log xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.9.15a6c3007d7.N7fff</con2:id>
+                        <con1:logLevel>warning</con1:logLevel>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con1:expr>
+                        <con1:message>Directory Search Output</con1:message>
+                    </con1:log>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode2_request" type="request">
+            <con:stage name="QueryLDAP">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="ser" namespace="http://service.common.mx.com.qualitas/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:log xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.8.15a66123987.N7fff</con2:id>
+                        <con1:logLevel>warning</con1:logLevel>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con1:expr>
+                        <con1:message>Directory Search Input</con1:message>
+                    </con1:log>
+                    <con1:javaCallout varName="xmlPlanoResult" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.d.15a6c42afd5.N8000</con2:id>
+                        <con1:archive ref="Commons/Resources/GPALDAPCommons"/>
+                        <con1:className>com.qualitas.gpa.commons.LDAPUserFinder</con1:className>
+                        <con1:method>public static java.lang.String searchUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String)</con1:method>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">xs:string($body/ser:consultarEmpleado/request/login/text())</con:xqueryText>
+                        </con1:expr>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'ldap://110.10.0.30:389'</con:xqueryText>
+                        </con1:expr>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'QUALITAS\administradorgpa'</con:xqueryText>
+                        </con1:expr>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'Qualitas1*'</con:xqueryText>
+                        </con1:expr>
+                        <con1:return-param-as-ref>false</con1:return-param-as-ref>
+                    </con1:javaCallout>
+                    <con1:log xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.d.15a6c42afd5.N7fff</con2:id>
+                        <con1:logLevel>warning</con1:logLevel>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$xmlPlanoResult</con:xqueryText>
+                        </con1:expr>
+                        <con1:message>Directory Search Result</con1:message>
+                    </con1:log>
+                    <con1:assign varName="xmlResult" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.a.15a6c34115c.N7fff</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML($xmlPlanoResult)</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode1_request" type="request">
+            <con:stage name="stage1">
+                <con:context>
+                    <con1:varNsDecl prefix="ser" namespace="http://service.common.mx.com.qualitas/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:javaCallout varName="xmlPlanoResult" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.a.15a6c34115c.N8000</con2:id>
+                        <con1:archive ref="Commons/Resources/GPALDAPCommons"/>
+                        <con1:className>com.qualitas.gpa.commons.LDAPUserFinder</con1:className>
+                        <con1:method>public static java.lang.String searchUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String)</con1:method>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">xs:string($body/ser:consultarEmpleado/request/login/text())</con:xqueryText>
+                        </con1:expr>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'ldap://110.10.0.30:389'</con:xqueryText>
+                        </con1:expr>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'QUALITAS\\administradorgpa'</con:xqueryText>
+                        </con1:expr>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'Qualitas1*'</con:xqueryText>
+                        </con1:expr>
+                        <con1:return-param-as-ref>false</con1:return-param-as-ref>
+                    </con1:javaCallout>
+                    <con1:log xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.b.15a6c384d37.N8000</con2:id>
+                        <con1:logLevel>warning</con1:logLevel>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$xmlPlanoResult</con:xqueryText>
+                        </con1:expr>
+                        <con1:message>Directory Search Result</con1:message>
+                    </con1:log>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:branch-node type="operation" name="BranchNode1">
+                <con:branch-table>
+                    <con:branch name="consultarEmpleado">
+                        <con:operator>equals</con:operator>
+                        <con:value>consultarEmpleado</con:value>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairNode2">
+                                <con:request>PipelinePairNode2_request</con:request>
+                                <con:response>PipelinePairNode2_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="consultarRol">
+                        <con:operator>equals</con:operator>
+                        <con:value>consultarRol</con:value>
+                        <con:flow/>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairNode1">
+                                <con:request>PipelinePairNode1_request</con:request>
+                                <con:response>PipelinePairNode1_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wsdl:definitions name="ObtenerPrestadorBPEL" targetNamespace="http://xmlns.oracle.com/ObtenerPrestadorApp/ObtenerPrestadorPrj/ObtenerPrestadorBPEL" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:client="http://xmlns.oracle.com/ObtenerPrestadorApp/ObtenerPrestadorPrj/ObtenerPrestadorBPEL" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+   <wsdl:types>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema">
+         <import namespace="http://xmlns.oracle.com/ObtenerPrestadorApp/ObtenerPrestadorPrj/ObtenerPrestadorBPEL" schemaLocation="../Schemas/ObtenerPrestadorBPEL.xsd"/>
+      </schema>
+   </wsdl:types>
+   <wsdl:message name="ObtenerPrestadorBPELRequestMessage">
+      <wsdl:part name="payload" element="client:process"/>
+   </wsdl:message>
+   <wsdl:message name="ObtenerPrestadorBPELResponseMessage">
+      <wsdl:part name="payload" element="client:processResponse"/>
+   </wsdl:message>
+   <wsdl:portType name="ObtenerPrestadorBPEL">
+      <wsdl:operation name="processRequest">
+         <wsdl:input message="client:ObtenerPrestadorBPELRequestMessage"/>
+         <wsdl:output message="client:ObtenerPrestadorBPELResponseMessage"/>
+      </wsdl:operation>
+   </wsdl:portType>
+   <plnk:partnerLinkType name="ObtenerPrestadorBPEL">
+      <plnk:role name="ObtenerPrestadorBPELProvider" portType="client:ObtenerPrestadorBPEL"/>
+   </plnk:partnerLinkType>
+   <wsdl:service name="ObtenerPrestador"/>
+   <wsdl:binding name="ObtenerPrestadorBPELBindingSOAP" type="client:ObtenerPrestadorBPEL">
+      <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdl:operation name="processRequest">
+         <soap:operation style="document" soapAction="http://xmlns.oracle.com/ObtenerPrestadorApp/ObtenerPrestadorPrj/ObtenerPrestadorBPEL/processRequest"/>
+         <wsdl:input>
+            <soap:body use="literal" parts="payload"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:body use="literal" parts="payload"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+</wsdl:definitions>

@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wsdl:definitions name="BPELEmailRecordatorio" targetNamespace="http://xmlns.oracle.com/GPAQualitasApp/EmailRecordatorioPrj/BPELEmailRecordatorio" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:client="http://xmlns.oracle.com/GPAQualitasApp/EmailRecordatorioPrj/BPELEmailRecordatorio" xmlns:ns1="http://qualitas.com.mx/ActualizarEstadoSolicitudApp/ActualizarEstadoSolicitudPrj/EmailRecordatorio" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype">
+   <wsdl:types>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema">
+         <import namespace="http://qualitas.com.mx/ActualizarEstadoSolicitudApp/ActualizarEstadoSolicitudPrj/EmailRecordatorio" schemaLocation="../Schemas/EmailRecordatorioBPEL.xsd"/>
+      </schema>
+   </wsdl:types>
+   <wsdl:message name="BPELEmailRecordatorioRequestMessage">
+      <wsdl:part name="payload" element="ns1:emailRequest"/>
+   </wsdl:message>
+   <wsdl:message name="BPELEmailRecordatorioResponseMessage">
+      <wsdl:part name="payload" element="ns1:emailResponse"/>
+   </wsdl:message>
+   <wsdl:portType name="BPELEmailRecordatorio">
+      <wsdl:operation name="process">
+         <wsdl:input message="client:BPELEmailRecordatorioRequestMessage"/>
+      </wsdl:operation>
+   </wsdl:portType>
+   <wsdl:portType name="BPELEmailRecordatorioCallback">
+      <wsdl:operation name="processResponse">
+         <wsdl:input message="client:BPELEmailRecordatorioResponseMessage"/>
+      </wsdl:operation>
+   </wsdl:portType>
+   <plnk:partnerLinkType name="BPELEmailRecordatorio">
+      <plnk:role name="BPELEmailRecordatorioProvider" portType="client:BPELEmailRecordatorio"/>
+      <plnk:role name="BPELEmailRecordatorioRequester" portType="client:BPELEmailRecordatorioCallback"/>
+   </plnk:partnerLinkType>
+</wsdl:definitions>

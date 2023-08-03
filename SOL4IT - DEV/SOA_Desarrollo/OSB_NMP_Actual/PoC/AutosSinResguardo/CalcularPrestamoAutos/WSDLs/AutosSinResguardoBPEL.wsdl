@@ -1,0 +1,42 @@
+<wsdl:definitions name="BPELCalcularPrestamo" targetNamespace="http://xmlns.oracle.com/NMPComposites/CalcularPrestamo/BPELCalcularPrestamo" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:client="http://xmlns.oracle.com/NMPComposites/CalcularPrestamo/BPELCalcularPrestamo" xmlns:ns1="http://www.montepiedad.com.mx/NMP/Prestamo/Autos" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+    <wsdl:documentation>
+        <abstractWSDL>http://10.30.3.15:8001/soa-infra/services/default/CalcularPrestamo!1.0/WSDLs/BPELCalcularPrestamo.wsdl</abstractWSDL>
+    </wsdl:documentation>
+    <plnk:partnerLinkType name="BPELCalcularPrestamo">
+        <plnk:role name="BPELCalcularPrestamoProvider" portType="client:BPELCalcularPrestamo"/>
+    </plnk:partnerLinkType>
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://www.montepiedad.com.mx/NMP/Prestamo/Autos" schemaLocation="../Schemas/PrestamoAutos.xsd"/>
+        </schema>
+    </wsdl:types>
+    <wsdl:message name="BPELCalcularPrestamoRequestMessage">
+        <wsdl:part name="payload" element="ns1:calcularPrestamoRequest"/>
+    </wsdl:message>
+    <wsdl:message name="BPELCalcularPrestamoResponseMessage">
+        <wsdl:part name="payload" element="ns1:calcularPrestamoResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="BPELCalcularPrestamo">
+        <wsdl:operation name="calcularPrestamo">
+            <wsdl:input message="client:BPELCalcularPrestamoRequestMessage"/>
+            <wsdl:output message="client:BPELCalcularPrestamoResponseMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="BPELCalcularPrestamoBinding" type="client:BPELCalcularPrestamo">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="calcularPrestamo">
+            <soap:operation style="document" soapAction="calcularPrestamo"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="bpelcalcularprestamo_ep">
+        <wsdl:port name="BPELCalcularPrestamo_pt" binding="client:BPELCalcularPrestamoBinding">
+            <soap:address location="http://10.30.3.15:8001/soa-infra/services/default/CalcularPrestamo/AutosSinResguardoBPEL"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,100 @@
+<definitions targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/Desarrollo+SOA/NmpCasosAlertas/NmpRiesgoTransaccionalSvc" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/Desarrollo+SOA/NmpCasosAlertas/NmpRiesgoTransaccionalSvc" xmlns:NMPSM="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:NMPSH="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:RT="http://servicios.montepiedad.com.mx/NMP/Schema/RiesgoTransaccional" xmlns:xsdTrans="http://servicios.montedepiedad.com.mx/NMP/Schema/RTTransaccionesDbXSD" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <types>
+    <xsd:schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/Desarrollo+SOA/NmpCasosAlertas/NmpRiesgoTransaccionalSvc/types" elementFormDefault="qualified"/>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montepiedad.com.mx/NMP/Schema/RiesgoTransaccional" schemaLocation="../Schemas/NMPRiesgoTransaccionalMsgXSD.xsd"/>
+    </xsd:schema>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/RTTransaccionesDbXSD" schemaLocation="../Schemas/NMPRiesgoTransaccionalDBXSD.xsd"/>
+    </xsd:schema>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+    </xsd:schema>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+    </xsd:schema>
+  </types>
+  <message name="recalculoCalificaCasoRequest">
+    <part name="recalculoCalificaCasoRequest" element="RT:recalculoCalificaCasoRequest"/>
+  </message>
+  <message name="recalculoCalificaCasoResponse">
+    <part name="recalculoCalificaCasoResponse" element="RT:recalculoCalificaCasoResponse"/>
+  </message>
+  <portType name="RiesgoTransaccionalPortType">
+    <operation name="recalculoCalificaCaso">
+      <input message="tns:recalculoCalificaCasoRequest"/>
+      <output message="tns:recalculoCalificaCasoResponse"/>
+      <fault name="fault" message="tns:standardMessageFault"/>
+    </operation>
+    <operation name="actualizaCaso">
+      <input message="tns:actualizaCasoRequest"/>
+      <output message="tns:actualizaCasoResponse"/>
+      <fault message="tns:standardMessageFault" name="fault"/>
+    </operation>
+    <operation name="InsertCasoManual">
+      <input message="tns:InsertCasoManualRequest"/>
+      <output message="tns:InsertCasoManualResponse"/>
+      <fault message="tns:standardMessageFault" name="fault"/>
+    </operation>
+  </portType>
+  <message name="standardMessageFault">
+    <part name="fault" element="NMPSM:messageError"/>
+  </message>
+  <message name="standardMessageHeader">
+    <part name="header" element="NMPSH:headerMessage"/>
+  </message>
+  <message name="actualizaCasoRequest">
+    <part name="actualizaCasoRequest" element="RT:actualizaCasoRequest"/>
+  </message>
+  <message name="actualizaCasoResponse">
+    <part name="actualizaCasoResponse" element="RT:actualizaCasoResponse"/>
+  </message>
+  <message name="InsertCasoManualRequest">
+    <part name="InsertCasoManualRequest" element="xsdTrans:InsertCasoManualRequest"/>
+  </message>
+  <message name="InsertCasoManualResponse">
+    <part name="InsertCasoAlertaResponse" element="xsdTrans:InsertCasoAlertaResponse"/>
+  </message>
+  <binding name="RiesgoTransaccionalSOAP11Binding" type="tns:RiesgoTransaccionalPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="recalculoCalificaCaso">
+      <soap:operation style="document" soapAction="http://xmlns.oracle.com/pcbpel/adapter/db/Desarrollo+SOA/NmpCasosAlertas/NmpRiesgoTransaccionalSvc/recalculoCalificaCaso"/>
+      <input>
+        <soap:body use="literal" parts="recalculoCalificaCasoRequest"/>
+        <soap:header message="tns:standardMessageHeader" part="header" use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="recalculoCalificaCasoResponse"/>
+      </output>
+      <fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="actualizaCaso">
+      <soap:operation style="document" soapAction="http://xmlns.oracle.com/pcbpel/adapter/db/Desarrollo+SOA/NmpCasosAlertas/NmpRiesgoTransaccionalSvc/actualizaCaso"/>
+      <input>
+        <soap:body use="literal" parts="actualizaCasoRequest"/>
+        <soap:header message="tns:standardMessageHeader" part="header" use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="actualizaCasoResponse"/>
+      </output>
+      <fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="InsertCasoManual">
+      <soap:operation style="document" soapAction="http://xmlns.oracle.com/pcbpel/adapter/db/Desarrollo+SOA/NmpCasosAlertas/NmpRiesgoTransaccionalSvc/InsertCasoManual"/>
+      <input>
+        <soap:body use="literal" parts="InsertCasoManualRequest"/>
+        <soap:header message="tns:standardMessageHeader" part="header" use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="InsertCasoAlertaResponse"/>
+      </output>
+      <fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+</definitions>

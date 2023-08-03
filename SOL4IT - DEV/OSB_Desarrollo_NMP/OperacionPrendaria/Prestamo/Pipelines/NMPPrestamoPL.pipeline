@@ -1,0 +1,774 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:con1="http://www.bea.com/wli/sb/stages/alert/config">
+    <con:coreEntry>
+        <con:description>Flujo principal del servicio Prestamo para el intercambio de información prendaria entre las aplicaciones de NMP.</con:description>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="OperacionPrendaria/Prestamo/Resources/WSDLs/PrestamoWSDL"/>
+            <con:binding>
+                <con:name>PrestamoBinding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Services/NMPPrestamo</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations>
+            <oper:logging enabled="false" level="debug"/>
+            <oper:monitoring enabled="true" level="action" aggregationInterval="1440"/>
+            <oper:reporting>false</oper:reporting>
+            <oper:pipeline-alerting enabled="true" level="warning"/>
+            <oper:sla-alerting enabled="true" level="warning"/>
+        </oper:operations>
+        <con:transactions isRequired="true" sameTxForResponse="true"/>
+    </con:coreEntry>
+    <con4:router errorHandler="error-N3f57c7ff.N51e8ccc2.0.151a14b78ab.N7f59" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con="http://www.bea.com/wli/sb/stages/config" xmlns:con1="http://www.bea.com/wli/sb/typesystem/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:env="http://www.bea.com/wli/config/env" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:con4="http://www.bea.com/wli/sb/pipeline/config" xmlns:con5="http://www.bea.com/wli/sb/stages/publish/config">
+        <con4:pipeline type="error" name="error-N3f57c7ff.N51e8ccc2.0.151a14b78ab.N7f59">
+            <con4:stage id="_StageId-N3f57c7ff.N51e8ccc2.0.151a14b78ab.N7f58" name="StageGeneralErrorHandler">
+                <con4:comment>Manejador de errores generico</con4:comment>
+                <con4:context/>
+                <con4:actions>
+                    <con2:replace contents-only="true" varName="body">
+                        <con:comment>Generar error a propagar por el servicio</con:comment>
+                        <con:id>_ActionId-N3f57c7ff.N51e8ccc2.0.151a14b78ab.N7f55</con:id>
+                        <con2:location>
+                            <con:xpathText>.</con:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con:xsltTransform>
+                                <con:resource ref="OperacionPrendaria/Prestamo/Resources/Transformations/TRPrestamoFault"/>
+                                <con:input>$fault</con:input>
+                                <con:param name="detailFault">
+                                    <con:path>$fault/ctx:reason</con:path>
+                                </con:param>
+                                <con:param name="codeFault">
+                                    <con:path>$fault/ctx:errorCode</con:path>
+                                </con:param>
+                            </con:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con:reply isError="true">
+                        <con:comment>Responder con error generico</con:comment>
+                        <con:id>_ActionId-N3f57c7ff.N51e8ccc2.0.151a14b78ab.N7f52</con:id>
+                    </con:reply>
+                </con4:actions>
+            </con4:stage>
+        </con4:pipeline>
+        <con4:pipeline type="error" name="error-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7dbf">
+            <con4:stage id="_StageId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7dbe" name="StageSIDErrorHandler">
+                <con4:comment>Manejo de errores en el envio de mensaje a OSBEnviarOpsPrestamoSIDPXY</con4:comment>
+                <con4:context/>
+                <con4:actions>
+                    <con2:ifThenElse>
+                        <con:comment>Identificar el tipo de error generado en la publicacion del mensaje al flujo de SID</con:comment>
+                        <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7da7</con:id>
+                        <con2:case id="_BranchId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7da6">
+                            <con2:condition>
+                                <con:xqueryText>fn:not(fn:empty($fault/ctx:details))</con:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace contents-only="true" varName="body">
+                                    <con:comment>Generar error al publicar el mensaje para el flujo de SID</con:comment>
+                                    <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7d72</con:id>
+                                    <con2:location>
+                                        <con:xpathText>.</con:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con:xsltTransform>
+                                            <con:resource ref="OperacionPrendaria/Prestamo/Resources/Transformations/TRPrestamoFault"/>
+                                            <con:input>$fault</con:input>
+                                            <con:param name="detailFault">
+                                                <con:path>$fault/ctx:reason/text()</con:path>
+                                            </con:param>
+                                            <con:param name="codeFault">
+                                                <con:path>$fault/ctx:errorCode/text()</con:path>
+                                            </con:param>
+                                        </con:xsltTransform>
+                                    </con2:expr>
+                                </con2:replace>
+                                <con:reply isError="true">
+                                    <con:comment>Responder con el error generado en la publicacion al flujo de SID</con:comment>
+                                    <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7d6f</con:id>
+                                </con:reply>
+                            </con2:actions>
+                        </con2:case>
+                    </con2:ifThenElse>
+                </con4:actions>
+            </con4:stage>
+        </con4:pipeline>
+        <con4:pipeline type="response" name="PipelinePairNode1_response">
+            <con4:stage name="stageResponderAck">
+                <con4:comment>Crear respuesta de confirmacion</con4:comment>
+                <con4:context/>
+                <con4:actions>
+                    <con2:replace varName="body" contents-only="true">
+                        <con:comment>Crear respuesta de confirmacion</con:comment>
+                        <con:id>_ActionId-7753286749254662333--6b4255cd.14479d38799.-7f85</con:id>
+                        <con2:location>
+                            <con:xpathText>.</con:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con:xqueryText>fn-bea:inlinedXML(fn:concat('&lt;updatePrestamoResponse xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPrestamo">',
+     '&lt;nmp:respuesta>OK&lt;/nmp:respuesta>' ,
+     '&lt;/updatePrestamoResponse>'))</con:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                    <con:reply>
+                        <con:comment>Responser con exito</con:comment>
+                        <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N77ac</con:id>
+                    </con:reply>
+                </con4:actions>
+            </con4:stage>
+        </con4:pipeline>
+        <con4:pipeline type="error" name="error-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7f05">
+            <con4:stage id="_StageId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7f04" name="StageValidationHandler">
+                <con4:comment>Manejador de errores producidos en la validacion del Request</con4:comment>
+                <con4:context/>
+                <con4:actions>
+                    <con2:ifThenElse>
+                        <con:comment>Verificar la existencia de un fault por validacion</con:comment>
+                        <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7efd</con:id>
+                        <con2:case id="_BranchId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7efc">
+                            <con2:condition>
+                                <con:xqueryText>fn:not(fn:empty($fault/ctx:details)) and fn:not(fn:empty($fault/*:details/*:ValidationFailureDetail))</con:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace varName="body" contents-only="true">
+                                    <con:comment>Generar mensaje de error por validacion</con:comment>
+                                    <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7ebf</con:id>
+                                    <con2:location>
+                                        <con:xpathText>.</con:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con:xsltTransform>
+                                            <con:resource ref="OperacionPrendaria/Prestamo/Resources/Transformations/TRPrestamoFault"/>
+                                            <con:input>$fault</con:input>
+                                            <con:param name="detailFault">
+                                                <con:path>$fault/ctx:details/*:ValidationFailureDetail/*:message/text()</con:path>
+                                            </con:param>
+                                            <con:param name="codeFault">
+                                                <con:path>$fault/ctx:errorCode/text()</con:path>
+                                            </con:param>
+                                        </con:xsltTransform>
+                                    </con2:expr>
+                                </con2:replace>
+                                <con:reply isError="true">
+                                    <con:comment>Responder con error de validacion</con:comment>
+                                    <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7ec5</con:id>
+                                </con:reply>
+                            </con2:actions>
+                        </con2:case>
+                    </con2:ifThenElse>
+                </con4:actions>
+            </con4:stage>
+        </con4:pipeline>
+        <con4:pipeline type="request" name="PipelinePairNode1_request">
+            <con4:stage id="_StageId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7f9e" name="StageGetMsgId">
+                <con4:context/>
+                <con4:actions>
+                    <con2:assign varName="msgId">
+                        <con:comment>Almacenar en variable el Message ID de la peticion para dar trazabilidad a la peticion</con:comment>
+                        <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7f6b</con:id>
+                        <con2:expr>
+                            <con:xqueryText>$messageID</con:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:assign varName="ReqPrestamo">
+                        <con:comment>Generar una copia del Request</con:comment>
+                        <con:id>_ActionId-4662848672984847091-2c6805ea.1477fca25c1.-7fe6</con:id>
+                        <con2:expr>
+                            <con:xqueryText>$body</con:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                </con4:actions>
+            </con4:stage>
+            <con4:stage id="_StageId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7f39" name="StageValidateMsg" errorHandler="error-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7f05">
+                <con4:comment>Validacion de Request</con4:comment>
+                <con4:context>
+                    <con:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPrestamo"/>
+                </con4:context>
+                <con4:actions>
+                    <con2:validate>
+                        <con:comment>Validar estructura y restricciones de Request contra el esquema del servicio</con:comment>
+                        <con:id>_ActionId-2011388024150326307--24dbc88d.144dc81264f.-7fdc</con:id>
+                        <con2:schema ref="OperacionPrendaria/Prestamo/Resources/Schemas/PrestamoSvcXSD"/>
+                        <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPrestamo">nmp:updatePrestamoRequest</con2:schemaElement>
+                        <con2:varName>body</con2:varName>
+                        <con2:location>
+                            <con:xpathText>./nmp:updatePrestamoRequest</con:xpathText>
+                        </con2:location>
+                        <con2:resultVarName/>
+                    </con2:validate>
+                </con4:actions>
+            </con4:stage>
+            <con4:stage id="_StageId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7ebe" name="StagePublishToCRM" errorHandler="error-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7e80">
+                <con4:comment>Envio de mensaje a CRMLoanStatusPXY para su tratamiento y propagacion a CRM</con4:comment>
+                <con4:context>
+                    <con:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPrestamo"/>
+                </con4:context>
+                <con4:actions>
+                    <con5:route>
+                        <con:comment>Envio de mensaje a LoanStatusCRMQ</con:comment>
+                        <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7ebb</con:id>
+                        <con5:service ref="OperacionPrendaria/Prestamo/Business Services/OSBEnviarPrestamoToJMSCrmBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con5:outboundTransform>
+                            <con2:routing-options>
+                                <con:comment>Opciones de publicacion exactly one y one way</con:comment>
+                                <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7eb8</con:id>
+                                <con2:mode>request</con2:mode>
+                                <con2:qualityOfService>exactly-once</con2:qualityOfService>
+                            </con2:routing-options>
+                            <con2:transport-headers copy-all="false">
+                                <con:comment>Envio de Message ID para trazabilidad</con:comment>
+                                <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7eb5</con:id>
+                                <con2:header-set>outbound-request</con2:header-set>
+                                <con2:header value="expression" name="JMSCorrelationID">
+                                    <con:xqueryText>fn:data($msgId)</con:xqueryText>
+                                </con2:header>
+                            </con2:transport-headers>
+                            <con2:replace contents-only="true" varName="body">
+                                <con:comment>Reemplazar el contenido del body con el mensaje que se publicara a LoanStatusCRMQ</con:comment>
+                                <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7eb2</con:id>
+                                <con2:location>
+                                    <con:xpathText>.</con:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con:xqueryText>$body/nmp:updatePrestamoRequest</con:xqueryText>
+                                </con2:expr>
+                            </con2:replace>
+                        </con5:outboundTransform>
+                    </con5:route>
+                </con4:actions>
+            </con4:stage>
+            <con4:stage id="_StageId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7e3f" name="StagePublishToScore" errorHandler="error-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7e3b">
+                <con4:comment>Envio de mensaje a ScoreLoanStatusPXY para su tratamiento y propagacion a Customer Score</con4:comment>
+                <con4:context>
+                    <con:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPrestamo"/>
+                </con4:context>
+                <con4:actions>
+                    <con5:route>
+                        <con:comment>Envio de mensaje a LoanStatusScoreQ</con:comment>
+                        <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7e3c</con:id>
+                        <con5:service ref="OperacionPrendaria/Prestamo/Business Services/OSBEnviarPrestamoToJMSScoreBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con5:outboundTransform>
+                            <con2:routing-options>
+                                <con:comment>Opciones de publicacion exactly one y one way</con:comment>
+                                <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7e37</con:id>
+                                <con2:mode>request</con2:mode>
+                                <con2:qualityOfService>exactly-once</con2:qualityOfService>
+                            </con2:routing-options>
+                            <con2:transport-headers copy-all="false">
+                                <con:comment>Envio de Message ID para trazabilidad</con:comment>
+                                <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7e34</con:id>
+                                <con2:header-set>outbound-request</con2:header-set>
+                                <con2:header value="expression" name="JMSCorrelationID">
+                                    <con:xqueryText>fn:data($msgId)</con:xqueryText>
+                                </con2:header>
+                            </con2:transport-headers>
+                            <con2:replace contents-only="true" varName="body">
+                                <con:comment>Reemplazar el contenido del body con el mensaje que se publicara a LoanStatusScoreQ</con:comment>
+                                <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7e31</con:id>
+                                <con2:location>
+                                    <con:xpathText>.</con:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con:xqueryText>$body/nmp:updatePrestamoRequest</con:xqueryText>
+                                </con2:expr>
+                            </con2:replace>
+                        </con5:outboundTransform>
+                    </con5:route>
+                </con4:actions>
+            </con4:stage>
+            <con4:stage id="_StageId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7df1" name="StagePublishToSID" errorHandler="error-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7dbf">
+                <con4:comment>Envio de mensaje a SIDLoanStatusPXY para su tratamiento y propagacion a CRM</con4:comment>
+                <con4:context>
+                    <con:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPrestamo"/>
+                </con4:context>
+                <con4:actions>
+                    <con5:route>
+                        <con:comment>Envio de mensaje a LoanStatusSIDQ</con:comment>
+                        <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7dbb</con:id>
+                        <con5:service ref="OperacionPrendaria/Prestamo/Business Services/OSBEnviarPrestamoToJMSSidBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con5:outboundTransform>
+                            <con2:routing-options>
+                                <con:comment>Opciones de publicacion exactly one y one way</con:comment>
+                                <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7db8</con:id>
+                                <con2:mode>request</con2:mode>
+                                <con2:qualityOfService>exactly-once</con2:qualityOfService>
+                            </con2:routing-options>
+                            <con2:transport-headers copy-all="false">
+                                <con:comment>Envio de Message ID para trazabilidad</con:comment>
+                                <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7db4</con:id>
+                                <con2:header-set>outbound-request</con2:header-set>
+                                <con2:header value="expression" name="JMSCorrelationID">
+                                    <con:xqueryText>fn:data($msgId)</con:xqueryText>
+                                </con2:header>
+                            </con2:transport-headers>
+                            <con2:replace contents-only="true" varName="body">
+                                <con:comment>Reemplazar el contenido del body con el mensaje que se publicara a LoanStatusSIDQ</con:comment>
+                                <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7db1</con:id>
+                                <con2:location>
+                                    <con:xpathText>.</con:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con:xqueryText>$body/nmp:updatePrestamoRequest</con:xqueryText>
+                                </con2:expr>
+                            </con2:replace>
+                        </con5:outboundTransform>
+                    </con5:route>
+                </con4:actions>
+            </con4:stage>
+            <con4:stage id="_StageId-N3f57c7ff.478438f9.0.15700d0892f.N7f11" name="StagePublishToRT" errorHandler="error-N3f57c7ff.478438f9.0.15700d0892f.N7f0c">
+                <con4:comment>Envio de mensaje a NmpTransaccionPrestamoJmsPXY para su tratamiento en proceso de Riesgo Transaccional</con4:comment>
+                <con4:context>
+                    <con:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPrestamo"/>
+                </con4:context>
+                <con4:actions>
+                    <con5:route>
+                        <con:comment>Envio de mensaje a LoanStatusRTQ</con:comment>
+                        <con:id>_ActionId-N3f57c7ff.478438f9.0.15700d0892f.N7f10</con:id>
+                        <con5:service ref="OperacionPrendaria/Prestamo/Business Services/OSBEnviarPrestamoToJMSRtBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con5:outboundTransform>
+                            <con2:routing-options>
+                                <con:comment>Opciones de publicacion exactly one y one way</con:comment>
+                                <con:id>_ActionId-N3f57c7ff.478438f9.0.15700d0892f.N7f0f</con:id>
+                                <con2:mode>request</con2:mode>
+                                <con2:qualityOfService>exactly-once</con2:qualityOfService>
+                            </con2:routing-options>
+                            <con2:transport-headers copy-all="false">
+                                <con:comment>Envio de Message ID para trazabilidad</con:comment>
+                                <con:id>_ActionId-N3f57c7ff.478438f9.0.15700d0892f.N7f0e</con:id>
+                                <con2:header-set>outbound-request</con2:header-set>
+                                <con2:header value="expression" name="JMSCorrelationID">
+                                    <con:xqueryText>fn:data($msgId)</con:xqueryText>
+                                </con2:header>
+                            </con2:transport-headers>
+                            <con2:replace contents-only="true" varName="body">
+                                <con:comment>Reemplazar el contenido del body con el mensaje que se publicara a LoanStatusRTQ</con:comment>
+                                <con:id>_ActionId-N3f57c7ff.478438f9.0.15700d0892f.N7f0d</con:id>
+                                <con2:location>
+                                    <con:xpathText>.</con:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con:xqueryText>$body/nmp:updatePrestamoRequest</con:xqueryText>
+                                </con2:expr>
+                            </con2:replace>
+                        </con5:outboundTransform>
+                    </con5:route>
+                </con4:actions>
+            </con4:stage>
+            <con4:stage name="StagePublishToBAM11" errorHandler="_onErrorHandler-4972464715489858836--6050b05f.14529f217ca.-7f89">
+                <con4:comment>Envo de mensaje a BAM 11g.
+Eliminar este stage cuando se de de baja BAM 11g</con4:comment>
+                <con4:context>
+                    <con:varNsDecl namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPrestamo" prefix="nmp"/>
+                    <con:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con4:context>
+                <con4:actions>
+                    <con2:ifThenElse>
+                        <con:comment>Verificar transaccion con operaciones de reempeno</con:comment>
+                        <con:id>_ActionId-N3f57c7ff.25f89f89.0.151a94263ee.N7ff7</con:id>
+                        <con:disabled>true</con:disabled>
+                        <con2:case id="_BranchId-N3f57c7ff.25f89f89.0.151a94263ee.N7ff6">
+                            <con2:condition>
+                                <con:xqueryText>fn:exists($body/nmp:updatePrestamoRequest/nmp:esReempeno) = fn:true() and fn:empty($body/nmp:updatePrestamoRequest/nmp:esReempeno) = fn:false()</con:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:ifThenElse>
+                                    <con:comment>Transformar operaciones de reempeno para descartar envio a BAM 11g</con:comment>
+                                    <con:id>_ActionId-N3f57c7ff.25f89f89.0.151a94263ee.N7fec</con:id>
+                                    <con2:case id="_BranchId-N3f57c7ff.25f89f89.0.151a94263ee.N7feb">
+                                        <con2:condition>
+                                            <con:xqueryText>xs:boolean($body/nmp:updatePrestamoRequest/nmp:esReempeno) = fn:true()</con:xqueryText>
+                                        </con2:condition>
+                                        <con2:actions>
+                                            <con2:replace contents-only="true" varName="body">
+                                                <con:comment>Convertir a operaciones de reempeno</con:comment>
+                                                <con:id>_ActionId-N3f57c7ff.25f89f89.0.151a94263ee.N7fe6</con:id>
+                                                <con:disabled>true</con:disabled>
+                                                <con2:location>
+                                                    <con:xpathText>.</con:xpathText>
+                                                </con2:location>
+                                                <con2:expr>
+                                                    <con:xqueryTransform>
+                                                        <con:resource ref="OperacionPrendaria/Prestamo/Resources/Transformations/TROpsReempenoBam"/>
+                                                        <con:param name="reempeno">
+                                                            <con:path>$body/nmp:updatePrestamoRequest</con:path>
+                                                        </con:param>
+                                                    </con:xqueryTransform>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con2:actions>
+                                    </con2:case>
+                                    <con2:default/>
+                                </con2:ifThenElse>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default/>
+                    </con2:ifThenElse>
+                    <con2:assign varName="dvm">
+                        <con:comment>Guardar DVM tipo operaciones en variable para su manipulacion</con:comment>
+                        <con:id>_ActionId-N3f57c7ff.N11dd7406.0.15183f758c8.N7f1f</con:id>
+                        <con:disabled>true</con:disabled>
+                        <con2:expr>
+                            <con:xqueryTransform>
+                                <con:resource ref="Common/DVM/TipoOperacionDVM"/>
+                            </con:xqueryTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:replace varName="body" contents-only="true">
+                        <con:comment>Remover operaciones de reempeno que no se enviaran a BAM 11g</con:comment>
+                        <con:id>_ActionId-N3f57c7ff.N11dd7406.0.15183f758c8.N7f1a</con:id>
+                        <con:disabled>true</con:disabled>
+                        <con2:location>
+                            <con:xpathText>.</con:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con:xqueryTransform>
+                                <con:resource ref="OperacionPrendaria/Prestamo/Resources/Transformations/TRSeleccionOpsBam"/>
+                                <con:param name="updatePrestamoRequest">
+                                    <con:path>$body/nmp:updatePrestamoRequest</con:path>
+                                </con:param>
+                                <con:param name="dvm">
+                                    <con:path>$dvm</con:path>
+                                </con:param>
+                            </con:xqueryTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con2:ifThenElse>
+                        <con:comment>Verificar si hay mensajes a publicar para BAM 11g</con:comment>
+                        <con:id>_ActionId-N3f57c7ff.N11dd7406.0.15183f758c8.N7f8f</con:id>
+                        <con:disabled>true</con:disabled>
+                        <con2:case id="_BranchId-N3f57c7ff.N11dd7406.0.15183f758c8.N7f8e">
+                            <con2:condition>
+                                <con:xqueryText>fn:count($body/nmp:updatePrestamoRequest/nmp:ListaOperaciones/nmp:Operacion) > 0</con:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con5:route>
+                                    <con:comment>Publicar mensajes para BAM 11g</con:comment>
+                                    <con:id>_ActionId-N3f57c7ff.N11dd7406.0.15183f758c8.N7f8d</con:id>
+                                    <con:disabled>true</con:disabled>
+                                    <con5:service ref="OperacionPrendaria/Prestamo/Business Services/OSBEnviarPrestamoToBAMBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                    <con5:operation>process</con5:operation>
+                                    <con5:outboundTransform>
+                                        <con2:routing-options>
+                                            <con:comment>Opciones de publicacion exactly one y one way</con:comment>
+                                            <con:id>_ActionId-N3f57c7ff.N11dd7406.0.15183f758c8.N7f8c</con:id>
+                                            <con:disabled>true</con:disabled>
+                                            <con2:mode>request</con2:mode>
+                                            <con2:qualityOfService>exactly-once</con2:qualityOfService>
+                                        </con2:routing-options>
+                                    </con5:outboundTransform>
+                                </con5:route>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default/>
+                    </con2:ifThenElse>
+                </con4:actions>
+            </con4:stage>
+            <con4:stage id="_StageId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7d6e" name="StagePublishToBAM12c" errorHandler="error-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7ba1">
+                <con4:comment>Envio de mensaje a BAMLoanStatusPXY para su tratamiento y propagacion a BAM 12c</con4:comment>
+                <con4:context>
+                    <con:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPrestamo"/>
+                </con4:context>
+                <con4:actions>
+                    <con5:route>
+                        <con:comment>Envio de mensaje a LoanStatusBAMQ</con:comment>
+                        <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7bd3</con:id>
+                        <con5:service ref="OperacionPrendaria/Prestamo/Business Services/OSBEnviarPrestamoToJMSBamBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con5:outboundTransform>
+                            <con2:routing-options>
+                                <con:comment>Opciones de publicacion exactly one y one way</con:comment>
+                                <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7a78</con:id>
+                                <con2:mode>request</con2:mode>
+                                <con2:qualityOfService>exactly-once</con2:qualityOfService>
+                            </con2:routing-options>
+                            <con2:transport-headers copy-all="false">
+                                <con:comment>Envio de Message ID para trazabilidad</con:comment>
+                                <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7a45</con:id>
+                                <con2:header-set>outbound-request</con2:header-set>
+                                <con2:header value="expression" name="JMSCorrelationID">
+                                    <con:xqueryText>fn:data($msgId)</con:xqueryText>
+                                </con2:header>
+                            </con2:transport-headers>
+                            <con2:replace contents-only="true" varName="body">
+                                <con:comment>Reemplazar el contenido del body con el mensaje que se publicara a LoanStatusBAMQ</con:comment>
+                                <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7a12</con:id>
+                                <con2:location>
+                                    <con:xpathText>.</con:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con:xqueryText>$ReqPrestamo/nmp:updatePrestamoRequest</con:xqueryText>
+                                </con2:expr>
+                            </con2:replace>
+                        </con5:outboundTransform>
+                    </con5:route>
+                </con4:actions>
+            </con4:stage>
+            <con4:stage id="_StageId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7d6d" name="StagePublishToBitacora" errorHandler="error-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7942">
+                <con4:comment>Envio de mensaje a Bitacora</con4:comment>
+                <con4:context>
+                    <con:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPrestamo"/>
+                </con4:context>
+                <con4:actions>
+                    <con5:route>
+                        <con:comment>Envio de mensaje a BitacoraPXY</con:comment>
+                        <con:id>_ActionId-N3f57c7ff.N51e8ccc2.0.151a14b78ab.N7ffd</con:id>
+                        <con5:service ref="Utileria/BitacoraPrestamo/Proxy Services/OSBBitacoraPrestamoSoapPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con5:outboundTransform>
+                            <con2:routing-options>
+                                <con:comment>Opciones de publicacion exactly one y one way</con:comment>
+                                <con:id>_ActionId-N3f57c7ff.N51e8ccc2.0.151a14b78ab.N7fc5</con:id>
+                                <con2:mode>request</con2:mode>
+                                <con2:qualityOfService>exactly-once</con2:qualityOfService>
+                            </con2:routing-options>
+                            <con2:replace contents-only="true" varName="header">
+                                <con:comment>Agregar header en el que se enviara el Message ID a la bitacora</con:comment>
+                                <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7975</con:id>
+                                <con2:location>
+                                    <con:xpathText>.</con:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con:xqueryText><![CDATA[fn-bea:inlinedXML(
+  fn:concat('<nmph:headerMessage xmlns:nmph="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">',
+                  '<nmph:usuario />',
+                  '<nmph:idConsumidor>', fn:data($msgId), '</nmph:idConsumidor>',
+                  '<nmph:idDestino />',
+            '</nmph:headerMessage>'))]]></con:xqueryText>
+                                </con2:expr>
+                            </con2:replace>
+                            <con2:replace contents-only="true" varName="body">
+                                <con:comment>Reemplazar el contenido del body con el mensaje que se enviara a la bitacora</con:comment>
+                                <con:id>_ActionId-N3f57c7ff.N51e8ccc2.0.151a14b78ab.N7fc8</con:id>
+                                <con2:location>
+                                    <con:xpathText>.</con:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con:xqueryText>fn-bea:inlinedXML(fn-bea:serialize($ReqPrestamo))</con:xqueryText>
+                                </con2:expr>
+                            </con2:replace>
+                        </con5:outboundTransform>
+                    </con5:route>
+                </con4:actions>
+            </con4:stage>
+        </con4:pipeline>
+        <con4:pipeline type="error" name="error-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7e80">
+            <con4:stage id="_StageId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7e7f" name="StageCRMErrorHandler">
+                <con4:comment>Manejo de errores en el envio de mensaje al flujo OSBEnviarOpsPrestamoCRMPXY</con4:comment>
+                <con4:context/>
+                <con4:actions>
+                    <con2:ifThenElse>
+                        <con:comment>Identificar el tipo de error generado en la publicacion del mensaje al flujo de CRM</con:comment>
+                        <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7e78</con:id>
+                        <con2:case id="_BranchId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7e77">
+                            <con2:condition>
+                                <con:xqueryText>fn:not(fn:empty($fault/ctx:details))</con:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace contents-only="true" varName="body">
+                                    <con:comment>Generar error al publicar el mensaje para el flujo de CRM</con:comment>
+                                    <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7e43</con:id>
+                                    <con2:location>
+                                        <con:xpathText>.</con:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con:xsltTransform>
+                                            <con:resource ref="OperacionPrendaria/Prestamo/Resources/Transformations/TRPrestamoFault"/>
+                                            <con:input>$fault</con:input>
+                                            <con:param name="detailFault">
+                                                <con:path>$fault/ctx:reason/text()</con:path>
+                                            </con:param>
+                                            <con:param name="codeFault">
+                                                <con:path>$fault/ctx:errorCode/text()</con:path>
+                                            </con:param>
+                                        </con:xsltTransform>
+                                    </con2:expr>
+                                </con2:replace>
+                                <con:reply isError="true">
+                                    <con:comment>Responder con el error generado en la publicacion al flujo de CRM</con:comment>
+                                    <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7e40</con:id>
+                                </con:reply>
+                            </con2:actions>
+                        </con2:case>
+                    </con2:ifThenElse>
+                </con4:actions>
+            </con4:stage>
+        </con4:pipeline>
+        <con4:pipeline type="error" name="error-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7ba1">
+            <con4:stage id="_StageId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7ba0" name="StageBAM12cErrorHandler">
+                <con4:comment>Manejo de errores en el envio de mensaje a BAM 12c</con4:comment>
+                <con4:context/>
+                <con4:actions>
+                    <con2:replace contents-only="true" varName="body">
+                        <con:comment>Manejar errores generados en el envío a BAM 12c.</con:comment>
+                        <con:id>_ActionId-N3f57c7ff.8e9e726.0.156eca65961.N7fcd</con:id>
+                        <con2:location>
+                            <con:xpathText>.</con:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con:xsltTransform>
+                                <con:resource ref="OperacionPrendaria/Prestamo/Resources/Transformations/TRPrestamoFault"/>
+                                <con:input>$fault</con:input>
+                                <con:param name="detailFault">
+                                    <con:path>$fault/ctx:reason/text()</con:path>
+                                </con:param>
+                                <con:param name="codeFault">
+                                    <con:path>$fault/ctx:errorCode/text()</con:path>
+                                </con:param>
+                            </con:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con6:alert xmlns:con6="http://www.bea.com/wli/sb/stages/alert/config">
+                        <con:comment>Generar alerta en caso de presentarse un problema en la publicacion del mensaje a BAM 12c</con:comment>
+                        <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N79dc</con:id>
+                        <con6:destination ref="OperacionPrendaria/Prestamo/Resources/Alerts/NMPPrestamoAlert"/>
+                        <con6:description>Problema en envio a BAM 12c</con6:description>
+                        <con6:severity>major</con6:severity>
+                        <con6:payload>
+                            <con:xqueryText>$body</con:xqueryText>
+                        </con6:payload>
+                    </con6:alert>
+                    <con:resume>
+                        <con:comment>Continuar sin propagar errores en publicación a BAM 12c</con:comment>
+                        <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N79a9</con:id>
+                    </con:resume>
+                </con4:actions>
+            </con4:stage>
+        </con4:pipeline>
+        <con4:pipeline type="error" name="_onErrorHandler-4972464715489858836--6050b05f.14529f217ca.-7f89">
+            <con4:stage name="StageBAM11gErrorHandler">
+                <con4:comment>Manejo de errores en el envio de mensaje a BAM 11g</con4:comment>
+                <con4:context>
+                    <con:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPrestamo"/>
+                    <con:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con4:context>
+                <con4:actions>
+                    <con:resume>
+                        <con:comment>Continuar sin propagar errores en publicacion a BAM 11g</con:comment>
+                        <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7c70</con:id>
+                        <con:disabled>true</con:disabled>
+                    </con:resume>
+                </con4:actions>
+            </con4:stage>
+        </con4:pipeline>
+        <con4:pipeline type="error" name="error-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7e3b">
+            <con4:stage id="_StageId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7e3a" name="StageScoreErrorHandler">
+                <con4:comment>Manejo de errores en el envio de mensaje a OSBEnviarOpsPrestamoScorePXY</con4:comment>
+                <con4:context/>
+                <con4:actions>
+                    <con2:ifThenElse>
+                        <con:comment>Identificar el tipo de error generado en la publicacion del mensaje al flujo de Score</con:comment>
+                        <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7e2a</con:id>
+                        <con2:case id="_BranchId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7e29">
+                            <con2:condition>
+                                <con:xqueryText>fn:not(fn:empty($fault/ctx:details))</con:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace varName="body" contents-only="true">
+                                    <con:comment>Generar error al publicar el mensaje para el flujo de Score</con:comment>
+                                    <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7df5</con:id>
+                                    <con2:location>
+                                        <con:xpathText>.</con:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con:xsltTransform>
+                                            <con:resource ref="OperacionPrendaria/Prestamo/Resources/Transformations/TRPrestamoFault"/>
+                                            <con:input>$fault</con:input>
+                                            <con:param name="detailFault">
+                                                <con:path>$fault/ctx:reason/text()</con:path>
+                                            </con:param>
+                                            <con:param name="codeFault">
+                                                <con:path>$fault/ctx:errorCode/text()</con:path>
+                                            </con:param>
+                                        </con:xsltTransform>
+                                    </con2:expr>
+                                </con2:replace>
+                                <con:reply isError="true">
+                                    <con:comment>Responder con el error generado en la publicación al flujo de Score</con:comment>
+                                    <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7df2</con:id>
+                                </con:reply>
+                            </con2:actions>
+                        </con2:case>
+                    </con2:ifThenElse>
+                </con4:actions>
+            </con4:stage>
+        </con4:pipeline>
+        <con4:pipeline type="error" name="error-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7942">
+            <con4:stage id="_StageId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7941" name="StageBitacoraErrorHandler">
+                <con4:comment>Manejo de errores en el envio de mensaje a OSBBitacoraPrestamoSoapPXY</con4:comment>
+                <con4:context/>
+                <con4:actions>
+                    <con6:alert xmlns:con6="http://www.bea.com/wli/sb/stages/alert/config">
+                        <con:comment>Generar alerta en caso de presentarse un problema en la publicacion de mensaje a bitacora</con:comment>
+                        <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N78db</con:id>
+                        <con6:destination ref="OperacionPrendaria/Prestamo/Resources/Alerts/NMPPrestamoAlert"/>
+                        <con6:description>Problema en envio a bitacora para servicio Prestamo</con6:description>
+                        <con6:severity>warning</con6:severity>
+                        <con6:payload>
+                            <con:xqueryText>$fault/ctx:reason</con:xqueryText>
+                        </con6:payload>
+                    </con6:alert>
+                    <con:resume>
+                        <con:comment>Continuar sin propagar errores de bitacora</con:comment>
+                        <con:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N790e</con:id>
+                    </con:resume>
+                </con4:actions>
+            </con4:stage>
+        </con4:pipeline>
+        <con4:pipeline type="error" name="error-N3f57c7ff.478438f9.0.15700d0892f.N7f0c">
+            <con4:stage id="_StageId-N3f57c7ff.478438f9.0.15700d0892f.N7f0b" name="StageRTErrorHandler">
+                <con4:comment>Manejo de errores en el envio de mensaje a NmpTransaccionPrestamoJmsPXY</con4:comment>
+                <con4:context/>
+                <con4:actions>
+                    <con2:ifThenElse>
+                        <con:comment>Identificar el tipo de error generado en la publicacion del mensaje al flujo de Riesgo Transaccional</con:comment>
+                        <con:id>_ActionId-N3f57c7ff.478438f9.0.15700d0892f.N7f0a</con:id>
+                        <con2:case id="_BranchId-N3f57c7ff.478438f9.0.15700d0892f.N7f09">
+                            <con2:condition>
+                                <con:xqueryText>fn:not(fn:empty($fault/ctx:details))</con:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace contents-only="true" varName="body">
+                                    <con:comment>Generar error al publicar el mensaje para el flujo de Riesgo Transaccional</con:comment>
+                                    <con:id>_ActionId-N3f57c7ff.478438f9.0.15700d0892f.N7f08</con:id>
+                                    <con2:location>
+                                        <con:xpathText>.</con:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con:xsltTransform>
+                                            <con:resource ref="OperacionPrendaria/Prestamo/Resources/Transformations/TRPrestamoFault"/>
+                                            <con:input>$fault</con:input>
+                                            <con:param name="detailFault">
+                                                <con:path>$fault/ctx:reason/text()</con:path>
+                                            </con:param>
+                                            <con:param name="codeFault">
+                                                <con:path>$fault/ctx:errorCode/text()</con:path>
+                                            </con:param>
+                                        </con:xsltTransform>
+                                    </con2:expr>
+                                </con2:replace>
+                                <con6:alert xmlns:con6="http://www.bea.com/wli/sb/stages/alert/config">
+                                    <con:comment>Generar alerta en caso de presentarse un problema en la publicacion del mensaje a Riesgo Transaccional</con:comment>
+                                    <con:id>_ActionId-N3f57c7ff.478438f9.0.15700d0892f.N7e86</con:id>
+                                    <con6:destination ref="OperacionPrendaria/Prestamo/Resources/Alerts/NMPPrestamoAlert"/>
+                                    <con6:description>Problema en envio a Riesgo Transaccional</con6:description>
+                                    <con6:severity>major</con6:severity>
+                                    <con6:payload>
+                                        <con:xqueryText>$body</con:xqueryText>
+                                    </con6:payload>
+                                </con6:alert>
+                                <con:resume>
+                                    <con:comment>Continuar sin propagar errores en publicación a proceso de riesgo transaccional</con:comment>
+                                    <con:id>_ActionId-N3f57c7ff.478438f9.0.15700d0892f.N7ebb</con:id>
+                                </con:resume>
+                            </con2:actions>
+                        </con2:case>
+                    </con2:ifThenElse>
+                </con4:actions>
+            </con4:stage>
+        </con4:pipeline>
+        <con:flow xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+            <con:pipeline-node name="PipelineLoanStatus">
+                <con:request>PipelinePairNode1_request</con:request>
+                <con:response>PipelinePairNode1_response</con:response>
+            </con:pipeline-node>
+        </con:flow>
+    </con4:router>
+    <aler:alertRules xsi:nil="true" xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert"/>
+</con:pipelineEntry>

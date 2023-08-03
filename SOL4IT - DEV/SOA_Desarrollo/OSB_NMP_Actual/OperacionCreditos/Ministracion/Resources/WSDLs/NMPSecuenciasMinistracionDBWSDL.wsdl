@@ -1,0 +1,78 @@
+<definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Service/SecuenciasMinistracionDb" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Service/SecuenciasMinistracionDb" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:NMPSM="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:NMPSH="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:SolMin="http://servicios.montedepiedad.com.mx/NMP/Schema/SolicitudesMinistracionDb" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <types>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/SolicitudesMinistracionDb" schemaLocation="../Schemas/NMPSolicitudesMinistracionDBXSD.xsd"/>
+    </xsd:schema>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+    </xsd:schema>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+    </xsd:schema>
+  </types>
+  <portType name="SecuenciasMinistracionDbPortType">
+    <operation name="getInfoSequence">
+      <input message="tns:getInfoSequenceRequest"/>
+      <output message="tns:getInfoSequenceResponse"/>
+      <fault message="tns:standardMessageFault" name="fault"/>
+    </operation>
+    <operation name="insertSequence">
+      <input message="tns:InsertSequenceRequest"/>
+    </operation>
+    <operation name="updateSequence">
+      <input message="tns:UpdateSequence"/>
+    </operation>
+  </portType>
+  <!--partnerLinkType name="SolicitudesMinistracionDb_role" xmlns="http://schemas.xmlsoap.org/ws/2003/05/partner-link/">
+        <role name="SolicitudesMinistracionDb">
+            <portType name="tns:SolicitudesMinistracionDb_ptt"/>
+        </role>
+    </partnerLinkType-->
+  <message name="standardMessageFault">
+    <part name="fault" element="NMPSM:messageError"/>
+  </message>
+  <message name="standardMessageHeader">
+    <part name="header" element="NMPSH:headerMessage"/>
+  </message>
+  <message name="getInfoSequenceRequest">
+    <part name="getInfoSequenceRequest" element="SolMin:getInfoSequenceRequest"/>
+  </message>
+  <message name="getInfoSequenceResponse">
+    <part name="getInfoSequenceResponse" element="SolMin:getInfoSequenceResponse"/>
+  </message>
+  <message name="InsertSequenceRequest">
+    <part name="NmpSecuenciasCollection" element="SolMin:NmpSecuenciasCollection"/>
+  </message>
+  <message name="UpdateSequence">
+    <part name="NmpSecuenciasCollection" element="SolMin:NmpSecuenciasCollection"/>
+  </message>
+  <binding name="SecuenciasMinistracionDbSOAP11Binding" type="tns:SecuenciasMinistracionDbPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="getInfoSequence">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/SecuenciasMinistracionDb/getInfoSequence"/>
+      <input>
+        <soap:body use="literal" parts="getInfoSequenceRequest"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="getInfoSequenceResponse"/>
+      </output>
+      <fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="insertSequence">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/SecuenciasMinistracionDb/insertSequence"/>
+      <input>
+        <soap:body use="literal" parts="NmpSecuenciasCollection"/>
+        <soap:header message="tns:standardMessageHeader" part="header" use="literal"/>
+      </input>
+    </operation>
+    <operation name="updateSequence">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/SecuenciasMinistracionDb/updateSequence"/>
+      <input>
+        <soap:body use="literal" parts="NmpSecuenciasCollection"/>
+        <soap:header message="tns:standardMessageHeader" part="header" use="literal"/>
+      </input>
+    </operation>
+  </binding>
+</definitions>

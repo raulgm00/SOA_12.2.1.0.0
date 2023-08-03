@@ -1,0 +1,40 @@
+<adapter-config name="dbReference" adapter="db" wsdlLocation="../WSDL/NmpClientesAutosDB.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  
+  <connection-factory UIConnectionName="nmpbpm_dbo_DEV" location="eis/DB/nmpbpm_dbo_DEV"/>
+  <endpoint-interaction portType="ClientesAutosDB_ptt" operation="insertClienteAutoInfo">
+    <interaction-spec className="oracle.tip.adapter.db.DBWriteInteractionSpec">
+      <property name="DescriptorName" value="dbReference.NmpClientesInfo"/>
+      <property name="DmlType" value="insert"/>
+      <property name="MappingsMetaDataURL" value="dbReference-or-mappings.xml"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+      <property name="DetectOmissions" value="true"/>
+    </interaction-spec>
+  </endpoint-interaction>
+
+  <endpoint-interaction portType="ClientesAutosDB_ptt" operation="updateClienteAutoInfo">
+    <interaction-spec className="oracle.tip.adapter.db.DBWriteInteractionSpec">
+      <property name="DescriptorName" value="dbReference.NmpClientesInfo"/>
+      <property name="DmlType" value="update"/>
+      <property name="MappingsMetaDataURL" value="dbReference-or-mappings.xml"/>
+      <property name="DetectOmissions" value="true"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+
+  <endpoint-interaction portType="ClientesAutosDB_ptt" operation="getClienteAutoInfo">
+    <interaction-spec className="oracle.tip.adapter.db.DBReadInteractionSpec">
+      <property name="DescriptorName" value="dbReference.NmpClientesInfo"/>
+      <property name="QueryName" value="readObject"/>
+      <property name="MappingsMetaDataURL" value="dbReference-or-mappings.xml"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  
+   <endpoint-interaction portType="ClientesAutosDB_ptt" operation="getFoliosCliente">
+    <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+      <property name="SqlString" value="select  num_credencial, folio_tramite, monto_prestamo, estado, fecha_creacion from nmp_clientes_info where num_credencial = :num_credencial order by fecha_creacion desc"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  
+</adapter-config>

@@ -1,0 +1,1330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="Utileria/AdminDocumentos/Resources/WSDLs/NMPAdministraDocumentosWSDL"/>
+            <con:binding>
+                <con:name>OpenTextServiceSOAP11Binding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Service/OpenTextSvc</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:tracingEnabled>true</oper:tracingEnabled>
+            <oper:logging enabled="false" level="debug"/>
+            <oper:reporting>false</oper:reporting>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router errorHandler="error-N3f57c7ff.N7e0999cc.0.1521e1476fd.N7977">
+        <con:pipeline type="error" name="error-N3f57c7ff.N7e0999cc.0.1521e1476fd.N7977">
+            <con:stage id="_StageId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N7940" name="StageFaults" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                <con:context>
+                    <con2:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                    <con2:userNsDecl prefix="nmpsm" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="header" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N3f57c7ff.N36978f0c.0.152a3311606.N7f54</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>&lt;soap:Header xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+&lt;/soap:Header></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:ifThenElse xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N741a</con2:id>
+                        <con1:case id="_BranchId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N7419">
+                            <con1:condition>
+                                <con2:xqueryText>$fault/ctx:errorCode='OSB-382500' and $fault/ctx:details/con1:ReceivedFaultDetail/con1:detail/nmpsm:messageError</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con3:assign varName="body">
+                                    <con2:id>_ActionId-N3f57c7ff.N41271084.0.155bc8f2ed4.N7ffd</con2:id>
+                                    <con2:disabled>true</con2:disabled>
+                                    <con3:expr>
+                                        <con2:xqueryText>&lt;soap:Body xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+    &lt;soap:Fault>       
+    &lt;/soap:Fault>
+&lt;/soap:Body></con2:xqueryText>
+                                    </con3:expr>
+                                </con3:assign>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id>_ActionId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N7411</con2:id>
+                                    <con2:disabled>true</con2:disabled>
+                                    <con1:location>
+                                        <con2:xpathText>./soap-env:Fault</con2:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con2:xqueryText>$fault/ctx:details/con1:ReceivedFaultDetail/*</con2:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                                <con3:assign varName="body">
+                                    <con2:id>_ActionId-N3f57c7ff.7b9dbc23.0.156e6e7fe55.N7df7</con2:id>
+                                    <con3:expr>
+                                        <con2:xqueryText><![CDATA[<soap:Body xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+    <soap:Fault>
+        <faultcode xmlns:open="http://servicios.montedepiedad.com.mx/NMP/Service/OpenTextSvc">open:Fault</faultcode>
+        <faultstring>{$fault/ctx:details/con1:ReceivedFaultDetail/con1:faultstring/text()}</faultstring>
+        <detail>
+            <nmpsm:messageError xmlns:nmpsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage">
+                <nmpsm:codigoError>{$fault/ctx:details/con1:ReceivedFaultDetail/con1:detail/nmpsm:messageError/nmpsm:codigoError/text()}</nmpsm:codigoError>
+                <nmpsm:descripcionError>{$fault/ctx:details/con1:ReceivedFaultDetail/con1:detail/nmpsm:messageError/nmpsm:descripcionError/text()}</nmpsm:descripcionError>
+                <nmpsm:tipoError>{$fault/ctx:details/con1:ReceivedFaultDetail/con1:detail/nmpsm:messageError/nmpsm:tipoError/text()}</nmpsm:tipoError>
+                <nmpsm:severidad>{$fault/ctx:details/con1:ReceivedFaultDetail/con1:detail/nmpsm:messageError/nmpsm:severidad/text()}</nmpsm:severidad>
+            </nmpsm:messageError>
+        </detail>
+    </soap:Fault>
+</soap:Body>]]></con2:xqueryText>
+                                    </con3:expr>
+                                </con3:assign>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case id="_BranchId-N3f57c7ff.66a20af4.0.1523c1d62fc.N7c4b">
+                            <con1:condition>
+                                <con2:xqueryText>$fault/ctx:errorCode='OSB-002'</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="fault" contents-only="true">
+                                    <con2:id>_ActionId-N3f57c7ff.66a20af4.0.1523c1d62fc.N7c10</con2:id>
+                                    <con1:location>
+                                        <con2:xpathText>./ctx:errorCode</con2:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con2:xqueryText>'OSB-382500'</con2:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                                <con1:assign varName="body">
+                                    <con2:id>_ActionId-N3f57c7ff.66a20af4.0.1523c1d62fc.N7c16</con2:id>
+                                    <con1:expr>
+                                        <con2:xsltTransform>
+                                            <con2:resource ref="Utileria/AdminDocumentos/Resources/Transformations/TransformFaultsAdministraDocumentos"/>
+                                            <con2:input>$fault</con2:input>
+                                        </con2:xsltTransform>
+                                    </con1:expr>
+                                </con1:assign>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id>_ActionId-N3f57c7ff.66a20af4.0.1523c1d62fc.N7c13</con2:id>
+                                    <con1:location>
+                                        <con2:xpathText>./soap-env:Fault/detail/nmpsm:messageError/nmpsm:descripcionError</con2:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con2:xqueryText>$error</con2:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:default>
+                            <con1:assign varName="body">
+                                <con2:id>_ActionId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N793f</con2:id>
+                                <con1:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="Utileria/AdminDocumentos/Resources/Transformations/TransformFaultsAdministraDocumentos"/>
+                                        <con2:input>$fault</con2:input>
+                                    </con2:xsltTransform>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:default>
+                    </con1:ifThenElse>
+                    <con2:reply isError="true">
+                        <con2:id>_ActionId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N7416</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.66a20af4.0.1523c1d62fc.N7ec7">
+            <con:stage name="stageValidacion">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:varNsDecl prefix="open" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-a1e030f.N1d632839.3.15c5b1a718c.N8000</con1:id>
+                        <con2:case>
+                            <con2:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$header/nmph:headerMessage</con:xqueryText>
+                            </con2:condition>
+                            <con2:actions/>
+                        </con2:case>
+                        <con2:default>
+                            <con2:assign varName="header">
+                                <con1:id>_ActionId-a1e030f.N1d632839.3.15c5b1a718c.N7fff</con1:id>
+                                <con2:expr>
+                                    <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                        <con:resource ref="Common/XSLT/TrInboundToHeaderNMP"/>
+                                        <con:input>$inbound</con:input>
+                                    </con:xsltTransform>
+                                </con2:expr>
+                            </con2:assign>
+                        </con2:default>
+                    </con2:ifThenElse>
+                    <con1:validate xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N29ad687d.34.15280ecd178.N8000</con2:id>
+                        <con1:schema ref="Utileria/AdminDocumentos/Resources/Schemas/NMPAdministraDocumentosXSD"/>
+                        <con1:schemaElement xmlns:open="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc">open:listaDoctosRequest</con1:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./open:listaDoctosRequest</con:xpathText>
+                        </con1:location>
+                        <con1:resultVarName/>
+                    </con1:validate>
+                    <con2:validate>
+                        <con1:id>_ActionId-N3f57c7ff.N77a8e526.0.152cda630e0.N7f74</con1:id>
+                        <con2:schema ref="Common/XSD/NMPStandardHeader"/>
+                        <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con2:schemaElement>
+                        <con2:varName>header</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./nmph:headerMessage</con1:xpathText>
+                        </con2:location>
+                        <con2:resultVarName/>
+                    </con2:validate>
+                    <con2:assign varName="headerI">
+                        <con1:id>_ActionId-af100c3.1506eda9.0.15c0cd4e179.N7f81</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$header</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57c7ff.66a20af4.0.1523c1d62fc.N7ec6" name="StageAuthentication" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                <con:context>
+                    <con2:userNsDecl prefix="corop" namespace="urn:Core.service.livelink.opentext.com"/>
+                    <con2:userNsDecl prefix="consec" namespace="http://www.bea.com/wli/sb/services/security/config"/>
+                    <con2:varNsDecl prefix="open" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="authenticationRequest" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N3f57c7ff.66a20af4.0.1523c1d62fc.N7ec5</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>&lt;open:autenticacionRequest xmlns:open="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc"/></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:wsCallout xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N3f57c7ff.66a20af4.0.1523c1d62fc.N7ec4</con2:id>
+                        <con1:service ref="Utileria/AdminDocumentos/ProxyServices/OTUtileriaAdminDoctosPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>autenticacionToken</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">authenticationRequest</con1:body>
+                            <con1:header>header</con1:header>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">authenticationResponse</con1:body>
+                        </con1:response>
+                        <con1:requestTransform/>
+                        <con1:responseTransform>
+                            <con1:assign varName="tokenVar">
+                                <con2:id>_ActionId-N3f57c7ff.66a20af4.0.1523c1d62fc.N7ec3</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText>$authenticationResponse/open:autenticacionToken</con2:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                            <con1:assign varName="OpHeader">
+                                <con2:id>_ActionId-N3f57c7ff.66a20af4.0.1523c1d62fc.N7ec2</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat('<soap-env:Header xmlns:soap-env="http://schemas.xmlsoap.org/soap/envelope/">
+<open:customHeader xmlns:open="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc">       
+         <open:tokenUser>',$tokenVar,'</open:tokenUser>
+      </open:customHeader>
+      </soap-env:Header>'))]]></con2:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                            <con3:insert varName="OpHeader">
+                                <con2:id>_ActionId-N3f57c7ff.N77a8e526.0.152cda630e0.N7f77</con2:id>
+                                <con3:location>
+                                    <con2:xpathText>./open:customHeader</con2:xpathText>
+                                </con3:location>
+                                <con3:where>after</con3:where>
+                                <con3:expr>
+                                    <con2:xqueryText>$headerI/*</con2:xqueryText>
+                                </con3:expr>
+                            </con3:insert>
+                        </con1:responseTransform>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.N7e0999cc.0.1521e1476fd.N7c38">
+            <con:stage name="stageValidacion">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:varNsDecl prefix="open" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-a1e030f.N1d632839.1.15c5b17e82b.N8000</con1:id>
+                        <con2:case>
+                            <con2:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$header/nmph:headerMessage</con:xqueryText>
+                            </con2:condition>
+                            <con2:actions/>
+                        </con2:case>
+                        <con2:default>
+                            <con2:assign varName="header">
+                                <con1:id>_ActionId-a1e030f.N1d632839.2.15c5b1825a5.N7fff</con1:id>
+                                <con2:expr>
+                                    <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                        <con:resource ref="Common/XSLT/TrInboundToHeaderNMP"/>
+                                        <con:input>$inbound</con:input>
+                                    </con:xsltTransform>
+                                </con2:expr>
+                            </con2:assign>
+                        </con2:default>
+                    </con2:ifThenElse>
+                    <con1:report xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N4c30c2c3.66.15246aa1f6e.N7ffc</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$header</con:xqueryText>
+                        </con1:expr>
+                        <con1:labels>
+                            <con1:key>header</con1:key>
+                            <con1:varName>header</con1:varName>
+                            <con1:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./*</con:xpathText>
+                            </con1:value>
+                        </con1:labels>
+                    </con1:report>
+                    <con1:validate xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N29ad687d.33.15280ea1699.N8000</con2:id>
+                        <con1:schema ref="Utileria/AdminDocumentos/Resources/Schemas/NMPAdministraDocumentosXSD"/>
+                        <con1:schemaElement xmlns:open="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc">open:almacenaDocumentoRequest</con1:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./open:almacenaDocumentoRequest</con:xpathText>
+                        </con1:location>
+                        <con1:resultVarName/>
+                    </con1:validate>
+                    <con2:assign varName="headerI">
+                        <con1:id>_ActionId-af100c3.1506eda9.0.15c0cd4e179.N7f84</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$header</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:validate>
+                        <con1:id>_ActionId-N3f57c7ff.4963813.0.152cd7e9269.N7ffb</con1:id>
+                        <con1:disabled>true</con1:disabled>
+                        <con2:schema ref="Common/XSD/NMPStandardHeader"/>
+                        <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con2:schemaElement>
+                        <con2:varName>header</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./nmph:headerMessage</con1:xpathText>
+                        </con2:location>
+                        <con2:resultVarName/>
+                    </con2:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N7bc1" name="StageAuthentication" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                <con:context>
+                    <con2:userNsDecl prefix="corop" namespace="urn:Core.service.livelink.opentext.com"/>
+                    <con2:userNsDecl prefix="consec" namespace="http://www.bea.com/wli/sb/services/security/config"/>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con2:userNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente"/>
+                    <con2:userNsDecl prefix="crma" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/CanonicalModel"/>
+                    <con2:userNsDecl prefix="tem" namespace="http://tempuri.org/"/>
+                    <con2:userNsDecl prefix="crm" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal"/>
+                    <con2:userNsDecl prefix="urn" namespace="urn:sap-com:document:sap:soap:functions:mc-style"/>
+                    <con2:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con2:userNsDecl prefix="app" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/AppMonte"/>
+                    <con2:userNsDecl prefix="tns" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPNotificacionesSMS"/>
+                    <con2:userNsDecl prefix="app1" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/AppMonte"/>
+                    <con2:varNsDecl prefix="open" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="header" contents-only="true" xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-a1e030f.N7203adec.4.15bab6d9708.N8000</con2:id>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="Common/XQ/TRHeadersRest"/>
+                                <con:param name="inbound">
+                                    <con:path>$inbound</con:path>
+                                </con:param>
+                                <con:param name="requestHeader">
+                                    <con:path>$header</con:path>
+                                </con:param>
+                            </con:xqueryTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:assign varName="authenticationRequest" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N7bbf</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>&lt;open:autenticacionRequest xmlns:open="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc"/></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:wsCallout xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N7bbe</con2:id>
+                        <con1:service ref="Utileria/AdminDocumentos/ProxyServices/OTUtileriaAdminDoctosPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>autenticacionToken</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">authenticationRequest</con1:body>
+                            <con1:header>header</con1:header>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">authenticationResponse</con1:body>
+                            <con3:header/>
+                        </con1:response>
+                        <con1:requestTransform/>
+                        <con1:responseTransform>
+                            <con1:assign varName="tokenVar">
+                                <con2:id>_ActionId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N7bbd</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText>$authenticationResponse/open:autenticacionToken</con2:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                            <con1:assign varName="OpHeader">
+                                <con2:id>_ActionId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N7bbc</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText><![CDATA[<soap-env:Header xmlns:soap-env="http://schemas.xmlsoap.org/soap/envelope/">
+<open:customHeader xmlns:open="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc">       
+         <open:tokenUser>{$tokenVar/text()}</open:tokenUser>
+</open:customHeader>
+</soap-env:Header>]]></con2:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                            <con3:insert varName="OpHeader">
+                                <con2:id>_ActionId-N3f57c7ff.N77a8e526.0.152cda630e0.N7f7a</con2:id>
+                                <con3:location>
+                                    <con2:xpathText>./open:customHeader</con2:xpathText>
+                                </con3:location>
+                                <con3:where>after</con3:where>
+                                <con3:expr>
+                                    <con2:xqueryText>$headerI/*</con2:xqueryText>
+                                </con3:expr>
+                            </con3:insert>
+                            <con3:assign varName="headerInicial">
+                                <con2:id>_ActionId-a1e030f.N1b950730.1c.152fa3e6506.N7ffd</con2:id>
+                                <con3:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$OpHeader</con:xqueryText>
+                                </con3:expr>
+                            </con3:assign>
+                        </con1:responseTransform>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af0041d.N26ff3b9.0.15b5f33b232.N7ea4">
+            <con:stage id="_StageId-af0041d.N26ff3b9.0.15b5f33b232.N7cf7" name="StageGetIdNodo">
+                <con:context>
+                    <con1:userNsDecl prefix="open" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc"/>
+                </con:context>
+                <con:actions>
+                    <con3:wsCallout xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:comment>Se recupera el ID de la carpeta en base al numero recibido en</con2:comment>
+                        <con2:id>_ActionId-af0041d.N26ff3b9.0.15b5f33b232.N7d17</con2:id>
+                        <con1:service ref="Utileria/AdminDocumentos/ProxyServices/OTUtileriaAdminDoctosPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>getIdNodo</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">GetNodeRequest</con1:body>
+                            <con1:header>OpHeader</con1:header>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">GetNodeResponse</con1:body>
+                            <con1:header/>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con3:assign varName="GetNodeRequest">
+                                <con2:id>_ActionId-af0041d.N26ff3b9.0.15b5f33b232.N7abe</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText><![CDATA[<open:getIdNodoRequest xmlns:open="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc">
+         <open:proceso>{$body/open:crearPlantillaRequest/open:proceso/text()}</open:proceso>
+         <open:tipoPlantilla>{$body/open:crearPlantillaRequest/open:plantilla/open:nombre/text()}</open:tipoPlantilla>
+</open:getIdNodoRequest>]]></con2:xqueryText>
+                                </con1:expr>
+                            </con3:assign>
+                            <con1:insert varName="GetNodeRequest">
+                                <con2:id>_ActionId-af0041d.N26ff3b9.0.15b5f33b232.N7d15</con2:id>
+                                <con1:location>
+                                    <con2:xpathText>.</con2:xpathText>
+                                </con1:location>
+                                <con1:where>last-child</con1:where>
+                                <con1:expr>
+                                    <con2:xqueryText>$body/open:crearPlantillaRequest/open:BusinessWorkspace</con2:xqueryText>
+                                </con1:expr>
+                            </con1:insert>
+                        </con1:requestTransform>
+                        <con1:responseTransform>
+                            <con1:ifThenElse>
+                                <con2:id>_ActionId-af0041d.N26ff3b9.0.15b5f33b232.N7d14</con2:id>
+                                <con1:case id="_BranchId-af0041d.N26ff3b9.0.15b5f33b232.N7d13">
+                                    <con1:condition>
+                                        <con2:xqueryText>$GetNodeResponse/open:resultado='OK'</con2:xqueryText>
+                                    </con1:condition>
+                                    <con1:actions>
+                                        <con1:assign varName="idNode">
+                                            <con2:id>_ActionId-af0041d.N26ff3b9.0.15b5f33b232.N7d12</con2:id>
+                                            <con1:expr>
+                                                <con2:xqueryText>$GetNodeResponse/open:idNodo/text()</con2:xqueryText>
+                                            </con1:expr>
+                                        </con1:assign>
+                                    </con1:actions>
+                                </con1:case>
+                                <con1:default>
+                                    <con1:assign varName="flagError">
+                                        <con2:id>_ActionId-af0041d.N26ff3b9.0.15b5f33b232.N7d11</con2:id>
+                                        <con1:expr>
+                                            <con2:xqueryText>1</con2:xqueryText>
+                                        </con1:expr>
+                                    </con1:assign>
+                                </con1:default>
+                            </con1:ifThenElse>
+                        </con1:responseTransform>
+                    </con3:wsCallout>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-af0041d.N26ff3b9.0.15b5f33b232.N7ba7" name="StageCrearPlantilla">
+                <con:context>
+                    <con1:userNsDecl prefix="urnop" namespace="urn:DocMan.service.livelink.opentext.com"/>
+                    <con1:userNsDecl prefix="open" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-af0041d.N26ff3b9.0.15b5f33b232.N7ab6</con1:id>
+                        <con2:case id="_BranchId-af0041d.N26ff3b9.0.15b5f33b232.N7ab5">
+                            <con2:condition>
+                                <con1:xqueryText>$flagError='0'</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con3:wsCallout xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                                    <con2:comment>Se recupera el ID de la carpeta en base al numero recibido en</con2:comment>
+                                    <con2:id>_ActionId-af0041d.N26ff3b9.0.15b5f33b232.N7b2e</con2:id>
+                                    <con3:service ref="Utileria/AdminDocumentos/BusinessSerices/OTDocumentManagementBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                    <con3:operation>CopyNode</con3:operation>
+                                    <con3:request>
+                                        <con3:body wrapped="false">copyNodeReq</con3:body>
+                                        <con3:header>headerOT</con3:header>
+                                    </con3:request>
+                                    <con3:response>
+                                        <con3:body wrapped="false">copyNodeRes</con3:body>
+                                        <con3:header/>
+                                    </con3:response>
+                                    <con1:requestTransform>
+                                        <con3:assign varName="headerOT">
+                                            <con2:id>_ActionId-af0041d.N26ff3b9.0.15b5f33b232.N7960</con2:id>
+                                            <con3:expr>
+                                                <con2:xqueryText><![CDATA[<soap-env:Header xmlns:soap-env="http://schemas.xmlsoap.org/soap/envelope/">
+<urn:OTAuthentication xmlns:urn="urn:api.ecm.opentext.com">       
+         <urn:AuthenticationToken>{$OpHeader/open:customHeader/open:tokenUser/text()}</urn:AuthenticationToken>
+      </urn:OTAuthentication>
+</soap-env:Header>]]></con2:xqueryText>
+                                            </con3:expr>
+                                        </con3:assign>
+                                        <con3:assign varName="ambiente">
+                                            <con2:comment>Se recupera el numero de atributo de donde se recuperara el ID de la carpeta nivel 0</con2:comment>
+                                            <con2:id>_ActionId-af0041d.N26ff3b9.0.15b5f33b232.N7a45</con2:id>
+                                            <con1:expr>
+                                                <con2:xqueryText>dvm:lookupValue('Utileria/AdminDocumentos/Resources/DVMs/settingsAdministraDocumentos', 'Value','1','Attribute3','NULL',('Parameter','AmbienteOT'))</con2:xqueryText>
+                                            </con1:expr>
+                                        </con3:assign>
+                                        <con3:assign varName="idPlantilla">
+                                            <con2:id>_ActionId-af0041d.N26ff3b9.0.15b5f33b232.N7af2</con2:id>
+                                            <con1:expr>
+                                                <con2:xqueryText>dvm:lookupValue('Utileria/AdminDocumentos/Resources/DVMs/administracionPlantillas', 'nombre',$body/open:crearPlantillaRequest/open:plantilla/open:nombre, 'id', '0',('ambiente',$ambiente))</con2:xqueryText>
+                                            </con1:expr>
+                                        </con3:assign>
+                                        <con3:assign varName="copyNodeReq">
+                                            <con2:id>_ActionId-af0041d.N26ff3b9.0.15b5f33b232.N7b26</con2:id>
+                                            <con3:expr>
+                                                <con2:xqueryText><![CDATA[<urn1:CopyNode xmlns:urn1="urn:DocMan.service.livelink.opentext.com">
+    <urn1:ID>{$idPlantilla}</urn1:ID>
+    <urn1:parentID>{$idNode}</urn1:parentID>
+    <urn1:newName>{$body/open:crearPlantillaRequest/open:plantilla/open:contenedor/text()}</urn1:newName>
+</urn1:CopyNode>]]></con2:xqueryText>
+                                            </con3:expr>
+                                        </con3:assign>
+                                    </con1:requestTransform>
+                                    <con1:responseTransform>
+                                        <con3:assign varName="idPlantilla">
+                                            <con2:id>_ActionId-af0041d.N26ff3b9.0.15b5f33b232.N7966</con2:id>
+                                            <con3:expr>
+                                                <con2:xqueryText>$copyNodeRes/urnop:CopyNodeResult/urnop:ID</con2:xqueryText>
+                                            </con3:expr>
+                                        </con3:assign>
+                                        <con3:assign varName="serverOT">
+                                            <con2:comment>Se recupera el nombre del servidor de open Text.</con2:comment>
+                                            <con2:id>_ActionId-af0041d.N26ff3b9.0.15b5f33b232.N795d</con2:id>
+                                            <con1:expr>
+                                                <con2:xqueryText>dvm:lookupValue('Utileria/AdminDocumentos/Resources/DVMs/settingsAdministraDocumentos', 'Value','1', 'Attribute1', 'NULL',('Parameter','AmbienteOT'))</con2:xqueryText>
+                                            </con1:expr>
+                                        </con3:assign>
+                                        <con3:assign varName="url">
+                                            <con2:id>_ActionId-af0041d.N26ff3b9.0.15b5f33b232.N7969</con2:id>
+                                            <con3:expr>
+                                                <con2:xqueryText>fn-bea:serialize(xs:string(fn:concat('&lt;![CDATA[',$serverOT,'/OTCS/livelink.exe?func=ll&amp;amp;objId=',$idPlantilla,'&amp;amp;','objAction=browse','&amp;amp;','viewType=1]]&gt;')))</con2:xqueryText>
+                                            </con3:expr>
+                                        </con3:assign>
+                                        <con3:assign varName="crearPlantillaResponse">
+                                            <con2:id>_ActionId-af0041d.N26ff3b9.0.15b5f33b232.N7a4b</con2:id>
+                                            <con1:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<open:crearPlantillaResponse xmlns:open="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc">  
+        <open:plantilla>
+
+                <open:nombre>{$copyNodeRes/urnop:CopyNodeResult/urnop:Name/text()}</open:nombre>
+                <open:objetoURL>{$url}</open:objetoURL>
+                <open:objetoID>{$idPlantilla/text()}</open:objetoID>
+                <open:fechaCreacion>{$copyNodeRes/urnop:CopyNodeResult/urnop:CreateDate/text()}</open:fechaCreacion>
+                <open:tipoPlantilla>{$body/open:crearPlantillaRequest/open:plantilla/open:nombre/text()}</open:tipoPlantilla>                
+                <open:estado>OK</open:estado>
+                <open:descripcion>copyNode: Plantilla creada</open:descripcion>
+          
+        </open:plantilla>       
+    </open:crearPlantillaResponse>]]></con:xqueryText>
+                                            </con1:expr>
+                                        </con3:assign>
+                                    </con1:responseTransform>
+                                </con3:wsCallout>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default>
+                            <con3:assign varName="crearPlantillaResponse" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con2:id>_ActionId-af0041d.N26ff3b9.0.15b5f33b232.N7a7f</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText><![CDATA[<open:crearPlantillaResponse xmlns:open="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc">  
+        <open:plantilla>
+          
+                <open:nombre>{$GetNodeResponse/open:nombreObjeto/text()}</open:nombre>
+                <open:objetoURL></open:objetoURL>
+                <open:objetoID>{$idNode}</open:objetoID>
+                <open:fechaCreacion></open:fechaCreacion>
+                <open:tipoPlantilla></open:tipoPlantilla>                
+                <open:estado>ERROR</open:estado>
+                <open:descripcion>getNode: {$GetNodeResponse/open:descripcion/text()}</open:descripcion>
+            
+        </open:plantilla>       
+    </open:crearPlantillaResponse>]]></con2:xqueryText>
+                                </con1:expr>
+                            </con3:assign>
+                        </con2:default>
+                    </con2:ifThenElse>
+                    <con2:replace varName="body" contents-only="false">
+                        <con1:id>_ActionId-af0041d.N26ff3b9.0.15b5f33b232.N7963</con1:id>
+                        <con2:location>
+                            <con1:xpathText>./*</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xqueryText>$crearPlantillaResponse</con1:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.66a20af4.0.1523c1d62fc.N7ec1">
+            <con:stage id="_StageId-N3f57c7ff.66a20af4.0.1523c1d62fc.N7ec0" name="StageListaDocumentos" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                <con:context>
+                    <con2:userNsDecl prefix="open" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc"/>
+                    <con2:userNsDecl prefix="urn1" namespace="urn:api.ecm.opentext.com"/>
+                    <con2:userNsDecl prefix="otcore" namespace="urn:Core.service.livelink.opentext.com"/>
+                    <con2:userNsDecl prefix="opendoc" namespace="urn:DocMan.service.livelink.opentext.com"/>
+                </con:context>
+                <con:actions>
+                    <con3:ifThenElse xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-af1008d.N63098342.0.15bb162592d.N7ffa</con2:id>
+                        <con3:case id="_BranchId-af1008d.N63098342.0.15bb162592d.N7ff9">
+                            <con3:condition>
+                                <con2:xqueryText>$body/open:listaDoctosRequest/open:BusinessWorkspace/@parentGroup='IdCarpeta'</con2:xqueryText>
+                            </con3:condition>
+                            <con3:actions>
+                                <con3:assign varName="idNode">
+                                    <con2:id>_ActionId-af1008d.N63098342.0.15bb162592d.N7fbb</con2:id>
+                                    <con1:expr>
+                                        <con2:xqueryText>$body/open:listaDoctosRequest/open:BusinessWorkspace/open:numero</con2:xqueryText>
+                                    </con1:expr>
+                                </con3:assign>
+                                <con3:assign varName="OpHeader">
+                                    <con2:id>_ActionId-af1008d.N63098342.0.15bb162592d.N7f3e</con2:id>
+                                    <con1:expr>
+                                        <con2:xqueryText><![CDATA[<soap-env:Header xmlns:soap-env="http://schemas.xmlsoap.org/soap/envelope/">
+<urn:OTAuthentication xmlns:urn="urn:api.ecm.opentext.com">       
+         <urn:AuthenticationToken>{$tokenVar/text()}</urn:AuthenticationToken>
+      </urn:OTAuthentication>
+      </soap-env:Header>]]></con2:xqueryText>
+                                    </con1:expr>
+                                </con3:assign>
+                            </con3:actions>
+                        </con3:case>
+                        <con3:default>
+                            <con3:wsCallout>
+                                <con2:id>_ActionId-N3f57c7ff.66a20af4.0.1523c1d62fc.N7ebd</con2:id>
+                                <con1:service ref="Utileria/AdminDocumentos/ProxyServices/OTUtileriaAdminDoctosPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                <con1:operation>getIdNodo</con1:operation>
+                                <con1:request>
+                                    <con1:body wrapped="false">GetNodeRequest</con1:body>
+                                    <con1:header>OpHeader</con1:header>
+                                </con1:request>
+                                <con1:response>
+                                    <con1:body wrapped="false">GetNodeResponse</con1:body>
+                                    <con1:header/>
+                                </con1:response>
+                                <con1:requestTransform>
+                                    <con1:assign varName="GetNodeRequest">
+                                        <con2:id>_ActionId-N3f57c7ff.66a20af4.0.1523c1d62fc.N7ebc</con2:id>
+                                        <con1:expr>
+                                            <con2:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat('<open:getIdNodoRequest xmlns:open="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc">
+         <open:proceso>',$inbound/ctx:service/ctx:operation,'</open:proceso>
+         <open:aliasCarpeta>',$body/open:listaDoctosRequest/open:BusinessWorkspace/@aliasCarpeta,'</open:aliasCarpeta>
+      </open:getIdNodoRequest>
+'))]]></con2:xqueryText>
+                                        </con1:expr>
+                                    </con1:assign>
+                                    <con1:insert varName="GetNodeRequest">
+                                        <con2:id>_ActionId-N3f57c7ff.66a20af4.0.1523c1d62fc.N7ebb</con2:id>
+                                        <con1:location>
+                                            <con2:xpathText>.</con2:xpathText>
+                                        </con1:location>
+                                        <con1:where>last-child</con1:where>
+                                        <con1:expr>
+                                            <con2:xqueryText>$body/open:listaDoctosRequest/open:BusinessWorkspace</con2:xqueryText>
+                                        </con1:expr>
+                                    </con1:insert>
+                                    <con1:delete varName="GetNodeRequest">
+                                        <con2:id>_ActionId-N3f57c7ff.66a20af4.0.1523c1d62fc.N7c8b</con2:id>
+                                        <con1:location>
+                                            <con2:xpathText>./open:BusinessWorkspace/@aliasCarpeta</con2:xpathText>
+                                        </con1:location>
+                                    </con1:delete>
+                                </con1:requestTransform>
+                                <con1:responseTransform>
+                                    <con1:ifThenElse>
+                                        <con2:id>_ActionId-N3f57c7ff.66a20af4.0.1523c1d62fc.N7eba</con2:id>
+                                        <con1:case id="_BranchId-N3f57c7ff.66a20af4.0.1523c1d62fc.N7eb9">
+                                            <con1:condition>
+                                                <con2:xqueryText>$GetNodeResponse/open:resultado='OK'</con2:xqueryText>
+                                            </con1:condition>
+                                            <con1:actions>
+                                                <con1:assign varName="idNode">
+                                                    <con2:id>_ActionId-N3f57c7ff.66a20af4.0.1523c1d62fc.N7eb8</con2:id>
+                                                    <con1:expr>
+                                                        <con2:xqueryText>$GetNodeResponse/open:idNodo</con2:xqueryText>
+                                                    </con1:expr>
+                                                </con1:assign>
+                                                <con3:assign varName="OpHeader">
+                                                    <con2:id>_ActionId-N3f57c7ff.66a20af4.0.1523c1d62fc.N7c85</con2:id>
+                                                    <con1:expr>
+                                                        <con2:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat('<soap-env:Header xmlns:soap-env="http://schemas.xmlsoap.org/soap/envelope/">
+<urn:OTAuthentication xmlns:urn="urn:api.ecm.opentext.com">       
+         <urn:AuthenticationToken>',$tokenVar,'</urn:AuthenticationToken>
+      </urn:OTAuthentication>
+      </soap-env:Header>'))]]></con2:xqueryText>
+                                                    </con1:expr>
+                                                </con3:assign>
+                                            </con1:actions>
+                                        </con1:case>
+                                        <con1:default>
+                                            <con1:assign varName="error">
+                                                <con2:id>_ActionId-N3f57c7ff.66a20af4.0.1523c1d62fc.N7c4d</con2:id>
+                                                <con1:expr>
+                                                    <con2:xqueryText>$GetNodeResponse/open:descripcion/text()</con2:xqueryText>
+                                                </con1:expr>
+                                            </con1:assign>
+                                            <con1:Error>
+                                                <con2:id>_ActionId-N3f57c7ff.66a20af4.0.1523c1d62fc.N7e68</con2:id>
+                                                <con1:errCode>OSB-002</con1:errCode>
+                                                <con1:message>Error en servicio</con1:message>
+                                            </con1:Error>
+                                        </con1:default>
+                                    </con1:ifThenElse>
+                                </con1:responseTransform>
+                            </con3:wsCallout>
+                        </con3:default>
+                    </con3:ifThenElse>
+                    <con1:wsCallout xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N3f57c7ff.66a20af4.0.1523c1d62fc.N7d33</con2:id>
+                        <con1:service ref="Utileria/AdminDocumentos/BusinessSerices/OTDocumentManagementBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>ListNodes</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">ListNodeRequest</con1:body>
+                            <con1:header>OpHeader</con1:header>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">ListNodeResponse</con1:body>
+                            <con1:header/>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:assign varName="ListNodeRequest">
+                                <con2:id>_ActionId-N3f57c7ff.66a20af4.0.1523c1d62fc.N7d32</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText><![CDATA[<urn1:ListNodes xmlns:urn1="urn:DocMan.service.livelink.opentext.com">
+         <urn1:parentID>{$idNode/text()}</urn1:parentID>
+         <urn1:partialData>false</urn1:partialData>
+      </urn1:ListNodes>]]></con2:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:requestTransform>
+                        <con1:responseTransform>
+                            <con1:ifThenElse>
+                                <con2:id>_ActionId-N3f57c7ff.1b32af91.0.15242707c72.N7e92</con2:id>
+                                <con1:case id="_BranchId-N3f57c7ff.1b32af91.0.15242707c72.N7e91">
+                                    <con1:condition>
+                                        <con2:xqueryText>fn:count($ListNodeResponse/opendoc:ListNodesResult)=0</con2:xqueryText>
+                                    </con1:condition>
+                                    <con1:actions>
+                                        <con1:assign varName="error">
+                                            <con2:id>_ActionId-N3f57c7ff.1b32af91.0.15242707c72.N7e90</con2:id>
+                                            <con1:expr>
+                                                <con2:xqueryText>fn:concat('Documentos no encontrados en el espacio de trabajo de ',$body/open:listaDoctosRequest/open:BusinessWorkspace/@parentGroup,' para el número ',$body/open:listaDoctosRequest/open:BusinessWorkspace/open:numero)</con2:xqueryText>
+                                            </con1:expr>
+                                        </con1:assign>
+                                        <con1:Error>
+                                            <con2:id>_ActionId-N3f57c7ff.1b32af91.0.15242707c72.N7e59</con2:id>
+                                            <con1:errCode>OSB-002</con1:errCode>
+                                            <con1:message>Error en servicio</con1:message>
+                                        </con1:Error>
+                                    </con1:actions>
+                                </con1:case>
+                            </con1:ifThenElse>
+                        </con1:responseTransform>
+                    </con1:wsCallout>
+                    <con1:assign varName="serverOT" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N3f57c7ff.66a20af4.0.1523c1d62fc.N7c8f</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>dvm:lookupValue('Utileria/AdminDocumentos/Resources/DVMs/settingsAdministraDocumentos', 'Value','1', 'Attribute1', 'NULL',('Parameter','AmbienteOT'))</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:foreach xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N3f57c7ff.66a20af4.0.1523c1d62fc.N7ebe</con2:id>
+                        <con1:variable>ListNodeResponse</con1:variable>
+                        <con1:expression>
+                            <con2:xpathText>./opendoc:ListNodesResult</con2:xpathText>
+                        </con1:expression>
+                        <con1:value-variable>documento</con1:value-variable>
+                        <con1:index-variable>indice</con1:index-variable>
+                        <con1:total-variable>contador</con1:total-variable>
+                        <con1:actions>
+                            <con3:ifThenElse>
+                                <con2:id>_ActionId-af1008d.N63098342.0.15bb162592d.N7fb4</con2:id>
+                                <con3:case id="_BranchId-af1008d.N63098342.0.15bb162592d.N7fb3">
+                                    <con3:condition>
+                                        <con2:xqueryText>$documento/opendoc:Type='Folder'</con2:xqueryText>
+                                    </con3:condition>
+                                    <con3:actions>
+                                        <con4:assign varName="url" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                                            <con2:id>_ActionId-af1008d.N63098342.0.15bb162592d.N7f4a</con2:id>
+                                            <con3:expr>
+                                                <con2:xqueryText>fn-bea:serialize(xs:string(fn:concat('&lt;![CDATA[',$serverOT,'/OTCS/livelink.exe?func=ll&amp;amp;objId=',$documento/opendoc:ID,'&amp;amp;','objAction=browse','&amp;amp;','viewType=1]]&gt;')))</con2:xqueryText>
+                                            </con3:expr>
+                                        </con4:assign>
+                                        <con3:assign varName="numeroElementos">
+                                            <con2:id>_ActionId-af1008d.N63098342.0.15bb162592d.N7f47</con2:id>
+                                            <con3:expr>
+                                                <con2:xqueryText>$documento/opendoc:ContainerInfo/opendoc:ChildCount/text()</con2:xqueryText>
+                                            </con3:expr>
+                                        </con3:assign>
+                                    </con3:actions>
+                                </con3:case>
+                                <con3:case id="_BranchId-af1008d.N63098342.0.15bb162592d.N7fb0">
+                                    <con3:condition>
+                                        <con2:xqueryText>$documento/opendoc:Type='Document'</con2:xqueryText>
+                                    </con3:condition>
+                                    <con3:actions>
+                                        <con3:assign varName="url">
+                                            <con2:id>_ActionId-N3f57c7ff.66a20af4.0.1523c1d62fc.N7c92</con2:id>
+                                            <con1:expr>
+                                                <con2:xqueryText>fn-bea:serialize(xs:string(fn:concat('&lt;![CDATA[',$serverOT,'/OTCS/livelink.exe/',$documento/opendoc:ID,'/',$documento/opendoc:Name,'?func=doc.Fetch','&amp;amp;','nodeid=',$documento/opendoc:ID,'&amp;amp;','viewType=1]]&gt;')))</con2:xqueryText>
+                                            </con1:expr>
+                                        </con3:assign>
+                                        <con3:assign varName="numeroElementos">
+                                            <con2:id>_ActionId-af1008d.N63098342.0.15bb162592d.N7f44</con2:id>
+                                            <con3:expr>
+                                                <con2:xqueryText>0</con2:xqueryText>
+                                            </con3:expr>
+                                        </con3:assign>
+                                    </con3:actions>
+                                </con3:case>
+                            </con3:ifThenElse>
+                            <con1:ifThenElse>
+                                <con2:id>_ActionId-N3f57c7ff.66a20af4.0.1523c1d62fc.N7eb0</con2:id>
+                                <con1:case id="_BranchId-N3f57c7ff.66a20af4.0.1523c1d62fc.N7eaf">
+                                    <con1:condition>
+                                        <con2:xqueryText>$indice=1</con2:xqueryText>
+                                    </con1:condition>
+                                    <con1:actions>
+                                        <con1:assign varName="bodyResponse">
+                                            <con2:id>_ActionId-N3f57c7ff.66a20af4.0.1523c1d62fc.N7eae</con2:id>
+                                            <con1:expr>
+                                                <con2:xqueryText>&lt;ot:listaDoctosResponse xmlns:ot="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc">
+&lt;/ot:listaDoctosResponse></con2:xqueryText>
+                                            </con1:expr>
+                                        </con1:assign>
+                                    </con1:actions>
+                                </con1:case>
+                                <con1:default>
+                                    <con1:insert varName="bodyResponse">
+                                        <con2:id>_ActionId-N3f57c7ff.66a20af4.0.1523c1d62fc.N7eac</con2:id>
+                                        <con2:disabled>true</con2:disabled>
+                                        <con1:location>
+                                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                        </con1:location>
+                                        <con1:where>last-child</con1:where>
+                                        <con1:expr>
+                                            <con2:xqueryText><![CDATA[<open:documentos xmlns:open="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc">
+        <open:nombreDocumento>{$documento/opendoc:Name/text()}</open:nombreDocumento>
+        <open:documentoURL>{$url}</open:documentoURL>
+        <open:documentoID>{$documento/opendoc:ID/text()}</open:documentoID>
+        <open:fechaCreacion>{$documento/opendoc:CreateDate/text()}</open:fechaCreacion>
+    </open:documentos>]]></con2:xqueryText>
+                                        </con1:expr>
+                                    </con1:insert>
+                                </con1:default>
+                            </con1:ifThenElse>
+                            <con3:insert varName="bodyResponse">
+                                <con2:id>_ActionId-N3f57c7ff.66a20af4.0.1523c1d62fc.N7ead</con2:id>
+                                <con1:location>
+                                    <con2:xpathText>.</con2:xpathText>
+                                </con1:location>
+                                <con1:where>first-child</con1:where>
+                                <con1:expr>
+                                    <con2:xqueryText><![CDATA[<open:documentos xmlns:open="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc">
+        <open:nombreDocumento>{$documento/opendoc:Name/text()}</open:nombreDocumento>
+        <open:documentoURL>{$url}</open:documentoURL>
+        <open:documentoID>{$documento/opendoc:ID/text()}</open:documentoID>
+        <open:fechaCreacion>{$documento/opendoc:CreateDate/text()}</open:fechaCreacion>
+        <open:tipoElemento>{$documento/opendoc:Type/text()}</open:tipoElemento>
+        <open:numeroElementos>{$numeroElementos}</open:numeroElementos>
+    </open:documentos>]]></con2:xqueryText>
+                                </con1:expr>
+                            </con3:insert>
+                        </con1:actions>
+                    </con1:foreach>
+                    <con1:replace varName="body" contents-only="false" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N3f57c7ff.66a20af4.0.1523c1d62fc.N7eaa</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./*</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xqueryText>$bodyResponse</con2:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:rename varName="header" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N3f57c7ff.N36978f0c.0.152a3311606.N7f57</con2:id>
+                        <con1:location>
+                            <con2:xpathText>./*</con2:xpathText>
+                        </con1:location>
+                        <con1:localname>headerMessageResponse</con1:localname>
+                    </con1:rename>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.N7e0999cc.0.1521e1476fd.N7c37">
+            <con:stage id="_StageId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N7a97" name="StageSubeDocumentos" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                <con:context>
+                    <con2:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con2:userNsDecl prefix="urn1" namespace="urn:api.ecm.opentext.com"/>
+                    <con2:userNsDecl prefix="opendoc" namespace="urn:DocMan.service.livelink.opentext.com"/>
+                    <con2:userNsDecl prefix="open" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc"/>
+                    <con2:userNsDecl prefix="otcore" namespace="urn:Core.service.livelink.opentext.com"/>
+                </con:context>
+                <con:actions>
+                    <con1:foreach xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:comment>Se realiza un For Each por cada uno de los nodos "documentos" encontrados</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N7a96</con2:id>
+                        <con1:variable>body</con1:variable>
+                        <con1:expression>
+                            <con2:xpathText>./open:almacenaDocumentoRequest/open:documentos</con2:xpathText>
+                        </con1:expression>
+                        <con1:value-variable>documento</con1:value-variable>
+                        <con1:index-variable>indice</con1:index-variable>
+                        <con1:total-variable>contador</con1:total-variable>
+                        <con1:actions>
+                            <con3:assign varName="flagError">
+                                <con2:id>_ActionId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N7898</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText>0</con2:xqueryText>
+                                </con1:expr>
+                            </con3:assign>
+                            <con2:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con4:comment xmlns:con4="http://www.bea.com/wli/sb/stages/config">Valida si el ID de la carpeta se buscara en base a un numero de credito o cliente, o directamente por un ID definido en el DVM settingsAdministraDocumentos</con4:comment>
+                                <con4:id xmlns:con4="http://www.bea.com/wli/sb/stages/config">_ActionId-N3f57c7ff.23a7553a.0.15503d58056.N7ed3</con4:id>
+                                <con2:case id="_BranchId-N3f57c7ff.23a7553a.0.15503d58056.N7ed2">
+                                    <con2:condition>
+                                        <con4:xqueryText xmlns:con4="http://www.bea.com/wli/sb/stages/config">$documento/open:BusinessWorkspace/open:numero</con4:xqueryText>
+                                    </con2:condition>
+                                    <con2:actions>
+                                        <con4:wsCallout xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                                            <con2:comment>Se recupera el ID de la carpeta en base al numero recibido en</con2:comment>
+                                            <con2:id>_ActionId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N7a95</con2:id>
+                                            <con1:service ref="Utileria/AdminDocumentos/ProxyServices/OTUtileriaAdminDoctosPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                            <con1:operation>getIdNodo</con1:operation>
+                                            <con1:request>
+                                                <con1:body wrapped="false">GetNodeRequest</con1:body>
+                                                <con1:header>OpHeader</con1:header>
+                                            </con1:request>
+                                            <con1:response>
+                                                <con1:body wrapped="false">GetNodeResponse</con1:body>
+                                                <con1:header/>
+                                            </con1:response>
+                                            <con1:requestTransform>
+                                                <con1:assign varName="GetNodeRequest">
+                                                    <con2:id>_ActionId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N7a92</con2:id>
+                                                    <con1:expr>
+                                                        <con2:xqueryText><![CDATA[<open:getIdNodoRequest xmlns:open="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc">
+         <open:proceso>{$documento/open:proceso/text()}</open:proceso>
+         <open:tipoDocumento>{string($documento/open:documento/@tipo)}</open:tipoDocumento>
+</open:getIdNodoRequest>]]></con2:xqueryText>
+                                                    </con1:expr>
+                                                </con1:assign>
+                                                <con1:insert varName="GetNodeRequest">
+                                                    <con2:id>_ActionId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N78a8</con2:id>
+                                                    <con1:location>
+                                                        <con2:xpathText>.</con2:xpathText>
+                                                    </con1:location>
+                                                    <con1:where>last-child</con1:where>
+                                                    <con1:expr>
+                                                        <con2:xqueryText>$documento/open:BusinessWorkspace</con2:xqueryText>
+                                                    </con1:expr>
+                                                </con1:insert>
+                                            </con1:requestTransform>
+                                            <con1:responseTransform>
+                                                <con1:ifThenElse>
+                                                    <con2:id>_ActionId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N78a1</con2:id>
+                                                    <con1:case id="_BranchId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N78a0">
+                                                        <con1:condition>
+                                                            <con2:xqueryText>$GetNodeResponse/open:resultado='OK'</con2:xqueryText>
+                                                        </con1:condition>
+                                                        <con1:actions>
+                                                            <con1:assign varName="idNode">
+                                                                <con2:id>_ActionId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N7a91</con2:id>
+                                                                <con1:expr>
+                                                                    <con2:xqueryText>$GetNodeResponse/open:idNodo/text()</con2:xqueryText>
+                                                                </con1:expr>
+                                                            </con1:assign>
+                                                        </con1:actions>
+                                                    </con1:case>
+                                                    <con1:default>
+                                                        <con1:assign varName="flagError">
+                                                            <con2:id>_ActionId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N789b</con2:id>
+                                                            <con1:expr>
+                                                                <con2:xqueryText>1</con2:xqueryText>
+                                                            </con1:expr>
+                                                        </con1:assign>
+                                                    </con1:default>
+                                                </con1:ifThenElse>
+                                            </con1:responseTransform>
+                                        </con4:wsCallout>
+                                    </con2:actions>
+                                </con2:case>
+                                <con2:default>
+                                    <con2:assign varName="atributoParentId">
+                                        <con4:comment xmlns:con4="http://www.bea.com/wli/sb/stages/config">Dependiendo del ambiente configurado recupera el nombre del atributo de donde se recuperara el ID de la carpeta</con4:comment>
+                                        <con4:id xmlns:con4="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N4089bba8.9.15507bd2604.N7fff</con4:id>
+                                        <con2:expr>
+                                            <con4:xqueryText xmlns:con4="http://www.bea.com/wli/sb/stages/config">dvm:lookupValue('Utileria/AdminDocumentos/Resources/DVMs/settingsAdministraDocumentos', 'Value','1','Attribute2', 'NULL',('Parameter','AmbienteOT'))</con4:xqueryText>
+                                        </con2:expr>
+                                    </con2:assign>
+                                    <con2:assign varName="idNode">
+                                        <con4:comment xmlns:con4="http://www.bea.com/wli/sb/stages/config">Se recupera el ID de la carpeta definido en el DVM settingsAdministraDocumentos</con4:comment>
+                                        <con4:id xmlns:con4="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N4089bba8.a.1550e56e8b1.N8000</con4:id>
+                                        <con2:expr>
+                                            <con4:xqueryText xmlns:con4="http://www.bea.com/wli/sb/stages/config">dvm:lookupValue('Utileria/AdminDocumentos/Resources/DVMs/settingsAdministraDocumentos', 'Value',$documento/open:BusinessWorkspace/@parentGroup, $atributoParentId, '0',('Parameter','parentGroup'))</con4:xqueryText>
+                                        </con2:expr>
+                                    </con2:assign>
+                                    <con2:assign varName="size">
+                                        <con4:id xmlns:con4="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N4089bba8.b.1550e571d8d.N8000</con4:id>
+                                        <con2:expr>
+                                            <con:xqueryTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                                <con:resource ref="Utileria/AdminDocumentos/Resources/Transformations/OTOperacionesXQ"/>
+                                                <con:param name="funcion">
+                                                    <con:path>'getFileSize'</con:path>
+                                                </con:param>
+                                                <con:param name="param1">
+                                                    <con:path>$documento/open:documento/open:contenido/text()</con:path>
+                                                </con:param>
+                                            </con:xqueryTransform>
+                                        </con2:expr>
+                                    </con2:assign>
+                                    <con2:replace varName="body" contents-only="true">
+                                        <con4:id xmlns:con4="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N4089bba8.a.1550e56e8b1.N7fff</con4:id>
+                                        <con2:location>
+                                            <con4:xpathText xmlns:con4="http://www.bea.com/wli/sb/stages/config">$documento/open:documento/open:size</con4:xpathText>
+                                        </con2:location>
+                                        <con2:expr>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$size/text()</con:xqueryText>
+                                        </con2:expr>
+                                    </con2:replace>
+                                </con2:default>
+                            </con2:ifThenElse>
+                            <con1:ifThenElse>
+                                <con2:id>_ActionId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N777d</con2:id>
+                                <con1:case id="_BranchId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N777c">
+                                    <con1:condition>
+                                        <con2:xqueryText>$flagError='0'</con2:xqueryText>
+                                    </con1:condition>
+                                    <con1:actions>
+                                        <con1:wsCallout>
+                                            <con2:id>_ActionId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N7a88</con2:id>
+                                            <con1:service ref="Utileria/AdminDocumentos/ProxyServices/OTUtileriaAdminDoctosPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                            <con1:operation>uploadDocumento</con1:operation>
+                                            <con1:request>
+                                                <con1:body wrapped="false">uploadContentRequest</con1:body>
+                                                <con1:header>OpHeader</con1:header>
+                                            </con1:request>
+                                            <con1:response>
+                                                <con1:body wrapped="false">uploadContentResponse</con1:body>
+                                                <con1:header/>
+                                            </con1:response>
+                                            <con1:requestTransform>
+                                                <con1:assign varName="uploadContentRequest">
+                                                    <con2:id>_ActionId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N7a87</con2:id>
+                                                    <con1:expr>
+                                                        <con2:xqueryText>fn-bea:inlinedXML(fn:concat('&lt;open:uploadDocumentoRequest xmlns:open="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc">
+         &lt;open:idNodo>',$idNode,'&lt;/open:idNodo>         
+      &lt;/open:uploadDocumentoRequest>'))</con2:xqueryText>
+                                                    </con1:expr>
+                                                </con1:assign>
+                                                <con1:insert varName="uploadContentRequest">
+                                                    <con2:id>_ActionId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N73dd</con2:id>
+                                                    <con1:location>
+                                                        <con2:xpathText>./open:idNodo</con2:xpathText>
+                                                    </con1:location>
+                                                    <con1:where>after</con1:where>
+                                                    <con1:expr>
+                                                        <con2:xqueryText>$documento/open:documento</con2:xqueryText>
+                                                    </con1:expr>
+                                                </con1:insert>
+                                            </con1:requestTransform>
+                                            <con1:responseTransform/>
+                                        </con1:wsCallout>
+                                    </con1:actions>
+                                </con1:case>
+                                <con1:default>
+                                    <con1:assign varName="uploadContentResponse">
+                                        <con2:id>_ActionId-a1e030f.N4c30c2c3.2c.1522338be13.N8000</con2:id>
+                                        <con1:expr>
+                                            <con2:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat('<open:uploadDocumentoResponse xmlns:open="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc">       
+         <open:documentos>
+         <open:nombreDocumento>',$documento/open:documento/open:nombre,'</open:nombreDocumento>
+         <open:documentoURL></open:documentoURL>
+         <open:documentoID></open:documentoID>
+         <open:estado>ERROR</open:estado>
+         <open:descripcion>GetIdNodo: ',$GetNodeResponse/open:descripcion,'</open:descripcion>
+         </open:documentos>
+      </open:uploadDocumentoResponse>'))]]></con2:xqueryText>
+                                        </con1:expr>
+                                    </con1:assign>
+                                </con1:default>
+                            </con1:ifThenElse>
+                            <con1:ifThenElse>
+                                <con2:id>_ActionId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N7a86</con2:id>
+                                <con1:case id="_BranchId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N7a85">
+                                    <con1:condition>
+                                        <con2:xqueryText>$indice=1</con2:xqueryText>
+                                    </con1:condition>
+                                    <con1:actions>
+                                        <con1:assign varName="bodyResponse">
+                                            <con2:id>_ActionId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N7a84</con2:id>
+                                            <con1:expr>
+                                                <con2:xqueryText>&lt;ot:almacenaDocumentoResponse xmlns:ot="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc">
+&lt;/ot:almacenaDocumentoResponse></con2:xqueryText>
+                                            </con1:expr>
+                                        </con1:assign>
+                                        <con1:insert varName="bodyResponse">
+                                            <con2:id>_ActionId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N751d</con2:id>
+                                            <con1:location>
+                                                <con2:xpathText>.</con2:xpathText>
+                                            </con1:location>
+                                            <con1:where>first-child</con1:where>
+                                            <con1:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$uploadContentResponse/open:documentos</con:xqueryText>
+                                            </con1:expr>
+                                        </con1:insert>
+                                    </con1:actions>
+                                </con1:case>
+                                <con1:default>
+                                    <con1:insert varName="bodyResponse">
+                                        <con2:id>_ActionId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N7a83</con2:id>
+                                        <con1:location>
+                                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                        </con1:location>
+                                        <con1:where>last-child</con1:where>
+                                        <con1:expr>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$uploadContentResponse/open:documentos</con:xqueryText>
+                                        </con1:expr>
+                                    </con1:insert>
+                                </con1:default>
+                            </con1:ifThenElse>
+                            <con1:assign varName="OpHeader">
+                                <con2:id>_ActionId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N7a82</con2:id>
+                                <con1:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$headerInicial</con:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:actions>
+                    </con1:foreach>
+                    <con1:replace varName="body" contents-only="false" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N7a81</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./*</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xqueryText>$bodyResponse</con2:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:rename varName="header" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N3f57c7ff.N36978f0c.0.152a3311606.N7f5a</con2:id>
+                        <con1:location>
+                            <con2:xpathText>./*</con2:xpathText>
+                        </con1:location>
+                        <con1:localname>headerMessageResponse</con1:localname>
+                    </con1:rename>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af0041d.N26ff3b9.0.15b5f33b232.N7eb0">
+            <con:stage name="stageValidacion" id="_StageId-af0041d.N26ff3b9.0.15b5f33b232.N7eaf">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:varNsDecl prefix="open" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc"/>
+                </con:context>
+                <con:actions>
+                    <con1:report xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-af0041d.N26ff3b9.0.15b5f33b232.N7eae</con3:id>
+                        <con3:disabled xmlns:con3="http://www.bea.com/wli/sb/stages/config">true</con3:disabled>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$header</con:xqueryText>
+                        </con1:expr>
+                        <con1:labels>
+                            <con1:key>header</con1:key>
+                            <con1:varName>header</con1:varName>
+                            <con1:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./*</con:xpathText>
+                            </con1:value>
+                        </con1:labels>
+                    </con1:report>
+                    <con3:assign varName="flagError" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-af0041d.N26ff3b9.0.15b5f33b232.N7a48</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>0</con2:xqueryText>
+                        </con1:expr>
+                    </con3:assign>
+                    <con1:validate xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-af0041d.N26ff3b9.0.15b5f33b232.N7ead</con3:id>
+                        <con1:schema ref="Utileria/AdminDocumentos/Resources/Schemas/NMPAdministraDocumentosXSD"/>
+                        <con1:schemaElement xmlns:open="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc">open:crearPlantillaRequest</con1:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con3:xpathText xmlns:con3="http://www.bea.com/wli/sb/stages/config">./open:crearPlantillaRequest</con3:xpathText>
+                        </con1:location>
+                        <con1:resultVarName/>
+                    </con1:validate>
+                    <con2:validate>
+                        <con1:id>_ActionId-af0041d.N26ff3b9.0.15b5f33b232.N7eac</con1:id>
+                        <con2:schema ref="Common/XSD/NMPStandardHeader"/>
+                        <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con2:schemaElement>
+                        <con2:varName>header</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./nmph:headerMessage</con1:xpathText>
+                        </con2:location>
+                        <con2:resultVarName/>
+                    </con2:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-af0041d.N26ff3b9.0.15b5f33b232.N7eab" name="StageAuthentication" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                <con:context>
+                    <con2:userNsDecl prefix="corop" namespace="urn:Core.service.livelink.opentext.com"/>
+                    <con2:userNsDecl prefix="consec" namespace="http://www.bea.com/wli/sb/services/security/config"/>
+                    <con2:varNsDecl prefix="open" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="authenticationRequest" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-af0041d.N26ff3b9.0.15b5f33b232.N7eaa</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>&lt;open:autenticacionRequest xmlns:open="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc"/></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:wsCallout xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-af0041d.N26ff3b9.0.15b5f33b232.N7ea9</con2:id>
+                        <con1:service ref="Utileria/AdminDocumentos/ProxyServices/OTUtileriaAdminDoctosPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>autenticacionToken</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">authenticationRequest</con1:body>
+                            <con1:header>header</con1:header>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">authenticationResponse</con1:body>
+                            <con3:header/>
+                        </con1:response>
+                        <con1:requestTransform/>
+                        <con1:responseTransform>
+                            <con1:assign varName="tokenVar">
+                                <con2:id>_ActionId-af0041d.N26ff3b9.0.15b5f33b232.N7ea8</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText>$authenticationResponse/open:autenticacionToken</con2:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                            <con1:assign varName="OpHeader">
+                                <con2:id>_ActionId-af0041d.N26ff3b9.0.15b5f33b232.N7ea7</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText><![CDATA[<soap-env:Header xmlns:soap-env="http://schemas.xmlsoap.org/soap/envelope/">
+<open:customHeader xmlns:open="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc">       
+         <open:tokenUser>{$tokenVar/text()}</open:tokenUser>
+</open:customHeader>
+</soap-env:Header>]]></con2:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                            <con3:insert varName="OpHeader">
+                                <con2:id>_ActionId-af0041d.N26ff3b9.0.15b5f33b232.N7ea6</con2:id>
+                                <con3:location>
+                                    <con2:xpathText>./open:customHeader</con2:xpathText>
+                                </con3:location>
+                                <con3:where>after</con3:where>
+                                <con3:expr>
+                                    <con2:xqueryText>$header/*</con2:xqueryText>
+                                </con3:expr>
+                            </con3:insert>
+                            <con3:assign varName="headerInicial">
+                                <con2:id>_ActionId-af0041d.N26ff3b9.0.15b5f33b232.N7ea5</con2:id>
+                                <con3:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$OpHeader</con:xqueryText>
+                                </con3:expr>
+                            </con3:assign>
+                        </con1:responseTransform>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:branch-node type="operation" id="_FlowId-N3f57c7ff.N7e0999cc.0.1521e1476fd.N74eb" name="BranchGestionDocumentos">
+                <con:context/>
+                <con:branch-table>
+                    <con:branch name="almacenaDocumento">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineAlmacenaDocto">
+                                <con:request>request-N3f57c7ff.N7e0999cc.0.1521e1476fd.N7c38</con:request>
+                                <con:response>response-N3f57c7ff.N7e0999cc.0.1521e1476fd.N7c37</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="listaDocumentos">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineListaDocto">
+                                <con:request>request-N3f57c7ff.66a20af4.0.1523c1d62fc.N7ec7</con:request>
+                                <con:response>response-N3f57c7ff.66a20af4.0.1523c1d62fc.N7ec1</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="crearPlantilla">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineCrearPlantilla">
+                                <con:request>request-af0041d.N26ff3b9.0.15b5f33b232.N7eb0</con:request>
+                                <con:response>response-af0041d.N26ff3b9.0.15b5f33b232.N7ea4</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+    <aler:alertRules xsi:nil="true" xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert"/>
+</con:pipelineEntry>

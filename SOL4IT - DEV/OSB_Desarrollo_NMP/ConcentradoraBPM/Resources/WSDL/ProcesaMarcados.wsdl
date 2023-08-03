@@ -1,0 +1,59 @@
+<wsdl:definitions name="BPEL_ProcesaMarcados" targetNamespace="http://servicios.montedepiedad.com.mx/NMP/WSDL/ConsultaInformacionMidas" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://servicios.montedepiedad.com.mx/NMP/WSDL/ConsultaInformacionMidas" xmlns:client="http://servicios.montedepiedad.com.mx/NMP/Schema/ProcesaMarcados" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/">
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	TYPE DEFINITION - List of services participating in this BPEL process
+	The default output of the BPEL designer uses strings as input and 
+	output to the BPEL Process. But you can define or import any XML 
+	Schema type and use them as part of the message types.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <wsdl:types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/ProcesaMarcados" schemaLocation="../XSD/ProcesaMarcados.xsd"/>
+    </schema>
+  </wsdl:types>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	MESSAGE TYPE DEFINITION - Definition of the message types used as 
+	part of the port type defintions
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <wsdl:message name="IniciaProcesaMarcadosRequest">
+    <wsdl:part name="payload" element="client:IniciaProcesaMarcadosRequest"/>
+  </wsdl:message>
+  <wsdl:message name="IniciaProcesaMarcadosResponse">
+    <wsdl:part name="payload" element="client:IniciaProcesaMarcadosRequest"/>
+  </wsdl:message>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	PORT TYPE DEFINITION - A port type groups a set of operations into
+	a logical service unit.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- portType implemented by the BPEL_ProcesaMarcados BPEL process -->
+  <wsdl:portType name="ProcesaMarcadosPT">
+    <wsdl:operation name="IniciaProcesaMarcados">
+      <wsdl:input message="ns1:IniciaProcesaMarcadosRequest"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <!-- portType implemented by the requester of BPEL_ProcesaMarcados BPEL process
+	for asynchronous callback purposes
+	-->
+  <wsdl:portType name="ProcesaMarcadosPTCallback">
+    <wsdl:operation name="IniciaProcesaMarcadosCallback">
+      <wsdl:input message="ns1:IniciaProcesaMarcadosResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	PARTNER LINK TYPE DEFINITION
+	the BPEL_ProcesaMarcados partnerLinkType binds the provider and
+	requester portType into an asynchronous conversation.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <plnk:partnerLinkType name="BPEL_ProcesaMarcados">
+    <plnk:role name="BPEL_ProcesaMarcadosProvider" portType="client:BPEL_ProcesaMarcados"/>
+    <plnk:role name="BPEL_ProcesaMarcadosRequester" portType="client:BPEL_ProcesaMarcadosCallback"/>
+  </plnk:partnerLinkType>
+  <wsdl:binding name="ProcesaMarcadosPTSOAP12Binding" type="ns1:ProcesaMarcadosPT">
+    <soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="IniciaProcesaMarcados">
+      <soap12:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/WSDL/ConsultaInformacionMidas/IniciaProcesaMarcados"/>
+      <wsdl:input>
+        <soap12:body use="literal" parts="payload"/>
+      </wsdl:input>
+    </wsdl:operation>
+  </wsdl:binding>
+</wsdl:definitions>

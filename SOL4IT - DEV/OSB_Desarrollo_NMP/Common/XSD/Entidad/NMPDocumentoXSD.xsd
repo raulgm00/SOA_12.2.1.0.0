@@ -1,0 +1,57 @@
+<xsd:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Documento/v1" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:NMPDocumento="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Documento/v1" xmlns:NMPComun="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Comun">
+  <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Comun" schemaLocation="../NMPComun_TIPOS.xsd"/>
+  <xsd:complexType name="DocumentoType">
+    <xsd:sequence>
+      <xsd:element ref="NMPDocumento:idDocumento" minOccurs="0" maxOccurs="1"/>
+      <xsd:element ref="NMPDocumento:tipo" minOccurs="1" maxOccurs="1"/>
+      <xsd:element ref="NMPDocumento:estado" minOccurs="1" maxOccurs="1"/>
+      <xsd:element ref="NMPDocumento:nombre" minOccurs="1" maxOccurs="1"/>
+      <xsd:element ref="NMPDocumento:usuarioModifica" minOccurs="1" maxOccurs="1"/>
+      <xsd:element ref="NMPDocumento:fase" minOccurs="1" maxOccurs="1"/>
+      <xsd:element ref="NMPDocumento:ruta" minOccurs="1" maxOccurs="1"/>
+      <xsd:element ref="NMPDocumento:url" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="documento" type="NMPDocumento:DocumentoType"/>
+  <xsd:complexType name="ListaDocumentosType">
+    <xsd:sequence>
+      <xsd:element ref="NMPDocumento:documento" minOccurs="1" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="TipoDocumentoType">
+    <xsd:sequence>
+      <xsd:element ref="NMPDocumento:id" minOccurs="1" maxOccurs="1"/>
+      <xsd:element ref="NMPDocumento:descripcion" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="EstatusType">
+    <xsd:sequence>
+      <xsd:element ref="NMPDocumento:id" minOccurs="1" maxOccurs="1"/>
+      <xsd:element ref="NMPDocumento:descripcion" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="FaseType">
+    <xsd:sequence>
+      <xsd:element ref="NMPDocumento:id" minOccurs="1" maxOccurs="1"/>
+      <xsd:element ref="NMPDocumento:descripcion" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="DocumentoDonatariaType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="REGISTRO"/>
+      <xsd:enumeration value="SOLICITUD"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:element name="idDocumento" type="xsd:string"/>
+  <xsd:element name="tipo" type="NMPDocumento:TipoDocumentoType"/>
+  <xsd:element name="estado" type="NMPDocumento:EstatusType"/>
+  <xsd:element name="nombre" type="xsd:string"/>
+  <xsd:element name="usuarioModifica" type="xsd:string"/>
+  <xsd:element name="fase" type="NMPDocumento:FaseType"/>
+  <xsd:element name="ruta" type="xsd:string"/>
+  <xsd:element name="id" type="NMPComun:idType"/>
+  <xsd:element name="descripcion" type="xsd:string"/>
+  <xsd:element name="url" type="xsd:string"/>
+  <xsd:element name="tipoDocumento" type="NMPDocumento:DocumentoDonatariaType"/>
+  <xsd:element name="documentos" type="NMPDocumento:ListaDocumentosType"/>
+</xsd:schema>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-fragment xmlns:aler="http://www.bea.com/wli/monitoring/alert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:env="http://www.bea.com/wli/config/env" xmlns:ema="http://www.bea.com/wli/sb/transports/email">
+    <aler:description>Alerta ejecutada cuando ocurre un error al momento de notificar el resultado de la gestión de cobranza a CRM. Se envia un correo con la petición y el error ocurrido.</aler:description>
+    <aler:AlertToConsole>true</aler:AlertToConsole>
+    <aler:AlertToReportingDataSet>false</aler:AlertToReportingDataSet>
+    <aler:AlertToSNMP>true</aler:AlertToSNMP>
+    <aler:Destinations type="email">
+        <aler:config email-body="" xsi:type="ema1:EmailActionProviderConfiguration" xmlns:ema1="http://www.bea.com/wli/monitoring/alert/action/email">
+            <ema1:transport-end-point-config>
+                <ema1:config xsi:type="tran:EndPointConfiguration" xmlns:tran="http://www.bea.com/wli/sb/transports">
+                    <tran:provider-id>email</tran:provider-id>
+                    <tran:inbound>false</tran:inbound>
+                    <tran:URI>
+                        <env:value>mailto:ajuarez@spsolutions.com.mx</env:value>
+                    </tran:URI>
+                    <tran:provider-specific>
+                        <ema:use-ssl>false</ema:use-ssl>
+                        <ema:outbound-properties>
+                            <ema:smtp-resource ref="System/SMTP Servers/NMPSMTPServer"/>
+                            <ema:connection-timeout>0</ema:connection-timeout>
+                            <ema:timeout>0</ema:timeout>
+                            <ema:from-address>notificacionessoa@montepiedad.com.mx</ema:from-address>
+                            <ema:from-name>Notificacion SOA</ema:from-name>
+                            <ema:reply-to-address/>
+                            <ema:reply-to-name/>
+                            <ema:mail-session-jndiname/>
+                        </ema:outbound-properties>
+                        <ema:request-encoding>iso-8859-1</ema:request-encoding>
+                    </tran:provider-specific>
+                </ema1:config>
+            </ema1:transport-end-point-config>
+        </aler:config>
+    </aler:Destinations>
+</xml-fragment>

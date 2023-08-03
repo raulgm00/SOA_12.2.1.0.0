@@ -1,0 +1,149 @@
+<xs:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/SolicitudesVSR" elementFormDefault="qualified" attributeFormDefault="qualified" xmlns="http://servicios.montedepiedad.com.mx/NMP/Schema/SolicitudesVSR" xmlns:veh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPVehiculo" xmlns:doc="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc" xmlns:ct="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCommonTypes" xmlns:ava="http://servicios.montedepiedad.com.mx/NMP/Schema/Avaluo" xmlns:cot="http://servicios.montedepiedad.com.mx/NMP/Schema/Cotizador" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPVehiculo" schemaLocation="../../../../Common/XSD/NMPVehiculoXSD.xsd"/>
+  <xs:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc" schemaLocation="../../../../Utileria/AdminDocumentos/Resources/Schemas/NMPAdministraDocumentosXSD.xsd"/>
+  <xs:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPVehiculo" schemaLocation="../../../../Common/XSD/NMPVehiculoXSD.xsd"/> 
+  <xs:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Cotizador" schemaLocation="../../../Cotizador/Resources/Schemas/NMPCotizadorSvcXSD.xsd"/>
+  <xs:element name="guardarSolicitudRequest" type="solicitudesClientesInfoCollection"/>
+  <xs:element name="guardarSolicitudResponse" type="solicitudesVSRResponse"/>
+  <xs:element name="actualizarSolicitudRequest" type="solicitudesClientesInfoCollection"/>
+  <xs:element name="actualizarSolicitudResponse" type="solicitudesVSRResponse"/>
+  <xs:element name="consultarSolicitudRequest" type="consultarSolicitudType"/>
+  <xs:element name="consultarSolicitudResponse" type="solicitudesClientesInfoCollection"/>
+  <xs:element name="eliminarSolicitudRequest" type="solicitudesClientesInfoCollection"/>
+  <xs:element name="eliminarSolicitudResponse" type="solicitudesVSRResponse"/>
+  <xs:element name="asociarSolicitudRequest" type="solicitudesClientesInfoCollection"/>
+  <xs:element name="asociarSolicitudResponse" type="solicitudesVSRResponse"/>
+  <xs:element name="validarVehiculoRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="veh:vin"/>
+        <xs:element ref="numCredencial" minOccurs="0"/>
+        <xs:element ref="folioTramite" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="validarVehiculoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="solicitud" maxOccurs="unbounded" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" ref="folioTramite"/>
+              <xs:element minOccurs="0" ref="estadoSolicitud"/>
+              <xs:element ref="idContrato" minOccurs="0"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element ref="resultado" minOccurs="1"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <!--xs:element name="validarVehiculoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="resultado"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element-->
+  <xs:element name="consultarSolicitudesClienteRequest" type="consultaSolicitudesClienteType"/>
+  <xs:element name="consultarSolicitudesClienteResponse" type="solicitudesClientesInfoCollection"/>
+  <xs:element name="validaEstadoFlujoSolicitudRequest" type="validaEstadoSolicitudType"/>
+  <xs:element name="validaEstadoFlujoSolicitudResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="resultado"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="resultado" type="xs:int"/>
+  <xs:element name="numCredencial" type="xs:string"/>
+  <xs:element name="folioTramite" type="xs:string"/>
+  <xs:element name="estadoFlujo" type="xs:int" nillable="true"/>
+  <xs:element name="idContrato" type="xs:int"/>
+  <xs:element name="estadoSolicitud" type="xs:int"/>
+  <xs:complexType name="consultaSolicitudesClienteType">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" ref="numCredencial"/>
+      <xs:element minOccurs="0" maxOccurs="1" name="fechaInicial" type="xs:dateTime"/>
+      <xs:element name="fechaFinal" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="validaEstadoSolicitudType">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" ref="numCredencial"/>
+      <xs:element minOccurs="1" ref="folioTramite"/>
+      <xs:element minOccurs="1" maxOccurs="1" ref="estadoFlujo"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="solicitudesClientesInfoCollection">
+    <xs:sequence>
+      <xs:element name="NmpSolicitudesClientesInfo" type="solicitudesClientesInfo" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="solicitudesClientesInfo">
+    <xs:sequence>
+      <xs:element ref="numCredencial"/>
+      <xs:element ref="folioTramite"/>
+      <xs:element name="montoPrestamo" type="xs:decimal" minOccurs="0" nillable="true"/>
+      <xs:element name="montoAvaluo" type="xs:decimal" minOccurs="0" nillable="true"/>
+      <xs:element name="montoAvaluoDictaminador" type="xs:decimal" minOccurs="0" nillable="true"/>
+      <xs:element name="prestamoSolicitado" type="xs:decimal" minOccurs="0" nillable="true"/>
+      <xs:element name="plazo" type="xs:decimal" minOccurs="0" nillable="true"/>
+      <xs:element minOccurs="0" ref="estadoSolicitud"/>
+      <xs:element ref="estadoFlujo" minOccurs="0"/>
+      <xs:element name="comentarios" type="xs:string" minOccurs="0" nillable="true"/>
+      <xs:element minOccurs="0" ref="idContrato"/>
+      <xs:element name="creadoPor" type="xs:string" minOccurs="0" nillable="true"/>
+      <xs:element name="fechaCreacion" type="xs:dateTime" minOccurs="0" nillable="true"/>
+      <xs:element name="actualizadoPor" type="xs:string" minOccurs="0" nillable="true"/>
+      <xs:element name="fechaActualizacion" type="xs:dateTime" minOccurs="0" nillable="true"/>
+      <xs:element name="nmpDocumentosSolicitudInfoCollection" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="NmpDocumentosSolicitudInfo" type="doc:documentoModeloDbType" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="nmpFormasPagoCollection" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="NmpFormasPago" type="cot:nmpFormasPagoDB" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="nmpVehiculoInfoCollection" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="NmpVehiculoInfo" type="veh:vehiculoModeloDBType" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="consultarSolicitudType">
+    <xs:sequence>
+      <xs:element name="folioTramite" type="xs:string" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="numCredencial" type="xs:string" minOccurs="1" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="solicitudesVSRResponse">
+    <xs:sequence>
+      <xs:element name="respuesta">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="resultado" type="xs:string"/>
+            <xs:element name="descripcion" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="nmpFormasPago">
+    <xs:sequence>
+      <xs:element name="plazo" type="xs:decimal"/>
+      <xs:element name="montoCredito" type="xs:decimal" minOccurs="0" nillable="true"/>
+      <xs:element name="pagoMensual" type="xs:decimal" minOccurs="0" nillable="true"/>
+      <xs:element name="taza" type="xs:decimal" minOccurs="0" nillable="true"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

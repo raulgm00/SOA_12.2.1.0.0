@@ -1,0 +1,11 @@
+<adapter-config name="EstadisticasProyectoDataSvc" adapter="db" wsdlLocation="EstadisticasProyectoDataSvc.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  
+  <connection-factory UIConnectionName="GPAConnDB" location="eis/DB/GPAConnDB"/>
+  <endpoint-interaction portType="EstadisticasProyectoDataSvc_ptt" operation="EstadisticasProyectoDataSvc">
+    <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+      <property name="SqlString" value="SELECT ID_ESTADO_SOLICITUD ESTADO, COUNT(SOL.ID_ESTADO_SOLICITUD) NRO FROM GPA013_PROYECTO PR   INNER JOIN GPA001_SOLICITUD SOL ON SOL.AUX_IDPROYECTO = PR.ID_PROYECTO WHERE PR.ID_PROYECTO = #pIdProyecto GROUP BY SOL.ID_ESTADO_SOLICITUD"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+
+</adapter-config>

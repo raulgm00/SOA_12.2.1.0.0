@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:businessServiceEntry xmlns:con="http://xmlns.oracle.com/servicebus/business/config">
+    <con:coreEntry>
+        <con:binding type="abstract XML"/>
+        <oper:operations enabled="true" xmlns:oper="http://xmlns.oracle.com/servicebus/business/operations">
+            <oper:messageTracing enabled="true">
+                <oper1:detailsLevel xmlns:oper1="http://xmlns.oracle.com/servicebus/operations">terse</oper1:detailsLevel>
+                <oper1:maxSize xmlns:oper1="http://xmlns.oracle.com/servicebus/operations">8192</oper1:maxSize>
+            </oper:messageTracing>
+            <oper:throttling enabled="false"/>
+            <oper:resultCachingEnabled>true</oper:resultCachingEnabled>
+        </oper:operations>
+        <con:xqConfiguration>
+            <ser:snippetVersion xmlns:ser="http://www.bea.com/wli/sb/services">1.0</ser:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:endpointConfig>
+        <tran:provider-id xmlns:tran="http://www.bea.com/wli/sb/transports">file</tran:provider-id>
+        <tran:inbound xmlns:tran="http://www.bea.com/wli/sb/transports">false</tran:inbound>
+        <tran:URI xmlns:tran="http://www.bea.com/wli/sb/transports">
+            <env:value xmlns:env="http://www.bea.com/wli/config/env">file:///u01/rapaport</env:value>
+        </tran:URI>
+        <tran:outbound-properties xmlns:tran="http://www.bea.com/wli/sb/transports">
+            <tran:load-balancing-algorithm>round-robin</tran:load-balancing-algorithm>
+            <tran:retry-count>0</tran:retry-count>
+            <tran:retry-interval>30</tran:retry-interval>
+        </tran:outbound-properties>
+        <tran:provider-specific xsi:type="file:FileEndPointConfiguration" xmlns:file="http://www.bea.com/wli/sb/transports/file" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <file:outbound-properties>
+                <file:prefix>HighMedLow</file:prefix>
+                <file:suffix>.csv</file:suffix>
+            </file:outbound-properties>
+            <file:request-encoding>utf-8</file:request-encoding>
+        </tran:provider-specific>
+    </con:endpointConfig>
+</con:businessServiceEntry>

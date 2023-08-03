@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:um="http://servicios.montedepiedad.com.mx/NMP/Schema/UsuariosMonte"
+            targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/UsuariosMonte"
+            elementFormDefault="qualified">
+  <xsd:element name="validarDatosRequest" type="um:validarDatosType">
+    <xsd:annotation>
+      <xsd:documentation>A sample element</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:element name="validarDatosResponse" type="um:responseEstadoType"/>
+  <xsd:element name="validarMedioContactoRequest" type="um:validarMedioContactoType"/>
+  <xsd:element name="validarMedioContactoResponse" type="um:responseEstadoType"/>
+  <xsd:element name="actualizarDatosRequest" type="um:actualizaDatosType"/>
+  <xsd:element name="actualizarDatosResponse" type="um:responseType"/>
+  <xsd:element name="solicitarAltaRequest" type="um:solicitarAltaType"/>
+  <xsd:element name="solicitarAltaResponse" type="um:responseEstadoType"/>
+  <xsd:element name="solicitarActivacionRequest" type="um:solicitarActivacionType"/>
+  <xsd:element name="solicitarActivacionResponse" type="um:responseEstadoType"/>
+  <xsd:element name="solicitarReinicioContrasenaRequest" type="um:solicitarReinicioContrasenaType"/>
+  <xsd:element name="solicitarReinicioContrasenaResponse" type="um:responseReinicioContrasenaType"/>
+  <xsd:element name="registrarContrasenaRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="usuario" type="um:usuarioContrasenaType"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="registrarContrasenaResponse" type="um:responseType"/>
+  <xsd:element name="numCredencial" type="xsd:string"/>
+  <xsd:element name="idCliente" type="xsd:int"/>
+  <xsd:element name="respuesta" type="um:respuestaType"/>
+  <xsd:element name="medioContacto" type="um:medioContactoType"/>
+  <xsd:element name="nombreUsuario" type="xsd:string"/>
+  <xsd:element name="estadoRegistro" type="xsd:string"/>
+  <xsd:element name="token" type="xsd:string"/>
+  <xsd:element name="datosValidacion">
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="um:datosValidacionType"/>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:simpleType name="tipoMedioType">
+    <xsd:restriction base="xsd:int">
+      <xsd:enumeration value="1" id="Telefono"/>
+      <xsd:enumeration value="2" id="CorreoElectronico"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="usuarioType">
+    <xsd:sequence>
+      <xsd:element ref="um:nombreUsuario"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="solicitarReinicioContrasenaType">
+    <xsd:sequence>
+      <xsd:element name="usuario" type="um:usuarioType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="solicitarActivacionType">
+    <xsd:sequence>
+      <xsd:element name="usuario" type="um:usuarioValidaMedioType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="usuarioContrasenaType">
+    <xsd:sequence>
+      <xsd:element ref="um:nombreUsuario"/>
+      <xsd:element name="contrasena" type="xsd:string"/>
+      <xsd:element ref="um:datosValidacion"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="usuarioReValidaMedioType">
+  <xsd:sequence>
+      <xsd:element ref="um:nombreUsuario" minOccurs="0"/>
+      <xsd:element ref="um:medioContacto"/>
+      <xsd:element name="datosValidacion">
+        <xsd:complexType>
+          <xsd:complexContent>
+            <xsd:extension base="um:datosValidacionReenvioType"/>
+          </xsd:complexContent>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="usuarioValidaMedioType">
+    <xsd:sequence>
+      <xsd:element ref="um:nombreUsuario"/>
+      <xsd:element ref="um:medioContacto"/>
+      <xsd:element ref="um:datosValidacion"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="solicitarAltaType">
+    <xsd:sequence>
+      <xsd:element name="usuario" type="um:usuarioAltaType"/>
+      <xsd:element name="cliente" type="um:identificadorClienteType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="actualizaDatosType">
+    <xsd:sequence>
+      <xsd:element name="usuario" type="um:actualizacionUsuarioType"/>
+      <xsd:element name="cliente" type="um:identificadorClienteType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="responseEstadoType">
+    <xsd:sequence>
+      <xsd:element name="cliente" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element ref="um:estadoRegistro"/>
+            <xsd:element ref="um:idCliente" minOccurs="0"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element ref="um:respuesta"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="responseType">
+    <xsd:sequence>
+      <xsd:element ref="um:respuesta"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="responseReinicioContrasenaType">
+    <xsd:sequence>
+      <xsd:element name="telefono">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="ultimosDigitos" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="validarMedioContactoType">
+    <xsd:sequence>
+      <xsd:element name="usuario" type="um:usuarioReValidaMedioType"/>
+      <xsd:element name="cliente" minOccurs="0">
+        <xsd:complexType>
+          <xsd:complexContent>
+            <xsd:extension base="um:identificadorClienteType"/>
+          </xsd:complexContent>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="usuarioMedioContactoType">
+    <xsd:sequence>
+      <xsd:element ref="um:nombreUsuario"/>
+      <xsd:element ref="um:medioContacto" maxOccurs="2"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="validarDatosResponseType">
+    <xsd:sequence>
+      <xsd:element name="cliente" type="um:estadoClienteType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="identificadorClienteType">
+    <xsd:sequence>
+      <xsd:choice>
+        <xsd:element ref="um:idCliente"/>
+        <xsd:element ref="um:numCredencial"/>
+      </xsd:choice>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="usuarioAltaType">
+    <xsd:sequence>
+      <xsd:element ref="um:nombreUsuario"/>
+      <xsd:element name="contrasena" type="xsd:string"/>
+      <xsd:element name="datosValidacion" type="um:datosValidacionType"/>
+      <xsd:element ref="um:medioContacto"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="datosValidacionReenvioType">
+    <xsd:sequence>
+      <xsd:element name="token" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="idFlujo" type="xsd:int" minOccurs="0"/>
+    </xsd:sequence>
+    <xsd:attribute name="reenvioToken" type="xsd:boolean"/>
+  </xsd:complexType>
+  <xsd:complexType name="datosValidacionType">
+    <xsd:sequence>
+      <xsd:element ref="um:token"/>
+    </xsd:sequence>    
+  </xsd:complexType>
+  <xsd:complexType name="validarDatosType">
+    <xsd:sequence>
+      <!--xsd:element name="usuario" type="um:usuarioMedioContactoType"/-->
+      <xsd:element name="cliente" type="um:validacionClienteType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="actualizacionUsuarioType">
+    <xsd:sequence>
+      <xsd:element ref="um:nombreUsuario"/>
+      <xsd:element ref="um:medioContacto"/>
+      <xsd:element name="datoActualizar">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="telefono" type="um:telefonoType"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="validacionClienteType">
+    <xsd:sequence>
+      <xsd:element ref="um:numCredencial"/>
+      <xsd:element name="apellidoPaterno" type="xsd:string"/>
+      <xsd:element name="apellidoMaterno" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="nombres" type="xsd:string"/>
+      <xsd:element name="fechaNacimiento" type="xsd:date"/>
+      <xsd:element name="correoElectronico" type="xsd:string"/>
+      <xsd:element name="telefono" type="um:telefonoType"/>
+      <xsd:element name="medioValidacion" type="um:tipoMedioType"/>
+      <xsd:element name="datosPrendarios" type="um:datosPrendarioType" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="estadoClienteType">
+    <xsd:sequence>
+      <xsd:element ref="um:numCredencial"/>
+      <xsd:element ref="um:estadoRegistro"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="datosPrendarioType">
+    <xsd:sequence>
+      <xsd:element name="numContrato" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="respuestaType">
+    <xsd:sequence>
+      <xsd:element name="codigo" type="xsd:string"/>
+      <xsd:element name="mensaje" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="medioContactoType">
+    <xsd:sequence>
+      <xsd:element name="contactoPor" type="um:tipoMedioType"/>
+      <xsd:element name="valorContacto" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="telefonoType">
+    <xsd:sequence>
+      <xsd:element name="codigoPais" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="codigoArea" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="numeroTelefono" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+</xsd:schema>

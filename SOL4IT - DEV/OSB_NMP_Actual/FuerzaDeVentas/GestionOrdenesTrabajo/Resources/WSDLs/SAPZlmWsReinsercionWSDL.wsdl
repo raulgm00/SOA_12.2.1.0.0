@@ -1,0 +1,357 @@
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+                  xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+                  xmlns:tns="urn:sap-com:document:sap:soap:functions:mc-style"
+                  xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
+                  xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+                  xmlns:n1="urn:sap-com:document:sap:rfc:functions"
+                  targetNamespace="urn:sap-com:document:sap:soap:functions:mc-style">
+  <wsdl:documentation>
+<sidl:sidl xmlns:sidl="http://www.sap.com/2007/03/sidl"/>
+</wsdl:documentation>
+  <wsp:UsingPolicy wsdl:required="true"/>
+  <wsp:Policy wsu:Id="BN_ZLM_WS_REINSERCION">
+    <saptrnbnd:OptimizedXMLTransfer xmlns:saptrnbnd="http://www.sap.com/webas/710/soap/features/transportbinding/"
+                                    uri="http://xml.sap.com/2006/11/esi/esp/binxml" wsp:Optional="true"/>
+    <wsaw:UsingAddressing xmlns:wsaw="http://schemas.xmlsoap.org/ws/2004/08/addressing"/>
+    <sapattahnd:Enabled xmlns:sapattahnd="http://www.sap.com/710/features/attachment/">false</sapattahnd:Enabled>
+    <wsp:ExactlyOne xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
+                    xmlns:sapsp="http://www.sap.com/webas/630/soap/features/security/policy"
+                    xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702"
+                    xmlns:wsa="http://www.w3.org/2005/08/addressing"
+                    xmlns:wsu="http://schemas.xmlsoap.org/ws/2002/07/utility"/>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="IF_ZLM_WS_REINSERCION">
+    <sapsession:Session xmlns:sapsession="http://www.sap.com/webas/630/soap/features/session/">
+      <sapsession:enableSession>false</sapsession:enableSession>
+    </sapsession:Session>
+    <sapcentraladmin:CentralAdministration xmlns:sapcentraladmin="http://www.sap.com/webas/700/soap/features/CentralAdministration/"
+                                           wsp:Optional="true">
+      <sapcentraladmin:BusinessApplicationID>E3DA1948DDE97EF1BD4DF8DB880509E3</sapcentraladmin:BusinessApplicationID>
+    </sapcentraladmin:CentralAdministration>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="OP_ZlmReFm005">
+    <sapcomhnd:enableCommit xmlns:sapcomhnd="http://www.sap.com/NW05/soap/features/commit/">false</sapcomhnd:enableCommit>
+    <sapblock:enableBlocking xmlns:sapblock="http://www.sap.com/NW05/soap/features/blocking/">true</sapblock:enableBlocking>
+    <saptrhnw05:required xmlns:saptrhnw05="http://www.sap.com/NW05/soap/features/transaction/">no</saptrhnw05:required>
+    <saprmnw05:enableWSRM xmlns:saprmnw05="http://www.sap.com/NW05/soap/features/wsrm/">false</saprmnw05:enableWSRM>
+  </wsp:Policy>
+  <wsdl:types>
+    <xsd:schema xmlns:n0="urn:sap-com:document:sap:rfc:functions" attributeFormDefault="qualified"
+                targetNamespace="urn:sap-com:document:sap:soap:functions:mc-style">
+      <xsd:import namespace="urn:sap-com:document:sap:rfc:functions"/>
+      <xsd:simpleType name="RfcException.Message.Number">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="3"/>
+          <xsd:pattern value="\d*"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char10">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="10"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char250">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="250"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:complexType name="ZlmMDocumentacionCliente">
+        <xsd:sequence>
+          <xsd:element name="Foto1sc" type="n0:char250"/>
+          <xsd:element name="Foto2sc" type="n0:char250"/>
+          <xsd:element name="Foto3sc" type="n0:char250"/>
+          <xsd:element name="Foto1cb" type="n0:char250"/>
+          <xsd:element name="Foto2cb" type="n0:char250"/>
+          <xsd:element name="Foto3cb" type="n0:char250"/>
+          <xsd:element name="Fotoid1" type="n0:char250"/>
+          <xsd:element name="Fotoid2" type="n0:char250"/>
+          <xsd:element name="Fotoid3" type="n0:char250"/>
+          <xsd:element name="Tipoidentificacionoficial" type="n0:char50"/>
+          <xsd:element name="Fotocompdom1" type="n0:char250"/>
+          <xsd:element name="Fotocompdom2" type="n0:char250"/>
+          <xsd:element name="Fotocompdom3" type="n0:char250"/>
+          <xsd:element name="Tipocomprobantedomicilio" type="n0:char50"/>
+          <xsd:element name="Fotocompviv1" type="n0:char250"/>
+          <xsd:element name="Fotocompviv2" type="n0:char250"/>
+          <xsd:element name="Fotocompviv3" type="n0:char250"/>
+          <xsd:element name="Tipocomprobantevivienda" type="n0:char50"/>
+          <xsd:element name="Comprobanteingresosactividad" type="n0:char50"/>
+          <xsd:element name="Fotocompingemp1" type="n0:char250"/>
+          <xsd:element name="Fotocompingemp2" type="n0:char250"/>
+          <xsd:element name="Fotocompingemp3" type="n0:char250"/>
+          <xsd:element name="Fotocompingemp4" type="n0:char250"/>
+          <xsd:element name="Fotocompingemp5" type="tns:char250"/>
+          <xsd:element name="Fotocompingemp6" type="tns:char250"/>
+          <xsd:element name="Fotocompingneg1" type="n0:char250"/>
+          <xsd:element name="Fotocompingneg2" type="n0:char250"/>
+          <xsd:element name="Fotocompingneg3" type="n0:char250"/>
+          <xsd:element name="Fotocompingneg4" type="n0:char250"/>
+          <xsd:element name="Fotocompingneg5" type="tns:char250"/>
+          <xsd:element name="Fotocompingneg6" type="tns:char250"/>
+          <xsd:element name="Fotocompotrosing1" type="n0:char250"/>
+          <xsd:element name="Fotocompotrosing2" type="n0:char250"/>
+          <xsd:element name="Fotocompotrosing3" type="n0:char250"/>
+          <xsd:element name="Fotocompotrosing4" type="tns:char250"/>
+          <xsd:element name="Fotocliente1" type="n0:char250"/>
+          <xsd:element name="Fotocliente2" type="n0:char250"/>
+          <xsd:element name="Fotocliente3" type="n0:char250"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZlmReStrContacYDom">
+        <xsd:sequence>
+          <xsd:element name="LadaCasa" type="n0:char10"/>
+          <xsd:element name="TelCasa" type="n0:char30"/>
+          <xsd:element name="LadaCel" type="n0:char10"/>
+          <xsd:element name="TelCel" type="n0:char30"/>
+          <xsd:element name="LadaRecados" type="tns:char10"/>
+          <xsd:element name="TelRecados" type="n0:char30"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZlmReStrBpRef">
+        <xsd:sequence>
+          <xsd:element name="BpRef1" type="n0:char10"/>
+          <xsd:element name="BpRef2" type="n0:char10"/>
+          <xsd:element name="BpRef3" type="n0:char10"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZlmMInformacionFinanciera">
+        <xsd:sequence>
+          <xsd:element name="Ventasmensuales" type="n0:curr13.2"/>
+          <xsd:element name="Compras" type="n0:curr13.2"/>
+          <xsd:element name="Inventario" type="n0:curr13.2"/>
+          <xsd:element name="Utilidadbruta" type="n0:curr13.2"/>
+          <xsd:element name="Gastosoperativos" type="n0:curr13.2"/>
+          <xsd:element name="Sueldos" type="n0:curr13.2"/>
+          <xsd:element name="Deudasnegocio" type="n0:curr13.2"/>
+          <xsd:element name="Serviciospubneg" type="n0:curr13.2"/>
+          <xsd:element name="Transporteneg" type="n0:curr13.2"/>
+          <xsd:element name="Rentanegocio" type="n0:curr13.2"/>
+          <xsd:element name="Alimentacionneg" type="n0:curr13.2"/>
+          <xsd:element name="Otrosgastosneg" type="n0:curr13.2"/>
+          <xsd:element name="Gastosfamiliares" type="n0:curr13.2"/>
+          <xsd:element name="Deudasburoneg" type="n0:curr13.2"/>
+          <xsd:element name="Pagosrealneg" type="n0:curr13.2"/>
+          <xsd:element name="Totalgastosneg" type="n0:curr13.2"/>
+          <xsd:element name="Otrosingneg" type="n0:curr13.2"/>
+          <xsd:element name="Tipootrosingneg" type="n0:char50"/>
+          <xsd:element name="Excedente" type="n0:curr13.2"/>
+          <xsd:element name="Ingresomensual" type="n0:curr13.2"/>
+          <xsd:element name="Impuestosreten" type="n0:curr13.2"/>
+          <xsd:element name="Otrosingrdifneg" type="n0:curr13.2"/>
+          <xsd:element name="Tipootrosingrneg" type="n0:char50"/>
+          <xsd:element name="Totalingresosneg" type="n0:curr13.2"/>
+          <xsd:element name="Gastosfamdifneg" type="n0:curr13.2"/>
+          <xsd:element name="Alimentadifneg" type="n0:curr13.2"/>
+          <xsd:element name="Educaciondifneg" type="n0:curr13.2"/>
+          <xsd:element name="Serviciopubdifn" type="n0:curr13.2"/>
+          <xsd:element name="Transportedifneg" type="n0:curr13.2"/>
+          <xsd:element name="Rentadifnegocio" type="n0:curr13.2"/>
+          <xsd:element name="Vestidodifneg" type="n0:curr13.2"/>
+          <xsd:element name="Otrosgastosdifn" type="n0:curr13.2"/>
+          <xsd:element name="Deudasburodifneg" type="n0:curr13.2"/>
+          <xsd:element name="Pagosrealdifneg" type="n0:curr13.2"/>
+          <xsd:element name="Totalgastosdifn" type="n0:curr13.2"/>
+          <xsd:element name="Excedentedifneg" type="n0:curr13.2"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZlmMReferenciasXml">
+        <xsd:sequence>
+          <xsd:element name="Primernombreref1" type="n0:char40"/>
+          <xsd:element name="Nombre2ref1" type="n0:char40"/>
+          <xsd:element name="Appaternoref1" type="n0:char40"/>
+          <xsd:element name="Apematernoref1" type="n0:char40"/>
+          <xsd:element name="Parentescoref1" type="n0:char20"/>
+          <xsd:element name="Teldomicilioref1" type="n0:char30"/>
+          <xsd:element name="Telcelularref1" type="n0:char30"/>
+          <xsd:element name="Calleref1" type="n0:char60"/>
+          <xsd:element name="Noextref1" type="n0:char10"/>
+          <xsd:element name="Nointref1" type="n0:char10"/>
+          <xsd:element name="Manzanaref1" type="n0:char50"/>
+          <xsd:element name="Loteref1" type="n0:char50"/>
+          <xsd:element name="Cpref1" type="n0:char5"/>
+          <xsd:element name="Coloniaref1" type="n0:char40"/>
+          <xsd:element name="Delegacionref1" type="n0:char40"/>
+          <xsd:element name="Estadoref1" type="n0:char40"/>
+          <xsd:element name="Localidadref1" type="n0:char40"/>
+          <xsd:element name="Primernombreref2" type="n0:char40"/>
+          <xsd:element name="Nombre2ref2" type="n0:char40"/>
+          <xsd:element name="Appaternoref2" type="n0:char40"/>
+          <xsd:element name="Apematernoref2" type="n0:char40"/>
+          <xsd:element name="Parentescoref2" type="n0:char20"/>
+          <xsd:element name="Teldomicilioref2" type="n0:char30"/>
+          <xsd:element name="Telcelularref2" type="n0:char30"/>
+          <xsd:element name="Calleref2" type="n0:char60"/>
+          <xsd:element name="Noextref2" type="n0:char10"/>
+          <xsd:element name="Nointref2" type="n0:char10"/>
+          <xsd:element name="Manzanaref2" type="n0:char50"/>
+          <xsd:element name="Loteref2" type="n0:char50"/>
+          <xsd:element name="Cpref2" type="n0:char5"/>
+          <xsd:element name="Coloniaref2" type="n0:char40"/>
+          <xsd:element name="Delegacionref2" type="n0:char40"/>
+          <xsd:element name="Estadoref2" type="n0:char40"/>
+          <xsd:element name="Localidadref2" type="n0:char40"/>
+          <xsd:element name="Primernombreref3" type="n0:char40"/>
+          <xsd:element name="Nombre2ref3" type="n0:char40"/>
+          <xsd:element name="Appaternoref3" type="n0:char40"/>
+          <xsd:element name="Apematernoref3" type="n0:char40"/>
+          <xsd:element name="Parentescoref3" type="n0:char20"/>
+          <xsd:element name="Teldomicilioref3" type="n0:char30"/>
+          <xsd:element name="Telcelularref3" type="n0:char30"/>
+          <xsd:element name="Calleref3" type="n0:char60"/>
+          <xsd:element name="Noextref3" type="n0:char10"/>
+          <xsd:element name="Nointref3" type="n0:char10"/>
+          <xsd:element name="Manzanaref3" type="n0:char50"/>
+          <xsd:element name="Loteref3" type="n0:char50"/>
+          <xsd:element name="Cpref3" type="n0:char5"/>
+          <xsd:element name="Coloniaref3" type="n0:char40"/>
+          <xsd:element name="Delegacionref3" type="n0:char40"/>
+          <xsd:element name="Estadoref3" type="n0:char40"/>
+          <xsd:element name="Localidadref3" type="n0:char40"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="RfcException.Message">
+        <xsd:sequence>
+          <xsd:element name="ID" type="xsd:string"/>
+          <xsd:element name="Number" type="tns:RfcException.Message.Number"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZlmReFm005.RfcException">
+        <xsd:sequence>
+          <xsd:element name="Name" type="tns:ZlmReFm005.RfcExceptions"/>
+          <xsd:element name="Text" type="xsd:string" minOccurs="0"/>
+          <xsd:element name="Message" type="tns:RfcException.Message" minOccurs="0"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:simpleType name="ZlmReFm005.RfcExceptions">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="ExConsec"/>
+          <xsd:enumeration value="ExInsert"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:element name="ZlmReFm005.Exception" type="tns:ZlmReFm005.RfcException"/>
+      <xsd:element name="ZlmReFm005">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="ActivEco" type="n0:char20"/>
+            <xsd:element name="IDatosContYDom" type="tns:ZlmReStrContacYDom"/>
+            <xsd:element name="IDocCliente" type="tns:ZlmMDocumentacionCliente"/>
+            <xsd:element name="IInfFinanciera" type="tns:ZlmMInformacionFinanciera"/>
+            <xsd:element name="IReferencias" type="tns:ZlmMReferenciasXml"/>
+            <xsd:element name="IReferenciasBp" type="tns:ZlmReStrBpRef"/>
+            <xsd:element name="IdCorreccion" type="n0:char13"/>
+            <xsd:element name="Promotor" type="n0:char20"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="ZlmReFm005Response">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="EIdRre" type="n0:char13"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+    <xsd:schema attributeFormDefault="qualified" targetNamespace="urn:sap-com:document:sap:rfc:functions">
+      <xsd:simpleType name="char10">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="10"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char13">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="13"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char20">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="20"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char250">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="250"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char30">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="30"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char40">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="40"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char5">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="5"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char50">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="50"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char60">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="60"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="curr13.2">
+        <xsd:restriction base="xsd:decimal">
+          <xsd:totalDigits value="13"/>
+          <xsd:fractionDigits value="2"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="ZlmReFm005">
+    <wsdl:part name="parameters" element="tns:ZlmReFm005"/>
+  </wsdl:message>
+  <wsdl:message name="ZlmReFm005Response">
+    <wsdl:part name="parameter" element="tns:ZlmReFm005Response"/>
+  </wsdl:message>
+  <wsdl:message name="ZlmReFm005.Exception">
+    <wsdl:part name="ZlmReFm005.Exception" element="tns:ZlmReFm005.Exception"/>
+  </wsdl:message>
+  <wsdl:portType name="ZLM_WS_REINSERCION">
+    <wsp:Policy>
+      <wsp:PolicyReference URI="#IF_ZLM_WS_REINSERCION"/>
+    </wsp:Policy>
+    <wsdl:operation name="ZlmReFm005">
+      <wsp:Policy>
+        <wsp:PolicyReference URI="#OP_ZlmReFm005"/>
+      </wsp:Policy>
+      <wsdl:input message="tns:ZlmReFm005"/>
+      <wsdl:output message="tns:ZlmReFm005Response"/>
+      <wsdl:fault name="ZlmReFm005.Exception" message="tns:ZlmReFm005.Exception"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ZLM_WS_REINSERCION" type="tns:ZLM_WS_REINSERCION">
+    <wsp:Policy>
+      <wsp:PolicyReference URI="#BN_ZLM_WS_REINSERCION"/>
+    </wsp:Policy>
+    <wsa:EndpointReference xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing">
+      <wsa:ReferenceParameters/>
+    </wsa:EndpointReference>
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+    <wsdl:operation name="ZlmReFm005">
+      <soap:operation soapAction="ZlmReFm005" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ZlmReFm005.Exception">
+        <soap:fault name="ZlmReFm005.Exception" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ZLM_WS_REINSERCION">
+    <wsdl:port name="ZLM_WS_REINSERCION" binding="tns:ZLM_WS_REINSERCION">
+      <soap:address location="c"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,463 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Sat Nov 26 22:15:40 CST 2016
+  Author:  Soaint
+  Type: BPEL 2.0 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="CrearServicioBPEL" targetNamespace="http://qualitas.com.mx/CrearServicioApp/CrearServicioPrj/CrearServicioBPEL" xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:client="http://qualitas.com.mx/CrearServicioApp/CrearServicioPrj/CrearServicioBPEL" xmlns:ora="http://schemas.oracle.com/xpath/extension" xmlns:ui="http://xmlns.oracle.com/soa/designer" xmlns:bpelx="http://schemas.oracle.com/bpel/extension" xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xml:id="id_1"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/CrearServicioApp/CrearServicioPrj/SPCrearServicioDB"
+         xmlns:ns3="http://qualitas.com.mx/comunes/objetosComunes/v1/"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions" xmlns:ns4="http://qualitas.com.mx/Comun/Servicio/v1/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ess="http://xmlns.oracle.com/scheduler" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ns2="http://qualitas.com.mx/Comun/Servicio/CrearServicioPorTipo/v1/"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ns6="http://qualitas.com.mx/Comun/Servicio/ProyectoData/v1/"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ns5="http://qualitas.com.mx/Comun/Servicio/ServicioData/v1/"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns7="http://xmlns.oracle.com/pcbpel/adapter/db/sp/SPCrearServicioDB"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:ns8="http://xmlns.oracle.com/pcbpel/adapter/db/CrearServicioApp/CrearServicioPrj/SPCrearProyectoDB"
+         xmlns:ns9="http://xmlns.oracle.com/pcbpel/adapter/db/sp/SPCrearProyectoDB"
+         xmlns:ns10="http://qualitas.com.mx/ValidarCentroDeCostosApp/ValidarCentrosDeCostosPrj/ValidarCentroDeCostosBPEL"
+         xmlns:ns11="http://qualitas.com.mx/Comun/CentroCostos/validarCentroCostos/v1/"
+         xmlns:ns12="http://qualitas.com.mx/ObtenerGenericoApp/ObtenerGenericoPrj/ObtenerGenericoBPEL">
+
+    <import ui:processWSDL="true" namespace="http://qualitas.com.mx/CrearServicioApp/CrearServicioPrj/CrearServicioBPEL" location="../WSDLs/CrearServicioBPEL.wsdl" importType="http://schemas.xmlsoap.org/wsdl/" xml:id="id_2"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks xml:id="id_3">
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="crearserviciobpel_client" partnerLinkType="client:CrearServicioBPEL" myRole="CrearServicioBPELProvider" xml:id="id_4"/>
+    <partnerLink name="SPCrearServicioDB" partnerLinkType="ns1:SPCrearServicioDB_plt"
+                 partnerRole="SPCrearServicioDB_role" xml:id="id_11"/>
+    <partnerLink name="SPCrearProyectoDB" partnerLinkType="ns8:SPCrearProyectoDB_plt"
+                 partnerRole="SPCrearProyectoDB_role" xml:id="id_52"/>
+    <partnerLink name="validarCCPL" partnerLinkType="ns10:ValidarCentroDeCostosBPEL"
+                 partnerRole="ValidarCentroDeCostosBPELProvider" xml:id="id_92"/>
+    <partnerLink name="ObtenerGenericoPL" partnerLinkType="ns12:ObtenerGenericoBPEL"
+                 partnerRole="ObtenerGenericoBPELProvider" xml:id="id_248" initializePartnerRole="yes"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables xml:id="id_5">
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:CrearServicioBPELRequestMessage" xml:id="id_6"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:CrearServicioBPELResponseMessage" xml:id="id_7"/>
+    <variable name="gastoFijoConstant" type="xsd:int" xml:id="id_24">
+      <from xml:id="id_25">1</from>
+    </variable>
+    <variable name="operacionesConstant" type="xsd:int" xml:id="id_26">
+      <from xml:id="id_27">2</from>
+    </variable>
+    <variable name="proyectoConstant" type="xsd:int" xml:id="id_28">
+      <from xml:id="id_29">3</from>
+    </variable>
+    <variable name="SPCreateServiceInvoke_InputVariable" messageType="ns1:args_in_msg" xml:id="id_34"/>
+    <variable name="SPCreateServiceInvoke_OutputVariable" messageType="ns1:args_out_msg" xml:id="id_35"/>
+    <variable name="SPCrearProyectoInvoke_InputVariable" messageType="ns8:args_in_msg" xml:id="id_53"/>
+    <variable name="SPCrearProyectoInvoke_OutputVariable" messageType="ns8:args_out_msg" xml:id="id_54"/>
+    <variable name="validarCCInvoke_InputVariable" messageType="ns10:ValidarCentroDeCostosBPELRequestMessage"
+              xml:id="id_94"/>
+    <variable name="validarCCInvoke_OutputVariable" messageType="ns10:ValidarCentroDeCostosBPELResponseMessage"
+              xml:id="id_95"/>
+    <variable name="SPCreateServiceOPInvoke_InputVariable" messageType="ns1:args_in_msg" xml:id="id_254"/>
+    <variable name="SPCreateServiceOPInvoke_OutputVariable" messageType="ns1:args_out_msg" xml:id="id_255"/>
+  </variables>
+  <faultHandlers xml:id="id_76">
+    <catchAll xml:id="id_78">
+      <sequence name="Sequence3" xml:id="id_80">
+        <exit name="Exit1" xml:id="id_82"/>
+      </sequence>
+    </catchAll>
+  </faultHandlers>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main" xml:id="id_8">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in CrearServicioBPEL.wsdl) -->
+    <receive name="receiveInput" partnerLink="crearserviciobpel_client" portType="client:CrearServicioBPEL" operation="process" variable="inputVariable" createInstance="yes" xml:id="id_9"/>
+    <scope name="Scope1" xml:id="id_245">
+      <sequence name="Sequence4" xml:id="id_246">
+        <assign name="InputGetDataCC" xml:id="id_91">
+          <copy xml:id="id_178">
+            <from xml:id="id_179">$inputVariable.payload/ns2:Input/ns2:servicio/ns4:CentroDeCosto</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_180">$validarCCInvoke_InputVariable.payload/ns11:Input/ns11:centroCostos</to>
+          </copy>
+          <copy xml:id="id_347">
+            <from xml:id="id_348">$inputVariable.payload/ns2:Input/ns2:idTipoServicio</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_349">$validarCCInvoke_InputVariable.payload/ns11:Input/ns11:idTipoServicio</to>
+          </copy>
+        </assign>
+        <invoke name="validateCCInvoke" xml:id="id_93" partnerLink="validarCCPL"
+                portType="ns10:ValidarCentroDeCostosBPEL" operation="process"
+                inputVariable="validarCCInvoke_InputVariable" outputVariable="validarCCInvoke_OutputVariable"
+                bpelx:invokeAsDetail="no"/>
+      </sequence>
+    </scope>
+    <if xml:id="id_19">
+      <documentation xml:id="id_21">
+        <![CDATA[CreateService Gastos Fijos]]>
+      </documentation>
+      <condition xml:id="id_23">$inputVariable.payload/ns2:Input/ns2:idTipoServicio =$gastoFijoConstant</condition>
+      <scope name="GastosFijosScope" xml:id="id_238">
+        <sequence name="CreateServiceSequence" xml:id="id_32">
+          <assign name="InputDataSPService" xml:id="id_182">
+            <copy xml:id="id_183">
+              <from xml:id="id_184">$inputVariable.payload/ns2:Input/ns2:idTipoServicio</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_185">$SPCreateServiceInvoke_InputVariable.InputParameters/ns7:P_IDTPSERVICIO</to>
+            </copy>
+            <copy xml:id="id_186">
+              <from xml:id="id_187">$inputVariable.payload/ns2:Input/ns2:servicio/ns4:idSolicitud</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_188">$SPCreateServiceInvoke_InputVariable.InputParameters/ns7:P_IDSOLICITUD</to>
+            </copy>
+            <copy xml:id="id_189">
+              <from xml:id="id_190">string($inputVariable.payload/ns2:Input/ns2:servicio/ns4:idPrestador)</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_191">$SPCreateServiceInvoke_InputVariable.InputParameters/ns7:P_IDPRESTADOR</to>
+            </copy>
+            <copy xml:id="id_192">
+              <from xml:id="id_193">$inputVariable.payload/ns2:Input/ns2:servicio/ns4:CentroDeCosto</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_194">$SPCreateServiceInvoke_InputVariable.InputParameters/ns7:P_CENTROCOSTO</to>
+            </copy>
+            <copy xml:id="id_195">
+              <from xml:id="id_196">$validarCCInvoke_OutputVariable.payload/ns11:claveOficina</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_197">$SPCreateServiceInvoke_InputVariable.InputParameters/ns7:P_CVEOFICINA</to>
+            </copy>
+            <copy xml:id="id_198">
+              <from xml:id="id_199">$validarCCInvoke_OutputVariable.payload/ns11:descOficina</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_200">$SPCreateServiceInvoke_InputVariable.InputParameters/ns7:P_DESCOFICINA</to>
+            </copy>
+            <copy xml:id="id_201">
+              <from xml:id="id_202">$validarCCInvoke_OutputVariable.payload/ns11:descArea</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_203">$SPCreateServiceInvoke_InputVariable.InputParameters/ns7:P_DESCAREA</to>
+            </copy>
+            <copy xml:id="id_204">
+              <from xml:id="id_205">$validarCCInvoke_OutputVariable.payload/ns11:responsableArea</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_206">$SPCreateServiceInvoke_InputVariable.InputParameters/ns7:P_RESPONSABLE</to>
+            </copy>
+            <copy xml:id="id_332">
+              <from xml:id="id_333">string(normalize-space(oraext:query-database(string(concat("SELECT DESCRIPCION FROM GPA012_SUBTIPO_SERVICIO WHERE ID_SUBTIPO_SERVICIO = ", string($inputVariable.payload/ns2:Input/ns2:servicio/ns4:servicioGastoFijo/ns5:subTipoServicio))),false(),false(),"jdbc/GPAConnDB")))</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_334">$SPCreateServiceInvoke_InputVariable.InputParameters/ns7:P_DESCSERVICIO</to>
+            </copy>
+          </assign>
+          <invoke name="SPCreateServiceInvoke" xml:id="id_33" partnerLink="SPCrearServicioDB"
+                  portType="ns1:SPCrearServicioDB_ptt" operation="SPCrearServicioDB"
+                  inputVariable="SPCreateServiceInvoke_InputVariable"
+                  outputVariable="SPCreateServiceInvoke_OutputVariable" bpelx:invokeAsDetail="no"/>
+          <assign name="OutputGastosFijos" xml:id="id_353">
+            <copy xml:id="id_354">
+              <from xml:id="id_355">$SPCreateServiceInvoke_OutputVariable.OutputParameters/ns7:P_IDSOLICITUD</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_356">$outputVariable.payload/ns2:idSolicitud</to>
+            </copy>
+            <copy xml:id="id_366">
+              <from xml:id="id_367">$SPCreateServiceInvoke_OutputVariable.OutputParameters/ns7:P_CENTROCOSTO</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_368">$outputVariable.payload/ns2:servicioResponse/ns2:centroCostos</to>
+            </copy>
+            <copy xml:id="id_369">
+              <from xml:id="id_370">$SPCreateServiceInvoke_OutputVariable.OutputParameters/ns7:P_CVEOFICINA</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_371">$outputVariable.payload/ns2:servicioResponse/ns2:claveOficina</to>
+            </copy>
+            <copy xml:id="id_372">
+              <from xml:id="id_373">$SPCreateServiceInvoke_OutputVariable.OutputParameters/ns7:P_DESCOFICINA</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_374">$outputVariable.payload/ns2:servicioResponse/ns2:descOficina</to>
+            </copy>
+            <copy xml:id="id_375">
+              <from xml:id="id_376">$SPCreateServiceInvoke_OutputVariable.OutputParameters/ns7:P_DESCAREA</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_377">$outputVariable.payload/ns2:servicioResponse/ns2:descArea</to>
+            </copy>
+            <copy xml:id="id_378">
+              <from xml:id="id_379">$SPCreateServiceInvoke_OutputVariable.OutputParameters/ns7:P_RESPONSABLE</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_380">$outputVariable.payload/ns2:servicioResponse/ns2:responsableArea</to>
+            </copy>
+            <copy xml:id="id_357">
+              <from xml:id="id_358">$SPCreateServiceInvoke_OutputVariable.OutputParameters/ns7:P_IDPRESTADOR</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_359">$outputVariable.payload/ns2:idPrestador</to>
+            </copy>
+            <copy xml:id="id_360">
+              <from xml:id="id_361">number($SPCreateServiceInvoke_OutputVariable.OutputParameters/ns7:P_IDSERVICIO)</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_362">$outputVariable.payload/ns2:servicioResponse/ns2:idServicio</to>
+            </copy>
+            <copy xml:id="id_363">
+              <from xml:id="id_364">$SPCreateServiceInvoke_OutputVariable.OutputParameters/ns7:P_DESCSERVICIO</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_365">$outputVariable.payload/ns2:servicioResponse/ns2:descripcion</to>
+            </copy>
+            <copy xml:id="id_381">
+              <from xml:id="id_382">string($SPCreateServiceInvoke_OutputVariable.OutputParameters/ns7:P_OUTCVE)</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_383">$outputVariable.payload/ns2:OperationResponse/ns3:codigoRespuesta</to>
+            </copy>
+            <copy xml:id="id_384">
+              <from xml:id="id_385">'EJECUCION EXITOSA'</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_386">$outputVariable.payload/ns2:OperationResponse/ns3:descripcionRespuesta</to>
+            </copy>
+            <copy xml:id="id_387">
+              <from xml:id="id_388">ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_389">$outputVariable.payload/ns2:OperationResponse/ns3:fecha</to>
+            </copy>
+          </assign>
+        </sequence>
+      </scope>
+      <elseif xml:id="id_228">
+        <documentation xml:id="id_229">
+          <![CDATA[CreateService Operaciones]]>
+        </documentation>
+        <condition xml:id="id_230">$inputVariable.payload/ns2:Input/ns2:idTipoServicio = $operacionesConstant</condition>
+        <scope name="OperacionesScope" xml:id="id_231">
+          <sequence name="CreateServiceOpSequence" xml:id="id_232">
+            <assign name="InputDataSPServiceOp" xml:id="id_247">
+              <copy xml:id="id_256">
+                <from xml:id="id_257">$inputVariable.payload/ns2:Input/ns2:servicio/ns4:idSolicitud</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_258">$SPCreateServiceOPInvoke_InputVariable.InputParameters/ns7:P_IDSOLICITUD</to>
+              </copy>
+              <copy xml:id="id_259">
+                <from xml:id="id_260">string($inputVariable.payload/ns2:Input/ns2:servicio/ns4:idPrestador)</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_261">$SPCreateServiceOPInvoke_InputVariable.InputParameters/ns7:P_IDPRESTADOR</to>
+              </copy>
+              <copy xml:id="id_265">
+                <from xml:id="id_266">$inputVariable.payload/ns2:Input/ns2:servicio/ns4:servicioOperaciones/ns5:descripcion</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_267">$SPCreateServiceOPInvoke_InputVariable.InputParameters/ns7:P_DESCSERVICIO</to>
+              </copy>
+              <copy xml:id="id_268">
+                <from xml:id="id_269">$inputVariable.payload/ns2:Input/ns2:idTipoServicio</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_270">$SPCreateServiceOPInvoke_InputVariable.InputParameters/ns7:P_IDTPSERVICIO</to>
+              </copy>
+              <copy xml:id="id_470">
+                <from xml:id="id_471">number($inputVariable.payload/ns2:Input/ns2:servicio/ns4:CentroDeCosto)</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_472">$SPCreateServiceOPInvoke_InputVariable.InputParameters/ns7:P_CENTROCOSTO</to>
+              </copy>
+              <copy xml:id="id_271">
+                <from xml:id="id_272">$validarCCInvoke_OutputVariable.payload/ns11:claveOficina</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_273">$SPCreateServiceOPInvoke_InputVariable.InputParameters/ns7:P_CVEOFICINA</to>
+              </copy>
+              <copy xml:id="id_274">
+                <from xml:id="id_275">$validarCCInvoke_OutputVariable.payload/ns11:descOficina</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_276">$SPCreateServiceOPInvoke_InputVariable.InputParameters/ns7:P_DESCOFICINA</to>
+              </copy>
+              <copy xml:id="id_277">
+                <from xml:id="id_278">$validarCCInvoke_OutputVariable.payload/ns11:descArea</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_279">$SPCreateServiceOPInvoke_InputVariable.InputParameters/ns7:P_DESCAREA</to>
+              </copy>
+              <copy xml:id="id_280">
+                <from xml:id="id_281">$validarCCInvoke_OutputVariable.payload/ns11:responsableArea</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_282">$SPCreateServiceOPInvoke_InputVariable.InputParameters/ns7:P_RESPONSABLE</to>
+              </copy>
+            </assign>
+            <invoke name="SPCreateServiceOPInvoke" xml:id="id_253"
+                    partnerLink="SPCrearServicioDB" portType="ns1:SPCrearServicioDB_ptt" operation="SPCrearServicioDB"
+                    inputVariable="SPCreateServiceOPInvoke_InputVariable"
+                    outputVariable="SPCreateServiceOPInvoke_OutputVariable" bpelx:invokeAsDetail="no"/>
+            <assign name="OutputOperaciones" xml:id="id_390">
+              <copy xml:id="id_418">
+                <from xml:id="id_419">string($SPCreateServiceOPInvoke_OutputVariable.OutputParameters/ns7:P_OUTCVE)</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_420">$outputVariable.payload/ns2:OperationResponse/ns3:codigoRespuesta</to>
+              </copy>
+              <copy xml:id="id_473">
+                <from xml:id="id_474">$SPCreateServiceOPInvoke_OutputVariable.OutputParameters/ns7:P_IDSOLICITUD</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_475">$outputVariable.payload/ns2:idSolicitud</to>
+              </copy>
+              <copy xml:id="id_476">
+                <from xml:id="id_477">$SPCreateServiceOPInvoke_OutputVariable.OutputParameters/ns7:P_IDPRESTADOR</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_478">$outputVariable.payload/ns2:idPrestador</to>
+              </copy>
+              <copy xml:id="id_479">
+                <from xml:id="id_480">$SPCreateServiceOPInvoke_OutputVariable.OutputParameters/ns7:P_IDSERVICIO</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_481">$outputVariable.payload/ns2:servicioResponse/ns2:idServicio</to>
+              </copy>
+              <copy xml:id="id_482">
+                <from xml:id="id_483">$SPCreateServiceOPInvoke_OutputVariable.OutputParameters/ns7:P_DESCSERVICIO</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_484">$outputVariable.payload/ns2:servicioResponse/ns2:descripcion</to>
+              </copy>
+              <copy xml:id="id_485">
+                <from xml:id="id_486">$SPCreateServiceOPInvoke_OutputVariable.OutputParameters/ns7:P_CENTROCOSTO</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_487">$outputVariable.payload/ns2:servicioResponse/ns2:centroCostos</to>
+              </copy>
+              <copy xml:id="id_488">
+                <from xml:id="id_489">$SPCreateServiceOPInvoke_OutputVariable.OutputParameters/ns7:P_CVEOFICINA</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_490">$outputVariable.payload/ns2:servicioResponse/ns2:claveOficina</to>
+              </copy>
+              <copy xml:id="id_491">
+                <from xml:id="id_492">$SPCreateServiceOPInvoke_OutputVariable.OutputParameters/ns7:P_DESCOFICINA</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_493">$outputVariable.payload/ns2:servicioResponse/ns2:descOficina</to>
+              </copy>
+              <copy xml:id="id_494">
+                <from xml:id="id_495">$SPCreateServiceOPInvoke_OutputVariable.OutputParameters/ns7:P_DESCAREA</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_496">$outputVariable.payload/ns2:servicioResponse/ns2:descArea</to>
+              </copy>
+              <copy xml:id="id_497">
+                <from xml:id="id_498">$SPCreateServiceOPInvoke_OutputVariable.OutputParameters/ns7:P_RESPONSABLE</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_499">$outputVariable.payload/ns2:servicioResponse/ns2:responsableArea</to>
+              </copy>
+              <copy xml:id="id_421">
+                <from xml:id="id_422">'EJECUCION EXITOSA'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_423">$outputVariable.payload/ns2:OperationResponse/ns3:descripcionRespuesta</to>
+              </copy>
+              <copy xml:id="id_424">
+                <from xml:id="id_425">ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_426">$outputVariable.payload/ns2:OperationResponse/ns3:fecha</to>
+              </copy>
+            </assign>
+          </sequence>
+        </scope>
+      </elseif>
+      <elseif xml:id="id_233">
+        <documentation xml:id="id_236">
+          <![CDATA[Create Proyecto]]>
+        </documentation>
+        <condition xml:id="id_235">$inputVariable.payload/ns2:Input/ns2:idTipoServicio =$proyectoConstant</condition>
+        <scope name="ProyectoScope" xml:id="id_234">
+          <sequence name="CreateProjectSequence" xml:id="id_36">
+            <assign name="InputDataSPProject" xml:id="id_37">
+              <copy xml:id="id_213">
+                <from xml:id="id_214">$inputVariable.payload/ns2:Input/ns2:servicio/ns4:proyecto/ns6:nombre</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_215">$SPCrearProyectoInvoke_InputVariable.InputParameters/ns9:P_NOMBREPROYECTO</to>
+              </copy>
+              <copy xml:id="id_323">
+                <from xml:id="id_324">$validarCCInvoke_OutputVariable.payload/ns11:descOficina</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_325">$SPCrearProyectoInvoke_InputVariable.InputParameters/ns9:P_DESCOFICINA</to>
+              </copy>
+              <copy xml:id="id_326">
+                <from xml:id="id_327">$validarCCInvoke_OutputVariable.payload/ns11:descArea</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_328">$SPCrearProyectoInvoke_InputVariable.InputParameters/ns9:P_DESCAREA</to>
+              </copy>
+              <copy xml:id="id_329">
+                <from xml:id="id_330">$validarCCInvoke_OutputVariable.payload/ns11:responsableArea</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_331">$SPCrearProyectoInvoke_InputVariable.InputParameters/ns9:P_RESPONSABLE</to>
+              </copy>
+              <copy xml:id="id_55">
+                <from xml:id="id_56">$inputVariable.payload/ns2:Input/ns2:servicio/ns4:proyecto/ns6:descripcion</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_57">$SPCrearProyectoInvoke_InputVariable.InputParameters/ns9:P_DESCPROYECTO</to>
+              </copy>
+              <copy xml:id="id_58">
+                <from xml:id="id_59">number($inputVariable.payload/ns2:Input/ns2:servicio/ns4:proyecto/ns6:presupuestoAprob)</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_60">$SPCrearProyectoInvoke_InputVariable.InputParameters/ns9:P_PRESUPUESTO</to>
+              </copy>
+              <copy xml:id="id_61">
+                <from xml:id="id_62">$inputVariable.payload/ns2:Input/ns2:servicio/ns4:proyecto/ns6:numParcialidades</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_63">$SPCrearProyectoInvoke_InputVariable.InputParameters/ns9:P_PARCIALIDADES</to>
+              </copy>
+              <copy xml:id="id_64">
+                <from xml:id="id_65">$inputVariable.payload/ns2:Input/ns2:servicio/ns4:proyecto/ns6:condicionPago</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_66">$SPCrearProyectoInvoke_InputVariable.InputParameters/ns9:P_CONDPAGO</to>
+              </copy>
+              <copy xml:id="id_67">
+                <from xml:id="id_68">$inputVariable.payload/ns2:Input/ns2:servicio/ns4:idPrestador</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_69">$SPCrearProyectoInvoke_InputVariable.InputParameters/ns9:P_IDPRESTADOR</to>
+              </copy>
+              <copy xml:id="id_70">
+                <from xml:id="id_71">$inputVariable.payload/ns2:Input/ns2:servicio/ns4:idSolicitud</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_72">$SPCrearProyectoInvoke_InputVariable.InputParameters/ns9:P_IDSOLICITUD</to>
+              </copy>
+              <copy xml:id="id_500">
+                <from xml:id="id_501">string($inputVariable.payload/ns2:Input/ns2:servicio/ns4:CentroDeCosto)</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_502">$SPCrearProyectoInvoke_InputVariable.InputParameters/ns9:P_CENTROCOSTO</to>
+              </copy>
+              <copy xml:id="id_503">
+                <from xml:id="id_504">string($validarCCInvoke_OutputVariable.payload/ns11:claveOficina)</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_505">$SPCrearProyectoInvoke_InputVariable.InputParameters/ns9:P_CVEOFICINA</to>
+              </copy>
+            </assign>
+            <invoke name="SPCrearProyectoInvoke" xml:id="id_13" partnerLink="SPCrearProyectoDB"
+                    portType="ns8:SPCrearProyectoDB_ptt" operation="SPCrearProyectoDB"
+                    inputVariable="SPCrearProyectoInvoke_InputVariable"
+                    outputVariable="SPCrearProyectoInvoke_OutputVariable" bpelx:invokeAsDetail="no"/>
+            <assign name="OutputProyecto" xml:id="id_427">
+              <copy xml:id="id_428">
+                <from xml:id="id_429">$SPCrearProyectoInvoke_OutputVariable.OutputParameters/ns9:P_IDSOLICITUD</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_430">$outputVariable.payload/ns2:idSolicitud</to>
+              </copy>
+              <copy xml:id="id_431">
+                <from xml:id="id_432">$SPCrearProyectoInvoke_OutputVariable.OutputParameters/ns9:P_IDPRESTADOR</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_433">$outputVariable.payload/ns2:idPrestador</to>
+              </copy>
+              <copy xml:id="id_434">
+                <from xml:id="id_435">$SPCrearProyectoInvoke_OutputVariable.OutputParameters/ns9:P_IDPROYECTO</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_436">$outputVariable.payload/ns2:proyectoResponse/ns2:idProyecto</to>
+              </copy>
+              <copy xml:id="id_437">
+                <from xml:id="id_438">$SPCrearProyectoInvoke_OutputVariable.OutputParameters/ns9:P_NOMBREPROYECTO</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_439">$outputVariable.payload/ns2:proyectoResponse/ns2:nombre</to>
+              </copy>
+              <copy xml:id="id_440">
+                <from xml:id="id_441">$SPCrearProyectoInvoke_OutputVariable.OutputParameters/ns9:P_DESCPROYECTO</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_442">$outputVariable.payload/ns2:proyectoResponse/ns2:descripcion</to>
+              </copy>
+              <copy xml:id="id_443">
+                <from xml:id="id_444">string($SPCrearProyectoInvoke_OutputVariable.OutputParameters/ns9:P_STPROYECTO)</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_445">$outputVariable.payload/ns2:proyectoResponse/ns2:estatusProyecto</to>
+              </copy>
+              <copy xml:id="id_446">
+                <from xml:id="id_447">$SPCrearProyectoInvoke_OutputVariable.OutputParameters/ns9:P_CENTROCOSTO</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_448">$outputVariable.payload/ns2:proyectoResponse/ns2:centroCostos</to>
+              </copy>
+              <copy xml:id="id_449">
+                <from xml:id="id_450">$SPCrearProyectoInvoke_OutputVariable.OutputParameters/ns9:P_CVEOFICINA</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_451">$outputVariable.payload/ns2:proyectoResponse/ns2:claveOficina</to>
+              </copy>
+              <copy xml:id="id_452">
+                <from xml:id="id_453">$SPCrearProyectoInvoke_OutputVariable.OutputParameters/ns9:P_DESCOFICINA</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_454">$outputVariable.payload/ns2:proyectoResponse/ns2:descOficina</to>
+              </copy>
+              <copy xml:id="id_455">
+                <from xml:id="id_456">$SPCrearProyectoInvoke_OutputVariable.OutputParameters/ns9:P_DESCAREA</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_457">$outputVariable.payload/ns2:proyectoResponse/ns2:descArea</to>
+              </copy>
+              <copy xml:id="id_458">
+                <from xml:id="id_459">$SPCrearProyectoInvoke_OutputVariable.OutputParameters/ns9:P_RESPONSABLE</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_460">$outputVariable.payload/ns2:proyectoResponse/ns2:responsableArea</to>
+              </copy>
+              <copy xml:id="id_461">
+                <from xml:id="id_462">string($SPCrearProyectoInvoke_OutputVariable.OutputParameters/ns9:P_OUTCVE)</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_463">$outputVariable.payload/ns2:OperationResponse/ns3:codigoRespuesta</to>
+              </copy>
+              <copy xml:id="id_464">
+                <from xml:id="id_465">'EJECUCION EXITOSA'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_466">$outputVariable.payload/ns2:OperationResponse/ns3:descripcionRespuesta</to>
+              </copy>
+              <copy xml:id="id_467">
+                <from xml:id="id_468">ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_469">$outputVariable.payload/ns2:OperationResponse/ns3:fecha</to>
+              </copy>
+            </assign>
+          </sequence>
+        </scope>
+      </elseif>
+      <else xml:id="id_20">
+        <documentation xml:id="id_22">
+          <![CDATA[Empty]]>
+        </documentation>
+        <empty name="Empty1" xml:id="id_51"/>
+      </else>
+    </if>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="crearserviciobpel_client" portType="client:CrearServicioBPEL" operation="process" variable="outputVariable" xml:id="id_10"/>
+  </sequence>
+</process>

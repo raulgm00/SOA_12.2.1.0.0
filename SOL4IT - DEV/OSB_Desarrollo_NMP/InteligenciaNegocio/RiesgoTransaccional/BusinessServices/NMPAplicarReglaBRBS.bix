@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:businessServiceEntry xmlns:con="http://xmlns.oracle.com/servicebus/business/config">
+    <con:coreEntry>
+        <con:description>Compuesto SOA que contiene el conjunto de reglas que determina la apertura de un caso de riesgo transaccional. El conjunto de reglas a evaluar son las siguientes:
+ACD-MPMX = Acumulado Diario - Transacciones del día anterior
+ACS-MPMX = Acumulado Semanal - Transacciones de los últimos 7 días
+ACM-MPMX = Acumulado Mensual - Transacciones de los últimos 30 días
+ALB-MPMX = Alerta B	- Transacciones del día en curso
+DSUM-MPMX = Distintas sucursales por mes - Transacciones de los últimos 30 días
+DSUD-MPMX = Distintas sucursales por día - Transacciones del día en curso
+CNUE-MPMX = Cliente Nuevo - Transacciones de los últimos 61 días. Días transcurridos desde la fecha de registro del cliente hasta la fecha actual (díasRegistroCliente)
+PASENETO15 = Pase Neto 15 días - Transacciones de los últimos 15 días, de tipo empeño, refrendo, pase, venta billete.  
+PASENETO45 = Pase Neto 45 días - Transacciones de los últimos 45 días, de tipo empeño, refrendo, pase, venta billete.</con:description>
+        <con1:binding type="SOAP" xsi:type="con:SoapBindingType" isSoap12="false" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config" xmlns:con1="http://xmlns.oracle.com/servicebus/business/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:wsdl ref="InteligenciaNegocio/RiesgoTransaccional/Resources/WSDLs/NMPAplicarReglaBRWSDL"/>
+            <con:port>
+                <con:name>execute_pt</con:name>
+                <con:namespace>http://xmlns.oracle.com/RiesgoTransaccionalBPMApp/BRMSRiesgoTransaccional/AplicarReglaMediator</con:namespace>
+            </con:port>
+            <con:WSI-compliant>false</con:WSI-compliant>
+        </con1:binding>
+        <oper:operations enabled="true" xmlns:oper="http://xmlns.oracle.com/servicebus/business/operations">
+            <oper:throttling enabled="false"/>
+            <oper:monitoring enabled="true" aggregationInterval="5"/>
+            <oper:resultCachingEnabled>true</oper:resultCachingEnabled>
+        </oper:operations>
+        <con:ws-policy>
+            <ser:binding-mode xmlns:ser="http://www.bea.com/wli/sb/services">no-policies</ser:binding-mode>
+        </con:ws-policy>
+        <con:xqConfiguration>
+            <ser:snippetVersion xmlns:ser="http://www.bea.com/wli/sb/services">1.0</ser:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:endpointConfig>
+        <tran:provider-id xmlns:tran="http://www.bea.com/wli/sb/transports">http</tran:provider-id>
+        <tran:inbound xmlns:tran="http://www.bea.com/wli/sb/transports">false</tran:inbound>
+        <tran:URI xmlns:tran="http://www.bea.com/wli/sb/transports">
+            <env:value xmlns:env="http://www.bea.com/wli/config/env">http://10.30.3.15:8001/soa-infra/services/InteligenciaNegocio/BRMSRiesgoTransaccional/AplicarRegla_ep?WSDL</env:value>
+        </tran:URI>
+        <tran:outbound-properties xmlns:tran="http://www.bea.com/wli/sb/transports">
+            <tran:load-balancing-algorithm>round-robin</tran:load-balancing-algorithm>
+            <tran:retry-count>0</tran:retry-count>
+            <tran:retry-interval>30</tran:retry-interval>
+            <tran:retry-application-errors>false</tran:retry-application-errors>
+        </tran:outbound-properties>
+        <tran:provider-specific xsi:type="http:HttpEndPointConfiguration" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <http:outbound-properties>
+                <http:request-method>POST</http:request-method>
+                <http:timeout>5</http:timeout>
+                <http:connection-timeout>5</http:connection-timeout>
+                <http:follow-redirects>false</http:follow-redirects>
+                <http:chunked-streaming-mode>true</http:chunked-streaming-mode>
+                <http:session-sctikiness enabled="false" session-id-name="JSESSIONID"/>
+            </http:outbound-properties>
+            <http:dispatch-policy>SBDefaultResponseWorkManager</http:dispatch-policy>
+            <http:compression>
+                <http:compression-support>false</http:compression-support>
+            </http:compression>
+        </tran:provider-specific>
+    </con:endpointConfig>
+</con:businessServiceEntry>

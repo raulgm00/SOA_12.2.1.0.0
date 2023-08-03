@@ -1,0 +1,259 @@
+<definitions name="TaskQueryService" targetNamespace="http://xmlns.oracle.com/bpel/workflow/taskQueryService" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:taskQueryService="http://xmlns.oracle.com/bpel/workflow/taskQueryService" xmlns:tns="http://xmlns.oracle.com/bpel/workflow/taskQueryService" xmlns:common="http://xmlns.oracle.com/bpel/workflow/common" xmlns:task="http://xmlns.oracle.com/bpel/workflow/task" xmlns:user="http://xmlns.oracle.com/bpel/workflow/userMetadata" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:format="http://schemas.xmlsoap.org/wsdl/formatbinding/" xmlns:java="http://schemas.xmlsoap.org/wsdl/java/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <documentation>TaskQueryService is used for retrieving task information based on queries and views.</documentation>
+    <types>
+        <schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://xmlns.oracle.com/bpel/workflow/taskQueryService/schema" xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlns.oracle.com/bpel/workflow/common" schemaLocation="XMLSchema_1055556407.xsd"/>
+            <import namespace="http://xmlns.oracle.com/bpel/workflow/task" schemaLocation="XMLSchema_183626257.xsd"/>
+            <import namespace="http://xmlns.oracle.com/bpel/workflow/userMetadata" schemaLocation="XMLSchema_1504451015.xsd"/>
+            <import namespace="http://xmlns.oracle.com/bpel/workflow/taskQueryService" schemaLocation="XMLSchema_734602399.xsd"/>
+        </schema>
+        <xsd:schema>
+            <xsd:import namespace="http://xmlns.oracle.com/bpel/workflow/taskQueryService" schemaLocation="XMLSchema_734602399.xsd"/>
+        </xsd:schema>
+    </types>
+    <message name="authenticateMessage">
+        <part name="payload" element="common:credential"/>
+    </message>
+    <message name="authenticateResponseMessage">
+        <part name="payload" element="common:workflowContext"/>
+    </message>
+    <message name="workflowErrorMessage">
+        <part name="payload" element="taskQueryService:taskQueryServiceFaultResponse"/>
+    </message>
+    <message name="authenticateOnBehalfOfMessage">
+        <part name="payload" element="taskQueryService:credentialOnBehalfOfRequest"/>
+    </message>
+    <message name="authenticateOnBehalfOfResponseMessage">
+        <part name="payload" element="common:workflowContext"/>
+    </message>
+    <message name="getWorkflowContextMessage">
+        <part name="payload" element="taskQueryService:workflowContextRequest"/>
+    </message>
+    <message name="getWorkflowContextResponseMessage">
+        <part name="payload" element="common:workflowContext"/>
+    </message>
+    <message name="destroyContextMessage">
+        <part name="payload" element="common:workflowContext"/>
+    </message>
+    <message name="destroyContextResponseMessage">
+        <part name="payload" element="taskQueryService:successResponse"/>
+    </message>
+    <message name="refreshWorkflowContextMessage">
+        <part name="payload" element="common:refreshWorkflowContextRequest"/>
+    </message>
+    <message name="refreshWorkflowContextResponseMessage">
+        <part name="payload" element="common:workflowContext"/>
+    </message>
+    <message name="updateWorkflowContextMessage">
+        <part name="payload" element="taskQueryService:updateWorkflowContextRequest"/>
+    </message>
+    <message name="updateWorkflowContextResponseMessage">
+        <part name="payload" element="common:workflowContext"/>
+    </message>
+    <message name="taskListRequestMessage">
+        <part name="payload" element="taskQueryService:taskListRequest"/>
+    </message>
+    <message name="taskListResponseMessage">
+        <part name="payload" element="taskQueryService:taskListResponse"/>
+    </message>
+    <message name="queryAggregatedTasksRequestMessage">
+        <part name="payload" element="taskQueryService:queryAggregatedTasksRequest"/>
+    </message>
+    <message name="aggregatedTasksResponseMessage">
+        <part name="payload" element="taskQueryService:aggregatedTasksResponse"/>
+    </message>
+    <message name="countTasksRequestMessage">
+        <part name="payload" element="taskQueryService:countTasksRequest"/>
+    </message>
+    <message name="taskCountResponseMessage">
+        <part name="payload" element="taskQueryService:taskCountResponse"/>
+    </message>
+    <message name="doesTaskExistRequestMessage">
+        <part name="payload" element="taskQueryService:doesTaskExistRequest"/>
+    </message>
+    <message name="taskExistsResponseMessage">
+        <part name="payload" element="taskQueryService:taskExistsResponse"/>
+    </message>
+    <message name="queryViewTasksRequestMessage">
+        <part name="payload" element="taskQueryService:queryViewTasksRequest"/>
+    </message>
+    <message name="queryViewAggregatedTasksRequestMessage">
+        <part name="payload" element="taskQueryService:queryViewAggregatedTasksRequest"/>
+    </message>
+    <message name="countViewTasksRequestMessage">
+        <part name="payload" element="taskQueryService:countViewTasksRequest"/>
+    </message>
+    <message name="doesViewTaskExistRequestMessage">
+        <part name="payload" element="taskQueryService:doesViewTaskExistRequest"/>
+    </message>
+    <message name="queryDecomposedTasksRequestMessage">
+        <part name="payload" element="taskQueryService:queryDecomposedTasksRequest"/>
+    </message>
+    <message name="queryTaskErrorsRequestMessage">
+        <part name="payload" element="taskQueryService:queryTaskErrorsRequest"/>
+    </message>
+    <message name="taskErrorsResponseMessage">
+        <part name="payload" element="taskQueryService:taskErrorsResponse"/>
+    </message>
+    <message name="taskHistoryRequestMessage">
+        <part name="payload" element="taskQueryService:taskHistoryRequest"/>
+    </message>
+    <message name="taskDetailsByIdRequestMessage">
+        <part name="payload" element="taskQueryService:taskDetailsByIdRequest"/>
+    </message>
+    <message name="taskDetailsResponseMessage">
+        <part name="payload" element="task:task"/>
+    </message>
+    <message name="taskDetailsByNumberRequestMessage">
+        <part name="payload" element="taskQueryService:taskDetailsByNumberRequest"/>
+    </message>
+    <message name="taskVersionDetailsRequestMessage">
+        <part name="payload" element="taskQueryService:taskVersionDetailsRequest"/>
+    </message>
+    <message name="getPermittedAssigneesRequestMessage">
+        <part name="payload" element="taskQueryService:getPermittedAssigneesRequest"/>
+    </message>
+    <message name="getPermittedAssigneesResponseMessage">
+        <part name="payload" element="taskQueryService:getPermittedAssigneesResponse"/>
+    </message>
+    <message name="getPermittedAssigneesForTasksRequestMessage">
+        <part name="payload" element="taskQueryService:getPermittedAssigneesForTasksRequest"/>
+    </message>
+    <message name="getPermittedAssigneesForTasksResponseMessage">
+        <part name="payload" element="taskQueryService:getPermittedAssigneesForTasksResponse"/>
+    </message>
+    <message name="getTaskSequenceRequestMessage">
+        <part name="payload" element="taskQueryService:getTaskSequenceRequest"/>
+    </message>
+    <message name="getTaskSequenceResponseMessage">
+        <part name="payload" element="taskQueryService:taskSequence"/>
+    </message>
+    <message name="getSummaryFieldsInfoForTaskRequestMessage">
+        <part name="payload" element="taskQueryService:getSummaryFieldsInfoForTask"/>
+    </message>
+    <message name="getSummaryFieldsInfoForTaskResponseMessage">
+        <part name="payload" element="taskQueryService:taskSummaryFieldsInfoResponse"/>
+    </message>
+    <portType name="TaskQueryService">
+        <operation name="authenticate">
+            <input name="authenticateInput" message="taskQueryService:authenticateMessage"/>
+            <output name="authenticateOutput" message="taskQueryService:authenticateResponseMessage"/>
+            <fault name="processingErrorFault" message="taskQueryService:workflowErrorMessage"/>
+        </operation>
+        <operation name="authenticateOnBehalfOf">
+            <input name="authenticateOnBehalfOfInput" message="taskQueryService:authenticateOnBehalfOfMessage"/>
+            <output name="authenticateOnBehalfOfOutput" message="taskQueryService:authenticateOnBehalfOfResponseMessage"/>
+            <fault name="processingErrorFault" message="taskQueryService:workflowErrorMessage"/>
+        </operation>
+        <operation name="getWorkflowContext">
+            <input name="getWorkflowContextInput" message="taskQueryService:getWorkflowContextMessage"/>
+            <output name="getWorkflowContextOutput" message="taskQueryService:getWorkflowContextResponseMessage"/>
+            <fault name="processingErrorFault" message="taskQueryService:workflowErrorMessage"/>
+        </operation>
+        <operation name="destroyWorkflowContext">
+            <input name="destroyContextInput" message="taskQueryService:destroyContextMessage"/>
+            <output name="destroyContextOutput" message="taskQueryService:destroyContextResponseMessage"/>
+            <fault name="processingErrorFault" message="taskQueryService:workflowErrorMessage"/>
+        </operation>
+        <operation name="refreshWorkflowContext">
+            <input name="refreshWorkflowContextInput" message="taskQueryService:refreshWorkflowContextMessage"/>
+            <output name="refreshWorkflowContextOutput" message="taskQueryService:refreshWorkflowContextResponseMessage"/>
+            <fault name="processingErrorFault" message="taskQueryService:workflowErrorMessage"/>
+        </operation>
+        <operation name="updateWorkflowContext">
+            <input name="updateWorkflowContextInput" message="taskQueryService:updateWorkflowContextMessage"/>
+            <output name="updateWorkflowContextOutput" message="taskQueryService:updateWorkflowContextResponseMessage"/>
+            <fault name="processingErrorFault" message="taskQueryService:workflowErrorMessage"/>
+        </operation>
+        <operation name="queryTasks">
+            <input name="queryTasksInput" message="taskQueryService:taskListRequestMessage"/>
+            <output name="queryTasksOutput" message="taskQueryService:taskListResponseMessage"/>
+            <fault name="processingErrorFault" message="taskQueryService:workflowErrorMessage"/>
+        </operation>
+        <operation name="queryAggregatedTasks">
+            <input name="queryAggregatedTasksInput" message="taskQueryService:queryAggregatedTasksRequestMessage"/>
+            <output name="queryAggregatedTasksOutput" message="taskQueryService:aggregatedTasksResponseMessage"/>
+            <fault name="processingErrorFault" message="taskQueryService:workflowErrorMessage"/>
+        </operation>
+        <operation name="countTasks">
+            <input name="countTasksInput" message="taskQueryService:countTasksRequestMessage"/>
+            <output name="countTasksOutput" message="taskQueryService:taskCountResponseMessage"/>
+            <fault name="processingErrorFault" message="taskQueryService:workflowErrorMessage"/>
+        </operation>
+        <operation name="doesTaskExist">
+            <input name="doesTaskExistInput" message="taskQueryService:doesTaskExistRequestMessage"/>
+            <output name="doesTaskExistOutput" message="taskQueryService:taskExistsResponseMessage"/>
+            <fault name="processingErrorFault" message="taskQueryService:workflowErrorMessage"/>
+        </operation>
+        <operation name="queryViewTasks">
+            <input name="queryViewTasksInput" message="taskQueryService:queryViewTasksRequestMessage"/>
+            <output name="queryViewTasksOutput" message="taskQueryService:taskListResponseMessage"/>
+            <fault name="processingErrorFault" message="taskQueryService:workflowErrorMessage"/>
+        </operation>
+        <operation name="queryViewAggregatedTasks">
+            <input name="queryViewAggregatedTasksInput" message="taskQueryService:queryViewAggregatedTasksRequestMessage"/>
+            <output name="queryViewAggregatedTasksOutput" message="taskQueryService:aggregatedTasksResponseMessage"/>
+            <fault name="processingErrorFault" message="taskQueryService:workflowErrorMessage"/>
+        </operation>
+        <operation name="countViewTasks">
+            <input name="countViewTasksInput" message="taskQueryService:countViewTasksRequestMessage"/>
+            <output name="countViewTasksOutput" message="taskQueryService:taskCountResponseMessage"/>
+            <fault name="processingErrorFault" message="taskQueryService:workflowErrorMessage"/>
+        </operation>
+        <operation name="doesViewTaskExist">
+            <input name="doesViewTaskExistInput" message="taskQueryService:doesViewTaskExistRequestMessage"/>
+            <output name="doesViewTaskExistOutput" message="taskQueryService:taskExistsResponseMessage"/>
+            <fault name="processingErrorFault" message="taskQueryService:workflowErrorMessage"/>
+        </operation>
+        <operation name="queryDecomposedTasks">
+            <input name="queryDecomposedTasksInput" message="taskQueryService:queryDecomposedTasksRequestMessage"/>
+            <output name="queryDecomposedTasksOutput" message="taskQueryService:taskListResponseMessage"/>
+            <fault name="processingErrorFault" message="taskQueryService:workflowErrorMessage"/>
+        </operation>
+        <operation name="queryTaskErrors">
+            <input name="queryTaskErrorsInput" message="taskQueryService:queryTaskErrorsRequestMessage"/>
+            <output name="queryTaskErrorsOutput" message="taskQueryService:taskErrorsResponseMessage"/>
+            <fault name="processingErrorFault" message="taskQueryService:workflowErrorMessage"/>
+        </operation>
+        <operation name="getTaskHistory">
+            <input name="getTaskHistoryInput" message="taskQueryService:taskHistoryRequestMessage"/>
+            <output name="getTaskHistoryOutput" message="taskQueryService:taskListResponseMessage"/>
+            <fault name="processingErrorFault" message="taskQueryService:workflowErrorMessage"/>
+        </operation>
+        <operation name="getTaskDetailsById">
+            <input name="getTaskDetailsByIdInput" message="taskQueryService:taskDetailsByIdRequestMessage"/>
+            <output name="getTaskDetailsByIdOutput" message="taskQueryService:taskDetailsResponseMessage"/>
+            <fault name="processingErrorFault" message="taskQueryService:workflowErrorMessage"/>
+        </operation>
+        <operation name="getTaskDetailsByNumber">
+            <input name="getTaskDetailsByNumberInput" message="taskQueryService:taskDetailsByNumberRequestMessage"/>
+            <output name="getTaskDetailsByNumberOutput" message="taskQueryService:taskDetailsResponseMessage"/>
+            <fault name="processingErrorFault" message="taskQueryService:workflowErrorMessage"/>
+        </operation>
+        <operation name="getTaskVersionDetails">
+            <input name="getTaskVersionDetailsInput" message="taskQueryService:taskVersionDetailsRequestMessage"/>
+            <output name="getTaskVersionDetailsOutput" message="taskQueryService:taskDetailsResponseMessage"/>
+            <fault name="processingErrorFault" message="taskQueryService:workflowErrorMessage"/>
+        </operation>
+        <operation name="getPermittedAssignees">
+            <input name="getPermittedAssigneesInput" message="taskQueryService:getPermittedAssigneesRequestMessage"/>
+            <output name="getPermittedAssigneesOutput" message="taskQueryService:getPermittedAssigneesResponseMessage"/>
+            <fault name="processingErrorFault" message="taskQueryService:workflowErrorMessage"/>
+        </operation>
+        <operation name="getPermittedAssigneesForTasks">
+            <input name="getPermittedAssigneesForTasksInput" message="taskQueryService:getPermittedAssigneesForTasksRequestMessage"/>
+            <output name="getPermittedAssigneesForTasksOutput" message="taskQueryService:getPermittedAssigneesForTasksResponseMessage"/>
+            <fault name="processingErrorFault" message="taskQueryService:workflowErrorMessage"/>
+        </operation>
+        <operation name="getTaskSequence">
+            <input name="getTaskSequenceInput" message="taskQueryService:getTaskSequenceRequestMessage"/>
+            <output name="getTaskSequenceOutput" message="taskQueryService:getTaskSequenceResponseMessage"/>
+            <fault name="processingErrorFault" message="taskQueryService:workflowErrorMessage"/>
+        </operation>
+        <operation name="getSummaryFieldsInfoForTask">
+            <input name="getSummaryFieldsInfoForTaskInput" message="taskQueryService:getSummaryFieldsInfoForTaskRequestMessage"/>
+            <output name="getSummaryFieldsInfoForTaskOutput" message="taskQueryService:getSummaryFieldsInfoForTaskResponseMessage"/>
+            <fault name="processingErrorFault" message="taskQueryService:workflowErrorMessage"/>
+        </operation>
+    </portType>
+</definitions>

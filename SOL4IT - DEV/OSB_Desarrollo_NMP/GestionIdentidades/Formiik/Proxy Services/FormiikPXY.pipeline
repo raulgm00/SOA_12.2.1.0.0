@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+    <con:coreEntry>
+        <con:description>Contiene el flujo para las operaciones de ordenes de trabajo, de usuarios, grupos y manejo de excepciones.</con:description>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="GestionIdentidades/Formiik/Resources/WSDL/FormiikSvcWSDL"/>
+            <con:binding>
+                <con:name>BasicHttpBinding_IBackEnd</con:name>
+                <con:namespace>http://tempuri.org/</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations>
+            <oper:logging enabled="false" level="debug"/>
+            <oper:monitoring enabled="false" level="pipeline" aggregationInterval="10"/>
+            <oper:reporting>false</oper:reporting>
+        </oper:operations>
+        <con:pageAttachments isEnabled="false"/>
+    </con:coreEntry>
+    <con:router errorHandler="_onErrorHandler-3708010327031629053-b5d49be.14dbb932212.-7fc4" xmlns:ser="http://www.bea.com/wli/sb/services">
+        <con:pipeline name="_onErrorHandler-3708010327031629053-b5d49be.14dbb932212.-7fc4" type="error">
+            <con:stage name="FormiikFault">
+                <con:context>
+                    <con1:varNsDecl prefix="tem" namespace="http://tempuri.org/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.5a2ca2f3.42.15122252058.N8000</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:not($body/soap-env:Fault)</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.5a2ca2f3.21.1511d1ba7db.N7ffd</con2:id>
+                                    <con1:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                            <con:resource ref="GestionIdentidades/Formiik/Resources/XSLT/TransformFormiikFault"/>
+                                            <con:input>$fault</con:input>
+                                        </con:xsltTransform>
+                                    </con1:expr>
+                                </con1:replace>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                    <con1:report xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.5a2ca2f3.31.1512111c6f1.N8000</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:substring(fn-bea:serialize($body), 0, 1000)</con:xqueryText>
+                        </con1:expr>
+                        <con1:labels>
+                            <con1:key>errorFormiik</con1:key>
+                            <con1:varName>body_temp</con1:varName>
+                            <con1:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">//tem:clientId/text()</con:xpathText>
+                            </con1:value>
+                        </con1:labels>
+                        <con1:labels>
+                            <con1:key>operacion</con1:key>
+                            <con1:varName>nodoOperation</con1:varName>
+                            <con1:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">//operation/text()</con:xpathText>
+                            </con1:value>
+                        </con1:labels>
+                    </con1:report>
+                    <con1:reply isError="true" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+                        <con1:id>_ActionId-3708010327031629053-b5d49be.14dbb932212.-7fc3</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:route-node name="RouteToFormiikBS">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="tem" namespace="http://tempuri.org/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                        <conid1:id xmlns:conid1="http://www.bea.com/wli/sb/stages/config">_ActionId-4591488671528509429--33ae5e0f.14d445306cb.-7fe3</conid1:id>
+                        <con1:service ref="GestionIdentidades/Formiik/Business Services/FormiikBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation passThrough="true"/>
+                        <con1:outboundTransform>
+                            <con2:assign varName="nodoOperation" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.5a2ca2f3.2e.15120ed85d6.N7fff</con3:id>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(fn:concat('&lt;operation>',fn:local-name($body/*),'&lt;/operation>'))</con:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:report xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.5a2ca2f3.30.151210ce72e.N8000</con3:id>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                                </con2:expr>
+                                <con2:labels>
+                                    <con2:key>entradaFormiik</con2:key>
+                                    <con2:varName>body</con2:varName>
+                                    <con2:value>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">//tem:clientId/text()</con:xpathText>
+                                    </con2:value>
+                                </con2:labels>
+                                <con2:labels>
+                                    <con2:key>operacion</con2:key>
+                                    <con2:varName>nodoOperation</con2:varName>
+                                    <con2:value>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">//operation/text()</con:xpathText>
+                                    </con2:value>
+                                </con2:labels>
+                            </con2:report>
+                            <con2:assign varName="body_temp" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.5a2ca2f3.2a.15120d2a822.N7ffe</con3:id>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                        </con1:outboundTransform>
+                        <con1:responseTransform>
+                            <con2:report xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.5a2ca2f3.2c.15120d4a19d.N7ffe</con3:id>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                                </con2:expr>
+                                <con2:labels>
+                                    <con2:key>salidaFormiik</con2:key>
+                                    <con2:varName>body_temp</con2:varName>
+                                    <con2:value>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">//tem:clientId/text()</con:xpathText>
+                                    </con2:value>
+                                </con2:labels>
+                                <con2:labels>
+                                    <con2:key>operacion</con2:key>
+                                    <con2:varName>nodoOperation</con2:varName>
+                                    <con2:value>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">//operation/text()</con:xpathText>
+                                    </con2:value>
+                                </con2:labels>
+                            </con2:report>
+                        </con1:responseTransform>
+                    </con1:route>
+                </con:actions>
+            </con:route-node>
+        </con:flow>
+    </con:router>
+    <aler:alertRules xsi:nil="true" xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert"/>
+</con:pipelineEntry>

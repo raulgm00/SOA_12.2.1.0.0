@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ser:proxyServiceEntry xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env">
+    <ser:coreEntry isAutoPublish="false">
+        <ser:description>Servico SOAP que enruta al Business Rule el cual contiene el conjunto de reglas que determina la apertura de un caso de riesgo transaccional. El conjunto de reglas definidas son las siguientes:
+ACD-MPMX = Acumulado Diario - Transacciones del día anterior
+ACS-MPMX = Acumulado Semanal - Transacciones de los últimos 7 días
+ACM-MPMX = Acumulado Mensual - Transacciones de los últimos 30 días
+ALB-MPMX = Alerta B	- Transacciones del día en curso
+DSUM-MPMX = Distintas sucursales por mes - Transacciones de los últimos 30 días
+DSUD-MPMX = Distintas sucursales por día - Transacciones del día en curso
+CNUE-MPMX = Cliente Nuevo - Transacciones de los últimos 61 días. Días transcurridos desde la fecha de registro del cliente hasta la fecha actual (díasRegistroCliente)
+PASENETO15 = Pase Neto 15 días - Transacciones de los últimos 15 días, de tipo empeño, refrendo, pase, venta billete.  
+PASENETO45 = Pase Neto 45 días - Transacciones de los últimos 45 días, de tipo empeño, refrendo, pase, venta billete.</ser:description>
+        <ser:binding type="SOAP" xsi:type="con:SoapBindingType" isSoap12="false" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:wsdl ref="InteligenciaNegocio/RiesgoTransaccional/Resources/WSDLs/NMPAplicarReglaBRWSDL"/>
+            <con:port>
+                <con:name>execute_pt</con:name>
+                <con:namespace>http://xmlns.oracle.com/RiesgoTransaccionalBPMApp/BRMSRiesgoTransaccional/AplicarReglaMediator</con:namespace>
+            </con:port>
+            <con:selector type="SOAP body"/>
+        </ser:binding>
+        <oper:operations enabled="true" xmlns:oper="http://xmlns.oracle.com/servicebus/proxy/operations">
+            <oper:messageTracing enabled="true">
+                <oper1:detailsLevel xmlns:oper1="http://xmlns.oracle.com/servicebus/operations">terse</oper1:detailsLevel>
+                <oper1:maxSize xmlns:oper1="http://xmlns.oracle.com/servicebus/operations">8192</oper1:maxSize>
+            </oper:messageTracing>
+            <oper:monitoring enabled="false" aggregationInterval="5"/>
+        </oper:operations>
+        <ser:ws-policy>
+            <ser:binding-mode>no-policies</ser:binding-mode>
+        </ser:ws-policy>
+        <ser:invoke ref="InteligenciaNegocio/RiesgoTransaccional/Pipelines/NMPAplicarReglasBRPL" xsi:type="con:PipelineRef" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        <ser:xqConfiguration>
+            <ser:snippetVersion>1.0</ser:snippetVersion>
+        </ser:xqConfiguration>
+    </ser:coreEntry>
+    <ser:endpointConfig>
+        <tran:provider-id>http</tran:provider-id>
+        <tran:inbound>true</tran:inbound>
+        <tran:URI>
+            <env:value>/RiesgoTransaccional/NMPAplicarReglaBR</env:value>
+        </tran:URI>
+        <tran:inbound-properties/>
+        <tran:provider-specific xsi:type="http:HttpEndPointConfiguration" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <http:inbound-properties/>
+            <http:compression>
+                <http:compression-support>false</http:compression-support>
+            </http:compression>
+        </tran:provider-specific>
+    </ser:endpointConfig>
+    <aler:alertRules xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert">
+        <aler:alertRule enabled="true" name="timeout_warning">
+            <aler:frequency>every-time</aler:frequency>
+            <aler:severity>warning</aler:severity>
+            <aler:stopProcessing>false</aler:stopProcessing>
+            <aler:condition aggregation-interval="10">
+                <con:monCondExpr xmlns:con="http://xmlns.oracle.com/servicebus/monitoring/alert/condition">
+                    <con:function>max</con:function>
+                    <con:lhs>Transport.response-time</con:lhs>
+                    <con:operator>></con:operator>
+                    <con:rhs>30000</con:rhs>
+                </con:monCondExpr>
+            </aler:condition>
+            <aler:alertDestination ref="InteligenciaNegocio/RiesgoTransaccional/Resources/Alerts/OSBRiesgoTransaccionalAlert"/>
+        </aler:alertRule>
+    </aler:alertRules>
+</ser:proxyServiceEntry>

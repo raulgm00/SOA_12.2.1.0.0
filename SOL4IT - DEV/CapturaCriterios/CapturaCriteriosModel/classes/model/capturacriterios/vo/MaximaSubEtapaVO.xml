@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+<!---->
+<ViewObject
+  xmlns="http://xmlns.oracle.com/bc4j"
+  Name="MaximaSubEtapaVO"
+  Version="12.1.3.10.8"
+  InheritPersonalization="merge"
+  BindingStyle="OracleName"
+  CustomQuery="true"
+  PageIterMode="Full"
+  ComponentClass="model.capturacriterios.vo.MaximaSubEtapaVOImpl"
+  RowClass="model.capturacriterios.vo.MaximaSubEtapaVORowImpl">
+  <DesignTime>
+    <Attr Name="_isExpertMode" Value="true"/>
+    <Attr Name="_codeGenFlag2" Value="Access|Coll|VarAccess"/>
+    <Attr Name="_isCodegen" Value="true"/>
+  </DesignTime>
+  <Properties>
+    <SchemaBasedProperties>
+      <LABEL
+        ResId="model.capturacriterios.vo.MaximaSubEtapaVO_LABEL"/>
+    </SchemaBasedProperties>
+  </Properties>
+  <Variable
+    Name="p_etapa"
+    Kind="where"
+    Type="java.lang.Integer"/>
+  <Variable
+    Name="t_proyecto"
+    Kind="where"
+    Type="java.lang.Integer"/>
+  <SQLQuery><![CDATA[SELECT MAX(ID_SUBETAPA)+1 NUEVA_SUBETAPA      
+FROM CONTROL_ETAPAS      
+WHERE ID_PROYECTO =:t_proyecto     
+AND ID_ETAPA =:p_etapa]]></SQLQuery>
+  <ViewAttribute
+    Name="NuevaSubetapa"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="NUEVA_SUBETAPA"
+    Expression="NUEVA_SUBETAPA"
+    SQLType="NUMERIC"/>
+  <AttrArray Name="KeyAttributes">
+    <Item Value="NuevaSubetapa"/>
+  </AttrArray>
+  <ResourceBundle>
+    <PropertiesBundle
+      PropertiesFile="model.capturacriterios.CapturaCriteriosModelBundle"/>
+  </ResourceBundle>
+</ViewObject>

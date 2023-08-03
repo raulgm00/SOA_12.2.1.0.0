@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:SvcNMPDivisas="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/Divisas"
+            targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/Divisas"
+            elementFormDefault="qualified">
+  <xsd:complexType name="SerieType">
+    <xsd:sequence>
+      <xsd:element name="tipoCambio" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="idSerie" type="SvcNMPDivisas:idSerieType" maxOccurs="1"/>
+      <xsd:element name="frecuencia" type="xsd:string" maxOccurs="1"/>
+      <xsd:element name="unidad" type="xsd:string" maxOccurs="1"/>
+      <xsd:element name="fecha" type="xsd:date" maxOccurs="1"/>
+      <xsd:element name="valorFix" type="xsd:decimal" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="idSerieType">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="7"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="SerieListaType">
+    <xsd:sequence>
+      <xsd:element name="serie" type="SvcNMPDivisas:SerieType" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ObtenerTipoCambioBanxicoFixRequestType">
+    <xsd:sequence>
+      <xsd:element name="idSerie" type="SvcNMPDivisas:idSerieType" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ObtenerTipoCambioBanxicoFixResponseType">
+    <xsd:sequence>
+      <xsd:element name="serie" type="SvcNMPDivisas:SerieType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ObtenerListaTiposCambioBanxicoRequestType"/>
+  <xsd:complexType name="ObtenerListaTiposCambioBanxicoResponseType">
+    <xsd:sequence>
+      <xsd:element name="serieLista" type="SvcNMPDivisas:SerieListaType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>

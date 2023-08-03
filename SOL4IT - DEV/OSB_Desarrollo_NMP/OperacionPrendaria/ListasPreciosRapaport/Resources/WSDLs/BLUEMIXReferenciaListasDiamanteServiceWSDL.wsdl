@@ -1,0 +1,75 @@
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns2="http://nmp.com.mx/ms/sivad/referencia/ws/diamantes/listas/datatypes/" xmlns:ns1="http://nmp.com.mx/ms/sivad/referencia/ws/diamantes/listas/" name="ReferenciaListasDiamanteService" targetNamespace="http://nmp.com.mx/ms/sivad/referencia/ws/diamantes/listas/">
+<wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://nmp.com.mx/ms/sivad/referencia/ws/diamantes/listas/datatypes/" elementFormDefault="qualified" targetNamespace="http://nmp.com.mx/ms/sivad/referencia/ws/diamantes/listas/datatypes/" version="1.0">
+<xs:element name="actualizarListaFactorRequest">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="factorDiamante" type="tns:FactorDiamante"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="actualizarListaFactorResponse" type="tns:Void"/>
+<xs:element name="actualizarListaValorComercialRequest">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="listado" type="tns:PreciosDiamante"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="actualizarListaValorComercialResponse" type="tns:Void"/>
+<xs:complexType name="PreciosDiamante">
+<xs:sequence>
+<xs:element name="fecha" type="xs:date"/>
+<xs:element maxOccurs="unbounded" name="preciosCorte" type="tns:PrecioCorte"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="PrecioCorte">
+<xs:sequence>
+<xs:element name="corte" type="xs:string"/>
+<xs:element maxOccurs="unbounded" name="precioCorte" type="tns:PrecioCorteDetalle"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="PrecioCorteDetalle">
+<xs:sequence>
+<xs:element name="color" type="xs:string"/>
+<xs:element name="claridad" type="xs:string"/>
+<xs:element name="tamanioInferior" type="xs:decimal"/>
+<xs:element name="tamanioSuperior" type="xs:decimal"/>
+<xs:element name="precio" type="xs:decimal"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="Void">
+<xs:sequence/>
+</xs:complexType>
+<xs:complexType name="FactorDiamante">
+<xs:sequence>
+<xs:element name="factorMinimo" type="xs:decimal"/>
+<xs:element name="factorMedio" type="xs:decimal"/>
+<xs:element name="factorMaximo" type="xs:decimal"/>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>
+</wsdl:types>
+<wsdl:message name="actualizarListaFactor">
+<wsdl:part element="ns2:actualizarListaFactorRequest" name="parameters"></wsdl:part>
+</wsdl:message>
+<wsdl:message name="actualizarListaValorComercial">
+<wsdl:part element="ns2:actualizarListaValorComercialRequest" name="parameters"></wsdl:part>
+</wsdl:message>
+<wsdl:message name="actualizarListaValorComercialResponse">
+<wsdl:part element="ns2:actualizarListaValorComercialResponse" name="parameters"></wsdl:part>
+</wsdl:message>
+<wsdl:message name="actualizarListaFactorResponse">
+<wsdl:part element="ns2:actualizarListaFactorResponse" name="parameters"></wsdl:part>
+</wsdl:message>
+<wsdl:portType name="ReferenciaListasDiamanteService">
+<wsdl:operation name="actualizarListaValorComercial">
+<wsdl:input message="ns1:actualizarListaValorComercial" name="actualizarListaValorComercial"></wsdl:input>
+<wsdl:output message="ns1:actualizarListaValorComercialResponse" name="actualizarListaValorComercialResponse"></wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="actualizarListaFactor">
+<wsdl:input message="ns1:actualizarListaFactor" name="actualizarListaFactor"></wsdl:input>
+<wsdl:output message="ns1:actualizarListaFactorResponse" name="actualizarListaFactorResponse"></wsdl:output>
+</wsdl:operation>
+</wsdl:portType>
+</wsdl:definitions>

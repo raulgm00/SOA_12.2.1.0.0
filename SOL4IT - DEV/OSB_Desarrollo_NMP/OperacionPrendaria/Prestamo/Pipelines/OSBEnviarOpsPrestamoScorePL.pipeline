@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con3="http://www.bea.com/wli/sb/stages/alert/config">
+    <con:coreEntry>
+        <con:description>Pipeline del flujo de envio hacia el Customer Score. En este flujo se hace la seleccion de las operaciones que se deben distribuir hacia el Customer Score, transformar en caso de encontrarse una operacion de reempeno y depositarse en un recurso JMS. Customer Score consume de forma asincrona el recurso JMS.</con:description>
+        <con:binding type="Mixed" xsi:type="con:MixedBindingType">
+            <con:request type="XML">
+                <con2:schema ref="OperacionPrendaria/Prestamo/Resources/Schemas/PrestamoSvcXSD" element="updatePrestamoRequest" xmlns:con2="http://www.bea.com/wli/sb/typesystem/config" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:jms="http://www.bea.com/wli/sb/transports/jms" xmlns:con1="http://www.bea.com/wli/sb/pipeline/config" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:env="http://www.bea.com/wli/config/env" xmlns:tran="http://www.bea.com/wli/sb/transports"/>
+            </con:request>
+        </con:binding>
+        <oper:operations>
+            <oper:logging enabled="false" level="debug"/>
+            <oper:monitoring enabled="true" level="action" aggregationInterval="1440"/>
+            <oper:reporting>false</oper:reporting>
+            <oper:pipeline-alerting enabled="true" level="critical"/>
+        </oper:operations>
+    </con:coreEntry>
+    <con1:router xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:con="http://www.bea.com/wli/sb/typesystem/config" xmlns:jms="http://www.bea.com/wli/sb/transports/jms" xmlns:con1="http://www.bea.com/wli/sb/pipeline/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+        <con1:pipeline name="_onErrorHandler-5159819096348468750-7788eb9a.145e1add37b.-7fc1" type="error">
+            <con1:stage name="StageGeneralErrorHandler">
+                <con1:comment>Menejador generico de errores en el procesamiento de mensaje a Customer Score</con1:comment>
+                <con1:context>
+                    <con2:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPrestamo"/>
+                </con1:context>
+                <con1:actions>
+                    <con4:ifThenElse xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N74ab</con2:id>
+                        <con4:case id="_BranchId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N74aa">
+                            <con4:condition>
+                                <con2:xqueryText>$fault/ctx:errorCode = 'NMP-009'</con2:xqueryText>
+                            </con4:condition>
+                            <con4:actions>
+                                <con2:report xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config">
+                                    <con5:comment xmlns:con5="http://www.bea.com/wli/sb/stages/config">Notificar que ningun mensaje debe propagarse para Customer Score</con5:comment>
+                                    <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-5159819096348468750-7788eb9a.145e1add37b.-7fc0</con3:id>
+                                    <con2:expr>
+                                        <con5:xqueryText xmlns:con5="http://www.bea.com/wli/sb/stages/config">$msgId</con5:xqueryText>
+                                    </con2:expr>
+                                    <con2:labels>
+                                        <con2:key>FechaOperacionScoreTrx=</con2:key>
+                                        <con2:varName>body</con2:varName>
+                                        <con2:value>
+                                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.//*:fechaOperacion</con:xpathText>
+                                        </con2:value>
+                                    </con2:labels>
+                                    <con2:labels>
+                                        <con2:key>Notificacion:</con2:key>
+                                        <con2:varName>fault</con2:varName>
+                                        <con2:value>
+                                            <con5:xpathText xmlns:con5="http://www.bea.com/wli/sb/stages/config">./ctx:reason</con5:xpathText>
+                                        </con2:value>
+                                    </con2:labels>
+                                </con2:report>
+                            </con4:actions>
+                        </con4:case>
+                        <con4:default>
+                            <con4:replace contents-only="true" varName="body">
+                                <con2:comment>Generar error para mostrar en la alerta</con2:comment>
+                                <con2:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7476</con2:id>
+                                <con4:location>
+                                    <con2:xpathText>.</con2:xpathText>
+                                </con4:location>
+                                <con4:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="OperacionPrendaria/Prestamo/Resources/Transformations/TRPrestamoFault"/>
+                                        <con2:input>$fault</con2:input>
+                                        <con2:param name="detailFault">
+                                            <con2:path>$fault/ctx:reason</con2:path>
+                                        </con2:param>
+                                        <con2:param name="codeFault">
+                                            <con2:path>$fault/ctx:errorCode</con2:path>
+                                        </con2:param>
+                                    </con2:xsltTransform>
+                                </con4:expr>
+                            </con4:replace>
+                            <con3:alert>
+                                <con2:comment>Generar alerta por problemas en el procesamiento o direccionamiento del mensaje</con2:comment>
+                                <con2:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7443</con2:id>
+                                <con3:destination ref="OperacionPrendaria/Prestamo/Resources/Alerts/NMPPrestamoAlert"/>
+                                <con3:description>Problema en el envio de mensaje a la cola de Score: LoanToScoreQ</con3:description>
+                                <con3:severity>critical</con3:severity>
+                                <con3:payload>
+                                    <con2:xqueryText>$body</con2:xqueryText>
+                                </con3:payload>
+                            </con3:alert>
+                        </con4:default>
+                    </con4:ifThenElse>
+                    <con2:resume>
+                        <con2:comment>Continuar con la ejecucion normal</con2:comment>
+                        <con2:id>_ActionId-3807199784468358737-784e0bd2.14bcbe5c0a5.-7faf</con2:id>
+                    </con2:resume>
+                </con1:actions>
+            </con1:stage>
+        </con1:pipeline>
+        <con1:flow>
+            <con1:route-node name="RouteToCustomerScore" error-handler="_onErrorHandler-5159819096348468750-7788eb9a.145e1add37b.-7fc1">
+                <con1:comment>Procesamiento de operaciones para envio a Customer Score</con1:comment>
+                <con5:context xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con4="http://www.bea.com/wli/sb/typesystem/config" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con5="http://www.bea.com/wli/sb/pipeline/config">
+                    <con2:varNsDecl namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPrestamo" prefix="nmp"/>
+                </con5:context>
+                <con5:actions xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con4="http://www.bea.com/wli/sb/typesystem/config" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con5="http://www.bea.com/wli/sb/pipeline/config">
+                    <con1:route>
+                        <con2:comment>Direccionar mensaje recibido hacia un recurso JMS que sera consumido por Customer Score</con2:comment>
+                        <con2:id>_ActionId-2011388024150326307--24dbc88d.144dc81264f.-7e12</con2:id>
+                        <con1:service ref="OperacionPrendaria/Prestamo/Business Services/OSBEncolarJmsToScoreBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:outboundTransform>
+                            <con3:assign varName="msgId">
+                                <con2:comment>Almacenar en variable el Message ID de la peticion de origen para dar trazabilidad a la peticion</con2:comment>
+                                <con2:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7547</con2:id>
+                                <con3:expr>
+                                    <con2:xqueryText>$inbound/ctx:transport/ctx:request/tp:headers/jms:JMSCorrelationID/text()</con2:xqueryText>
+                                </con3:expr>
+                            </con3:assign>
+                            <con6:report xmlns:con6="http://www.bea.com/wli/sb/stages/logging/config">
+                                <con2:comment>Reportar entrada de peticion para dar trazabilidad</con2:comment>
+                                <con2:id>_ActionId-a1e041d.4cc945f5.3.154eb25fa64.N8000</con2:id>
+                                <con6:expr>
+                                    <con2:xqueryText>$msgId</con2:xqueryText>
+                                </con6:expr>
+                                <con6:labels>
+                                    <con6:key>FechaOperacionScore:</con6:key>
+                                    <con6:varName>body</con6:varName>
+                                    <con6:value>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.//*:fechaOperacion</con:xpathText>
+                                    </con6:value>
+                                </con6:labels>
+                            </con6:report>
+                            <con3:ifThenElse>
+                                <con2:comment>Verificar que la operaciones del mensaje estan marcadas como de reempeno</con2:comment>
+                                <con2:id>_ActionId-5410059022659645629--3124d35f.14ef9829b75.-7fdb</con2:id>
+                                <con3:case>
+                                    <con3:condition>
+                                        <con2:xqueryText>$body/nmp:updatePrestamoRequest/nmp:esReempeno = fn:true()</con2:xqueryText>
+                                    </con3:condition>
+                                    <con3:actions>
+                                        <con3:replace contents-only="true" varName="body">
+                                            <con2:comment>Transformar las operaciones a su equivalente de reempeno aceptadas por Customer Score</con2:comment>
+                                            <con2:id>_ActionId-5410059022659645629--3124d35f.14ef9829b75.-7f19</con2:id>
+                                            <con3:location>
+                                                <con2:xpathText>.</con2:xpathText>
+                                            </con3:location>
+                                            <con3:expr>
+                                                <con2:xqueryTransform>
+                                                    <con2:resource ref="OperacionPrendaria/Prestamo/Resources/Transformations/TROpsReempenoScore"/>
+                                                    <con2:param name="reempeno">
+                                                        <con2:path>$body/nmp:updatePrestamoRequest</con2:path>
+                                                    </con2:param>
+                                                </con2:xqueryTransform>
+                                            </con3:expr>
+                                        </con3:replace>
+                                    </con3:actions>
+                                </con3:case>
+                                <con3:default/>
+                            </con3:ifThenElse>
+                            <con7:assign varName="dvm" xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con5="http://www.bea.com/wli/sb/typesystem/config" xmlns:con4="http://www.bea.com/wli/sb/stages/publish/config" xmlns:con6="http://www.bea.com/wli/sb/pipeline/config" xmlns:con7="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con8:comment xmlns:con8="http://www.bea.com/wli/sb/stages/config">Almacenar en variable el DVM TipoOperacionDVM</con8:comment>
+                                <con8:id xmlns:con8="http://www.bea.com/wli/sb/stages/config">_ActionId-3066310923147464624--4779f6b0.14b93bf5c94.-7e64</con8:id>
+                                <con7:expr>
+                                    <con8:xqueryTransform xmlns:con8="http://www.bea.com/wli/sb/stages/config">
+                                        <con8:resource ref="Common/DVM/TipoOperacionDVM"/>
+                                    </con8:xqueryTransform>
+                                </con7:expr>
+                            </con7:assign>
+                            <con3:replace varName="body" contents-only="true">
+                                <con2:comment>Quitar los nodos de rechazo contenidos en cada una de las operaciones del mensaje</con2:comment>
+                                <con2:id>_ActionId-2011388024150326307--24dbc88d.144dc81264f.-7e11</con2:id>
+                                <con3:location>
+                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                </con3:location>
+                                <con3:expr>
+                                    <con:xqueryTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                        <con:resource ref="OperacionPrendaria/Prestamo/Resources/Transformations/TRQuitarNodosRechazoScore"/>
+                                        <con:param name="updatePrestamoRequest1">
+                                            <con:path>$body/nmp:updatePrestamoRequest</con:path>
+                                        </con:param>
+                                        <con:param name="dvmTipoOperacion">
+                                            <con:path>$dvm</con:path>
+                                        </con:param>
+                                    </con:xqueryTransform>
+                                </con3:expr>
+                            </con3:replace>
+                            <con3:ifThenElse>
+                                <con2:comment>Determinar el total de operaciones que se enviaran a Customer Score. En caso de ser 0, ninguna operacion debe enviarse a Customer Score</con2:comment>
+                                <con2:id>_ActionId-1444958177821158495--25f1e05b.14ba979e38c.-7fda</con2:id>
+                                <con3:case>
+                                    <con3:condition>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:count($body/nmp:updatePrestamoRequest/nmp:ListaOperaciones/nmp:Operacion) = 0</con:xqueryText>
+                                    </con3:condition>
+                                    <con3:actions>
+                                        <con3:Error>
+                                            <con2:comment>Generar informe que indica que las operaciones contenidas en el mensaje no se deben propagarse a Customer Score</con2:comment>
+                                            <con2:id>_ActionId-1444958177821158495--25f1e05b.14ba979e38c.-7fd9</con2:id>
+                                            <con3:errCode>NMP-009</con3:errCode>
+                                            <con3:message>Ninguna operacion se debe enviar a Customer Score</con3:message>
+                                        </con3:Error>
+                                    </con3:actions>
+                                </con3:case>
+                                <con3:default>
+                                    <con3:transport-headers copy-all="false">
+                                        <con2:comment>Agrega ID de correlación para dar trazabilidad al mensaje enviado a Customer Score</con2:comment>
+                                        <con2:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N7514</con2:id>
+                                        <con3:header-set>outbound-request</con3:header-set>
+                                        <con3:header value="expression" name="JMSCorrelationID">
+                                            <con2:xqueryText>fn:data($msgId)</con2:xqueryText>
+                                        </con3:header>
+                                    </con3:transport-headers>
+                                </con3:default>
+                            </con3:ifThenElse>
+                        </con1:outboundTransform>
+                        <con1:responseTransform>
+                            <con2:reply isError="false">
+                                <con2:comment>Generar un replay una vez que se comunico el error</con2:comment>
+                                <con2:id>_ActionId-N3f57c7ff.4a3a24ef.0.1567b618e5c.N74e0</con2:id>
+                            </con2:reply>
+                        </con1:responseTransform>
+                    </con1:route>
+                </con5:actions>
+            </con1:route-node>
+        </con1:flow>
+    </con1:router>
+    <aler:alertRules xsi:nil="true" xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert"/>
+</con:pipelineEntry>

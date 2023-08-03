@@ -1,0 +1,239 @@
+<wsdl:definitions name="CasosAlertasDb" targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/Desarrollo+SOA/NmpCasosAlertas/CasosAlertasDb" xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/Desarrollo+SOA/NmpCasosAlertas/CasosAlertasDb" xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:NMPSM="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:NMPSH="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:top="http://servicios.montedepiedad.com.mx/NMP/Schema/RTTransaccionesDbXSD" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <plt:partnerLinkType name="CasoAlertasDb_plt">
+    <plt:role name="CasoAlertasDb_role">
+      <plt:portType name="tns:CasoAlertasDb_ptt"/>
+    </plt:role>
+  </plt:partnerLinkType>
+  <wsdl:types>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/RTTransaccionesDbXSD" schemaLocation="../Schemas/NMPRiesgoTransaccionalDBXSD.xsd"/>
+    </xsd:schema>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+    </xsd:schema>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="CasoAlertasClienteRequest">
+    <wsdl:part name="Request" element="top:selectCasoAlertaClienteRequest"/>
+  </wsdl:message>
+  <wsdl:message name="RtAlertasCollection">
+    <wsdl:part name="Collection" element="top:RtCasosCollection"/>
+  </wsdl:message>
+  <wsdl:message name="RtAlertasCollectionUpdate">
+    <wsdl:part name="Collection" element="top:RtCasosCollectionUpdate"/>
+  </wsdl:message>
+  <wsdl:portType name="CasoAlertasDb_ptt">
+    <wsdl:operation name="insertCasoAlerta">
+      <wsdl:input message="tns:RtAlertasCollection"/>
+      <wsdl:output message="tns:CasoAlertasResponse"/>
+      <wsdl:fault name="fault" message="tns:standardMessageFault"/>
+    </wsdl:operation>
+    <wsdl:operation name="updateCasoAlerta">
+      <wsdl:input message="tns:RtAlertasCollectionUpdate"/>
+      <wsdl:output message="tns:CasoAlertasResponse"/>
+      <wsdl:fault message="tns:standardMessageFault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="SelectCasoAlertasCliente">
+      <wsdl:input message="tns:CasoAlertasClienteRequest"/>
+      <wsdl:output message="tns:RtAlertasCollection"/>
+      <wsdl:fault name="fault" message="tns:standardMessageFault"/>
+    </wsdl:operation>
+    <wsdl:operation name="validaCaso">
+      <wsdl:input message="tns:ValidaCasoRequest"/>
+      <wsdl:output message="tns:ValidaCasoResponse"/>
+      <wsdl:fault message="tns:standardMessageFault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="calculoCalificacion">
+      <wsdl:input message="tns:CalculoCalificacionRequest"/>
+      <wsdl:output message="tns:CalculoCalificacionResponse"/>
+      <wsdl:fault message="tns:standardMessageFault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="getCasosPeriodoEva">
+      <wsdl:input message="tns:GetCasosPeriodoEvaRequest"/>
+      <wsdl:output message="tns:GetCasosPeriodoEvaResponse"/>
+      <wsdl:fault message="tns:standardMessageFault" name="faut"/>
+    </wsdl:operation>
+    <wsdl:operation name="validaPeriodoEvaluacion">
+      <wsdl:input message="tns:validaPeriodoEvaluacionReq"/>
+      <wsdl:output message="tns:validaPeriodoEvaluacionRes"/>
+      <wsdl:fault name="fault" message="tns:standardMessageFault"/>
+    </wsdl:operation>
+    <wsdl:operation name="GetSumaCalificacionAlertas">
+      <wsdl:input message="tns:GetSumaCalificacionAlertasRequest"/>
+      <wsdl:output message="tns:GetSumaCalificacionAlertasResponse"/>
+      <wsdl:fault message="tns:standardMessageFault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="getCasosDiferenteAnalisis">
+      <wsdl:input message="tns:getCasosDiferenteAnalisisRequest"/>
+      <wsdl:output message="tns:getCasosDiferenteAnalisisResponse"/>
+      <wsdl:fault message="tns:standardMessageFault" name="fault"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:message name="standardMessageFault">
+    <wsdl:part name="fault" element="NMPSM:messageError"/>
+  </wsdl:message>
+  <wsdl:message name="standardMessageHeader">
+    <wsdl:part name="header" element="NMPSH:headerMessage"/>
+  </wsdl:message>
+  <wsdl:message name="CasoAlertasResponse">
+    <wsdl:part name="InsertCasoAlertaResponse" element="top:InsertCasoAlertaResponse"/>
+  </wsdl:message>
+  <wsdl:message name="ValidaCasoRequest">
+    <wsdl:part name="validaCasosRequest" element="top:validaCasosRequest"/>
+  </wsdl:message>
+  <wsdl:message name="ValidaCasoResponse">
+    <wsdl:part name="validaCasosResponse" element="top:validaCasosResponse"/>
+  </wsdl:message>
+  <wsdl:message name="CalculoCalificacionRequest">
+    <wsdl:part name="CalculoCalificacionRequest" element="top:CalculoCalificacionRequest"/>
+  </wsdl:message>
+  <wsdl:message name="CalculoCalificacionResponse">
+    <wsdl:part name="CalculoCalificacionResponse" element="top:CalculoCalificacionResponse"/>
+  </wsdl:message>
+  <wsdl:message name="GetCasosPeriodoEvaRequest">
+    <wsdl:part name="GetCasosPeriodoEvaRequest" element="top:GetCasosPeriodoEvaRequest"/>
+  </wsdl:message>
+  <wsdl:message name="GetCasosPeriodoEvaResponse">
+    <wsdl:part name="GetCasosPeriodoEvaResponse" element="top:GetCasosPeriodoEvaResponse"/>
+  </wsdl:message>
+  <wsdl:message name="validaPeriodoEvaluacionReq">
+    <wsdl:part name="validaPeriodoReevaluacionReq" element="top:validaPeriodoReevaluacionReq"/>
+  </wsdl:message>
+  <wsdl:message name="validaPeriodoEvaluacionRes">
+    <wsdl:part name="validaPeriodoReevaluacionRes" element="top:validaPeriodoReevaluacionRes"/>
+  </wsdl:message>
+  <wsdl:message name="GetSumaCalificacionAlertasRequest">
+    <wsdl:part name="GetSumaCalificacionAlertasReq" element="top:GetSumaCalificacionAlertasReq"/>
+  </wsdl:message>
+  <wsdl:message name="GetSumaCalificacionAlertasResponse">
+    <wsdl:part name="GetSumaCalificacionAlertasResp" element="top:GetSumaCalificacionAlertasResp"/>
+  </wsdl:message>
+  <wsdl:message name="getCasosDiferenteAnalisisRequest">
+    <wsdl:part name="getCasosDiferenteAnalisisRequest" element="top:getCasosDiferenteAnalisisRequest"/>
+  </wsdl:message>
+  <wsdl:message name="getCasosDiferenteAnalisisResponse">
+    <wsdl:part name="getCasosDiferenteAnalisisResponse" element="top:getCasosDiferenteAnalisisResponse"/>
+  </wsdl:message>
+  <wsdl:binding name="CasoAlertasDbSOAP11Binding" type="tns:CasoAlertasDb_ptt">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="insertCasoAlerta">
+      <soap:operation style="document" soapAction="http://xmlns.oracle.com/pcbpel/adapter/db/Desarrollo+SOA/NmpCasosAlertas/CasosAlertasDb/insertCasoAlerta"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="Collection"/>
+        <soap:header message="tns:standardMessageHeader" part="header" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="InsertCasoAlertaResponse"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="updateCasoAlerta">
+      <soap:operation style="document" soapAction="http://xmlns.oracle.com/pcbpel/adapter/db/Desarrollo+SOA/NmpCasosAlertas/CasosAlertasDb/updateCasoAlerta"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="Collection"/>
+        <soap:header message="tns:standardMessageHeader" part="header" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="InsertCasoAlertaResponse"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SelectCasoAlertasCliente">
+      <soap:operation style="document" soapAction="http://xmlns.oracle.com/pcbpel/adapter/db/Desarrollo+SOA/NmpCasosAlertas/CasosAlertasDb/SelectCasoAlertasCliente"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="Request"/>
+        <soap:header message="tns:standardMessageHeader" part="header" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="Collection"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="validaCaso">
+      <soap:operation style="document" soapAction="http://xmlns.oracle.com/pcbpel/adapter/db/Desarrollo+SOA/NmpCasosAlertas/CasosAlertasDb/validaCaso"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="validaCasosRequest"/>
+        <soap:header message="tns:standardMessageHeader" part="header" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="validaCasosResponse"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="calculoCalificacion">
+      <soap:operation style="document" soapAction="http://xmlns.oracle.com/pcbpel/adapter/db/Desarrollo+SOA/NmpCasosAlertas/CasosAlertasDb/calculoCalificacion"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="CalculoCalificacionRequest"/>
+        <soap:header message="tns:standardMessageHeader" part="header" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="CalculoCalificacionResponse"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getCasosPeriodoEva">
+      <soap:operation style="document" soapAction="http://xmlns.oracle.com/pcbpel/adapter/db/Desarrollo+SOA/NmpCasosAlertas/CasosAlertasDb/getCasosPeriodoEva"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="GetCasosPeriodoEvaRequest"/>
+        <soap:header message="tns:standardMessageHeader" part="header" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="GetCasosPeriodoEvaResponse"/>
+      </wsdl:output>
+      <wsdl:fault name="faut">
+        <soap:fault name="faut" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="validaPeriodoEvaluacion">
+      <soap:operation style="document" soapAction="http://xmlns.oracle.com/pcbpel/adapter/db/Desarrollo+SOA/NmpCasosAlertas/CasosAlertasDb/validaPeriodoEvaluacion"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="validaPeriodoReevaluacionReq"/>
+        <soap:header message="tns:standardMessageHeader" part="header" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="validaPeriodoReevaluacionRes"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetSumaCalificacionAlertas">
+      <soap:operation style="document" soapAction="http://xmlns.oracle.com/pcbpel/adapter/db/Desarrollo+SOA/NmpCasosAlertas/CasosAlertasDb/GetSumaCalificacionAlertas"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="GetSumaCalificacionAlertasReq"/>
+        <soap:header message="tns:standardMessageHeader" part="header" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="GetSumaCalificacionAlertasResp"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getCasosDiferenteAnalisis">
+      <soap:operation style="document" soapAction="http://xmlns.oracle.com/pcbpel/adapter/db/Desarrollo+SOA/NmpCasosAlertas/CasosAlertasDb/getCasosDiferenteAnalisis"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="getCasosDiferenteAnalisisRequest"/>
+        <soap:header message="tns:standardMessageHeader" part="header" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="getCasosDiferenteAnalisisResponse"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+</wsdl:definitions>

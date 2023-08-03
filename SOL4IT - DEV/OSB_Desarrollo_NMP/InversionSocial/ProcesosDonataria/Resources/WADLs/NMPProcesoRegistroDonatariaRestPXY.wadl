@@ -1,0 +1,226 @@
+<application xmlns:soa="http://www.oracle.com/soa/rest" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns0="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/RepresentanteLegal/v1" xmlns:ns7="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/ActaConstitutiva/v1" xmlns:ns2="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/InformacionGeneral/v1" xmlns:ns8="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/CuentaUsuario/v1" xmlns:ns3="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/DatosContacto/v1" xmlns:ns9="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/Consejero/v1" xmlns:ns10="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/v1" xmlns:ns5="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Comun" xmlns:inp1="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1" xmlns="http://wadl.dev.java.net/2009/02">
+   <doc title="NMPProcesoRegistroDonatariaRestPXY">Servicio REST para el proceso de regsitro de donatarias</doc>
+   <grammars>
+      <xsd:schema>
+            <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1" schemaLocation="../Schemas/NMPProcesoRegistroDonatariaSvcXSD.xsd"/>
+        </xsd:schema>
+      <xsd:schema>
+            <xsd:import namespace="http://schemas.xmlsoap.org/soap/envelope/" schemaLocation="../../../../Common/XSD/NMPStandardFault.xsd.xsd"/>
+        </xsd:schema>
+      <xsd:schema>
+            <xsd:import schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+        </xsd:schema>
+   </grammars>
+   <resources>
+      <resource path="/cuenta">
+         <method name="POST" soa:wsdlOperation="registrarCuentaDonataria">
+            <doc title="POST registrarCuentaDonataria">Registro de la cuenta de donataria</doc>
+            <request>
+               <representation mediaType="application/json" element="cns:RegistrarCuentaDonatariaRequest" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+            </request>
+            <response status="200">
+               <representation mediaType="application/json" element="cns:RegistrarCuentaDonatariaResponse" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+            </response>
+            <response status="500" soa:wsdlFaultName="registroDonatariaFault">
+               <representation mediaType="application/json" element="cns:Fault" xmlns:cns="http://schemas.xmlsoap.org/soap/envelope/"/>
+            </response>
+         </method>
+      </resource>
+      <resource path="/cuenta/url">
+         <method name="GET" soa:wsdlOperation="enviarUrlActivacionCuenta">
+            <request soa:paramElement="pns:EnviarUrlActivacionCuentaRequest" xmlns:pns="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1">
+               <param name="alias" style="query" soa:expression="$msg.request/ns8:alias" type="xsd:string" default="">
+                  <doc title="alias">Alias de la cuenta de usuario</doc>
+               </param>
+            </request>
+            <response status="200">
+               <representation mediaType="application/json" element="cns:EnviarUrlActivacionCuentaResponse" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+            </response>
+            <response status="500" soa:wsdlFaultName="registroDonatariaFault">
+               <representation mediaType="application/json" element="cns:Fault" xmlns:cns="http://schemas.xmlsoap.org/soap/envelope/"/>
+            </response>
+         </method>
+      </resource>
+      <resource path="/cuenta/activar">
+         <method name="POST" soa:wsdlOperation="activarCuenta">
+            <request>
+               <representation mediaType="application/json" element="cns:ActivarCuentaRequest" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+            </request>
+            <response status="200">
+               <representation mediaType="application/json" element="cns:ActivarCuentaResponse" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+            </response>
+            <response status="500" soa:wsdlFaultName="registroDonatariaFault">
+               <representation mediaType="application/json" element="cns:Fault" xmlns:cns="http://schemas.xmlsoap.org/soap/envelope/"/>
+            </response>
+         </method>
+      </resource>
+      <resource path="/cuenta/donataria">
+         <method name="GET" soa:wsdlOperation="obtenerDonataria">
+            <request soa:paramElement="pns:ObtenerDonatariaRequest" xmlns:pns="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1">
+               <param name="alias" style="query" soa:expression="$msg.request/ns8:alias" type="xsd:string" default="">
+                  <doc title="alias">Alias de la cuenta de usuario de la donataria</doc>
+               </param>
+            </request>
+            <response status="200">
+               <representation mediaType="application/json" element="cns:ObtenerDonatariaResponse" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+            </response>
+            <response status="500" soa:wsdlFaultName="registroDonatariaFault">
+               <representation mediaType="application/json" element="cns:Fault" xmlns:cns="http://schemas.xmlsoap.org/soap/envelope/"/>
+            </response>
+         </method>
+      </resource>
+      <resource path="/donataria/informacionGeneral">
+         <method name="POST" soa:wsdlOperation="guardarInformacionGeneral">
+            <doc title="POST guardarInformacionGeneral">Guarda los datos de información general asociada a la donataria</doc>
+            <request>
+               <representation mediaType="application/json" element="cns:GuardarInformacionGeneralRequest" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+            </request>
+            <response status="200">
+               <representation mediaType="application/json" element="cns:GuardarInformacionGeneralResponse" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+            </response>
+            <response status="500" soa:wsdlFaultName="registroDonatariaFault">
+               <representation mediaType="application/json" element="cns:Fault" xmlns:cns="http://schemas.xmlsoap.org/soap/envelope/"/>
+            </response>
+         </method>
+         <method name="GET" soa:wsdlOperation="consultarInformacionGeneral">
+            <request soa:paramElement="pns:ConsultarInformacionGeneralRequest" xmlns:pns="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1">
+               <param name="idDonataria" style="query" soa:expression="$msg.request/ns10:idDonataria" type="xsd:long" default="">
+                  <doc title="idDonataria">Identificador de la donataria</doc>
+               </param>
+            </request>
+            <response status="200">
+               <representation mediaType="application/json" element="cns:ConsultarInformacionGeneralResponse" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+            </response>
+            <response status="500" soa:wsdlFaultName="registroDonatariaFault">
+               <representation mediaType="application/json" element="cns:Fault" xmlns:cns="http://schemas.xmlsoap.org/soap/envelope/"/>
+            </response>
+         </method>
+      </resource>
+      <resource path="/donataria/datosContacto">
+         <method name="POST" soa:wsdlOperation="guardarDatosContacto">
+            <request>
+               <representation mediaType="application/json" element="cns:GuardarDatosContactoRequest" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+            </request>
+            <response status="200">
+               <representation mediaType="application/json" element="cns:GuardarDatosContactoResponse" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+            </response>
+            <response status="500" soa:wsdlFaultName="registroDonatariaFault">
+               <representation mediaType="application/json" element="cns:Fault" xmlns:cns="http://schemas.xmlsoap.org/soap/envelope/"/>
+            </response>
+         </method>
+         <method name="GET" soa:wsdlOperation="consultarDatosContacto">
+            <request soa:paramElement="pns:ConsultarDatosContactoRequest" xmlns:pns="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1">
+               <param name="idDonataria" style="query" soa:expression="$msg.request/ns10:idDonataria" type="xsd:long" default="">
+                  <doc title="idDonataria">Identificador de la donataria</doc>
+               </param>
+            </request>
+            <response status="200">
+               <representation mediaType="application/json" element="cns:ConsultarDatosContactoResponse" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+            </response>
+            <response status="500" soa:wsdlFaultName="registroDonatariaFault">
+               <representation mediaType="application/json" element="cns:Fault" xmlns:cns="http://schemas.xmlsoap.org/soap/envelope/"/>
+            </response>
+         </method>
+      </resource>
+      <resource path="/donataria/patronosConsejeros">
+         <method name="POST" soa:wsdlOperation="guardarPatronosConsejeros">
+            <doc title="POST guardarPatronosConsejeros">Guardar datos de los patronos cnsejeros asociados a la donataria</doc>
+            <request>
+               <representation mediaType="application/json" element="cns:GuardarPatronosConsejerosRequest" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+            </request>
+            <response status="200">
+               <representation mediaType="application/json" element="cns:GuardarPatronosConsejerosResponse" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+            </response>
+            <response status="500" soa:wsdlFaultName="registroDonatariaFault">
+               <representation mediaType="application/json" element="cns:Fault" xmlns:cns="http://schemas.xmlsoap.org/soap/envelope/"/>
+            </response>
+         </method>
+         <method name="GET" soa:wsdlOperation="consultarPatronosConsejeros">
+            <doc title="GET consultarPatronosConsejeros">Consultar los datos de patronos consejeros asociados a la donataria</doc>
+            <request soa:paramElement="pns:ConsultarPatronosConsejerosRequest" xmlns:pns="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1">
+               <param name="idDonataria" style="query" soa:expression="$msg.request/ns10:idDonataria" type="xsd:long" default="">
+                  <doc title="idDonataria">Identificador de la donataria</doc>
+               </param>
+            </request>
+            <response status="200">
+               <representation mediaType="application/json" element="cns:ConsultarPatronosConsejerosResponse" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+            </response>
+            <response status="500" soa:wsdlFaultName="registroDonatariaFault">
+               <representation mediaType="application/json" element="cns:Fault" xmlns:cns="http://schemas.xmlsoap.org/soap/envelope/"/>
+            </response>
+         </method>
+      </resource>
+      <resource path="/donataria/actaConstitutiva">
+         <method name="POST" soa:wsdlOperation="guardarActaConstitutiva">
+            <doc title="POST guardarActaConstitutiva">Guardar la información del acta constitutiva de la donataria</doc>
+            <request>
+               <representation mediaType="application/json" element="cns:GuardarActaConstitutivaRequest" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+            </request>
+            <response status="200">
+               <representation mediaType="application/json" element="cns:GuardarActaConstitutivaResponse" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+            </response>
+            <response status="500" soa:wsdlFaultName="registroDonatariaFault">
+               <representation mediaType="application/json" element="cns:Fault" xmlns:cns="http://schemas.xmlsoap.org/soap/envelope/"/>
+            </response>
+         </method>
+         <method name="GET" soa:wsdlOperation="consultarActaConstitutiva">
+            <doc title="GET consultarActaConstitutiva">Consultar el acta constitutiva de la donataria</doc>
+            <request soa:paramElement="pns:ConsultarActaConstitutivaRequest" xmlns:pns="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1">
+               <param name="idDonataria" style="query" soa:expression="$msg.request/ns10:idDonataria" default="" type="xsd:long">
+                  <doc title="idDonataria">Identificador de la donataria</doc>
+               </param>
+            </request>
+            <response status="200">
+               <representation mediaType="application/json" element="cns:ConsultarActaConstitutivaResponse" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+            </response>
+            <response status="500" soa:wsdlFaultName="registroDonatariaFault">
+               <representation mediaType="application/json" element="cns:Fault" xmlns:cns="http://schemas.xmlsoap.org/soap/envelope/"/>
+            </response>
+         </method>
+      </resource>
+      <resource path="/donataria/representantesLegales">
+         <method name="POST" soa:wsdlOperation="guardarRepresentantesLegales">
+            <doc title="POST guardarRepresentantesLegales">Guarda la información de representantes legales</doc>
+            <request>
+               <representation mediaType="application/json" element="cns:GuardarRepresentantesLegalesRequest" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+            </request>
+            <response status="200">
+               <representation mediaType="application/json" element="cns:GuardarRepresentantesLegalesResponse" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+            </response>
+            <response status="500" soa:wsdlFaultName="registroDonatariaFault">
+               <representation mediaType="application/json" element="cns:Fault" xmlns:cns="http://schemas.xmlsoap.org/soap/envelope/"/>
+            </response>
+         </method>
+         <method name="GET" soa:wsdlOperation="consultarRepresentantesLegales">
+            <doc title="GET consultarRepresentantesLegales">Obtener información de representantes legales de la donataria</doc>
+            <request soa:paramElement="pns:ConsultarRepresentantesLegalesRequest" xmlns:pns="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1">
+               <param name="idDonataria" style="query" soa:expression="$msg.request/ns10:idDonataria" type="xsd:long" default="">
+                  <doc title="idDonataria">Identificador de la donataria</doc>
+               </param>
+            </request>
+            <response status="200">
+               <representation mediaType="application/json" element="cns:ConsultarRepresentantesLegalesResponse" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+            </response>
+            <response status="500" soa:wsdlFaultName="registroDonatariaFault">
+               <representation mediaType="application/json" element="cns:Fault" xmlns:cns="http://schemas.xmlsoap.org/soap/envelope/"/>
+            </response>
+         </method>
+      </resource>
+      <resource path="/donataria">
+         <method name="GET" soa:wsdlOperation="consultarRegistroDonataria">
+            <doc title="GET consultarRegistroDonataria">Consultar los datos del proceso de registro de la donataria</doc>
+            <request soa:paramElement="pns:ConsultarRegistroDonatariaRequest" xmlns:pns="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1">
+               <param name="idDonataria" style="query" soa:expression="$msg.request/ns10:idDonataria" type="xsd:long" default="">
+                  <doc title="idDonataria">Identificador de la donataria</doc>
+               </param>
+            </request>
+            <response status="200">
+               <representation mediaType="application/json" element="cns:ConsultarRegistroDonatariaResponse" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+            </response>
+            <response status="500" soa:wsdlFaultName="registroDonatariaFault">
+               <representation mediaType="application/json" element="cns:Fault" xmlns:cns="http://schemas.xmlsoap.org/soap/envelope/"/>
+            </response>
+         </method>
+      </resource>
+   </resources>
+</application>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="urn:mx.com.nmp.midas"
+                  xmlns:ns2="http://nmpstandardmessage.schema.nmp.servicios.montedepiedad.com.mx"
+                  xmlns:ns1="http://nmpstandardresponse.schema.nmp.servicios.montepiedad.com.mx"
+                  xmlns:soapenc12="http://www.w3.org/2003/05/soap-encoding" xmlns:tns="urn:mx.com.nmp.midas"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:soap11="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:soapenc11="http://schemas.xmlsoap.org/soap/encoding/"
+                  xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">
+  <wsdl:types>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="qualified"
+                elementFormDefault="qualified" targetNamespace="urn:mx.com.nmp.midas">
+                <xsd:import namespace="http://nmpstandardmessage.schema.nmp.servicios.montedepiedad.com.mx"></xsd:import>
+                <xsd:import namespace="http://nmpstandardresponse.schema.nmp.servicios.montepiedad.com.mx"></xsd:import>
+      <xsd:element name="registrarIngresoADeposito">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="1" name="folio" type="xsd:long"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="registrarIngresoADepositoResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="1" name="registrarIngresoADepositoResponse" nillable="true"
+                         type="ns1:MidasStandardResponseType"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="MidasStandardFaultMessage" type="ns2:MidasStandardFaultMessage"/>
+    </xsd:schema>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="qualified"
+                elementFormDefault="qualified"
+                targetNamespace="http://nmpstandardresponse.schema.nmp.servicios.montepiedad.com.mx">
+      <xsd:simpleType name="MidasStandardResponseType">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="OK"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+    </xsd:schema>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="qualified"
+                elementFormDefault="qualified"
+                targetNamespace="http://nmpstandardmessage.schema.nmp.servicios.montedepiedad.com.mx">
+      <xsd:complexType name="MidasStandardFaultMessage">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="faultInfo" nillable="true" type="ns2:MessageError"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="MessageError">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="codigoError" nillable="true" type="xsd:string"/>
+          <xsd:element minOccurs="0" name="descripcionError" nillable="true" type="xsd:string"/>
+          <xsd:element minOccurs="0" name="severidad" nillable="true" type="xsd:string"/>
+          <xsd:element minOccurs="0" name="tipoError" nillable="true" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="registrarIngresoADepositoResponse">
+    <wsdl:part name="parameters" element="tns:registrarIngresoADepositoResponse"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="registrarIngresoADepositoRequest">
+    <wsdl:part name="parameters" element="tns:registrarIngresoADeposito"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="MidasStandardFaultMessage">
+    <wsdl:part name="MidasStandardFaultMessage" element="tns:MidasStandardFaultMessage"></wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="RegistroMovimientoPrendarioPortType">
+    <wsdl:operation name="registrarIngresoADeposito">
+      <wsdl:input name="registrarIngresoADepositoRequest" message="tns:registrarIngresoADepositoRequest"></wsdl:input>
+      <wsdl:output name="registrarIngresoADepositoResponse" message="tns:registrarIngresoADepositoResponse"></wsdl:output>
+      <wsdl:fault name="MidasStandardFaultMessage" message="tns:MidasStandardFaultMessage"></wsdl:fault>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="RegistroMovimientoPrendarioHttpBinding" type="tns:RegistroMovimientoPrendarioPortType">
+    <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="registrarIngresoADeposito">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="registrarIngresoADepositoRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="registrarIngresoADepositoResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="MidasStandardFaultMessage">
+        <wsdlsoap:fault name="MidasStandardFaultMessage" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="RegistroMovimientoPrendario">
+    <wsdl:port name="RegistroMovimientoPrendarioHttpPort" binding="tns:RegistroMovimientoPrendarioHttpBinding">
+      <wsdlsoap:address location="http://localhost:7001/midas-web/services/RegistroMovimientoPrendario"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

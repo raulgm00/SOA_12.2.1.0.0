@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<taskDefinition targetNamespace="http://xmlns.oracle.com/BPM-QUALITAS-PAGOS_ADMINISTRATIVOS/BpmPagosAdministrativos/HTVerificarSolicitudPagoServicios" xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20" xmlns:ora="http://schemas.oracle.com/xpath/extension" xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc" xmlns:task="http://xmlns.oracle.com/bpel/workflow/task" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://xmlns.oracle.com/bpel/workflow/taskDefinition" xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions" xmlns:ns1="http://xmlns.oracle.com/bpm/bpmobject/PagosAdministrativos/Comunes/BoGestionDeProceso" xmlns:socket="http://www.oracle.com/XSL/Transform/java/oracle.tip.adapter.socket.ProtocolTranslator" xmlns:ns0="http://xmlns.oracle.com/bpel/workflow/common" xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:oraxsl="http://www.oracle.com/XSL/Transform/java" xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk" xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:evidence="http://xmlns.oracle.com/bpel/workflow/TaskEvidenceService" xmlns:mhdr="http://www.oracle.com/XSL/Transform/java/oracle.tip.mediator.service.common.functions.MediatorExtnFunction" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath" xmlns:ess="http://xmlns.oracle.com/scheduler" xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions" xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:med="http://schemas.oracle.com/mediator/xpath" xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap">
+   <name>HTVerificarSolicitudPagoServicios</name>
+   <id>${domain_id}_${process_id}_${process_revision}_HTVerificarSolicitudPagoServicios</id>
+   <priority>3</priority>
+   <hideCreator>false</hideCreator>
+   <process processId="" processVersion=""/>
+   <routingSlip xmlns="http://xmlns.oracle.com/bpel/workflow/routingSlip" routingType="TEMPLATE">
+      <globalConfiguration>
+         <applicationContext>OracleBPMProcessRolesApp</applicationContext>
+         <taskOwner type="STATIC" identityType="application_role">BpmPagosAdministrativos.ProcessOwner</taskOwner>
+         <expirationDuration duration="PT2H" type="STATIC" useBusinessCalendar="false"/>
+         <sharePayloadConfiguration>
+            <type>USE_SYSTEM_WIDE_GLOBAL_CONFIGURATION</type>
+         </sharePayloadConfiguration>
+         <errorOnEmptyAssignee>false</errorOnEmptyAssignee>
+      </globalConfiguration>
+      <participants isAdhocRoutingSupported="false">
+         <stage name="Stage1" disabled="false">
+            <participant disabled="false" name="default.DefaultPerformer">
+               <resource identityType="application_role" type="XPATH">bpm:getPerformer()</resource>
+            </participant>
+         </stage>
+      </participants>
+      <notification includeTaskAttachments="false" actionable="false" secureNotifications="false" oneNotificationPerUserPerAction="false" hideWorklistUrlInEmail="true">
+         <action name="ALL_OTHER_ACTIONS" recipient="ASSIGNEES"><![CDATA[concat(string('Task '), /task:task/task:title, string(' requires your attention.'))]]></action>
+         <action name="ALL_OTHER_ACTIONS" adhocRecipients="" recipient="EMAILADDRESSES"><![CDATA[concat(string('<h1><p style="COLOR:white; BACKGROUND:#008C99;" align="CENTER">GESTIÓN DE PAGOS ADMINISTRATIVOS</p></h1> <h3>Servicio de Notificaciones</h3>Estimado(a) rol<br><br>Se le notifica que se ha <b>CANCELADO la Solicitud de Pago de Servicios: '), /task:task/task:payload/ns1:BoGestionDeProceso/ns1:idSolicitud, string(', </b> correspondiente al proceso <b>'), /task:task/task:payload/ns1:BoGestionDeProceso/ns1:nombreProceso, string('</b> asociado al Prestador <b>'), /task:task/task:payload/ns1:BoGestionDeProceso/ns1:razonSocialPrestador, string(',</b><br><br>Ya que expiró el tiempo límite de 3 días hábiles para la Verificación de la solicitud.<br><br>Saludos Cordiales,</em><br><br>Este correo es generado automáticamente por favor no responder. Si necesita mas información por favor comuníquese con el equipo de TI.<br><IMG SRC="firmaGPA.jpg" WIDTH=178 HEIGHT=180>'))]]></action>
+         <action name="ALERT" recipient="OWNER"><![CDATA[concat(string('Task '), /task:task/task:title, string(' requires your attention.'))]]></action>
+         <groupNotificationConfiguration>SEND_INDIVIDUAL_NOTIFICATION</groupNotificationConfiguration>
+         <commentScope>TASK</commentScope>
+      </notification>
+   </routingSlip>
+   <workflowConfiguration features="ucm,RSCUSTOMIZATION" xmlns:ns0="http://xmlns.oracle.com/bpm/bpmobject/PagosAdministrativos/Comunes/BoGestionDeProceso" xmlns="http://xmlns.oracle.com/bpel/workflow/configuration">
+      <outcomes>
+         <outcome>CONTINUAR</outcome>
+         <outcome>CANCELAR</outcome>
+      </outcomes>
+      <payload externalSchema="false" xmlSchemaDefinition="../Schemas/HTVerificarSolicitudPagoServiciosPayload.xsd" typedTaskSchemaLocation="../Schemas/HTVerificarSolicitudPagoServiciosWorkflowTask.xsd">
+         <messageAttribute name="BoGestionDeProceso" attributeType="ELEMENT" type="ns0:BoGestionDeProceso" updatable="true" external="false"/>
+      </payload>
+      <bpelEventListener>false</bpelEventListener>
+      <bpelNoCallbacks>false</bpelNoCallbacks>
+      <showCompleteGraphicalHistory>true</showCompleteGraphicalHistory>
+      <reevalTranslatablesOnUpdate>false</reevalTranslatablesOnUpdate>
+      <preActionMandatoryUserSteps/>
+      <allowInitiatorEditParticipants>false</allowInitiatorEditParticipants>
+      <allowParticipantsEditParticipants>false</allowParticipantsEditParticipants>
+      <globalCreationTask>false</globalCreationTask>
+      <enableAutoClaim>true</enableAutoClaim>
+      <workflowConditions/>
+      <taskSequenceTypes>FUTURE</taskSequenceTypes>
+      <taskSequenceTypes>AGGREGATE</taskSequenceTypes>
+   </workflowConfiguration>
+</taskDefinition>

@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<adapter-config name="ConsultaMotivoRech" adapter="db" wsdlLocation="../WSDLs/ConsultaMotivoRech.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+   <connection-factory UIConnectionName="GPAConnDB" location="eis/DB/GPAConnDB"/>
+   <endpoint-interaction portType="ConsultaMotivoRech_ptt" operation="ConsultaMotivoRech">
+      <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+         <property name="SqlString" value="select TX_COMENTARIO from GPA007_OBSERVACIONES WHERE ID_SEGUIMIENTO = (select ID_SEGUIMIENTO from GPA005_SEGUIMIENTO where ID_SEGUIMIENTO = (select max(ID_SEGUIMIENTO) from GPA005_SEGUIMIENTO where ID_SOLICITUD = #idSolicitud))"/>
+         <property name="GetActiveUnitOfWork" value="false"/>
+      </interaction-spec>
+   </endpoint-interaction>
+</adapter-config>

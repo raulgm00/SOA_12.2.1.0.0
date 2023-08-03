@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:NMPOferta="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPOferta"
+            targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPOferta"
+            elementFormDefault="qualified" version="2.0">
+<!--Example element-->
+<xsd:element name="Oferta" type="NMPOferta:OfertaType" />  
+
+<!-- Simple Type -->
+  <xsd:simpleType name="decimalType">
+    <xsd:restriction base="xsd:decimal">
+      <xsd:fractionDigits value="5"/>
+      <xsd:totalDigits value="15"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+<xsd:complexType name="OfertaType">
+        <xsd:sequence>
+            <xsd:element name="tipoIncremento" type="xsd:int" minOccurs="0"/>
+            <xsd:element name="resultado" type="NMPOferta:decimalType" minOccurs="0"/>
+            <xsd:element name="nombreProducto" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="tipoOferta" type="NMPOferta:tipoOfertaType" minOccurs="0"/>
+            <xsd:element name="fechaVencimientoOferta" type="xsd:date" minOccurs="0"/>
+            <xsd:element name="listaOpcionesPlazo" minOccurs="0">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="opcionesPlazo" maxOccurs="unbounded" type="NMPOferta:opcionesPlazoType"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:simpleType name="tipoOfertaType">
+        <xsd:restriction base="xsd:int">
+            <xsd:enumeration value="1">
+                <xsd:annotation>
+                    <xsd:documentation>CREDITO</xsd:documentation>
+                </xsd:annotation>              
+            </xsd:enumeration>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:complexType name="opcionesPlazoType">
+        <xsd:sequence>
+            <xsd:element name="idOfrecimiento" minOccurs="0" type="xsd:string"/>
+            <xsd:element name="tasa" type="NMPOferta:decimalType" minOccurs="0"/>
+            <xsd:element name="plazo" type="xsd:int" minOccurs="0"/>
+            <xsd:element name="pago" type="NMPOferta:decimalType" minOccurs="0"/>
+            <xsd:element name="frecuencia" type="xsd:int" minOccurs="0"/>
+            <xsd:element name="monto" type="NMPOferta:decimalType" minOccurs="0"/>
+			<xsd:element name="isInteresado" type="xsd:boolean" minOccurs="0"/>
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:int"/>
+    </xsd:complexType>
+</xsd:schema>

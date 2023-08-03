@@ -1,0 +1,62 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+            attributeFormDefault="unqualified" targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/EmailOpPrendaria"
+            xmlns:sales="http://servicios.montedepiedad.com.mx/NMP/Schema/EmailOpPrendaria">
+  <xsd:complexType name="ContentType">
+    <xsd:sequence>
+      <xsd:element name="MimeType" type="xsd:string" default="text/plain" minOccurs="0"/>
+      <xsd:element name="ContentBody" type="sales:OrderIndicatorType"/>
+      <xsd:element name="ContentEncoding" type="xsd:string" nillable="true"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="EmailPayloadType">
+    <xsd:sequence>
+      <xsd:element name="FromAccountName" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="To" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="ReplyToAddress" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="Subject" type="xsd:string"/>
+      <xsd:element name="attachments" type="sales:attachments"/>
+      <xsd:element name="Content" type="sales:ContentType"/>
+      <xsd:element name="Cc" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="Bcc" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="OrderIndicatorType">
+    <xsd:sequence>
+      <xsd:element name="OrderID" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="OrderAmount" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="CustomerID" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="QuoteID" type="xsd:string"/>
+      <xsd:element name="BusinessUnitID" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="attachments">
+    <xsd:sequence>
+      <xsd:element name="attachment" type="sales:attachment" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="attachment">
+    <xsd:sequence>
+      <xsd:element name="filename" type="xsd:string"/>
+      <xsd:element name="contents" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="attachments">
+    <xsd:annotation>
+      <xsd:documentation>A sample element</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="attachment" type="sales:attachment_" maxOccurs="unbounded" minOccurs="0"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:complexType name="attachment_">
+    <xsd:sequence>
+      <xsd:element name="Content-Type" type="xsd:string"/>
+      <xsd:element name="Content-Transfer-Encoding" type="xsd:string"/>
+      <xsd:element name="Content-Disposition" type="xsd:string"/>
+      <xsd:element name="body" type="xsd:base64Binary"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="EmailPayload" type="sales:EmailPayloadType"/>
+</xsd:schema>

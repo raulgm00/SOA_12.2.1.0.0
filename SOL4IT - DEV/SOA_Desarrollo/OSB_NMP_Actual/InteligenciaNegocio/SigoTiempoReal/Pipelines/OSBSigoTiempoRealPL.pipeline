@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/typesystem/config" xmlns:con2="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con3="http://www.bea.com/wli/sb/stages/config" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con5="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con6="http://www.bea.com/wli/sb/stages/alert/config">
+    <con:coreEntry>
+        <con:description>Pipeline del flujo de envio hacia BAM 12c. En este flujo se hace la seleccion de las operaciones que se deben distribuir hacia BAM, transformar en caso de encontrarse una operacion de reempeno y a un bpel (SIGOLoanStatus) que se encargara de gestionar el envio.</con:description>
+        <con:binding type="Mixed" xsi:type="con:MixedBindingType">
+            <con:request type="XML">
+                <con1:schema ref="OperacionPrendaria/Prestamo/Resources/Schemas/PrestamoSvcXSD" element="updatePrestamoRequest"/>
+            </con:request>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:tracingEnabled>true</oper:tracingEnabled>
+            <oper:logging enabled="false" level="debug"/>
+            <oper:monitoring enabled="true" level="action" aggregationInterval="1440"/>
+            <oper:sla-alerting enabled="true" level="major"/>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router errorHandler="error-N3f57c7ff.N476ff273.0.152e5dc2074.N7e9c">
+        <con:pipeline type="error" name="error-N3f57c7ff.N476ff273.0.152e5dc2074.N7e9c">
+            <con:stage id="_StageId-N3f57c7ff.N476ff273.0.152e5dc2074.N7e9b" name="StageGeneralError">
+                <con:comment>Manejador general de errores en el procesamiento o direccionamiento de información a BAM 12c</con:comment>
+                <con:context>
+                    <con3:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPrestamo"/>
+                </con:context>
+                <con:actions>
+                    <con5:report>
+                        <con3:comment>Reportar peticon con fallo en el procesamiento a BAM 12c</con3:comment>
+                        <con3:id>_ActionId-a1e041d.N6fa7e44f.5.15440df887c.N8000</con3:id>
+                        <con5:expr>
+                            <con3:xqueryText>$msgId</con3:xqueryText>
+                        </con5:expr>
+                        <con5:labels>
+                            <con5:key>FechaOperacionBAM:</con5:key>
+                            <con5:varName>bodyBkp</con5:varName>
+                            <con5:value>
+                                <con3:xpathText>./nmp:updatePrestamoRequest/nmp:fechaOperacion</con3:xpathText>
+                            </con5:value>
+                        </con5:labels>
+                        <con5:labels>
+                            <con5:key>Notificacion:</con5:key>
+                            <con5:varName>fault</con5:varName>
+                            <con5:value>
+                                <con3:xpathText>./ctx:reason</con3:xpathText>
+                            </con5:value>
+                        </con5:labels>
+                    </con5:report>
+                    <con6:alert>
+                        <con3:comment>Generar alerta con en el procesamiento o direccionamiento de información a BAM 12c</con3:comment>
+                        <con3:id>_ActionId-N3f57c7ff.N476ff273.0.152e5dc2074.N7e68</con3:id>
+                        <con6:destination ref="InteligenciaNegocio/SigoTiempoReal/Resources/Alerts/NMPSigoTiempoRealAlert"/>
+                        <con6:description>Se genero una excepción al generar mensaje para BAM 12c.</con6:description>
+                        <con6:severity>major</con6:severity>
+                        <con6:payload>
+                            <con3:xqueryText>fn:substring($fault/ctx:reason, 0, 1500)</con3:xqueryText>
+                        </con6:payload>
+                    </con6:alert>
+                    <con3:resume>
+                        <con3:comment>Reanudar flujo una vez que se ha notificado el problema</con3:comment>
+                        <con3:id>_ActionId-N3f57c7ff.Nff091a2.0.1568a16d200.N7f2e</con3:id>
+                    </con3:resume>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.N7eca5ac3.0.152a43f0597.N7ff7">
+            <con:stage id="_StageId-N3f57c7ff.Nff091a2.0.1568a16d200.N7f9a" name="StageGetMsgId">
+                <con:comment>Almacenar informacion para dar trazabilidad a la peticion</con:comment>
+                <con:context/>
+                <con:actions>
+                    <con4:assign varName="msgId">
+                        <con3:comment>Almacenar en variable el Message ID de la petición al servicio Prestamo</con3:comment>
+                        <con3:id>_ActionId-N3f57c7ff.Nff091a2.0.1568a16d200.N7f67</con3:id>
+                        <con4:expr>
+                            <con3:xqueryText>$inbound/ctx:transport/ctx:request/tp:headers/jms:JMSCorrelationID</con3:xqueryText>
+                        </con4:expr>
+                    </con4:assign>
+                    <con4:assign varName="bodyBkp">
+                        <con3:comment>Generar un respaldo de la peticion entrante al servicio para registro en BAM 12c</con3:comment>
+                        <con3:id>_ActionId-a1e041d.N6fa7e44f.4.15440deb3af.N8000</con3:id>
+                        <con4:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con4:expr>
+                    </con4:assign>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57c7ff.N7eca5ac3.0.152a43f0597.N7ff5" name="StageLoanToSIGO">
+                <con:comment>Transformacion y direccionamiento de informacion hacia BAM 12c</con:comment>
+                <con:context>
+                    <con3:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPrestamo"/>
+                </con:context>
+                <con:actions>
+                    <con5:report>
+                        <con3:comment>Reportar entrada de peticion para dar trazabilidad</con3:comment>
+                        <con3:id>_ActionId-N3f57c7ff.Nff091a2.0.1568a16d200.N7f33</con3:id>
+                        <con5:expr>
+                            <con3:xqueryText>$msgId</con3:xqueryText>
+                        </con5:expr>
+                        <con5:labels>
+                            <con5:key>FechaOperacionBAM:</con5:key>
+                            <con5:varName>body</con5:varName>
+                            <con5:value>
+                                <con3:xpathText>./nmp:updatePrestamoRequest/nmp:fechaOperacion</con3:xpathText>
+                            </con5:value>
+                        </con5:labels>
+                    </con5:report>
+                    <con3:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:env="http://www.bea.com/wli/config/env" xmlns:jms="http://www.bea.com/wli/sb/transports/jms" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:con6="http://www.bea.com/wli/sb/pipeline/config" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:con4="http://www.bea.com/wli/sb/stages/publish/config" xmlns:con5="http://www.bea.com/wli/sb/typesystem/config" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Determinar si en el mensaje entrante se especifico de origen el tag de ID Sucursal.</con7:comment>
+                        <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-N3f57c7ff.N476ff273.0.152e5dc2074.N7c1f</con7:id>
+                        <con3:case id="_BranchId-N3f57c7ff.N476ff273.0.152e5dc2074.N7c1e">
+                            <con3:condition>
+                                <con7:xqueryText xmlns:con7="http://www.bea.com/wli/sb/stages/config">fn:empty($body/*:updatePrestamoRequest/*:idSucursal) = fn:false()</con7:xqueryText>
+                            </con3:condition>
+                            <con3:actions>
+                                <con3:assign varName="idSucursal">
+                                    <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Se asigna el ID Sucursal para agregarse a cada una de las operaciones que conforman la transacción.</con7:comment>
+                                    <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-N3f57c7ff.N476ff273.0.152e5dc2074.N7c1d</con7:id>
+                                    <con3:expr>
+                                        <con7:xqueryText xmlns:con7="http://www.bea.com/wli/sb/stages/config">$body/*:updatePrestamoRequest/*:idSucursal</con7:xqueryText>
+                                    </con3:expr>
+                                </con3:assign>
+                            </con3:actions>
+                        </con3:case>
+                        <con3:default>
+                            <con3:Error>
+                                <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Generar error en caso de no encontrarse el ID de la sucursal en la transaccion</con7:comment>
+                                <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-N3f57c7ff.N476ff273.0.152e5dc2074.N7bb5</con7:id>
+                                <con3:errCode>NMP-008</con3:errCode>
+                                <con3:message>Error aplicación - Error en los parámetros del mensaje</con3:message>
+                            </con3:Error>
+                        </con3:default>
+                    </con3:ifThenElse>
+                    <con3:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:env="http://www.bea.com/wli/config/env" xmlns:jms="http://www.bea.com/wli/sb/transports/jms" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:con6="http://www.bea.com/wli/sb/pipeline/config" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:con4="http://www.bea.com/wli/sb/stages/publish/config" xmlns:con5="http://www.bea.com/wli/sb/typesystem/config" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Determinar si en el mensaje entrante se especifico de origen el tag de Fecha Operacion.</con7:comment>
+                        <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-N3f57c7ff.N476ff273.0.152e5dc2074.N7c92</con7:id>
+                        <con3:case id="_BranchId-N3f57c7ff.N476ff273.0.152e5dc2074.N7c91">
+                            <con3:condition>
+                                <con7:xqueryText xmlns:con7="http://www.bea.com/wli/sb/stages/config">fn:empty($body/*:updatePrestamoRequest/*:fechaOperacion) = fn:false()</con7:xqueryText>
+                            </con3:condition>
+                            <con3:actions>
+                                <con3:assign varName="fechaOperacion">
+                                    <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Se asigna el la Fecha Operacion para agregarse a cada una de las operaciones que conforman la transacción.</con7:comment>
+                                    <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-N3f57c7ff.N476ff273.0.152e5dc2074.N7c90</con7:id>
+                                    <con3:expr>
+                                        <con7:xqueryText xmlns:con7="http://www.bea.com/wli/sb/stages/config">$body/*:updatePrestamoRequest/*:fechaOperacion</con7:xqueryText>
+                                    </con3:expr>
+                                </con3:assign>
+                            </con3:actions>
+                        </con3:case>
+                        <con3:default>
+                            <con3:Error>
+                                <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Generar error en caso de no encontrarse la fecha operacion en la transaccion</con7:comment>
+                                <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-N3f57c7ff.N476ff273.0.152e5dc2074.N7b81</con7:id>
+                                <con3:errCode>NMP-008</con3:errCode>
+                                <con3:message>Error aplicación - Error en los parámetros del mensaje</con3:message>
+                            </con3:Error>
+                        </con3:default>
+                    </con3:ifThenElse>
+                    <con3:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:env="http://www.bea.com/wli/config/env" xmlns:jms="http://www.bea.com/wli/sb/transports/jms" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:con6="http://www.bea.com/wli/sb/pipeline/config" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:con4="http://www.bea.com/wli/sb/stages/publish/config" xmlns:con5="http://www.bea.com/wli/sb/typesystem/config" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Determinar si en el mensaje entrante se especifico de origen el tag de esReempeno.</con7:comment>
+                        <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-N3f57c7ff.63e6ce86.0.152ad1967e9.N7f8b</con7:id>
+                        <con3:case id="_BranchId-N3f57c7ff.63e6ce86.0.152ad1967e9.N7f8a">
+                            <con3:condition>
+                                <con7:xqueryText xmlns:con7="http://www.bea.com/wli/sb/stages/config">fn:exists($body/*:updatePrestamoRequest/*:esReempeno) = fn:true() and 
+fn:empty($body/*:updatePrestamoRequest/*:esReempeno) = fn:false()</con7:xqueryText>
+                            </con3:condition>
+                            <con3:actions>
+                                <con3:assign varName="esReempeno">
+                                    <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Se toma el valor de esReempeno del mensaje entrate para posteriormente determinar que las operaciones en la transacción son de re-empeño. Los valores que se pueden encontrar son true o false.</con7:comment>
+                                    <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-N3f57c7ff.63e6ce86.0.152ad1967e9.N7f89</con7:id>
+                                    <con3:expr>
+                                        <con7:xqueryText xmlns:con7="http://www.bea.com/wli/sb/stages/config">$body/*:updatePrestamoRequest/*:esReempeno</con7:xqueryText>
+                                    </con3:expr>
+                                </con3:assign>
+                            </con3:actions>
+                        </con3:case>
+                        <con3:default>
+                            <con3:assign varName="esReempeno">
+                                <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">En caso de que no se tenga el tag esReempeno del mensaje entrate, se determina que las operaciones de la transacción no son operaciones de re-empeño. En este caso, toma que las operaciones no están marcadas como re-empeño.</con7:comment>
+                                <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-N3f57c7ff.63e6ce86.0.152ad1967e9.N7f88</con7:id>
+                                <con3:expr>
+                                    <con7:xqueryText xmlns:con7="http://www.bea.com/wli/sb/stages/config">fn:false()</con7:xqueryText>
+                                </con3:expr>
+                            </con3:assign>
+                        </con3:default>
+                    </con3:ifThenElse>
+                    <con3:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:env="http://www.bea.com/wli/config/env" xmlns:jms="http://www.bea.com/wli/sb/transports/jms" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:con6="http://www.bea.com/wli/sb/pipeline/config" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:con4="http://www.bea.com/wli/sb/stages/publish/config" xmlns:con5="http://www.bea.com/wli/sb/typesystem/config" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Determinar si en el mensaje entrante se especifico de origen el tag de esCancelacion.</con7:comment>
+                        <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-N3f57c7ff.N7eca5ac3.0.152a43f0597.N7f7f</con7:id>
+                        <con3:case id="_BranchId-N3f57c7ff.N7eca5ac3.0.152a43f0597.N7f7e">
+                            <con3:condition>
+                                <con7:xqueryText xmlns:con7="http://www.bea.com/wli/sb/stages/config">fn:exists($body/*:updatePrestamoRequest/*:esCancelacion) = fn:true() and 
+fn:empty($body/*:updatePrestamoRequest/*:esCancelacion) = fn:false()</con7:xqueryText>
+                            </con3:condition>
+                            <con3:actions>
+                                <con3:assign varName="esCancelacion">
+                                    <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Se toma el valor de esCancelacion del mensaje entrate para posteriormente determinar que las operaciones en la transacción son de cancelaciones. Los valores que se pueden encontrar son true o false.</con7:comment>
+                                    <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-N3f57c7ff.N7eca5ac3.0.152a43f0597.N7f7d</con7:id>
+                                    <con3:expr>
+                                        <con7:xqueryText xmlns:con7="http://www.bea.com/wli/sb/stages/config">$body/*:updatePrestamoRequest/*:esCancelacion</con7:xqueryText>
+                                    </con3:expr>
+                                </con3:assign>
+                            </con3:actions>
+                        </con3:case>
+                        <con3:default>
+                            <con3:assign varName="esCancelacion">
+                                <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">En caso de que no se tenga el tag esCancelacion del mensaje entrate, se determina que las operaciones de la transacción no son operaciones de cancelacion. En este caso, toma que las operaciones no están marcadas como cancelacion.</con7:comment>
+                                <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-N3f57c7ff.63e6ce86.0.152ad1967e9.N7ffb</con7:id>
+                                <con3:expr>
+                                    <con7:xqueryText xmlns:con7="http://www.bea.com/wli/sb/stages/config">fn:false()</con7:xqueryText>
+                                </con3:expr>
+                            </con3:assign>
+                        </con3:default>
+                    </con3:ifThenElse>
+                    <con4:assign varName="dvmTipoOperacion">
+                        <con3:comment>Se carga el DVM dvmTipoOperacion en una variable para poder consultarlo durante el flujo del proxy service</con3:comment>
+                        <con3:id>_ActionId-N3f57c7ff.63e6ce86.0.152ad1967e9.N7f85</con3:id>
+                        <con4:expr>
+                            <con3:xqueryTransform>
+                                <con3:resource ref="Common/DVM/TipoOperacionDVM"/>
+                            </con3:xqueryTransform>
+                        </con4:expr>
+                    </con4:assign>
+                    <con4:assign varName="dvmRazonRechazo">
+                        <con3:comment>Se carga el DVM dvmRazonRechazo en una variable para poder consultarlo durante el flujo del proxy service</con3:comment>
+                        <con3:id>_ActionId-N3f57c7ff.63e6ce86.0.152ad1967e9.N7f82</con3:id>
+                        <con4:expr>
+                            <con3:xqueryTransform>
+                                <con3:resource ref="Common/DVM/TipoRechazoDVM"/>
+                            </con3:xqueryTransform>
+                        </con4:expr>
+                    </con4:assign>
+                    <con4:assign varName="loanOperaciones">
+                        <con3:comment>Se crea una copia de la transacción entrante para posterirormente realizar el recorrido de cada una de las operaciones que contiene.</con3:comment>
+                        <con3:id>_ActionId-N3f57c7ff.N7eca5ac3.0.152a43f0597.N7ffb</con3:id>
+                        <con4:expr>
+                            <con3:xqueryText>$body</con3:xqueryText>
+                        </con4:expr>
+                    </con4:assign>
+                    <con4:assign varName="totalOperaciones">
+                        <con3:comment>Se obtiene el total de operaciones contenidas en la transacción entrante.</con3:comment>
+                        <con3:id>_ActionId-N3f57c7ff.N7eca5ac3.0.152a43f0597.N7ff8</con3:id>
+                        <con4:expr>
+                            <con3:xqueryText>fn:count($loanOperaciones/*:updatePrestamoRequest/*:ListaOperaciones/*:Operacion)</con3:xqueryText>
+                        </con4:expr>
+                    </con4:assign>
+                    <con4:foreach>
+                        <con3:comment>Se realiza el recorrido de cada una de las operaciones de la transacción entrante para ser enviado al compuesto de SOA (SIGOLoanStatus) que alimenta a BAM 12c. La extracción por operación se realiza sobre la variable $loanOperacion.</con3:comment>
+                        <con3:id>_ActionId-N3f57c7ff.N7eca5ac3.0.152a43f0597.N7fef</con3:id>
+                        <con4:variable>loanOperaciones</con4:variable>
+                        <con4:expression>
+                            <con3:xpathText>./*:updatePrestamoRequest/*:ListaOperaciones/*:Operacion</con3:xpathText>
+                        </con4:expression>
+                        <con4:value-variable>loanOperacion</con4:value-variable>
+                        <con4:index-variable>indexOperacion</con4:index-variable>
+                        <con4:total-variable>totalOperaciones</con4:total-variable>
+                        <con4:actions>
+                            <con4:ifThenElse xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:env="http://www.bea.com/wli/config/env" xmlns:jms="http://www.bea.com/wli/sb/transports/jms" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:con6="http://www.bea.com/wli/sb/pipeline/config" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:con5="http://www.bea.com/wli/sb/typesystem/config" xmlns:tran="http://www.bea.com/wli/sb/transports">
+                                <con3:comment>Determinar si en el mensaje entrante el Tipo Operacion no esta vacío para la operación extraída en en la iteración actual.</con3:comment>
+                                <con3:id>_ActionId-N3f57c7ff.N4c4dd9b0.0.152c322131e.N7f16</con3:id>
+                                <con4:case id="_BranchId-N3f57c7ff.N4c4dd9b0.0.152c322131e.N7f15">
+                                    <con4:condition>
+                                        <con3:xqueryText>fn:empty($loanOperacion/*:Prestamo/*:tipoOperacion) = fn:false()</con3:xqueryText>
+                                    </con4:condition>
+                                    <con4:actions>
+                                        <con4:assign varName="idTipoOperacion">
+                                            <con3:comment>Obtiene el ID del Tipo Operación para la operación extraída en en la iteración actual. En este caso existe un valor para realizar la búsqueda en el DVM TipoOperacionDVM.</con3:comment>
+                                            <con3:id>_ActionId-N3f57c7ff.N4c4dd9b0.0.152c322131e.N7f14</con3:id>
+                                            <con4:expr>
+                                                <con3:xqueryTransform>
+                                                    <con3:resource ref="Common/XQ/GetDvmPropertieXQ"/>
+                                                    <con3:param name="indexUseToSearch">
+                                                        <con3:path>2</con3:path>
+                                                    </con3:param>
+                                                    <con3:param name="valueUseToSearch">
+                                                        <con3:path>fn:string($loanOperacion/*:Prestamo/*:tipoOperacion)</con3:path>
+                                                    </con3:param>
+                                                    <con3:param name="propertieIndexReturn">
+                                                        <con3:path>1</con3:path>
+                                                    </con3:param>
+                                                    <con3:param name="dvm">
+                                                        <con3:path>$dvmTipoOperacion</con3:path>
+                                                    </con3:param>
+                                                </con3:xqueryTransform>
+                                            </con4:expr>
+                                        </con4:assign>
+                                        <con4:replace varName="loanOperacion" contents-only="true">
+                                            <con3:comment>Sustituir el código del Tipo Operacion por el ID para la operación extraída en en la iteración actual.</con3:comment>
+                                            <con3:id>_ActionId-N3f57c7ff.N4c4dd9b0.0.152c322131e.N7f13</con3:id>
+                                            <con4:location>
+                                                <con3:xpathText>./*:Prestamo/*:tipoOperacion</con3:xpathText>
+                                            </con4:location>
+                                            <con4:expr>
+                                                <con3:xqueryText>$idTipoOperacion</con3:xqueryText>
+                                            </con4:expr>
+                                        </con4:replace>
+                                    </con4:actions>
+                                </con4:case>
+                                <con4:default>
+                                    <con4:replace varName="loanOperacion" contents-only="true">
+                                        <con3:comment>En caso de no encontrarse Tipo Operacion en la operación extraida y para generar un flujo normal se usará el comodín 0.</con3:comment>
+                                        <con3:id>_ActionId-N3f57c7ff.5e3c315b.0.152e5b346aa.N7f9a</con3:id>
+                                        <con4:location>
+                                            <con3:xpathText>./*:Prestamo/*:tipoOperacion</con3:xpathText>
+                                        </con4:location>
+                                        <con4:expr>
+                                            <con3:xqueryText>'0'</con3:xqueryText>
+                                        </con4:expr>
+                                    </con4:replace>
+                                </con4:default>
+                            </con4:ifThenElse>
+                            <con4:assign varName="loanOperacion" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:env="http://www.bea.com/wli/config/env" xmlns:jms="http://www.bea.com/wli/sb/transports/jms" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:con6="http://www.bea.com/wli/sb/pipeline/config" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:tran="http://www.bea.com/wli/sb/transports">
+                                <con3:comment>Realiza la transformación del mensaje de la operación extraída en la iteración actual al requerido para mandar al Servicio BPEL (SIGOLoanStatus).</con3:comment>
+                                <con3:id>_ActionId-N3f57c7ff.N4c4dd9b0.0.152c322131e.N7f90</con3:id>
+                                <con4:expr>
+                                    <con3:xqueryTransform>
+                                        <con3:resource ref="InteligenciaNegocio/SigoTiempoReal/Resources/Transformations/TROpEstructuraBam"/>
+                                        <con3:param name="idSucursal">
+                                            <con3:path>fn:data($idSucursal)</con3:path>
+                                        </con3:param>
+                                        <con3:param name="esCancelacion">
+                                            <con3:path>fn:data($esCancelacion)</con3:path>
+                                        </con3:param>
+                                        <con3:param name="esReempeno">
+                                            <con3:path>fn:data($esReempeno)</con3:path>
+                                        </con3:param>
+                                        <con3:param name="loanStatusOp">
+                                            <con3:path>$loanOperacion</con3:path>
+                                        </con3:param>
+                                        <con3:param name="fechaOperacion">
+                                            <con3:path>fn:data($fechaOperacion)</con3:path>
+                                        </con3:param>
+                                    </con3:xqueryTransform>
+                                </con4:expr>
+                            </con4:assign>
+                            <con4:ifThenElse>
+                                <con3:comment>Determinar si en la operación extraída en la iteración actual el ID Razón Rechazo esta o no vacío.</con3:comment>
+                                <con3:id>_ActionId-N3f57c7ff.63e6ce86.0.152ad1967e9.N7f6a</con3:id>
+                                <con4:case id="_BranchId-N3f57c7ff.63e6ce86.0.152ad1967e9.N7f69">
+                                    <con4:condition>
+                                        <con3:xqueryText>fn:empty($loanOperacion/*:loan/*:IdRazonRechazo/text()) = fn:false()</con3:xqueryText>
+                                    </con4:condition>
+                                    <con4:actions>
+                                        <con4:assign varName="idRazonRechazo">
+                                            <con3:comment>Obtiene el ID de la Razón Rechazo para la operación extraída en en la iteración actual. En este caso existe un valor para realizar la búsqueda en el DVM TipoRechazoDVM.</con3:comment>
+                                            <con3:id>_ActionId-N3f57c7ff.63e6ce86.0.152ad1967e9.N7f71</con3:id>
+                                            <con4:expr>
+                                                <con3:xqueryTransform>
+                                                    <con3:resource ref="Common/XQ/GetDvmPropertieXQ"/>
+                                                    <con3:param name="indexUseToSearch">
+                                                        <con3:path>1</con3:path>
+                                                    </con3:param>
+                                                    <con3:param name="valueUseToSearch">
+                                                        <con3:path>xs:string($loanOperacion/*:loan/*:IdRazonRechazo)</con3:path>
+                                                    </con3:param>
+                                                    <con3:param name="propertieIndexReturn">
+                                                        <con3:path>2</con3:path>
+                                                    </con3:param>
+                                                    <con3:param name="dvm">
+                                                        <con3:path>$dvmRazonRechazo</con3:path>
+                                                    </con3:param>
+                                                </con3:xqueryTransform>
+                                            </con4:expr>
+                                        </con4:assign>
+                                        <con4:replace varName="loanOperacion" contents-only="true">
+                                            <con3:comment>Sustituir el ID Razón Rechazo para la operación extraída en en la iteración actual.</con3:comment>
+                                            <con3:id>_ActionId-N3f57c7ff.63e6ce86.0.152ad1967e9.N7f0c</con3:id>
+                                            <con4:location>
+                                                <con3:xpathText>./*:loan/*:IdRazonRechazo</con3:xpathText>
+                                            </con4:location>
+                                            <con4:expr>
+                                                <con3:xqueryText>$idRazonRechazo</con3:xqueryText>
+                                            </con4:expr>
+                                        </con4:replace>
+                                    </con4:actions>
+                                </con4:case>
+                                <con4:default/>
+                            </con4:ifThenElse>
+                            <con4:ifThenElse>
+                                <con3:comment>Obtener del DVM TipoOperacionDVM la bandera que indica que la operación deberá ser enviada a BAM 12c.</con3:comment>
+                                <con3:id>_ActionId-N3f57c7ff.5e3c315b.0.152e5b346aa.N7f90</con3:id>
+                                <con4:case id="_BranchId-N3f57c7ff.5e3c315b.0.152e5b346aa.N7f8f">
+                                    <con4:condition>
+                                        <con3:xqueryText>fn:data($loanOperacion/*:loan/*:TipoOperacion) != 0</con3:xqueryText>
+                                    </con4:condition>
+                                    <con4:actions>
+                                        <con4:assign varName="esOperacionBam">
+                                            <con3:comment>Obtener bandera que indica que la operación debe ser enviado a BAM 12c. Este valor se obtiene del DVM TipoOperacionDVM.</con3:comment>
+                                            <con3:id>_ActionId-N3f57c7ff.63e6ce86.0.152ad1967e9.N7f7c</con3:id>
+                                            <con4:expr>
+                                                <con3:xqueryTransform>
+                                                    <con3:resource ref="Common/XQ/GetDvmPropertieXQ"/>
+                                                    <con3:param name="indexUseToSearch">
+                                                        <con3:path>1</con3:path>
+                                                    </con3:param>
+                                                    <con3:param name="valueUseToSearch">
+                                                        <con3:path>fn:data($loanOperacion/*:loan/*:TipoOperacion)</con3:path>
+                                                    </con3:param>
+                                                    <con3:param name="propertieIndexReturn">
+                                                        <con3:path>5</con3:path>
+                                                    </con3:param>
+                                                    <con3:param name="dvm">
+                                                        <con3:path>$dvmTipoOperacion</con3:path>
+                                                    </con3:param>
+                                                </con3:xqueryTransform>
+                                            </con4:expr>
+                                        </con4:assign>
+                                    </con4:actions>
+                                </con4:case>
+                                <con4:default>
+                                    <con4:assign varName="esOperacionBam">
+                                        <con3:comment>En caso de encontrarse que existe Tipo Operación en 0, es porque no se encontro un ID en el mensaje original por lo que para evitar un error se esta usando el comodin 0 para continuar con e flujo normal.</con3:comment>
+                                        <con3:id>_ActionId-N3f57c7ff.5e3c315b.0.152e5b346aa.N7f5a</con3:id>
+                                        <con4:expr>
+                                            <con3:xqueryText>'no'</con3:xqueryText>
+                                        </con4:expr>
+                                    </con4:assign>
+                                </con4:default>
+                            </con4:ifThenElse>
+                            <con3:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:env="http://www.bea.com/wli/config/env" xmlns:jms="http://www.bea.com/wli/sb/transports/jms" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:con6="http://www.bea.com/wli/sb/pipeline/config" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:con4="http://www.bea.com/wli/sb/stages/publish/config" xmlns:con5="http://www.bea.com/wli/sb/typesystem/config" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Determinar valor de bandera esOperacionBam.</con7:comment>
+                                <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-N3f57c7ff.N7eca5ac3.0.152a43f0597.N7eef</con7:id>
+                                <con3:case id="_BranchId-N3f57c7ff.N7eca5ac3.0.152a43f0597.N7eee">
+                                    <con3:condition>
+                                        <con7:xqueryText xmlns:con7="http://www.bea.com/wli/sb/stages/config">$esOperacionBam = 'si'</con7:xqueryText>
+                                    </con3:condition>
+                                    <con3:actions>
+                                        <con3:replace varName="body" contents-only="true">
+                                            <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">La operación debe ser enviada a BAM 12c por medio del BPEL (SIGOLoanStatus) por lo que se prepara el body del request para ser enviado al servicio SIGOLoanStatus..</con7:comment>
+                                            <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-N3f57c7ff.N4c4dd9b0.0.152c322131e.N7f99</con7:id>
+                                            <con3:location>
+                                                <con7:xpathText xmlns:con7="http://www.bea.com/wli/sb/stages/config">.</con7:xpathText>
+                                            </con3:location>
+                                            <con3:expr>
+                                                <con7:xqueryText xmlns:con7="http://www.bea.com/wli/sb/stages/config">$loanOperacion</con7:xqueryText>
+                                            </con3:expr>
+                                        </con3:replace>
+                                        <con4:route>
+                                            <con7:comment xmlns:con7="http://www.bea.com/wli/sb/stages/config">Realizar el envío de la petición al BPEL Service (SIGOLoanStatus).</con7:comment>
+                                            <con7:id xmlns:con7="http://www.bea.com/wli/sb/stages/config">_ActionId-N3f57c7ff.N7eca5ac3.0.152a43f0597.N7fec</con7:id>
+                                            <con4:service ref="InteligenciaNegocio/SigoTiempoReal/Business Services/OSBRegistroPrendarioBamBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                            <con4:operation>process</con4:operation>
+                                            <con4:outboundTransform/>
+                                        </con4:route>
+                                    </con3:actions>
+                                </con3:case>
+                                <con3:default/>
+                            </con3:ifThenElse>
+                        </con4:actions>
+                    </con4:foreach>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.N7eca5ac3.0.152a43f0597.N7ff6">
+            <con:stage id="_StageId-N3f57c7ff.Nff091a2.0.1568a16d200.N7fce" name="StageAckResponse">
+                <con:comment>Generar ACK</con:comment>
+                <con:context/>
+                <con:actions>
+                    <con3:reply>
+                        <con3:comment>Responder con exito</con3:comment>
+                        <con3:id>_ActionId-N3f57c7ff.Nff091a2.0.1568a16d200.N7fcd</con3:id>
+                    </con3:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="PipelineOperacionesToBam">
+                <con:comment>Flujo de procesamiento, transformacion y envio de operaciones prendarias a BAM 12c.</con:comment>
+                <con:request>request-N3f57c7ff.N7eca5ac3.0.152a43f0597.N7ff7</con:request>
+                <con:response>response-N3f57c7ff.N7eca5ac3.0.152a43f0597.N7ff6</con:response>
+            </con:pipeline-node>
+        </con:flow>
+    </con:router>
+    <aler:alertRules xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert">
+        <aler:alertRule enabled="true" name="timeout_error_warning">
+            <aler:description>Advertencia. El tiempo de respuesta del servicio ha sido mayor a 3 segundos o ha tenido un numero de respuestas erróneas mayor a 15 en un periodo de 30 minutos.</aler:description>
+            <aler:frequency>once-until-conditions-clear</aler:frequency>
+            <aler:severity>warning</aler:severity>
+            <aler:stopProcessing>false</aler:stopProcessing>
+            <aler:condition aggregation-interval="10">
+                <con7:logicalExpr logical-operator="and" xmlns:con7="http://xmlns.oracle.com/servicebus/monitoring/alert/condition">
+                    <con7:monCondExpr>
+                        <con7:function>count</con7:function>
+                        <con7:lhs>Router.error-count</con7:lhs>
+                        <con7:operator>></con7:operator>
+                        <con7:rhs>15</con7:rhs>
+                    </con7:monCondExpr>
+                    <con7:monCondExpr>
+                        <con7:function>count</con7:function>
+                        <con7:lhs>Router.error-count</con7:lhs>
+                        <con7:operator>&lt;</con7:operator>
+                        <con7:rhs>20</con7:rhs>
+                    </con7:monCondExpr>
+                </con7:logicalExpr>
+            </aler:condition>
+            <aler:alertDestination ref="InteligenciaNegocio/SigoTiempoReal/Resources/Alerts/NMPSigoTiempoRealAlert"/>
+            <aler:summary>Alerta de advertencia. Plataforma OSB</aler:summary>
+        </aler:alertRule>
+    </aler:alertRules>
+</con:pipelineEntry>

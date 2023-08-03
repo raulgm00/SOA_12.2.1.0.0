@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+    <con:coreEntry>
+        <con:binding type="Native REST" xsi:type="con:NativeRestBindingType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:pipeline name="PipelinePairNode1_response" type="response"/>
+        <con:pipeline name="PipelinePairNode2_response" type="response">
+            <con:stage name="stage1">
+                <con:context/>
+                <con:actions>
+                    <con1:assign varName="body" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.830c5ee.41.15e4f039157.N7ffe</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<Document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<EPS>
+	<ObjectId>9999</ObjectId>
+	<Id>THEPS</Id>
+	<Name>EPS for testing</Name>
+	</EPS>		
+	<ResourceCodeType> 
+		<Name>GG1</Name>
+		<ObjectId>1000</ObjectId>
+		<Length>20</Length>
+	</ResourceCodeType>
+	<ResourceCodeType> 
+		<Name>GG11</Name>
+		<ObjectId>1001</ObjectId>
+		<Length>20</Length>
+	</ResourceCodeType>
+	<ResourceCodeType> 
+		<Name>GG011</Name>
+		<ObjectId>1002</ObjectId>
+		<Length>20</Length>
+	</ResourceCodeType>
+	<ResourceCode> 
+		<CodeTypeObjectId>1000</CodeTypeObjectId>
+		<CodeTypeName>GG1</CodeTypeName>
+		<CodeValue>GG-1</CodeValue>
+		<Description>Test for the code GG1</Description>		
+		<ObjectId>10000</ObjectId>
+	</ResourceCode>
+	<ResourceCode> 
+		<CodeTypeObjectId>1001</CodeTypeObjectId>
+		<CodeTypeName>GG11</CodeTypeName>
+		<CodeValue>GG Resource on Mars</CodeValue>
+		<Description>Test for the code GG11</Description>		
+		<ObjectId>10001</ObjectId>
+	</ResourceCode>
+	<ResourceCode> 
+		<CodeTypeObjectId>1002</CodeTypeObjectId>
+		<CodeTypeName>GG011</CodeTypeName>
+		<CodeValue>Resource on Saturn</CodeValue>
+		<Description>Test for the code GG011</Description>		
+		<ObjectId>10002</ObjectId>
+	</ResourceCode>
+	
+	<ActivityCodeType>	
+		<Length>15</Length>
+		<Name>ACTGlobal</Name>
+		<ObjectId>1200</ObjectId>		
+		<Scope>Global</Scope>
+	</ActivityCodeType>	
+	<ActivityCodeType>	
+		<EPSObjectId>9999</EPSObjectId>		
+		<Length>15</Length>
+		<Name>ACTEPS</Name>
+		<ObjectId>1201</ObjectId>		
+		<Scope>EPS</Scope>
+	</ActivityCodeType>	
+	
+	<ActivityCode>
+		<CodeTypeName>ACTGlobal</CodeTypeName>
+		<CodeTypeObjectId>1200</CodeTypeObjectId>
+		<CodeValue>ACTGlobalVAL</CodeValue>
+		<Description>Test Activity Code for ACTGlobal</Description>
+		<ObjectId>12200</ObjectId>		
+	</ActivityCode>
+	<ActivityCode>
+		<CodeTypeName>ACTEPS</CodeTypeName>
+		<CodeTypeObjectId>1201</CodeTypeObjectId>
+		<CodeValue>ACTEPSVAL</CodeValue>
+		<Description>Test for the code ACTEPS</Description>
+		<ObjectId>12201</ObjectId>
+	</ActivityCode>
+				
+</Document>]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode2_request" type="request"/>
+        <con:pipeline name="PipelinePairNode1_request" type="request"/>
+        <con:flow>
+            <con:branch-node type="rest" name="BranchNode1">
+                <con:branch-table>
+                    <con:branch name="get">
+                        <con:operator>equals</con:operator>
+                        <con:rest-values>
+                            <con:mediaType>text/xml</con:mediaType>
+                            <con:path>/project</con:path>
+                            <con:verb>GET</con:verb>
+                        </con:rest-values>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairNode2">
+                                <con:request>PipelinePairNode2_request</con:request>
+                                <con:response>PipelinePairNode2_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairNode1">
+                                <con:request>PipelinePairNode1_request</con:request>
+                                <con:response>PipelinePairNode1_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+    <aler:alertRules xsi:nil="true" xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+</con:pipelineEntry>

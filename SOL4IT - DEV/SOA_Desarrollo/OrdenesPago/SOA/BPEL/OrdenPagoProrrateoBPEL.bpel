@@ -1,0 +1,171 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Wed Jan 18 18:51:01 CST 2017
+  Author:  Ivan
+  Type: BPEL 2.0 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="OrdenPagoProrrateoBPEL"
+               targetNamespace="http://xmlns.oracle.com/SOA_INT/ordenPagoProrrateoBPEL/OrdenPagoProrrateoBPEL"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/SOA_INT/ordenPagoProrrateoBPEL/OrdenPagoProrrateoBPEL"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:ui="http://xmlns.oracle.com/soa/designer"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ns1="http://xmlns.oracle.com/GestionArchivoProrrateo/GestionArchivoProrrateoPrj/GestionArchivoProrrateoBPEL"
+         xmlns:ns3="http://qualitas.com.mx/comunes/objetosComunes/v1/"
+         xmlns:ns2="http://qualitas.com.mx/Comunes/Prorrateo/ordenPagoProrrateo/v1/"
+         xmlns:ns4="http://qualitas.com.mx/Comunes/Prorrateo/gestionArchivoProrrateo/v1/"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ess="http://xmlns.oracle.com/scheduler" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:ns5="http://qualitas.com.mx/Comunes/gestionOrdenPagoBPEL/v1/" xmlns:ns6="http://ws.gpa.qualitas.mx/"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:ns7="http://xmlns.oracle.com/pcbpel/adapter/db/SOA_INT/ordenPagoProrrateoBPEL/DBDocumento"
+         xmlns:ns8="http://xmlns.oracle.com/pcbpel/adapter/db/DBDocumento"
+         xmlns:ns9="http://qualitas.com.mx/Comunes/gestionOrdenPagoSchema/v1/" xml:id="id_1">
+
+    <import ui:processWSDL="true" namespace="http://xmlns.oracle.com/SOA_INT/ordenPagoProrrateoBPEL/OrdenPagoProrrateoBPEL" location="../WSDLs/OrdenPagoProrrateoBPEL.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"
+            xml:id="id_2"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks xml:id="id_3">
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="ordenpagoprorrateo_client" partnerLinkType="client:OrdenPagoProrrateoBPEL" myRole="OrdenPagoProrrateoBPELProvider"
+                 xml:id="id_4"/>
+    <partnerLink name="consultaProrrateoService" partnerLinkType="ns1:GestionArchivoProrrateoBPEL"
+                 partnerRole="gestionArchivoProrrateoBPEL" xml:id="id_5"/>
+    <partnerLink name="DBDocumento" partnerLinkType="ns7:DBDocumento_plt" partnerRole="DBDocumento_role" xml:id="id_6"/>
+    <partnerLink name="ParseoDocService" partnerLinkType="ns6:ParseoDocService" partnerRole="ProrrateoSvc"
+                 xml:id="id_7"/>
+    <partnerLink name="GuardarOrdenService" partnerLinkType="ns5:GestionOrdenPagoBEPL"
+                 partnerRole="gestionOrdenPagoBPELPortType" xml:id="id_8"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables xml:id="id_9">
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:OrdenPagoProrrateoBPELRequestMessage" xml:id="id_10"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:OrdenPagoProrrateoBPELResponseMessage" xml:id="id_11"/>
+    <variable name="invProrrateoService_InputVariable" messageType="ns1:obtenerArchivoProrrateoBPELRequestMessage"
+              xml:id="id_12"/>
+    <variable name="invProrrateoService_OutputVariable" messageType="ns1:obtenerArchivoProrrateoBPELResponseMessage"
+              xml:id="id_13"/>
+    <variable name="InvDocumentoDB_InputVariable" messageType="ns7:DBDocumentoInput_msg" xml:id="id_14"/>
+    <variable name="InvDocumentoDB_OutputVariable" messageType="ns7:DBDocumentoOutputCollection_msg" xml:id="id_15"/>
+    <variable name="InvParseoDoc_InputVariable" messageType="ns6:parse" xml:id="id_16"/>
+    <variable name="InvParseoDoc_OutputVariable" messageType="ns6:parseResponse" xml:id="id_17"/>
+    <variable name="InvGuardarOrd_InputVariable" messageType="ns5:guardarOrdenPagoBPELRequestMessage" xml:id="id_18"/>
+    <variable name="InvGuardarOrd_OutputVariable" messageType="ns5:guardarOrdenPagoBPELResponseMessage" xml:id="id_19"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main" xml:id="id_20">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in OrdenPagoProrrateoBPEL.wsdl) -->
+    <receive name="receiveInput" partnerLink="ordenpagoprorrateo_client" portType="client:OrdenPagoProrrateoBPEL" operation="process" variable="inputVariable" createInstance="yes"
+             xml:id="id_21"/>
+    <assign name="AssignSolicitud" xml:id="id_22">
+      <copy xml:id="id_23">
+        <from xml:id="id_24">$inputVariable.payload/ns2:Input/ns2:id_solicitud</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_25">$invProrrateoService_InputVariable.obtenerArchivoReq/ns4:Input/ns4:id_solicitud</to>
+      </copy>
+    </assign>
+    <invoke name="invProrrateoService" partnerLink="consultaProrrateoService"
+            portType="ns1:gestionArchivoProrrateoBPEL" operation="obtenerArchivoProrrateo"
+            inputVariable="invProrrateoService_InputVariable" outputVariable="invProrrateoService_OutputVariable"
+            bpelx:invokeAsDetail="no" xml:id="id_26"/>
+    <invoke name="InvDocumentoDB" partnerLink="DBDocumento" portType="ns7:DBDocumento_ptt"
+            operation="DBDocumento" inputVariable="InvDocumentoDB_InputVariable"
+            outputVariable="InvDocumentoDB_OutputVariable" bpelx:invokeAsDetail="no" xml:id="id_27">
+      <bpelx:skipCondition xml:id="id_28">1=1</bpelx:skipCondition>
+    </invoke>
+    <if name="IfProrrateoService" xml:id="id_29">
+      <condition xml:id="id_30">$invProrrateoService_OutputVariable.obtenerArchivoRes/ns4:OperationResponse/ns3:codigoRespuesta = 1</condition>
+      <assign name="AssigneCod" xml:id="id_31">
+        <copy xml:id="id_32">
+          <from xml:id="id_33">9</from>
+          <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_34">$outputVariable.payload/ns2:OperationResponse/ns3:codigoRespuesta</to>
+        </copy>
+        <copy xml:id="id_35">
+          <from xml:id="id_36">'No se encontraron archivos Prorrateo'</from>
+          <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_37">$outputVariable.payload/ns2:OperationResponse/ns3:descripcionRespuesta</to>
+        </copy>
+      </assign>
+      <elseif xml:id="id_38">
+        <condition xml:id="id_39">$invProrrateoService_OutputVariable.obtenerArchivoRes/ns4:OperationResponse/ns3:codigoRespuesta = 0</condition>
+        <sequence xml:id="id_40">
+          <assign name="AssigneArchivo" xml:id="id_41">
+            <copy xml:id="id_42">
+              <from xml:id="id_43">$invProrrateoService_OutputVariable.obtenerArchivoRes/ns4:resultDataResponse/ns4:archivoProrrateo</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_44">$InvParseoDoc_InputVariable.data</to>
+            </copy>
+          </assign>
+          <invoke name="InvParseoDoc" bpelx:invokeAsDetail="no" partnerLink="ParseoDocService"
+                  portType="ns6:ProrrateoSvc" operation="parse" inputVariable="InvParseoDoc_InputVariable"
+                  outputVariable="InvParseoDoc_OutputVariable" xml:id="id_45"/>
+          <assign name="Transformation1" xml:id="id_46">
+            <bpelx:annotation xml:id="id_47">
+              <bpelx:pattern patternName="bpelx:transformation" xml:id="id_48"></bpelx:pattern>
+            </bpelx:annotation>
+            <copy xml:id="id_49">
+              <from xml:id="id_50">ora:doXSLTransformForDoc("../Transformations/TransformGuardar.xsl", $InvParseoDoc_OutputVariable.Prorrateo)</from>
+              <to variable="InvGuardarOrd_InputVariable" part="guardarArchivoReq" xml:id="id_51"/>
+            </copy>
+          </assign>
+          <invoke name="InvGuardarOrden" bpelx:invokeAsDetail="no" partnerLink="GuardarOrdenService"
+                  portType="ns5:gestionOrdenPagoBPELPortType" operation="guardanOrdenPago"
+                  inputVariable="InvGuardarOrd_InputVariable" outputVariable="InvGuardarOrd_OutputVariable"
+                  xml:id="id_52"/>
+          <assign name="AssigneCode" xml:id="id_53">
+            <copy xml:id="id_54">
+              <from xml:id="id_55">1</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_56">$outputVariable.payload/ns2:OperationResponse/ns3:codigoRespuesta</to>
+            </copy>
+          </assign>
+        </sequence>
+      </elseif>
+      <else xml:id="id_57">
+        <sequence name="Sequence1" xml:id="id_58">
+          <empty name="Empty1" xml:id="id_59"/>
+        </sequence>
+      </else>
+    </if>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="ordenpagoprorrateo_client" portType="client:OrdenPagoProrrateoBPEL" operation="process" variable="outputVariable"
+           xml:id="id_60"/>
+  </sequence>
+</process>

@@ -1,0 +1,356 @@
+<wsdl:definitions xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://technet.rapaport.com/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://technet.rapaport.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://technet.rapaport.com/">
+      <s:element name="Login">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Username" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="LoginResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="AuthenticationTicketHeader" type="tns:AuthenticationTicketHeader" />
+      <s:complexType name="AuthenticationTicketHeader">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Ticket" type="s:string" />
+        </s:sequence>
+        <s:anyAttribute />
+      </s:complexType>
+      <s:element name="GetPriceSheet">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="shape" type="tns:Shapes" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:simpleType name="Shapes">
+        <s:restriction base="s:string">
+          <s:enumeration value="Round" />
+          <s:enumeration value="Pear" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="GetPriceSheetResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetPriceSheetResult" type="tns:RapaportPriceSheet" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="RapaportPriceSheet">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Prices">
+            <s:complexType>
+              <s:sequence>
+                <!--s:element ref="s:schema" /-->
+                <s:any />
+              </s:sequence>
+            </s:complexType>
+          </s:element>
+        </s:sequence>
+        <s:attribute name="Shape" type="s:string" />
+        <s:attribute name="Date" type="s:dateTime" use="required" />
+      </s:complexType>
+      <s:element name="GetPrice">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="shape" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="size" type="s:float" />
+            <s:element minOccurs="0" maxOccurs="1" name="color" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="clarity" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPriceResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetPriceResult" type="tns:RapaportPrice" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="RapaportPrice">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="shape" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="low_size" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="high_size" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="color" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="clarity" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="price" type="s:decimal" />
+        </s:sequence>
+        <s:attribute name="Date" type="s:dateTime" use="required" />
+      </s:complexType>
+      <s:element name="GetPriceChanges">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="shape" type="tns:Shapes" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPriceChangesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetPriceChangesResult" type="tns:PriceChanges" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="PriceChanges">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="XmlChanges">
+            <s:complexType mixed="true">
+              <s:sequence>
+                <s:any />
+              </s:sequence>
+            </s:complexType>
+          </s:element>
+          <s:element minOccurs="1" maxOccurs="1" name="OldDate" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="NewDate" type="s:dateTime" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetPriceChangesTest">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="shape" type="tns:Shapes" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPriceChangesTestResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetPriceChangesTestResult" type="tns:PriceChanges" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPubDate">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="s" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPubDateResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="GetPubDateResult" type="s:dateTime" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="LoginSoapIn">
+    <wsdl:part name="parameters" element="tns:Login" />
+  </wsdl:message>
+  <wsdl:message name="LoginSoapOut">
+    <wsdl:part name="parameters" element="tns:LoginResponse" />
+  </wsdl:message>
+  <wsdl:message name="LoginAuthenticationTicketHeader">
+    <wsdl:part name="AuthenticationTicketHeader" element="tns:AuthenticationTicketHeader" />
+  </wsdl:message>
+  <wsdl:message name="GetPriceSheetSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPriceSheet" />
+  </wsdl:message>
+  <wsdl:message name="GetPriceSheetSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPriceSheetResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetPriceSheetAuthenticationTicketHeader">
+    <wsdl:part name="AuthenticationTicketHeader" element="tns:AuthenticationTicketHeader" />
+  </wsdl:message>
+  <wsdl:message name="GetPriceSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPrice" />
+  </wsdl:message>
+  <wsdl:message name="GetPriceSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPriceResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetPriceAuthenticationTicketHeader">
+    <wsdl:part name="AuthenticationTicketHeader" element="tns:AuthenticationTicketHeader" />
+  </wsdl:message>
+  <wsdl:message name="GetPriceChangesSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPriceChanges" />
+  </wsdl:message>
+  <wsdl:message name="GetPriceChangesSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPriceChangesResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetPriceChangesAuthenticationTicketHeader">
+    <wsdl:part name="AuthenticationTicketHeader" element="tns:AuthenticationTicketHeader" />
+  </wsdl:message>
+  <wsdl:message name="GetPriceChangesTestSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPriceChangesTest" />
+  </wsdl:message>
+  <wsdl:message name="GetPriceChangesTestSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPriceChangesTestResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetPriceChangesTestAuthenticationTicketHeader">
+    <wsdl:part name="AuthenticationTicketHeader" element="tns:AuthenticationTicketHeader" />
+  </wsdl:message>
+  <wsdl:message name="GetPubDateSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPubDate" />
+  </wsdl:message>
+  <wsdl:message name="GetPubDateSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPubDateResponse" />
+  </wsdl:message>
+  <wsdl:portType name="RapaportPricesSoap">
+    <wsdl:operation name="Login">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">This method must be called before any other methods.</wsdl:documentation>
+      <wsdl:input message="tns:LoginSoapIn" />
+      <wsdl:output message="tns:LoginSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPriceSheet">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns a Rapaport Diamond Report price list as a dataset. </wsdl:documentation>
+      <wsdl:input message="tns:GetPriceSheetSoapIn" />
+      <wsdl:output message="tns:GetPriceSheetSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPrice">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns the price from the Rapaport Price List for a specific shape, size, color, clarity combination.</wsdl:documentation>
+      <wsdl:input message="tns:GetPriceSoapIn" />
+      <wsdl:output message="tns:GetPriceSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPriceChanges">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns a Rapaport Diamond Report price changes in XML. </wsdl:documentation>
+      <wsdl:input message="tns:GetPriceChangesSoapIn" />
+      <wsdl:output message="tns:GetPriceChangesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPriceChangesTest">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">test price changes. </wsdl:documentation>
+      <wsdl:input message="tns:GetPriceChangesTestSoapIn" />
+      <wsdl:output message="tns:GetPriceChangesTestSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPubDate">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get last price date.</wsdl:documentation>
+      <wsdl:input message="tns:GetPubDateSoapIn" />
+      <wsdl:output message="tns:GetPubDateSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="RapaportPricesSoap" type="tns:RapaportPricesSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Login">
+      <soap:operation soapAction="http://technet.rapaport.com/Login" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+        <soap:header message="tns:LoginAuthenticationTicketHeader" part="AuthenticationTicketHeader" use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPriceSheet">
+      <soap:operation soapAction="http://technet.rapaport.com/GetPriceSheet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:GetPriceSheetAuthenticationTicketHeader" part="AuthenticationTicketHeader" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPrice">
+      <soap:operation soapAction="http://technet.rapaport.com/GetPrice" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:GetPriceAuthenticationTicketHeader" part="AuthenticationTicketHeader" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPriceChanges">
+      <soap:operation soapAction="http://technet.rapaport.com/GetPriceChanges" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:GetPriceChangesAuthenticationTicketHeader" part="AuthenticationTicketHeader" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPriceChangesTest">
+      <soap:operation soapAction="http://technet.rapaport.com/GetPriceChangesTest" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:GetPriceChangesTestAuthenticationTicketHeader" part="AuthenticationTicketHeader" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPubDate">
+      <soap:operation soapAction="http://technet.rapaport.com/GetPubDate" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="RapaportPricesSoap12" type="tns:RapaportPricesSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Login">
+      <soap12:operation soapAction="http://technet.rapaport.com/Login" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:LoginAuthenticationTicketHeader" part="AuthenticationTicketHeader" use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPriceSheet">
+      <soap12:operation soapAction="http://technet.rapaport.com/GetPriceSheet" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:GetPriceSheetAuthenticationTicketHeader" part="AuthenticationTicketHeader" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPrice">
+      <soap12:operation soapAction="http://technet.rapaport.com/GetPrice" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:GetPriceAuthenticationTicketHeader" part="AuthenticationTicketHeader" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPriceChanges">
+      <soap12:operation soapAction="http://technet.rapaport.com/GetPriceChanges" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:GetPriceChangesAuthenticationTicketHeader" part="AuthenticationTicketHeader" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPriceChangesTest">
+      <soap12:operation soapAction="http://technet.rapaport.com/GetPriceChangesTest" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:GetPriceChangesTestAuthenticationTicketHeader" part="AuthenticationTicketHeader" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPubDate">
+      <soap12:operation soapAction="http://technet.rapaport.com/GetPubDate" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="RapaportPrices">
+    <wsdl:port name="RapaportPricesSoap" binding="tns:RapaportPricesSoap">
+      <soap:address location="https://technet.rapaport.com:449/webservices/prices/rapaportprices.asmx" />
+    </wsdl:port>
+    <wsdl:port name="RapaportPricesSoap12" binding="tns:RapaportPricesSoap12">
+      <soap12:address location="https://technet.rapaport.com:449/webservices/prices/rapaportprices.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,150 @@
+<xs:schema elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/EntityLayer.Modelos" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://schemas.datacontract.org/2004/07/EntityLayer.Modelos">
+  <xs:import schemaLocation="CRMMiMonteTipos1XSD.xsd" namespace="http://schemas.datacontract.org/2004/07/EntityLayer.Respuesta"/>
+  <xs:complexType name="ClienteMiMonte">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="DatosCalifiacionPrendaria" nillable="true" type="tns:CalificacionPrendaria"/>
+      <xs:element minOccurs="0" name="DatosContacto" nillable="true" type="tns:Contacto"/>
+      <xs:element minOccurs="0" name="DatosPersonales" nillable="true" type="tns:Personal"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ClienteMiMonte" nillable="true" type="tns:ClienteMiMonte"/>
+  <xs:complexType name="CalificacionPrendaria">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CalificacionAjustada" nillable="true" type="xs:int"/>
+      <xs:element minOccurs="0" name="CalificacionMidas" nillable="true" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CalificacionReal" nillable="true" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CalificacionSIVA2" nillable="true" type="xs:int"/>
+      <xs:element minOccurs="0" name="CapacidadPago" nillable="true" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="FechaIngreso" nillable="true" type="xs:dateTime">
+        <xs:annotation>
+          <xs:appinfo>
+            <DefaultValue EmitDefaultValue="false" xmlns="http://schemas.microsoft.com/2003/10/Serialization/"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="GradoConfianza" nillable="true" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="IndiceRecuperacion" nillable="true" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="PorcentajeDesempeño" nillable="true" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="ProbabilidadIncumplimiento" nillable="true" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="SobreAforo" nillable="true" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="SobreAforoAjustado" nillable="true" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="SobreAforoSIVA2" nillable="true" type="xs:decimal"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="CalificacionPrendaria" nillable="true" type="tns:CalificacionPrendaria"/>
+  <xs:complexType name="Contacto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Email" nillable="true" type="tns:ArrayOfEmail"/>
+      <xs:element minOccurs="0" name="Telefonos" nillable="true" type="tns:ArrayOfTelefono"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Contacto" nillable="true" type="tns:Contacto"/>
+  <xs:complexType name="ArrayOfEmail">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Email" nillable="true" type="tns:Email"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfEmail" nillable="true" type="tns:ArrayOfEmail"/>
+  <xs:complexType name="Email">
+    <xs:complexContent mixed="false">
+      <xs:extension base="q1:Validador" xmlns:q1="http://schemas.datacontract.org/2004/07/EntityLayer.Respuesta">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Correo" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="FuenteDato" nillable="true" type="xs:int"/>
+          <xs:element minOccurs="0" name="Tipo" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Email" nillable="true" type="tns:Email"/>
+  <xs:complexType name="ArrayOfTelefono">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Telefono" nillable="true" type="tns:Telefono"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfTelefono" nillable="true" type="tns:ArrayOfTelefono"/>
+  <xs:complexType name="Telefono">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Extension" nillable="true" type="xs:string">
+        <xs:annotation>
+          <xs:appinfo>
+            <DefaultValue EmitDefaultValue="false" xmlns="http://schemas.microsoft.com/2003/10/Serialization/"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="FechaCreacion" nillable="true" type="xs:dateTime">
+        <xs:annotation>
+          <xs:appinfo>
+            <DefaultValue EmitDefaultValue="false" xmlns="http://schemas.microsoft.com/2003/10/Serialization/"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="FuenteDato" nillable="true" type="xs:string">
+        <xs:annotation>
+          <xs:appinfo>
+            <DefaultValue EmitDefaultValue="false" xmlns="http://schemas.microsoft.com/2003/10/Serialization/"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="Lada" nillable="true" type="xs:string">
+        <xs:annotation>
+          <xs:appinfo>
+            <DefaultValue EmitDefaultValue="false" xmlns="http://schemas.microsoft.com/2003/10/Serialization/"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="Numero" nillable="true" type="xs:string">
+        <xs:annotation>
+          <xs:appinfo>
+            <DefaultValue EmitDefaultValue="false" xmlns="http://schemas.microsoft.com/2003/10/Serialization/"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="Tipo" nillable="true" type="xs:int">
+        <xs:annotation>
+          <xs:appinfo>
+            <DefaultValue EmitDefaultValue="false" xmlns="http://schemas.microsoft.com/2003/10/Serialization/"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="Titulo" nillable="true" type="xs:string">
+        <xs:annotation>
+          <xs:appinfo>
+            <DefaultValue EmitDefaultValue="false" xmlns="http://schemas.microsoft.com/2003/10/Serialization/"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Telefono" nillable="true" type="tns:Telefono"/>
+  <xs:complexType name="Personal">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ApellidoMaterno" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ApellidoPaterno" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CredencialNMP" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="FechaNacimiento" nillable="true" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="IdCliente" type="xs:int"/>
+      <xs:element minOccurs="0" name="Nombre" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="SegundoNombre" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Personal" nillable="true" type="tns:Personal"/>
+  <xs:complexType name="EstatusMiMonte">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="IdCliente" type="xs:int"/>
+      <xs:element minOccurs="0" name="CredencialNMP" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Registro" nillable="true" type="tns:Estatus"/>
+      <xs:element minOccurs="0" name="Actualizacion" nillable="true" type="tns:Estatus"/>
+      <xs:element minOccurs="0" name="CambioContrasena" nillable="true" type="tns:Estatus"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="EstatusMiMonte" nillable="true" type="tns:EstatusMiMonte"/>
+  <xs:complexType name="Estatus">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="FechaStatus" nillable="true" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="IdFlujo" nillable="true" type="xs:int"/>
+      <xs:element minOccurs="0" name="IdStatus" nillable="true" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Estatus" nillable="true" type="tns:Estatus"/>
+</xs:schema>

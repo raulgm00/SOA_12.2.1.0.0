@@ -1,0 +1,52 @@
+<definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Service/RiesgoTransaccional" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:NMPSM="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:NMPSH="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Service/RiesgoTransaccional" xmlns:ns1="http://servicios.montepiedad.com.mx/NMP/Schema/RiesgoTransaccional" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <types>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montepiedad.com.mx/NMP/Schema/RiesgoTransaccional" schemaLocation="../Schemas/NMPRiesgoTransaccionalMsgXSD.xsd"/>
+    </xsd:schema>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+    </xsd:schema>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+    </xsd:schema>
+  </types>
+  <message name="aplicarReglaRequest">
+    <part name="aplicarReglaRequest" element="ns1:aplicarReglaRequest"/>
+  </message>
+  <message name="aplicarReglaResponse">
+    <part name="aplicarReglaResponse" element="ns1:aplicarReglaResponse"/>
+  </message>
+  <portType name="aplicarReglaPortType">
+    <operation name="aplicarRegla">
+      <input message="tns:aplicarReglaRequest"/>
+      <output message="tns:aplicarReglaResponse"/>
+      <fault message="tns:standardMessageFault" name="fault"/>
+    </operation>
+  </portType>
+  <message name="standardMessageFault">
+    <part name="fault" element="NMPSM:messageError"/>
+  </message>
+  <message name="standardMessageHeader">
+    <part name="header" element="NMPSH:headerMessage"/>
+  </message>
+  <message name="standardMessageHeaderResponse">
+    <part name="headerRes" element="NMPSH:headerMessageResponse"/>
+  </message>
+  <binding name="aplicarReglaPortTypeSOAP11Binding" type="tns:aplicarReglaPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="aplicarRegla">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/RiesgoTransaccional/aplicarRegla"/>
+      <input>
+        <soap:body use="literal" parts="aplicarReglaRequest"/>
+        <soap:header message="tns:standardMessageHeader" part="header" use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="aplicarReglaResponse"/>
+        <soap:header message="tns:standardMessageHeaderResponse" part="headerRes" use="literal"/>
+      </output>
+      <fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+</definitions>

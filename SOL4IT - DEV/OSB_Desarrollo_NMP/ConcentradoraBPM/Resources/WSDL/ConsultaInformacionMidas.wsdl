@@ -1,0 +1,110 @@
+<wsdl:definitions name="ConsultaInformacionMidas" targetNamespace="http://servicios.montedepiedad.com.mx/NMP/WSDL/ConsultaInformacionMidas" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/WSDL/ConsultaInformacionMidas" xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/" xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:db="http://servicios.montedepiedad.com.mx/NMP/Schema/ConsultaInformacionMidas" xmlns:nmpsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:nmpsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/ConsultaInformacionMidas" schemaLocation="../XSD/ConsultaInformacionMidas.xsd"/>
+    </schema>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../Common/XSD/NMPStandardHeader.xsd"/>
+    </schema>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../Common/XSD/NMPStandardMessage.xsd"/>
+    </schema>
+  </wsdl:types>
+  <wsdl:message name="ConsultaTotalProcesadosRequest">
+    <wsdl:part name="Request" element="db:ConsultaTotalProcesadosRequest"/>
+  </wsdl:message>
+  <wsdl:message name="ConsultaTotalProcesadosResponse">
+    <wsdl:part name="Response" element="db:ConsultaTotalProcesadosResponse"/>
+  </wsdl:message>
+  <wsdl:portType name="ConsultaInformacionMidas_ptt">
+    <wsdl:operation name="ConsultaTotalProcesados">
+      <wsdl:input message="tns:ConsultaTotalProcesadosRequest"/>
+      <wsdl:output message="tns:ConsultaTotalProcesadosResponse"/>
+      <wsdl:fault message="tns:standardMessageFault" name="ConsultaTotalProcesadosFault"/>
+    </wsdl:operation>
+    <wsdl:operation name="ConsultaBloqueProcesados">
+      <wsdl:input message="tns:ConsultaBloqueProcesadosRequest"/>
+      <wsdl:output message="tns:ConsultaBloqueProcesadosResponse"/>
+      <wsdl:fault message="tns:standardMessageFault" name="ConsultaBloqueProcesadosFault"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:message name="ConsultaBloqueProcesadosRequest">
+    <wsdl:part name="request" element="db:ConsultaBloqueProcesadosRequest"/>
+  </wsdl:message>
+  <wsdl:message name="ConsultaBloqueProcesadosResponse">
+    <wsdl:part name="response" element="db:ConsultaBloqueProcesadosResponse"/>
+  </wsdl:message>
+  <wsdl:message name="standardMessageFault">
+    <wsdl:part name="fault" element="nmpsm:messageError"/>
+  </wsdl:message>
+  <wsdl:message name="standardMessageHeader">
+    <wsdl:part name="header" element="nmpsh:headerMessage"/>
+  </wsdl:message>
+  <wsdl:binding name="ConsultaInformacionMidasSOAP12Binding" type="tns:ConsultaInformacionMidas_ptt">
+    <soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="ConsultaTotalProcesados">
+      <soap12:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/WSDL/ConsultaInformacionMidas/ConsultaTotalProcesados"/>
+      <wsdl:input name="input">
+        <soap12:body use="literal" parts="Request" namespace="http://servicios.montedepiedad.com.mx/NMP/WSDL/ConsultaInformacionMidas" encodingStyle="http://www.w3.org/2003/05/soap-envelope"/>
+        <soap12:header message="tns:standardMessageHeader" part="header" use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="output">
+        <soap12:body use="literal" parts="Response" namespace="http://servicios.montedepiedad.com.mx/NMP/WSDL/ConsultaInformacionMidas" encodingStyle="http://www.w3.org/2003/05/soap-envelope"/>
+        <soap12:header message="tns:standardMessageHeader" part="header" use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ConsultaTotalProcesadosFault">
+        <soap12:fault name="ConsultaTotalProcesadosFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="ConsultaBloqueProcesados">
+      <soap12:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/WSDL/ConsultaInformacionMidas/ConsultaBloqueProcesados"/>
+      <wsdl:input>
+        <soap12:body use="literal" parts="request"/>
+        <soap12:header message="tns:standardMessageHeader" part="header" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" parts="response"/>
+        <soap12:header message="tns:standardMessageHeader" part="header" use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ConsultaBloqueProcesadosFault">
+        <soap12:fault name="ConsultaBloqueProcesadosFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <plt:partnerLinkType name="ConsultaInfoMidasPL">
+    <plt:role name="Provider">
+      <plt:portType name="tns:ConsultaInformacionMidas_ptt"/>
+    </plt:role>
+  </plt:partnerLinkType>
+  <wsdl:binding name="ConsultaInformacionMidas_pttSOAP11Binding" type="tns:ConsultaInformacionMidas_ptt">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="ConsultaTotalProcesados">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/WSDL/ConsultaInformacionMidas/ConsultaTotalProcesados"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="Request"/>
+        <soap:header message="tns:standardMessageHeader" part="header" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="Response"/>
+        <soap:header message="tns:standardMessageHeader" part="header" use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ConsultaTotalProcesadosFault">
+        <soap:fault name="ConsultaTotalProcesadosFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="ConsultaBloqueProcesados">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/WSDL/ConsultaInformacionMidas/ConsultaBloqueProcesados"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="request"/>
+        <soap:header message="tns:standardMessageHeader" part="header" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="response"/>
+        <soap:header message="tns:standardMessageHeader" part="header" use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ConsultaBloqueProcesadosFault">
+        <soap:fault name="ConsultaBloqueProcesadosFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+</wsdl:definitions>

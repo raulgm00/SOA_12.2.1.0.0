@@ -1,0 +1,1987 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con4="http://www.bea.com/wli/sb/stages/logging/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/WSDLs/GestionMovilFormiikWSDL"/>
+            <con:binding>
+                <con:name>GestionMovilRESTBinding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:logging enabled="false" level="debug"/>
+            <oper:monitoring enabled="true" level="action" aggregationInterval="5"/>
+            <oper:reporting>false</oper:reporting>
+            <oper:pipeline-alerting enabled="false" level="normal"/>
+        </oper:operations>
+        <con:xopMtom isEnabled="true">
+            <con:xopBinary>ByRef</con:xopBinary>
+        </con:xopMtom>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router errorHandler="error-af004a0.50d64422.0.1517d311fc0.N7f59">
+        <con:pipeline type="request" name="request-N3f57c7ff.42054153.0.1540cb66399.N7dbf" errorHandler="error-N3f57c7ff.42054153.0.1540cb66399.N79c3">
+            <con:stage id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N7dbd" name="StageRequest_SWO_Preregistro">
+                <con:context>
+                    <con2:varNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST"/>
+                </con:context>
+                <con:actions>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N7f17</con2:id>
+                        <con1:service ref="FuerzaDeVentas/GestionOrdenesTrabajo/Proxy Services/NMPOrdenesTrabajoSoapPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>realizarPreregistro</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">preregistroReq</con1:body>
+                            <con1:header>header</con1:header>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">preregistroRes</con1:body>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:replace varName="preregistroReq" contents-only="false">
+                                <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N7f16</con2:id>
+                                <con1:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/Transformations/TrRespuestaGMFormiikToRealizarPreregistroReq"/>
+                                        <con2:input>$body/*</con2:input>
+                                    </con2:xsltTransform>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:requestTransform>
+                        <con1:responseTransform>
+                            <con1:replace varName="body" contents-only="true">
+                                <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N7f15</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText>fn-bea:inlinedXML(concat('&lt;ges:SendWordOrderToClientResponse xmlns:ges="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST" xmlns:ges1="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilRESTTipos">
+         &lt;ges1:respuesta>',$preregistroRes/*:respuesta/text(),'&lt;/ges1:respuesta>
+      &lt;/ges:SendWordOrderToClientResponse>'))</con2:xqueryText>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:responseTransform>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.42054153.0.1540cb66399.N79c3">
+            <con:stage id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N798a" name="StageError_SWO_Preregistro">
+                <con:context>
+                    <con2:userNsDecl prefix="NMPsm" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                    <con2:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                    <con2:userNsDecl prefix="ges1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilRESTTipos"/>
+                    <con2:varNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N7989</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/Transformations/TransformGestionMovilRestFault"/>
+                                <con2:input>$fault</con2:input>
+                                <con2:param name="operation">
+                                    <con2:path>1</con2:path>
+                                </con2:param>
+                                <con2:param name="app">
+                                    <con2:path>3</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con4:report>
+                        <con2:id>_ActionId-a1e041d.1633d492.3.154cf48d6ca.N8000</con2:id>
+                        <con4:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body_tmp//*:Response/*</con:xqueryText>
+                        </con4:expr>
+                        <con4:labels>
+                            <con4:key>ExternalId</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./ges:Response/@ExternalId</con:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>ExternalType</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:Response/@ExternalType</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                    </con4:report>
+                    <con4:report xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:env="http://www.bea.com/wli/config/env" xmlns:con5="http://www.bea.com/wli/sb/stages/transform/config" xmlns:tran="http://www.bea.com/wli/sb/transports">
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N7988</con2:id>
+                        <con4:expr>
+                            <con2:xqueryText>$fault</con2:xqueryText>
+                        </con4:expr>
+                        <con4:labels>
+                            <con4:key>ExternalId_Error</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./ges:Response/@ExternalId</con:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>ExternalType_Error</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:Response/@ExternalType</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                    </con4:report>
+                    <con2:reply isError="true">
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N7987</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.42054153.0.1540cb66399.N7dc2">
+            <con:stage id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N7dc0" name="StageResponse_SWO_Pendiente">
+                <con:context/>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.42054153.0.1540cb66399.N7e01">
+            <con:stage name="StageRequest_SWO_Cobranza" errorHandler="error-N3f57c7ff.42054153.0.1540cb66399.N7f2f" id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N7f37">
+                <con:comment/>
+                <con:context>
+                    <con2:userNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST"/>
+                    <con2:userNsDecl prefix="ges1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilRESTTipos"/>
+                </con:context>
+                <con:actions>
+                    <con4:wsCallout xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N7f34</con2:id>
+                        <con1:service ref="OperacionCreditos/Cobranza/ProxyServices/NMPGestionCobranzaPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con4:operation>notificaResultado</con4:operation>
+                        <con1:request>
+                            <con4:body wrapped="true">notificaResultadoRequest</con4:body>
+                            <con4:header>header</con4:header>
+                        </con1:request>
+                        <con1:response>
+                            <con4:body wrapped="true">notificaResultadoResponse</con4:body>
+                            <con4:header/>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:assign varName="notificaResultadoRequest">
+                                <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N7f33</con2:id>
+                                <con1:expr>
+                                    <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                        <con:resource ref="OperacionCreditos/Cobranza/Resources/Transformations/TrSendWorkOrderToNotificaGestionCbzReq"/>
+                                        <con:input>$body/ges:Response</con:input>
+                                    </con:xsltTransform>
+                                </con1:expr>
+                            </con1:assign>
+                            <con1:assign varName="NmpHeader">
+                                <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N7f32</con2:id>
+                                <con2:disabled>true</con2:disabled>
+                                <con1:expr>
+                                    <con2:xqueryText><![CDATA[<soapenv:Header xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+            <nmp:headerMessage xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">
+                <nmp:usuario>formiik</nmp:usuario>
+                <nmp:idConsumidor>FORMIIK</nmp:idConsumidor>
+                <nmp:idDestino>NMP</nmp:idDestino>
+            </nmp:headerMessage>           
+        </soapenv:Header>]]></con2:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:requestTransform>
+                        <con1:responseTransform/>
+                    </con4:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.42054153.0.1540cb66399.N76ce">
+            <con:stage id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N76cd" name="StageResponse_FWO_CobranzaCliente">
+                <con:context>
+                    <con2:userNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST"/>
+                    <con2:userNsDecl prefix="ges1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilRESTTipos"/>
+                </con:context>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.42054153.0.1540cb66399.N7f0b">
+            <con:stage id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N7f0a" name="StageResponse">
+                <con:context>
+                    <con2:userNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST"/>
+                    <con2:userNsDecl prefix="ges1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilRESTTipos"/>
+                </con:context>
+                <con:actions>
+                    <con:assign varName="body" xmlns:con="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N7f08</con2:id>
+                        <con:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">&lt;soapenv:Body xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+    
+&lt;/soapenv:Body></con:xqueryText>
+                        </con:expr>
+                    </con:assign>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.42054153.0.1540cb66399.N7713">
+            <con:stage id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N7712" name="StageResponse_FWO_ConsultarAgenda">
+                <con:context>
+                    <con2:userNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST"/>
+                    <con2:userNsDecl prefix="ges1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilRESTTipos"/>
+                </con:context>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.42054153.0.1540cb66399.N7ea3">
+            <con:stage id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N7ea1" name="StageResponse_SWO_Ventas">
+                <con:context/>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.42054153.0.1540cb66399.N7758">
+            <con:stage id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N7757" name="StageResponse_FWO_EdoSolicitud">
+                <con:context>
+                    <con2:userNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST"/>
+                    <con2:userNsDecl prefix="ges1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilRESTTipos"/>
+                </con:context>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.42054153.0.1540cb66399.N7718" errorHandler="error-N3f57c7ff.42054153.0.1540cb66399.N6ff0">
+            <con:stage id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N7717" name="StageRequest_FWO_ConsultarAgenda">
+                <con:context/>
+                <con:actions>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-af004c8.4b79aa77.0.1518f165888.N7ffe</con2:id>
+                        <con1:service ref="FuerzaDeVentas/GestionOrdenesTrabajo/Proxy Services/NMPOrdenesTrabajoSoapPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>consultarAgenda</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">consultarAgendaReq</con1:body>
+                            <con1:header>header</con1:header>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">consultarAgendaRes</con1:body>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:replace varName="consultarAgendaReq" contents-only="false">
+                                <con2:id>_ActionId-af004c8.4b79aa77.0.1518f165888.N7ffb</con2:id>
+                                <con1:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/Transformations/TrFlexibleUpdateWorkOrderToConsultarAgendaReq"/>
+                                        <con2:input>$body/*</con2:input>
+                                    </con2:xsltTransform>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:requestTransform>
+                        <con1:responseTransform>
+                            <con1:assign varName="consultarAgendaHtmlVar">
+                                <con2:id>_ActionId-a1e030f.N46f09b50.1.1532e87b2a7.N8000</con2:id>
+                                <con1:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/Transformations/TrConsultarAgendaResToHtmlFormatXSD"/>
+                                        <con2:input>$consultarAgendaRes</con2:input>
+                                    </con2:xsltTransform>
+                                </con1:expr>
+                            </con1:assign>
+                            <con1:replace varName="body" contents-only="true">
+                                <con2:id>_ActionId-af004c8.4b79aa77.0.1518f165888.N7ff5</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<tns:FlexibleUpdateWorkOrderResponse xmlns:GestionT='http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilRESTTipos' xmlns:tns='http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+   <GestionT:UpdateFieldsValues>
+      <GestionT:Resultado>Operación exitosa</GestionT:Resultado>
+      <GestionT:Consultar_Agenda><![CDATA[",fn-bea:serialize($consultarAgendaHtmlVar),"]]]]>><![CDATA[</GestionT:Consultar_Agenda>
+   </GestionT:UpdateFieldsValues>
+</tns:FlexibleUpdateWorkOrderResponse>"))]]></con2:xqueryText>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:responseTransform>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.42054153.0.1540cb66399.N7604" errorHandler="error-N3f57c7ff.42054153.0.1540cb66399.N6da2">
+            <con:stage id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N7603" name="StageRequest_FWO_ConsultaBuro">
+                <con:context>
+                    <con2:userNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST"/>
+                </con:context>
+                <con:actions>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-N3f57c7ff.47b9948a.0.1531f1366d1.N7f68</con2:id>
+                        <con1:service ref="GestionClientes/BuroCredito/Proxy Services/NMPBuroCreditoPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>getConsultaVigenteBC</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">consultaBuroCreditoReq</con1:body>
+                            <con1:header>header</con1:header>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">consultaBuroCreditoRes</con1:body>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:assign varName="consultaBuroCreditoReq">
+                                <con2:id>_ActionId-N3f57c7ff.797022a6.0.1532e37e782.N7ffe</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryTransform>
+                                        <con2:resource ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/Transformations/TransformReqConsultaBuroToSAP"/>
+                                        <con2:param name="consultaBuroRequest">
+                                            <con2:path>$body/*</con2:path>
+                                        </con2:param>
+                                    </con2:xqueryTransform>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:requestTransform>
+                        <con1:responseTransform>
+                            <con1:replace varName="body" contents-only="true">
+                                <con2:id>_ActionId-N3f57c7ff.N7d5b918.0.1532e205204.N7ffe</con2:id>
+                                <con1:location>
+                                    <con2:xpathText>.</con2:xpathText>
+                                </con1:location>
+                                <con1:expr>
+                                    <con2:xqueryTransform>
+                                        <con2:resource ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/Transformations/TransformResConsultaBuroToSAP"/>
+                                        <con2:param name="consultaBuroResponse">
+                                            <con2:path>$consultaBuroCreditoRes</con2:path>
+                                        </con2:param>
+                                    </con2:xqueryTransform>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:responseTransform>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.42054153.0.1540cb66399.N7649" errorHandler="error-N3f57c7ff.42054153.0.1540cb66399.N6e10">
+            <con:stage id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N7648" name="StageRequest_FWO_EstatusSolicitudes">
+                <con:context>
+                    <con2:varNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST"/>
+                </con:context>
+                <con:actions>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-N3f57c7ff.N537eb7f9.0.1531a9fcf00.N7fcc</con2:id>
+                        <con1:service ref="OperacionCreditos/Creditos/Proxy Services/NMPCreditosSoapPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>getEstatusSolicitud</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">getEstatusSolicitudReq</con1:body>
+                            <con1:header>header</con1:header>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">getEstatusSolicitudRes</con1:body>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:replace varName="getEstatusSolicitudReq" contents-only="false">
+                                <con2:id>_ActionId-N3f57c7ff.N75e0fd11.0.15406a397ec.N7e76</con2:id>
+                                <con1:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/Transformations/TrFlexibleUpdateWorkOrderToGetEstatusSolicitudesReq"/>
+                                        <con2:input>$body/*</con2:input>
+                                    </con2:xsltTransform>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:requestTransform>
+                        <con1:responseTransform>
+                            <con1:assign varName="estatusSolicitudesHtml">
+                                <con2:id>_ActionId-N3f57c7ff.N75e0fd11.0.15406a397ec.N7e11</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryTransform>
+                                        <con2:resource ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/Transformations/TransformEstatusSolicitudesHtmlResp"/>
+                                        <con2:param name="estatusSolicitudes">
+                                            <con2:path>$getEstatusSolicitudRes</con2:path>
+                                        </con2:param>
+                                    </con2:xqueryTransform>
+                                </con1:expr>
+                            </con1:assign>
+                            <con1:replace varName="body" contents-only="true">
+                                <con2:id>_ActionId-N3f57c7ff.N75e0fd11.0.15406a397ec.N7e0e</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<tns:FlexibleUpdateWorkOrderResponse xmlns:GestionT='http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilRESTTipos' xmlns:tns='http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+   <GestionT:UpdateFieldsValues>
+      <GestionT:Resultado>Operación exitosa</GestionT:Resultado>
+      <GestionT:Consulta_Solicitudes_Res><![CDATA[",fn-bea:serialize($estatusSolicitudesHtml),"]]]]>><![CDATA[</GestionT:Consulta_Solicitudes_Res>
+   </GestionT:UpdateFieldsValues>
+</tns:FlexibleUpdateWorkOrderResponse>"))]]></con2:xqueryText>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:responseTransform>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.42054153.0.1540cb66399.N7e00">
+            <con:stage id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N7dfe" name="StageResponse_SWO_Cobranza">
+                <con:context/>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.42054153.0.1540cb66399.N7955">
+            <con:stage id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N791c" name="StageError_SWO_Pendiente">
+                <con:context>
+                    <con2:userNsDecl prefix="NMPsm" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                    <con2:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                    <con2:userNsDecl prefix="ges1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilRESTTipos"/>
+                    <con2:varNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N791b</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/Transformations/TransformGestionMovilRestFault"/>
+                                <con2:input>$fault</con2:input>
+                                <con2:param name="operation">
+                                    <con2:path>1</con2:path>
+                                </con2:param>
+                                <con2:param name="app">
+                                    <con2:path>4</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con4:report>
+                        <con2:id>_ActionId-a1e041d.1633d492.2.154cf47c756.N7fff</con2:id>
+                        <con4:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body_tmp//*:Response/*</con:xqueryText>
+                        </con4:expr>
+                        <con4:labels>
+                            <con4:key>ExternalId</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./ges:Response/@ExternalId</con:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>ExternalType</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:Response/@ExternalType</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                    </con4:report>
+                    <con4:report xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:env="http://www.bea.com/wli/config/env" xmlns:con5="http://www.bea.com/wli/sb/stages/transform/config" xmlns:tran="http://www.bea.com/wli/sb/transports">
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N791a</con2:id>
+                        <con4:expr>
+                            <con2:xqueryText>$fault</con2:xqueryText>
+                        </con4:expr>
+                        <con4:labels>
+                            <con4:key>ExternalId_Error</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./ges:Response/@ExternalId</con:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>ExternalType_Error</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:Response/@ExternalType</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                    </con4:report>
+                    <con2:reply isError="true">
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N7919</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-af004a0.50d64422.0.1517d311fc0.N7f59">
+            <con2:stage name="Error Handler General" id="_StageId-af004a0.50d64422.0.1517d311fc0.N7ef7" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/pipeline/config" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:env="http://www.bea.com/wli/config/env" xmlns:tran="http://www.bea.com/wli/sb/transports">
+                <con2:context>
+                    <con3:userNsDecl prefix="con" namespace="http://www.bea.com/wli/sb/context" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="ns1" namespace="urn:mx.com.nmp.clientes" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="NMPConsultaC" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="crm" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con5:userNsDecl prefix="ges1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilRESTTipos" xmlns:con5="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:varNsDecl prefix="nmp2" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:varNsDecl prefix="nmp3" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con5:varNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST" xmlns:con5="http://www.bea.com/wli/sb/stages/config"/>
+                </con2:context>
+                <con2:actions>
+                    <con1:replace varName="header" contents-only="false" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N3f57fff6.5c2908f2.0.1517a0f94e2.N7dfa</con2:id>
+                        <con2:id>_ActionId-af004a0.50d64422.0.1517d311fc0.N7ef6</con2:id>
+                        <con2:id>_ActionId-a1e030f.N20c69495.2.1531b3677ed.N8000</con2:id>
+                        <con2:id>_ActionId-a1e030f.N20c69495.7.1531b6fe842.N8000</con2:id>
+                        <con2:id>_ActionId-a1e030f.N20c69495.f.1531bcd28d3.N8000</con2:id>
+                        <con2:id>_ActionId-a1e030f.N20c69495.10.1531bd466fb.N8000</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML('&lt;soapenv:Header xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">&lt;/soapenv:Header>')</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con5:ifThenElse xmlns:con5="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con6:id xmlns:con6="http://www.bea.com/wli/sb/stages/config">_ActionId-N3f57c7ff.3bafcf2d.0.1537c69a823.N7f21</con6:id>
+                        <con5:case id="_BranchId-N3f57c7ff.3bafcf2d.0.1537c69a823.N7f20">
+                            <con5:condition>
+                                <con6:xqueryText xmlns:con6="http://www.bea.com/wli/sb/stages/config">$inbound/ctx:service/ctx:operation/text() = 'SendWorkOrderToClient'</con6:xqueryText>
+                            </con5:condition>
+                            <con5:actions>
+                                <con1:replace varName="body" contents-only="true" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                                    <con2:id>_ActionId-N3f57c7ff.691737e7.0.1532f551895.N7f9c</con2:id>
+                                    <con1:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con2:xsltTransform>
+                                            <con2:resource ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/Transformations/TransformGestionMovilRestFault"/>
+                                            <con2:input>$fault</con2:input>
+                                            <con2:param name="operation">
+                                                <con2:path>1</con2:path>
+                                            </con2:param>
+                                            <con2:param name="app">
+                                                <con2:path>0</con2:path>
+                                            </con2:param>
+                                        </con2:xsltTransform>
+                                    </con1:expr>
+                                </con1:replace>
+                                <con4:report xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                                    <con2:id>_ActionId-N3f57c7ff.3bafcf2d.0.1537c69a823.N7f2f</con2:id>
+                                    <con4:expr>
+                                        <con2:xqueryText>$body</con2:xqueryText>
+                                    </con4:expr>
+                                    <con4:labels>
+                                        <con4:key>ProductId_Response</con4:key>
+                                        <con4:varName>body_tmp</con4:varName>
+                                        <con4:value>
+                                            <con2:xpathText>./ges:Response/@ProductId</con2:xpathText>
+                                        </con4:value>
+                                    </con4:labels>
+                                    <con4:labels>
+                                        <con4:key>ExternalType_Response</con4:key>
+                                        <con4:varName>body_tmp</con4:varName>
+                                        <con4:value>
+                                            <con2:xpathText>./ges:Response/@ExternalType</con2:xpathText>
+                                        </con4:value>
+                                    </con4:labels>
+                                    <con4:labels>
+                                        <con4:key>IdExternal</con4:key>
+                                        <con4:varName>body_tmp</con4:varName>
+                                        <con4:value>
+                                            <con2:xpathText>./ges:Response/@ExternalId</con2:xpathText>
+                                        </con4:value>
+                                    </con4:labels>
+                                </con4:report>
+                            </con5:actions>
+                        </con5:case>
+                        <con5:default>
+                            <con1:replace varName="body" contents-only="true" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                                <con2:id>_ActionId-N5601d8a2.44f1848b.0.15627c99803.N7fc1</con2:id>
+                                <con1:location>
+                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                </con1:location>
+                                <con1:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/Transformations/TransformGestionMovilRestFault"/>
+                                        <con2:input>$fault</con2:input>
+                                        <con2:param name="operation">
+                                            <con2:path>2</con2:path>
+                                        </con2:param>
+                                        <con2:param name="app">
+                                            <con2:path>0</con2:path>
+                                        </con2:param>
+                                    </con2:xsltTransform>
+                                </con1:expr>
+                            </con1:replace>
+                            <con4:report xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+                                <con2:id>_ActionId-N3f57c7ff.N932b5f0.0.153801f15ce.N7f5c</con2:id>
+                                <con4:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                                </con4:expr>
+                                <con4:labels>
+                                    <con4:key>Action_Response</con4:key>
+                                    <con4:varName>body_tmp</con4:varName>
+                                    <con4:value>
+                                        <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:Action/text()</con2:xpathText>
+                                    </con4:value>
+                                </con4:labels>
+                                <con4:labels>
+                                    <con4:key>IdWorkOrder_Response</con4:key>
+                                    <con4:varName>body_tmp</con4:varName>
+                                    <con4:value>
+                                        <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:IdWorkOrder/text()</con2:xpathText>
+                                    </con4:value>
+                                </con4:labels>
+                                <con4:labels>
+                                    <con4:key>IdExternal</con4:key>
+                                    <con4:varName>body_tmp</con4:varName>
+                                    <con4:value>
+                                        <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:ExternalId</con2:xpathText>
+                                    </con4:value>
+                                </con4:labels>
+                            </con4:report>
+                        </con5:default>
+                    </con5:ifThenElse>
+                </con2:actions>
+            </con2:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.42054153.0.1540cb66399.N7dbe">
+            <con:stage id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N7dbc" name="StageResponse_SWO_Preregistro">
+                <con:context/>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.42054153.0.1540cb66399.N76d3" errorHandler="error-N3f57c7ff.42054153.0.1540cb66399.N6eec">
+            <con:stage id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N76d2" name="StageRequest_FWO_CobranzaCliente">
+                <con:context/>
+                <con:actions>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-af004c8.4b79aa77.0.1518f165888.N7fbd</con2:id>
+                        <con1:service ref="OperacionCreditos/Cobranza/ProxyServices/NMPConsultaCobranzaPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>consultarCobranzaCliente</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">cobranzaClienteReq</con1:body>
+                            <con1:header>header</con1:header>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">cobranzaClienteRes</con1:body>
+                            <con1:header/>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:replace varName="cobranzaClienteReq" contents-only="false">
+                                <con2:id>_ActionId-af004c8.4b79aa77.0.1518f165888.N7fb9</con2:id>
+                                <con1:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/Transformations/TrFlexibleUpdateWorkOrderToConsultarCobranzaClienteReq"/>
+                                        <con2:input>$body/*</con2:input>
+                                    </con2:xsltTransform>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:requestTransform>
+                        <con1:responseTransform>
+                            <con1:replace varName="body" contents-only="true">
+                                <con2:id>_ActionId-N5601d8a2.N14b41a90.0.15651c81563.N7a47</con2:id>
+                                <con1:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/Transformations/TrCobranzaClienteToFlexibleUpdateWorkOrderRes"/>
+                                        <con2:input>$cobranzaClienteRes</con2:input>
+                                    </con2:xsltTransform>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:responseTransform>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N5601d8a2.2eeaf663.0.1564763676c.N7d6b"/>
+        <con:pipeline type="error" name="error-N3f57c7ff.42054153.0.1540cb66399.N6e7e">
+            <con:stage id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N6e45" name="StageError_FWO_EdoCobranza">
+                <con:context>
+                    <con2:userNsDecl prefix="NMPsm" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                    <con2:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                    <con2:userNsDecl prefix="ges1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilRESTTipos"/>
+                    <con2:varNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N6e44</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/Transformations/TransformGestionMovilRestFault"/>
+                                <con2:input>$fault</con2:input>
+                                <con2:param name="operation">
+                                    <con2:path>2</con2:path>
+                                </con2:param>
+                                <con2:param name="app">
+                                    <con2:path>11</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con4:report>
+                        <con2:id>_ActionId-N5601d8a2.1135ad0b.0.154e8ce9c1c.N7ff4</con2:id>
+                        <con4:expr>
+                            <con2:xqueryText>$body_tmp</con2:xqueryText>
+                        </con4:expr>
+                        <con4:labels>
+                            <con4:key>Action</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:Action/text()</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>IdWorkOrder</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:IdWorkOrder/text()</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>IdExternal</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:ExternalId</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                    </con4:report>
+                    <con4:report>
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N6e43</con2:id>
+                        <con4:expr>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con4:expr>
+                        <con4:labels>
+                            <con4:key>Action_Error</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:Action/text()</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>IdWorkOrder_Error</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:IdWorkOrder/text()</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>IdExternal</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:ExternalId</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                    </con4:report>
+                    <con2:reply isError="true">
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N6e42</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.42054153.0.1540cb66399.N7ea4" errorHandler="error-N3f57c7ff.42054153.0.1540cb66399.N7a2d">
+            <con:stage id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N7ea2" name="StageRequest_SWO_Ventas">
+                <con:context/>
+                <con:actions>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N7f23</con2:id>
+                        <con1:service ref="FuerzaDeVentas/GestionOrdenesTrabajo/Proxy Services/NMPOrdenesTrabajoSoapPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>actualizarGestion</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">actualizarGestionReq</con1:body>
+                            <con1:header>header</con1:header>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">actualizarGestionRes</con1:body>
+                            <con1:header/>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:replace varName="actualizarGestionReq" contents-only="false">
+                                <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N7f22</con2:id>
+                                <con1:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/Transformations/TrRespuestaGMFormiikToActualizarGestionReq"/>
+                                        <con2:input>$body/*</con2:input>
+                                    </con2:xsltTransform>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:requestTransform>
+                        <con1:responseTransform>
+                            <con1:replace varName="body" contents-only="true">
+                                <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N7f21</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText>fn-bea:inlinedXML(concat('&lt;ges:SendWordOrderToClientResponse xmlns:ges="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST" xmlns:ges1="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilRESTTipos">
+         &lt;ges1:respuesta>','noPresolicitudSAP: ',$actualizarGestionRes//*:noPresolicitud/text(),', respuestaCRM: ',$actualizarGestionRes//*:respuestaCRM/text(),'&lt;/ges1:respuesta>
+      &lt;/ges:SendWordOrderToClientResponse>'))</con2:xqueryText>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:responseTransform>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N5601d8a2.2eeaf663.0.1564763676c.N7d6e">
+            <con:stage id="_StageId-N5601d8a2.2eeaf663.0.1564763676c.N7d6d" name="StageRequest">
+                <con:context/>
+                <con:actions>
+                    <con1:Error>
+                        <con2:id>_ActionId-N5601d8a2.2eeaf663.0.1564763676c.N7d6c</con2:id>
+                        <con1:errCode>NMP-GSM-7001</con1:errCode>
+                        <con1:message>El tipo de actividad externo no se encuentra registrado en el enrutamiento de aplicaciones. Revisar con su Administrador.</con1:message>
+                    </con1:Error>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af004a0.50d64422.0.1517d311fc0.N7df1">
+            <con:stage id="_StageId-af004a0.50d64422.0.1517d311fc0.N7def" name="Operation Validation and Request Stage">
+                <con:context>
+                    <con2:userNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST"/>
+                    <con2:userNsDecl prefix="ges1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilRESTTipos"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="body_tmp">
+                        <con2:id>_ActionId-N3f57c7ff.N932b5f0.0.153801f15ce.N7fc7</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57c7ff.71e8c99b.0.157de6650fb.N7d7e" name="StageHeader">
+                <con:context>
+                    <con2:userNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST"/>
+                    <con2:userNsDecl prefix="ges1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilRESTTipos"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="actionOSB">
+                        <con2:id>_ActionId-N3f57c7ff.71e8c99b.0.157de6650fb.N7d7d</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">&lt;result>{dvm:lookupValue('FuerzaDeVentas/GestionOrdenesTrabajo/Resources/DVMs/NMPEnrutamientoGestionMovil', 'Formiik',$body/ges:FlexibleUpdateWorkOrderRequest/ges1:Action, 'OSB', 'null',('TipoValor','Action'))}&lt;/result></con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="header">
+                        <con2:id>_ActionId-N3f57c7ff.71e8c99b.0.157de6650fb.N7d7c</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText><![CDATA[<soap:Header   xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+        <nmph:headerMessage xmlns:nmph="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">
+            <nmph:usuario>Formiik</nmph:usuario>
+            <nmph:idConsumidor>FORMIIK</nmph:idConsumidor>
+            <nmph:idDestino>{dvm:lookupValue('FuerzaDeVentas/GestionOrdenesTrabajo/Resources/DVMs/NMPEnrutamientoGestionMovil', 'Formiik',$body/ges:FlexibleUpdateWorkOrderRequest/ges1:Action, 'idDestino', 'null',('TipoValor','Action'))}</nmph:idDestino>
+        </nmph:headerMessage>
+    </soap:Header>]]></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con4:report>
+                        <con2:id>_ActionId-N3f57c7ff.71e8c99b.0.157de6650fb.N7ce0</con2:id>
+                        <con2:disabled>true</con2:disabled>
+                        <con4:expr>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con4:expr>
+                        <con4:labels>
+                            <con4:key>Action</con4:key>
+                            <con4:varName>body</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:Action</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>Id</con4:key>
+                            <con4:varName>body</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:Response/@ExternalId</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                    </con4:report>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.42054153.0.1540cb66399.N7dc3" errorHandler="error-N3f57c7ff.42054153.0.1540cb66399.N7955">
+            <con:stage id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N7dc1" name="StageRequest_SWO_Pendiente">
+                <con:context>
+                    <con2:userNsDecl prefix="ges2" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilTipo"/>
+                </con:context>
+                <con:actions>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N7f13</con2:id>
+                        <con1:service ref="FuerzaDeVentas/GestionOrdenesTrabajo/Proxy Services/NMPOrdenesTrabajoSoapPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>actualizarPendientes</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">bodyPendienteRequest</con1:body>
+                            <con1:header>header</con1:header>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">bodyPendienteResponse</con1:body>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:assign varName="bodyPendienteRequest">
+                                <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N7f12</con2:id>
+                                <con1:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/Transformations/TrRespuestaGMFormiikToActualizarPendienteReq"/>
+                                        <con2:input>$body/*</con2:input>
+                                    </con2:xsltTransform>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:requestTransform>
+                        <con1:responseTransform>
+                            <con1:replace varName="body" contents-only="true">
+                                <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N7f11</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText>fn-bea:inlinedXML(concat('&lt;ges:SendWordOrderToClientResponse xmlns:ges="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST" xmlns:ges1="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilRESTTipos">
+         &lt;ges1:respuesta>',$bodyPendienteResponse/ges2:EIdRre/text(),'&lt;/ges1:respuesta>
+      &lt;/ges:SendWordOrderToClientResponse>'))</con2:xqueryText>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:responseTransform>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.42054153.0.1540cb66399.N715d">
+            <con:stage id="_StageId-N3f57fff6.N6b8e4f2d.0.1517fe648a0.N7f94" name="StageError_FWO_Autoasignar">
+                <con:context>
+                    <con2:userNsDecl prefix="NMPsm" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                    <con2:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                    <con2:userNsDecl prefix="ges1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilRESTTipos"/>
+                    <con2:varNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-a1e030f.N46f09b50.15.15333607b7c.N7ff5</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/Transformations/TransformGestionMovilRestFault"/>
+                                <con2:input>$fault</con2:input>
+                                <con2:param name="operation">
+                                    <con2:path>2</con2:path>
+                                </con2:param>
+                                <con2:param name="app">
+                                    <con2:path>7</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con4:report>
+                        <con2:id>_ActionId-N5601d8a2.1135ad0b.0.154e8ce9c1c.N7ffb</con2:id>
+                        <con4:expr>
+                            <con2:xqueryText>$body_tmp</con2:xqueryText>
+                        </con4:expr>
+                        <con4:labels>
+                            <con4:key>Action</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:Action/text()</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>IdWorkOrder</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:IdWorkOrder/text()</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>ExternalId</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:ExternalId</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                    </con4:report>
+                    <con4:report>
+                        <con2:id>_ActionId-N3f57c7ff.N932b5f0.0.153801f15ce.N7fc4</con2:id>
+                        <con4:expr>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con4:expr>
+                        <con4:labels>
+                            <con4:key>Action_Error</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:Action/text()</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>IdWorkOrder_Error</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:IdWorkOrder/text()</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>IdExternal</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:ExternalId</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                    </con4:report>
+                    <con2:reply isError="true">
+                        <con2:id>_ActionId-N3f57fff6.N6b8e4f2d.0.1517fe648a0.N7f8e</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N5601d8a2.2eeaf663.0.1564763676c.N7e0d">
+            <con:stage id="_StageId-N5601d8a2.2eeaf663.0.1564763676c.N7e0b" name="StageRequest">
+                <con:context/>
+                <con:actions>
+                    <con1:Error>
+                        <con2:id>_ActionId-N5601d8a2.2eeaf663.0.1564763676c.N7dd6</con2:id>
+                        <con1:errCode>NMP-GSM-7001</con1:errCode>
+                        <con1:message>El tipo de actividad externo no se encuentra registrado en el enrutamiento de aplicaciones. Revisar con su Administrador.</con1:message>
+                    </con1:Error>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N5601d8a2.2eeaf663.0.1564763676c.N7e0c"/>
+        <con:pipeline type="error" name="error-N3f57c7ff.42054153.0.1540cb66399.N6e10">
+            <con:stage id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N6dd7" name="StageError_FWO_EstatusSolicitud">
+                <con:context>
+                    <con2:userNsDecl prefix="NMPsm" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                    <con2:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                    <con2:userNsDecl prefix="ges1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilRESTTipos"/>
+                    <con2:varNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N6dd6</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/Transformations/TransformGestionMovilRestFault"/>
+                                <con2:input>$fault</con2:input>
+                                <con2:param name="operation">
+                                    <con2:path>2</con2:path>
+                                </con2:param>
+                                <con2:param name="app">
+                                    <con2:path>12</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con4:report>
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N6dd5</con2:id>
+                        <con4:expr>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con4:expr>
+                        <con4:labels>
+                            <con4:key>Action_Error</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:Action/text()</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>IdWorkOrder_Error</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:IdWorkOrder/text()</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>IdExternal</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:ExternalId</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                    </con4:report>
+                    <con4:report>
+                        <con2:id>_ActionId-a1e041d.1633d492.8.154cf5470a8.N8000</con2:id>
+                        <con4:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body_tmp</con:xqueryText>
+                        </con4:expr>
+                        <con4:labels>
+                            <con4:key>Action</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:Action/text()</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>IdWorkOrder</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:IdWorkOrder/text()</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>IdExternal</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:ExternalId</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                    </con4:report>
+                    <con2:reply isError="true">
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N6dd4</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.42054153.0.1540cb66399.N768e" errorHandler="error-N3f57c7ff.42054153.0.1540cb66399.N6e7e">
+            <con:stage id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N768d" name="StageRequest_FWO_EstatusCobranza">
+                <con:context/>
+                <con:actions>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-af004c8.4b79aa77.0.1518f165888.N7fb6</con2:id>
+                        <con1:service ref="OperacionCreditos/Cobranza/ProxyServices/NMPConsultaCobranzaPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>consultarEstatusCobranza</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">estatusCobranzaReq</con1:body>
+                            <con1:header>header</con1:header>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">estatusCobranzaRes</con1:body>
+                            <con1:header/>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:replace varName="estatusCobranzaReq" contents-only="false">
+                                <con2:id>_ActionId-af004c8.4b79aa77.0.1518f165888.N7fb3</con2:id>
+                                <con1:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/Transformations/TrFlexibleUpdateWorkOrderToConsultarEstatusCobranzaReq"/>
+                                        <con2:input>$body/*</con2:input>
+                                    </con2:xsltTransform>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:requestTransform>
+                        <con1:responseTransform>
+                            <con1:replace varName="body" contents-only="true">
+                                <con2:id>_ActionId-N5601d8a2.N14b41a90.0.15651c81563.N78d7</con2:id>
+                                <con1:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/Transformations/TrEstatusCobranzaToFlexibleUpdateWorkOrderRes"/>
+                                        <con2:input>$estatusCobranzaRes</con2:input>
+                                    </con2:xsltTransform>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:responseTransform>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="error-N3f57c7ff.42054153.0.1540cb66399.N7f2f" type="error">
+            <con:stage id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N7f2e" name="GestionCobranzaFault">
+                <con:context>
+                    <con2:userNsDecl prefix="NMPsm" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                    <con2:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                    <con2:userNsDecl prefix="ges1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilRESTTipos"/>
+                    <con2:varNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N7f2d</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/Transformations/TransformGestionMovilRestFault"/>
+                                <con2:input>$fault</con2:input>
+                                <con2:param name="operation">
+                                    <con2:path>1</con2:path>
+                                </con2:param>
+                                <con2:param name="app">
+                                    <con2:path>2</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con2:reply isError="true">
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N7f2c</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.42054153.0.1540cb66399.N70c2">
+            <con:stage id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N7089" name="StageError_FWO_EdoSolicitud">
+                <con:context>
+                    <con2:userNsDecl prefix="NMPsm" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                    <con2:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                    <con2:userNsDecl prefix="ges1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilRESTTipos"/>
+                    <con2:varNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N7088</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/Transformations/TransformGestionMovilRestFault"/>
+                                <con2:input>$fault</con2:input>
+                                <con2:param name="operation">
+                                    <con2:path>2</con2:path>
+                                </con2:param>
+                                <con2:param name="app">
+                                    <con2:path>8</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con4:report>
+                        <con2:id>_ActionId-N5601d8a2.1135ad0b.0.154e8ce9c1c.N7ff8</con2:id>
+                        <con4:expr>
+                            <con2:xqueryText>$body_tmp</con2:xqueryText>
+                        </con4:expr>
+                        <con4:labels>
+                            <con4:key>Action</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:Action/text()</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>IdWorkOrder</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:IdWorkOrder/text()</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>IdExternal</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:ExternalId</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                    </con4:report>
+                    <con4:report>
+                        <con2:id>_ActionId-a1e041d.1633d492.6.154cf531754.N8000</con2:id>
+                        <con4:expr>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con4:expr>
+                        <con4:labels>
+                            <con4:key>Action</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:Action/text()</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>IdWorkOrder</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:IdWorkOrder/text()</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>IdExternal</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:ExternalId</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                    </con4:report>
+                    <con2:reply isError="true">
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N7086</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.42054153.0.1540cb66399.N6eec">
+            <con:stage id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N6eb3" name="StageError_FWO_CobranzaCliente">
+                <con:context>
+                    <con2:userNsDecl prefix="NMPsm" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                    <con2:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                    <con2:userNsDecl prefix="ges1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilRESTTipos"/>
+                    <con2:varNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N6eb2</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/Transformations/TransformGestionMovilRestFault"/>
+                                <con2:input>$fault</con2:input>
+                                <con2:param name="operation">
+                                    <con2:path>2</con2:path>
+                                </con2:param>
+                                <con2:param name="app">
+                                    <con2:path>9</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con4:report>
+                        <con2:id>_ActionId-N5601d8a2.1135ad0b.0.154e8ce9c1c.N7ff6</con2:id>
+                        <con4:expr>
+                            <con2:xqueryText>$body_tmp</con2:xqueryText>
+                        </con4:expr>
+                        <con4:labels>
+                            <con4:key>Action</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:Action/text()</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>IdWorkOrder</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:IdWorkOrder/text()</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>IdExternal</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:ExternalId</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                    </con4:report>
+                    <con4:report>
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N6eb1</con2:id>
+                        <con4:expr>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con4:expr>
+                        <con4:labels>
+                            <con4:key>Action_Error</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:Action/text()</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>IdWorkOrder_Error</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:IdWorkOrder/text()</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>IdExternal</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:ExternalId</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                    </con4:report>
+                    <con2:reply isError="true">
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N6eb0</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af004a0.50d64422.0.1517d311fc0.N7df0">
+            <con:stage id="_StageId-af004a0.50d64422.0.1517d311fc0.N7dee" name="Response Stage">
+                <con:context>
+                    <con2:userNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST"/>
+                    <con2:userNsDecl prefix="ges1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilRESTTipos"/>
+                </con:context>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.42054153.0.1540cb66399.N7f38">
+            <con:stage id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N7f2b" name="StageRenameInput">
+                <con:context>
+                    <con2:userNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST"/>
+                    <con2:userNsDecl prefix="ges1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilRESTTipos"/>
+                </con:context>
+                <con:actions>
+                    <con1:rename varName="body">
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N7f2a</con2:id>
+                        <con1:location>
+                            <con2:xpathText>./*</con2:xpathText>
+                        </con1:location>
+                        <con1:namespace>http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST</con1:namespace>
+                    </con1:rename>
+                    <con1:rename varName="body">
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N7f29</con2:id>
+                        <con1:location>
+                            <con2:xpathText>./ges:Response//*</con2:xpathText>
+                        </con1:location>
+                        <con1:namespace>http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilRESTTipos</con1:namespace>
+                    </con1:rename>
+                    <con1:assign varName="body_tmp">
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N7f28</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="header_tmp">
+                        <con2:id>_ActionId-N5601d8a2.1135ad0b.0.154e8ce9c1c.N7ffe</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$header</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57c7ff.71e8c99b.0.157de6650fb.N7e4f" name="StageHeader">
+                <con:context>
+                    <con2:userNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST"/>
+                    <con2:userNsDecl prefix="ges1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilRESTTipos"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="externalTypeOSB">
+                        <con2:id>_ActionId-N3f57c7ff.71e8c99b.0.157de6650fb.N7ee3</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">&lt;result>{dvm:lookupValue('FuerzaDeVentas/GestionOrdenesTrabajo/Resources/DVMs/NMPEnrutamientoGestionMovil', 'Formiik',$body/ges:Response/@ExternalType, 'OSB', 'null',('TipoValor','ExternalType'))}&lt;/result></con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="header">
+                        <con2:id>_ActionId-N3f57c7ff.71e8c99b.0.157de6650fb.N7e4c</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText><![CDATA[<soap:Header   xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+        <nmph:headerMessage xmlns:nmph="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">
+            <nmph:usuario>formiik</nmph:usuario>
+            <nmph:idConsumidor>FORMIIK</nmph:idConsumidor>
+            <nmph:idDestino>{dvm:lookupValue('FuerzaDeVentas/GestionOrdenesTrabajo/Resources/DVMs/NMPEnrutamientoGestionMovil', 'Formiik',$body/ges:Response/@ExternalType, 'idDestino', 'null',('TipoValor','ExternalType'))}</nmph:idDestino>
+        </nmph:headerMessage>
+    </soap:Header>]]></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con4:report>
+                        <con2:id>_ActionId-N3f57c7ff.71e8c99b.0.157de6650fb.N7ce4</con2:id>
+                        <con2:disabled>true</con2:disabled>
+                        <con4:expr>
+                            <con2:xqueryText>$header</con2:xqueryText>
+                        </con4:expr>
+                        <con4:labels>
+                            <con4:key>GestionMovil Request ExternalType</con4:key>
+                            <con4:varName>body</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:Response/@ExternalType</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>Id</con4:key>
+                            <con4:varName>body</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:Response/@ExternalId</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                    </con4:report>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.42054153.0.1540cb66399.N75ff">
+            <con:stage id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N75fe" name="StageResponse_FWO_ConsultaBuro">
+                <con:context>
+                    <con2:userNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST"/>
+                    <con2:userNsDecl prefix="ges1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilRESTTipos"/>
+                </con:context>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.42054153.0.1540cb66399.N775d" errorHandler="error-N3f57c7ff.42054153.0.1540cb66399.N70c2">
+            <con:stage id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N775c" name="StageRequest_FWO_EdoSolicitud">
+                <con:context>
+                    <con2:varNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST"/>
+                </con:context>
+                <con:actions>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-af004a0.5ab61297.0.1518802467e.N7f5a</con2:id>
+                        <con1:service ref="OperacionCreditos/Creditos/Proxy Services/NMPCreditosSoapPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>getEstatusSolicitud</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">getEstatusSolicitudReq</con1:body>
+                            <con1:header>header</con1:header>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">getEstatusSolicitudRes</con1:body>
+                            <con1:header/>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:replace varName="getEstatusSolicitudReq" contents-only="false">
+                                <con2:id>_ActionId-N5601d8a2.2b9c7fe7.0.15639632104.N7ff1</con2:id>
+                                <con1:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/Transformations/TrFlexibleUpdateWorkOrderToGetEstatusSolicitudReq"/>
+                                        <con2:input>$body/*</con2:input>
+                                    </con2:xsltTransform>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:requestTransform>
+                        <con1:responseTransform>
+                            <con1:replace varName="body" contents-only="true">
+                                <con2:id>_ActionId-af004a0.5ab61297.0.1518802467e.N7f51</con2:id>
+                                <con1:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/Transformations/TrEstatusSolicitudResToFlexibleUpdateWorkOrderRes"/>
+                                        <con2:input>$getEstatusSolicitudRes</con2:input>
+                                    </con2:xsltTransform>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:responseTransform>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.42054153.0.1540cb66399.N783b" errorHandler="error-N3f57c7ff.42054153.0.1540cb66399.N715d">
+            <con:stage id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N7839" name="StageRequest_FWO_Autoasignar">
+                <con:context/>
+                <con:actions>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-af004a0.50d64422.0.1517d311fc0.N7da4</con2:id>
+                        <con1:service ref="FuerzaDeVentas/GestionOrdenesTrabajo/Proxy Services/NMPOrdenesTrabajoSoapPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>autoasignar</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">autoasignarReq</con1:body>
+                            <con1:header>header</con1:header>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">autoasignarRes</con1:body>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:replace varName="autoasignarReq" contents-only="false">
+                                <con2:id>_ActionId-N3f57fff6.5c2908f2.0.1517a0f94e2.N7cf1</con2:id>
+                                <con1:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/Transformations/TrFlexibleUpdateWorkOrderToAutoasignarReq"/>
+                                        <con2:input>$body/*</con2:input>
+                                    </con2:xsltTransform>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:requestTransform>
+                        <con1:responseTransform>
+                            <con1:replace varName="body" contents-only="true">
+                                <con2:id>_ActionId-N3f57fff6.5c2908f2.0.1517a0f94e2.N7ce8</con2:id>
+                                <con1:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/Transformations/TrAutoasignarResToFlexibleUpdateWorkOrderRes"/>
+                                        <con2:input>$autoasignarRes</con2:input>
+                                    </con2:xsltTransform>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:responseTransform>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.42054153.0.1540cb66399.N7644">
+            <con:stage id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N7643" name="StageResponse_FWO_EstatusSolicitudes">
+                <con:context>
+                    <con2:userNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST"/>
+                    <con2:userNsDecl prefix="ges1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilRESTTipos"/>
+                </con:context>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.42054153.0.1540cb66399.N7689">
+            <con:stage id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N7688" name="StageResponse_FWO_EstatusCobranza">
+                <con:context>
+                    <con2:userNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST"/>
+                    <con2:userNsDecl prefix="ges1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilRESTTipos"/>
+                </con:context>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.42054153.0.1540cb66399.N6ff0">
+            <con:stage id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N6f21" name="StageError_FWO_ConsultarAgenda">
+                <con:context>
+                    <con2:userNsDecl prefix="NMPsm" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                    <con2:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                    <con2:userNsDecl prefix="ges1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilRESTTipos"/>
+                    <con2:varNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N6f20</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/Transformations/TransformGestionMovilRestFault"/>
+                                <con2:input>$fault</con2:input>
+                                <con2:param name="operation">
+                                    <con2:path>2</con2:path>
+                                </con2:param>
+                                <con2:param name="app">
+                                    <con2:path>9</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con4:report>
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N6f1f</con2:id>
+                        <con4:expr>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con4:expr>
+                        <con4:labels>
+                            <con4:key>Action_Error</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:Action/text()</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>IdWorkOrder_Error</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:IdWorkOrder/text()</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>IdExternal</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:ExternalId</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                    </con4:report>
+                    <con4:report>
+                        <con2:id>_ActionId-a1e041d.1633d492.7.154cf537b9f.N8000</con2:id>
+                        <con4:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body_tmp</con:xqueryText>
+                        </con4:expr>
+                        <con4:labels>
+                            <con4:key>Action</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:Action/text()</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>IdWorkOrder</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:IdWorkOrder/text()</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>IdExternal</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:ExternalId</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                    </con4:report>
+                    <con2:reply isError="true">
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N6f1e</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.42054153.0.1540cb66399.N7a2d">
+            <con:stage id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N7f0f" name="StageError_SWO_Ventas">
+                <con:context>
+                    <con2:userNsDecl prefix="NMPsm" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                    <con2:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                    <con2:userNsDecl prefix="ges1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilRESTTipos"/>
+                    <con2:varNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N7f0e</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/Transformations/TransformGestionMovilRestFault"/>
+                                <con2:input>$fault</con2:input>
+                                <con2:param name="operation">
+                                    <con2:path>1</con2:path>
+                                </con2:param>
+                                <con2:param name="app">
+                                    <con2:path>1</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con4:report>
+                        <con2:id>_ActionId-a1e041d.1633d492.2.154cf47c756.N8000</con2:id>
+                        <con4:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body_tmp//*:Response/*</con:xqueryText>
+                        </con4:expr>
+                        <con4:labels>
+                            <con4:key>ExternalId</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./ges:Response/@ExternalId</con:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>ExternalType</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:Response/@ExternalType</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                    </con4:report>
+                    <con4:report xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:env="http://www.bea.com/wli/config/env" xmlns:con5="http://www.bea.com/wli/sb/stages/transform/config" xmlns:tran="http://www.bea.com/wli/sb/transports">
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N7f0d</con2:id>
+                        <con4:expr>
+                            <con2:xqueryText>$fault</con2:xqueryText>
+                        </con4:expr>
+                        <con4:labels>
+                            <con4:key>ExternalId_Error</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./ges:Response/@ExternalId</con:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>ExternalType_Error</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:Response/@ExternalType</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                    </con4:report>
+                    <con2:reply isError="true">
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N7f0c</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.42054153.0.1540cb66399.N6da2">
+            <con:stage id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N6d69" name="StageError_FWO_ConsultaBuro">
+                <con:context>
+                    <con2:userNsDecl prefix="NMPsm" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                    <con2:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                    <con2:userNsDecl prefix="ges1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilRESTTipos"/>
+                    <con2:varNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N6d68</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/Transformations/TransformGestionMovilRestFault"/>
+                                <con2:input>$fault</con2:input>
+                                <con2:param name="operation">
+                                    <con2:path>2</con2:path>
+                                </con2:param>
+                                <con2:param name="app">
+                                    <con2:path>13</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con4:report>
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N6d67</con2:id>
+                        <con4:expr>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con4:expr>
+                        <con4:labels>
+                            <con4:key>Action_Error</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:Action/text()</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>IdWorkOrder_Error</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:IdWorkOrder/text()</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>IdExternal</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:ExternalId</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                    </con4:report>
+                    <con4:report>
+                        <con2:id>_ActionId-a1e041d.1633d492.7.154cf537b9f.N7fff</con2:id>
+                        <con4:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body_tmp</con:xqueryText>
+                        </con4:expr>
+                        <con4:labels>
+                            <con4:key>Action</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:Action/text()</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>IdWorkOrder</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:IdWorkOrder/text()</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                        <con4:labels>
+                            <con4:key>IdExternal</con4:key>
+                            <con4:varName>body_tmp</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./ges:FlexibleUpdateWorkOrderRequest/ges1:ExternalId</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                    </con4:report>
+                    <con2:reply isError="true">
+                        <con2:id>_ActionId-N3f57c7ff.42054153.0.1540cb66399.N6d66</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.42054153.0.1540cb66399.N783a">
+            <con:stage id="_StageId-N3f57c7ff.42054153.0.1540cb66399.N7838" name="StageResponse_FWO_Autoasignar">
+                <con:context>
+                    <con2:userNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST"/>
+                    <con2:userNsDecl prefix="ges1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilRESTTipos"/>
+                </con:context>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:branch-node type="operation" id="_FlowId-af0042b.N2524aca1.0.1515fe2d902.N7f9c" name="BranchNodeGestionMovilREST">
+                <con:context/>
+                <con:branch-table>
+                    <con:branch name="SendWorkOrderToClient">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairSendWorkOrder">
+                                <con:request>request-N3f57c7ff.42054153.0.1540cb66399.N7f38</con:request>
+                                <con:response>response-N3f57c7ff.42054153.0.1540cb66399.N7f0b</con:response>
+                            </con:pipeline-node>
+                            <con:branch-node type="condition" id="_FlowId-N3f57c7ff.42054153.0.1540cb66399.N8000" name="SendWorkOrderOperations">
+                                <con:context>
+                                    <con2:userNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST"/>
+                                </con:context>
+                                <con:branch-table variable="externalTypeOSB">
+                                    <con:xpath>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                    </con:xpath>
+                                    <con:branch name="Ventas">
+                                        <con:operator>equals</con:operator>
+                                        <con:value>'Ventas'</con:value>
+                                        <con:flow>
+                                            <con:pipeline-node name="PipelinePair_SWO_Ventas">
+                                                <con:request>request-N3f57c7ff.42054153.0.1540cb66399.N7ea4</con:request>
+                                                <con:response>response-N3f57c7ff.42054153.0.1540cb66399.N7ea3</con:response>
+                                            </con:pipeline-node>
+                                        </con:flow>
+                                    </con:branch>
+                                    <con:branch name="Cobranza">
+                                        <con:operator>equals</con:operator>
+                                        <con:value>'Cobranza'</con:value>
+                                        <con:flow>
+                                            <con:pipeline-node name="PipelinePair_SWO_Cobranza">
+                                                <con:request>request-N3f57c7ff.42054153.0.1540cb66399.N7e01</con:request>
+                                                <con:response>response-N3f57c7ff.42054153.0.1540cb66399.N7e00</con:response>
+                                            </con:pipeline-node>
+                                        </con:flow>
+                                    </con:branch>
+                                    <con:branch name="Preregistro">
+                                        <con:operator>equals</con:operator>
+                                        <con:value>'Preregistro'</con:value>
+                                        <con:flow>
+                                            <con:pipeline-node name="PipelinePair_SWO_Preregistro">
+                                                <con:request>request-N3f57c7ff.42054153.0.1540cb66399.N7dbf</con:request>
+                                                <con:response>response-N3f57c7ff.42054153.0.1540cb66399.N7dbe</con:response>
+                                            </con:pipeline-node>
+                                        </con:flow>
+                                    </con:branch>
+                                    <con:branch name="Pendiente">
+                                        <con:operator>equals</con:operator>
+                                        <con:value>'Pendiente'</con:value>
+                                        <con:flow>
+                                            <con:pipeline-node name="PipelinePair_SWO_Pendiente">
+                                                <con:request>request-N3f57c7ff.42054153.0.1540cb66399.N7dc3</con:request>
+                                                <con:response>response-N3f57c7ff.42054153.0.1540cb66399.N7dc2</con:response>
+                                            </con:pipeline-node>
+                                        </con:flow>
+                                    </con:branch>
+                                    <con:default-branch>
+                                        <con:flow>
+                                            <con:pipeline-node name="PipelinePair_SWO_Default">
+                                                <con:request>request-N5601d8a2.2eeaf663.0.1564763676c.N7e0d</con:request>
+                                                <con:response>response-N5601d8a2.2eeaf663.0.1564763676c.N7e0c</con:response>
+                                            </con:pipeline-node>
+                                        </con:flow>
+                                    </con:default-branch>
+                                </con:branch-table>
+                            </con:branch-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="FlexibleUpdateWorkOrder">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairNodeFlexibleUpdateWorkOrder">
+                                <con:request>request-af004a0.50d64422.0.1517d311fc0.N7df1</con:request>
+                                <con:response>response-af004a0.50d64422.0.1517d311fc0.N7df0</con:response>
+                            </con:pipeline-node>
+                            <con:branch-node type="condition" id="_FlowId-N3f57c7ff.42054153.0.1540cb66399.N783c" name="FlexibleUpdateWorkOperations">
+                                <con:context>
+                                    <con2:userNsDecl prefix="ges" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilREST"/>
+                                    <con2:userNsDecl prefix="ges1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovilRESTTipos"/>
+                                </con:context>
+                                <con:branch-table variable="actionOSB">
+                                    <con:xpath>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                    </con:xpath>
+                                    <con:branch name="Autoasignar">
+                                        <con:operator>equals</con:operator>
+                                        <con:value>'Autoasignar'</con:value>
+                                        <con:flow>
+                                            <con:pipeline-node name="PipelinePair_FWO_Autoasignar">
+                                                <con:request>request-N3f57c7ff.42054153.0.1540cb66399.N783b</con:request>
+                                                <con:response>response-N3f57c7ff.42054153.0.1540cb66399.N783a</con:response>
+                                            </con:pipeline-node>
+                                        </con:flow>
+                                    </con:branch>
+                                    <con:branch name="Estado_Solicitud">
+                                        <con:operator>equals</con:operator>
+                                        <con:value>'Estado_Solicitud'</con:value>
+                                        <con:flow>
+                                            <con:pipeline-node name="PipelinePair_FWO_EstadoSolicitud">
+                                                <con:request>request-N3f57c7ff.42054153.0.1540cb66399.N775d</con:request>
+                                                <con:response>response-N3f57c7ff.42054153.0.1540cb66399.N7758</con:response>
+                                            </con:pipeline-node>
+                                        </con:flow>
+                                    </con:branch>
+                                    <con:branch name="Consultar_Agenda">
+                                        <con:operator>equals</con:operator>
+                                        <con:value>'Consultar_Agenda'</con:value>
+                                        <con:flow>
+                                            <con:pipeline-node name="PipelinePair_FWO_ConsultarAgenda">
+                                                <con:request>request-N3f57c7ff.42054153.0.1540cb66399.N7718</con:request>
+                                                <con:response>response-N3f57c7ff.42054153.0.1540cb66399.N7713</con:response>
+                                            </con:pipeline-node>
+                                        </con:flow>
+                                    </con:branch>
+                                    <con:branch name="Cobranza_Cliente">
+                                        <con:operator>equals</con:operator>
+                                        <con:value>'Cobranza_Cliente'</con:value>
+                                        <con:flow>
+                                            <con:pipeline-node name="PipelinePair_FWO_CobranzaCliente">
+                                                <con:request>request-N3f57c7ff.42054153.0.1540cb66399.N76d3</con:request>
+                                                <con:response>response-N3f57c7ff.42054153.0.1540cb66399.N76ce</con:response>
+                                            </con:pipeline-node>
+                                        </con:flow>
+                                    </con:branch>
+                                    <con:branch name="Estatus_Cobranza">
+                                        <con:operator>equals</con:operator>
+                                        <con:value>'Estatus_Cobranza'</con:value>
+                                        <con:flow>
+                                            <con:pipeline-node name="PipelinePair_FWO_EstatusCobranza">
+                                                <con:request>request-N3f57c7ff.42054153.0.1540cb66399.N768e</con:request>
+                                                <con:response>response-N3f57c7ff.42054153.0.1540cb66399.N7689</con:response>
+                                            </con:pipeline-node>
+                                        </con:flow>
+                                    </con:branch>
+                                    <con:branch name="Estatus_Solicitudes">
+                                        <con:operator>equals</con:operator>
+                                        <con:value>'Estatus_Solicitudes'</con:value>
+                                        <con:flow>
+                                            <con:pipeline-node name="PipelinePair_FWO_EstatusSolicitudes">
+                                                <con:request>request-N3f57c7ff.42054153.0.1540cb66399.N7649</con:request>
+                                                <con:response>response-N3f57c7ff.42054153.0.1540cb66399.N7644</con:response>
+                                            </con:pipeline-node>
+                                        </con:flow>
+                                    </con:branch>
+                                    <con:branch name="consultaburo">
+                                        <con:operator>equals</con:operator>
+                                        <con:value>'consultaburo'</con:value>
+                                        <con:flow>
+                                            <con:pipeline-node name="PipelinePair_FWO_ConsultaBuro">
+                                                <con:request>request-N3f57c7ff.42054153.0.1540cb66399.N7604</con:request>
+                                                <con:response>response-N3f57c7ff.42054153.0.1540cb66399.N75ff</con:response>
+                                            </con:pipeline-node>
+                                        </con:flow>
+                                    </con:branch>
+                                    <con:default-branch>
+                                        <con:flow>
+                                            <con:pipeline-node name="PipelinePair_FWO_Default">
+                                                <con:request>request-N5601d8a2.2eeaf663.0.1564763676c.N7d6e</con:request>
+                                                <con:response>response-N5601d8a2.2eeaf663.0.1564763676c.N7d6b</con:response>
+                                            </con:pipeline-node>
+                                        </con:flow>
+                                    </con:default-branch>
+                                </con:branch-table>
+                            </con:branch-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+    <aler:alertRules xsi:nil="true" xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert"/>
+</con:pipelineEntry>

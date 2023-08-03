@@ -1,0 +1,141 @@
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns2="http://nmp.com.mx/ms/pagos/motorformulas/ws/formulas/datatypes/" xmlns:ns1="http://nmp.com.mx/ms/pagos/motorformulas/ws/formulas/" name="MotorFormulasService" targetNamespace="http://nmp.com.mx/ms/pagos/motorformulas/ws/formulas/">
+  <wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://nmp.com.mx/ms/pagos/motorformulas/ws/formulas/datatypes/" elementFormDefault="qualified" targetNamespace="http://nmp.com.mx/ms/pagos/motorformulas/ws/formulas/datatypes/" version="1.0">
+
+  <xs:element name="GUID" type="xs:string"/>
+
+  <xs:element name="resolverFormula" type="tns:ContextoEvaluacion"/>
+
+  <xs:element name="resolverFormulaAsincronoRequest" type="tns:ContextoEvaluacion"/>
+
+  <xs:element name="resolverFormulaResponse" type="tns:EvaluacionFormula"/>
+
+  <xs:complexType name="ContextoEvaluacion">
+    <xs:sequence>
+      <xs:element name="fechaCalculo" type="xs:date"/>
+      <xs:element name="operacion" type="xs:int"/>
+      <xs:element maxOccurs="unbounded" name="diasInhabiles" type="xs:date"/>
+      <xs:element name="condiciones" type="tns:Condiciones"/>
+      <xs:element name="saldoPL" type="tns:SaldoPL"/>
+      <xs:element name="prenda" type="tns:Prenda"/>
+      <xs:element name="comercial" type="tns:Comercial"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Condiciones">
+    <xs:sequence>
+      <xs:element name="contrato" type="xs:int"/>
+      <xs:element name="fechaIngreso" type="xs:dateTime"/>
+      <xs:element name="fechaLimitePago" type="xs:date"/>
+      <xs:element name="fechaComercializacion" type="xs:date"/>
+      <xs:element name="fechaIngresoDeposito" type="xs:date"/>
+      <xs:element name="numeroMaximoRefrendos" type="xs:int"/>
+      <xs:element name="numeroRefrendosRealizados" type="xs:int"/>
+      <xs:element name="interes" type="xs:decimal"/>
+      <xs:element name="tipoSeguro" type="xs:int"/>
+      <xs:element name="reposicionBillete" type="xs:decimal"/>
+      <xs:element name="parametros">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="parametro" nillable="true" type="tns:Parametro"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Parametro">
+    <xs:sequence>
+      <xs:element name="abreviatura" type="xs:string"/>
+      <xs:element name="valor" type="xs:decimal"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="SaldoPL">
+    <xs:sequence>
+      <xs:element name="saldoInsoluto" type="xs:decimal"/>
+      <xs:element name="abonosCapital" type="xs:decimal"/>
+      <xs:element name="interesesPagados" type="xs:decimal"/>
+      <xs:element name="interesPendiente" type="xs:decimal"/>
+      <xs:element name="fecha" type="xs:date"/>
+      <xs:element name="ivaSobreInteresPendiente" type="xs:decimal"/>
+      <xs:element name="comisionPendiente" type="xs:decimal"/>
+      <xs:element name="ultimoAbono" type="tns:UltimoAbono"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="UltimoAbono">
+    <xs:sequence>
+      <xs:element name="saldoInsoluto" type="xs:decimal"/>
+      <xs:element name="amortizacion" type="xs:decimal"/>
+      <xs:element name="cancelado" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Prenda">
+    <xs:sequence>
+      <xs:element name="folio" type="xs:string"/>
+      <xs:element name="montoAvaluo" type="xs:decimal"/>
+      <xs:element name="montoPrestamo" type="xs:decimal"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Comercial">
+    <xs:sequence>
+      <xs:element name="canalIngresoId" type="xs:int"/>
+      <xs:element name="precioVenta" type="xs:decimal"/>
+      <xs:element name="utilidad" type="xs:decimal"/>
+      <xs:element name="fechaIngresoAlmoneda" type="xs:date"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="EvaluacionFormula">
+    <xs:sequence>
+      <xs:element name="folio" type="xs:string"/>
+      <xs:element name="operacion" type="xs:int"/>
+      <xs:element maxOccurs="unbounded" name="subtotales" type="tns:SubTotal"/>
+      <xs:element name="total" type="xs:decimal"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="SubTotal">
+    <xs:sequence>
+      <xs:element name="producto" type="xs:int"/>
+      <xs:element name="descripcion" type="xs:string"/>
+      <xs:element name="subtotal" type="xs:decimal"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="resolverFormula">
+    <wsdl:part element="ns2:resolverFormula" name="contextoEvaluacion">
+    </wsdl:part>
+    <wsdl:part element="ns2:GUID" name="GUID">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="resolverFormulaResponse">
+    <wsdl:part element="ns2:resolverFormulaResponse" name="evaluacionFormula">
+    </wsdl:part>
+    <wsdl:part element="ns2:GUID" name="GUID">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="resolverFormulaAsincrono">
+    <wsdl:part element="ns2:resolverFormulaAsincronoRequest" name="contextoEvaluacionAsincrono">
+    </wsdl:part>
+    <wsdl:part element="ns2:GUID" name="GUID">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="MotorFormulasService">
+    <wsdl:operation name="resolverFormula" parameterOrder="contextoEvaluacion GUID">
+      <wsdl:input message="ns1:resolverFormula" name="resolverFormula">
+    </wsdl:input>
+      <wsdl:output message="ns1:resolverFormulaResponse" name="resolverFormulaResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="resolverFormulaAsincrono">
+      <wsdl:input message="ns1:resolverFormulaAsincrono" name="resolverFormulaAsincrono">
+    </wsdl:input>
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

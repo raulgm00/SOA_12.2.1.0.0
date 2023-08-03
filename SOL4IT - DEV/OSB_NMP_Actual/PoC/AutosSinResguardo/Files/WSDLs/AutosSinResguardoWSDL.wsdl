@@ -1,0 +1,87 @@
+<wsdl:definitions targetNamespace="http://xmlns.oracle.com/bpmn/bpmnProcess/AutosSinResguardoPrc" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://xmlns.oracle.com/bpmn/bpmnProcess/AutosSinResguardoPrc" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:tns6="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPAutosSinResguardo" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+    <wsdl:documentation>
+        <abstractWSDL>http://10.30.3.15:8001/soa-infra/services/AutosSinResguardo/AutosSinResguardoBPM!1.0/WSDLs/AutosSinResguardoPrc.wsdl</abstractWSDL>
+    </wsdl:documentation>
+    <plnk:partnerLinkType name="AutosSinResguardoPrcPortTypePartnerLinkType">
+        <plnk:role name="AutosSinResguardoPrcPortTypeProvider">
+            <plnk:portType name="tns:AutosSinResguardoPrcPortType"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+<wsp:Policy wsu:Id="wsaddr_policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+   <wsaw:UsingAddressing xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"/>
+</wsp:Policy>    <wsdl:types>
+        <xsd:schema targetNamespace="http://xmlns.oracle.com/bpmn/bpmnProcess/AutosSinResguardoPrc">
+            <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPAutosSinResguardo" schemaLocation="../Schemas/NMPAutosSinResguardoXSD.xsd"/>
+            <xsd:element name="finGestionBPMResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element ref="tns6:resultadoProcesoBO"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="inicioGestionBPM">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element ref="tns6:Cliente"/>
+                        <xsd:element ref="tns6:Auto"/>
+                        <xsd:element ref="tns6:Url"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="inicioGestionBPMResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element ref="tns6:resultadoProcesoBO"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="inicioGestionBPM">
+        <wsdl:part name="parameters" element="tns:inicioGestionBPM"/>
+    </wsdl:message>
+    <wsdl:message name="inicioGestionBPMResponse">
+        <wsdl:part name="parameters" element="tns:inicioGestionBPMResponse"/>
+    </wsdl:message>
+    <wsdl:message name="finGestionBPMResponse">
+        <wsdl:part name="parameters" element="tns:finGestionBPMResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="AutosSinResguardoPrcPortType">
+        <wsdl:operation name="inicioGestionBPM">
+            <wsdl:input message="tns:inicioGestionBPM"/>
+            <wsdl:output message="tns:inicioGestionBPMResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:portType name="AutosSinResguardoPrcPortTypeCallBack">
+        <wsdl:operation name="finGestionBPM">
+            <wsdl:input message="tns:finGestionBPMResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="AutosSinResguardoPrcBinding" type="tns:AutosSinResguardoPrcPortType">
+        <wsdlsoap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsp:PolicyReference URI="#wsaddr_policy" wsdl:required="false" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"/>
+        <wsdl:operation name="inicioGestionBPM">
+            <wsdlsoap:operation style="document" soapAction="inicioGestionBPM"/>
+            <wsdl:input>
+                <wsdlsoap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <wsdlsoap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="AutosSinResguardoPrcPortTypeCallBackBinding" type="tns:AutosSinResguardoPrcPortTypeCallBack">
+        <wsdlsoap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="finGestionBPM">
+            <wsdlsoap:operation style="document" soapAction="finGestionBPM"/>
+            <wsdl:input>
+                <wsdlsoap:body use="literal" namespace="http://xmlns.oracle.com/bpmn/bpmnProcess/AutosSinResguardoPrc"/>
+            </wsdl:input>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="AutosSinResguardoPrc.service">
+        <wsdl:port name="AutosSinResguardoPrcPort" binding="tns:AutosSinResguardoPrcBinding">
+            <wsdlsoap:address location="http://10.30.3.15:8001/soa-infra/services/AutosSinResguardo/AutosSinResguardoBPM/AutosSinResguardoPrc.service"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

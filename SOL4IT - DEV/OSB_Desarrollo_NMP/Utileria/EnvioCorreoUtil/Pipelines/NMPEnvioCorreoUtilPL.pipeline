@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="Utileria/EnvioCorreoUtil/Resources/WSDLs/NMPEnvioCorreoUtilWSDL"/>
+            <con:binding>
+                <con:name>NMPEnvioCorreo_PortTypeSOAP11Binding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Services/Utileria/EnvioCorreoUtil</con:namespace>
+            </con:binding>
+        </con:binding>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router errorHandler="error-af10c2b.6ea9b8a2.0.15e299fc325.N7c5a">
+        <con:pipeline type="request" name="request-af10c2b.6ea9b8a2.0.15e299fc325.N7d06">
+            <con:stage id="_StageId-af10c2b.3d36a8a3.0.15e39139100.N8000" name="StageValidacion">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:userNsDecl prefix="env" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/EnvioCorreoUtil"/>
+                </con:context>
+                <con:actions>
+                    <con2:replace varName="header" contents-only="true">
+                        <con1:id>_ActionId-af10c2b.3d36a8a3.0.15e39139100.N7fc9</con1:id>
+                        <con2:expr>
+                            <con1:xqueryTransform>
+                                <con1:resource ref="Common/XQ/TRHeadersRest"/>
+                                <con1:param name="inbound">
+                                    <con1:path>$inbound</con1:path>
+                                </con1:param>
+                                <con1:param name="requestHeader">
+                                    <con1:path>$header</con1:path>
+                                </con1:param>
+                            </con1:xqueryTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con2:assign varName="header">
+                        <con1:id>_ActionId-af10c2b.3d36a8a3.0.15e39139100.N7fc6</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$header</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:validate>
+                        <con1:id>_ActionId-af10c2b.3d36a8a3.0.15e39139100.N7fc3</con1:id>
+                        <con2:schema ref="Common/XSD/NMPStandardHeader"/>
+                        <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con2:schemaElement>
+                        <con2:varName>header</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./nmp:headerMessage</con1:xpathText>
+                        </con2:location>
+                    </con2:validate>
+                    <con2:validate>
+                        <con1:id>_ActionId-af10c2b.3d36a8a3.0.15e39139100.N7ffd</con1:id>
+                        <con2:schema ref="Utileria/EnvioCorreoUtil/Resources/Schemas/NMPEnvioCorreoUtilXSD"/>
+                        <con2:schemaElement xmlns:env="http://servicios.montedepiedad.com.mx/NMP/Schema/EnvioCorreoUtil">env:envioCorreoRequest</con2:schemaElement>
+                        <con2:varName>body</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./env:envioCorreoRequest</con1:xpathText>
+                        </con2:location>
+                    </con2:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-af10c2b.6ea9b8a2.0.15e299fc325.N7d04" name="StageRequest">
+                <con:context>
+                    <con1:userNsDecl prefix="seg" namespace="http://www.bea.com/wli/sb/services/security/config"/>
+                    <con1:userNsDecl prefix="env" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/EnvioCorreoUtil"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="tmp">
+                        <con1:id>_ActionId-af10c2b.6ea9b8a2.0.15e299fc325.N7d00</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$body/*</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con3:report>
+                        <con1:id>_ActionId-af10c2b.6ea9b8a2.0.15e299fc325.N7cfd</con1:id>
+                        <con3:labels>
+                            <con3:key>para</con3:key>
+                            <con3:varName>body</con3:varName>
+                            <con3:value>
+                                <con1:xpathText>./env:envioCorreoRequest/env:para/text()</con1:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-af10c2b.6ea9b8a2.0.15e299fc325.N7cfa</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xqueryText>$tmp//*:contenidoHTML/text()</con1:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-af10c2b.6ea9b8a2.0.15e299fc325.N7c9f</con1:id>
+                        <con2:service ref="Utileria/EnvioCorreoUtil/Business Services/SendinBlueBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:request>
+                            <con2:payload wrapped="false">sendinBlueReq</con2:payload>
+                        </con2:request>
+                        <con2:response>
+                            <con2:payload wrapped="false">sendinBlueRes</con2:payload>
+                        </con2:response>
+                        <con2:requestTransform>
+                            <con2:replace varName="enviarAdjuntos">
+                                <con1:id>_ActionId-af10c2b.6ea9b8a2.0.15e299fc325.N7c9e</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryTransform>
+                                        <con1:resource ref="Utileria/EnvioCorreoUtil/Resources/Transformations/TrEnviarAdjuntos"/>
+                                        <con1:param name="envioCorreoReq">
+                                            <con1:path>$tmp</con1:path>
+                                        </con1:param>
+                                    </con1:xqueryTransform>
+                                </con2:expr>
+                            </con2:replace>
+                            <con2:assign varName="XMLToJsonRequest">
+                                <con1:id>_ActionId-af10c2b.6ea9b8a2.0.15e299fc325.N7c9d</con1:id>
+                                <con2:expr>
+                                    <con1:xsltTransform>
+                                        <con1:resource ref="Utileria/EnvioCorreoUtil/Resources/Transformations/TrEnvioCorreoReqToSendinblueReq"/>
+                                        <con1:input>$tmp</con1:input>
+                                    </con1:xsltTransform>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:assign varName="remitente">
+                                <con1:id>_ActionId-af10c2b.6ea9b8a2.0.15e299fc325.N7c9c</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText>&lt;correo>{for $item at $index in fn:tokenize($tmp//*:para/text(), ',')
+          let $total := fn:count(fn:tokenize($tmp//*:para/text(), ','))
+          return fn:concat(
+            '"',$item,'":','"',$item ,'"',
+            if ($index &lt; $total) then ',' else ())}&lt;/correo></con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:assign varName="adjuntos">
+                                <con1:id>_ActionId-af10c2b.6ea9b8a2.0.15e299fc325.N7c9b</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText>&lt;adjunto>{for $item at $index in $enviarAdjuntos/*:adjunto/*:nombreArchivo/text()  
+let $total := fn:count($enviarAdjuntos/*:adjunto/*:nombreArchivo/text())
+return fn:concat( $item , if ($index &lt; $total) then ',' else () )}&lt;/adjunto></con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:nxsdTranslation>
+                                <con1:id>_ActionId-af10c2b.6ea9b8a2.0.15e299fc325.N7c9a</con1:id>
+                                <con2:type>XML-To-Native</con2:type>
+                                <con2:sourceExpr>
+                                    <con1:xqueryText>$XMLToJsonRequest</con1:xqueryText>
+                                </con2:sourceExpr>
+                                <con2:nxsd ref="Utileria/EnvioCorreoUtil/Resources/Schemas/NMPSendinBlueNXSD"/>
+                                <con2:schemaElement xmlns:cor="http://servicios.montedepiedad.com.mx/NMP/SchemaNXSD/CorreoSendinBlue">cor:sendinblueRequest</con2:schemaElement>
+                                <con2:assign-variable>sendinBlueReq</con2:assign-variable>
+                            </con2:nxsdTranslation>
+                            <con2:assign varName="sendinBlueReq">
+                                <con1:id>_ActionId-af10c2b.6ea9b8a2.0.15e299fc325.N7c99</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText>fn-bea:binary-to-text($sendinBlueReq,'UTF-8')</con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:assign varName="sendinBlueReq">
+                                <con1:id>_ActionId-af10c2b.6ea9b8a2.0.15e299fc325.N7c98</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText>fn:replace($sendinBlueReq,'"to" : "REPLACE"', fn:concat( '"to":{',$remitente ,'}') )</con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:assign varName="sendinBlueReq">
+                                <con1:id>_ActionId-af10c2b.6ea9b8a2.0.15e299fc325.N7c97</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText>fn:replace($sendinBlueReq,'"subject" : "ASUNTO"', fn:concat( '"subject": "',$tmp//*:asunto/text(), '"'))</con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:assign varName="sendinBlueReq">
+                                <con1:id>_ActionId-af10c2b.6ea9b8a2.0.15e299fc325.N7c96</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText>fn:replace($sendinBlueReq,'"html" : "HTML"', fn:concat( '"html": "',$tmp//*:contenidoHTML ,'"'))</con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:assign varName="sendinBlueReq">
+                                <con1:id>_ActionId-af10c2b.6ea9b8a2.0.15e299fc325.N7c95</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText>fn:replace($sendinBlueReq,'"attachment" : "ADJUNTOS"', fn:concat( '"attachment":{ ',$adjuntos,'}') )</con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:assign varName="credencial">
+                                <con1:id>_ActionId-af10c2b.6ea9b8a2.0.15e299fc325.N7c94</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText>fn-bea:lookupBasicCredentials('Utileria/EnvioCorreoUtil/Resources/Service Account/SendinBlueSA')</con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:transport-headers>
+                                <con1:id>_ActionId-af10c2b.6ea9b8a2.0.15e299fc325.N7c93</con1:id>
+                                <con2:header-set>outbound-request</con2:header-set>
+                                <con2:header value="expression" name="api-key">
+                                    <con1:xqueryText>$credencial/seg:password/text()</con1:xqueryText>
+                                </con2:header>
+                            </con2:transport-headers>
+                            <con2:routing-options>
+                                <con1:id>_ActionId-af10c2b.6ea9b8a2.0.15e299fc325.N7c92</con1:id>
+                                <con2:restOptions>
+                                    <con2:verb>POST</con2:verb>
+                                    <con2:accept>application/json</con2:accept>
+                                </con2:restOptions>
+                            </con2:routing-options>
+                        </con2:requestTransform>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af10c2b.6ea9b8a2.0.15e299fc325.N7d05">
+            <con:stage id="_StageId-af10c2b.6ea9b8a2.0.15e299fc325.N7d03" name="StageResponse">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con2:replace varName="header" contents-only="true">
+                        <con1:id>_ActionId-af10c2b.3d36a8a3.0.15e39139100.N7f8f</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText><![CDATA[<nmp:headerMessageResponse xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader'>
+         <nmp:usuario>{$header//nmp:usuario/text()}</nmp:usuario>
+         <nmp:idConsumidor>{$header//nmp:idConsumidor/text()}</nmp:idConsumidor>
+         <nmp:idDestino>{$header//nmp:idDestino/text()}</nmp:idDestino>
+          <nmp:codigoRespuesta>0</nmp:codigoRespuesta>
+         <nmp:descripcionRespuesta>Ejecución satisfactoria</nmp:descripcionRespuesta>
+      </nmp:headerMessageResponse>]]></con1:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                    <con2:nxsdTranslation>
+                        <con1:id>_ActionId-af10c2b.6ea9b8a2.0.15e299fc325.N7c8f</con1:id>
+                        <con2:type>Native-To-XML</con2:type>
+                        <con2:sourceExpr>
+                            <con1:xqueryText>$sendinBlueRes</con1:xqueryText>
+                        </con2:sourceExpr>
+                        <con2:nxsd ref="Utileria/EnvioCorreoUtil/Resources/Schemas/NMPSendinBlueNXSD"/>
+                        <con2:schemaElement xmlns:cor="http://servicios.montedepiedad.com.mx/NMP/SchemaNXSD/CorreoSendinBlue">cor:sendinblueResponse</con2:schemaElement>
+                        <con2:assign-variable>sendEmailResXML</con2:assign-variable>
+                    </con2:nxsdTranslation>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-af10c2b.6ea9b8a2.0.15e299fc325.N7c8c</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText><![CDATA[<env:envioCorreoResponse xmlns:env="http://servicios.montedepiedad.com.mx/NMP/Schema/EnvioCorreoUtil">
+    <env:respuesta>
+        <env:codigo>{$sendEmailResXML/*:code/text()}</env:codigo>
+        <env:mensaje>{$sendEmailResXML/*:message/text()}</env:mensaje>
+    </env:respuesta>
+</env:envioCorreoResponse>]]></con1:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-af10c2b.6ea9b8a2.0.15e299fc325.N7c5a">
+            <con:stage id="_StageId-af10c2b.6ea9b8a2.0.15e299fc325.N7c59" name="StageEnvioCorreoError">
+                <con:context/>
+                <con:actions>
+                    <con2:delete varName="header">
+                        <con1:id>_ActionId-af10c2b.3d36a8a3.0.15e39139100.N7f89</con1:id>
+                        <con2:location>
+                            <con1:xpathText>$header/*</con1:xpathText>
+                        </con2:location>
+                    </con2:delete>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-af10c2b.6ea9b8a2.0.15e299fc325.N7c53</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="Utileria/EnvioCorreoUtil/Resources/Transformations/TrEnvioCorreoUtilFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="app">
+                                    <con1:path>1</con1:path>
+                                </con1:param>
+                                <con1:param name="serviceName">
+                                    <con1:path>'Envio Correo Util'</con1:path>
+                                </con1:param>
+                                <con1:param name="soapFault">
+                                    <con1:path>$body</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-af10c2b.6ea9b8a2.0.15e299fc325.N7c56</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="EnvioCorreoPipelinePair">
+                <con:request>request-af10c2b.6ea9b8a2.0.15e299fc325.N7d06</con:request>
+                <con:response>response-af10c2b.6ea9b8a2.0.15e299fc325.N7d05</con:response>
+            </con:pipeline-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SOAConfigPlan xmlns:jca="http://platform.integration.oracle/blocks/adapter/fw/metadata" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:orawsp="http://schemas.oracle.com/ws/2006/01/policy" xmlns:edl="http://schemas.oracle.com/events/edl" xmlns="http://schemas.oracle.com/soa/configplan">
+   <composite name="BpmPagosAdministrativos">
+      <import>
+         <searchReplace>
+            <search/>
+            <replace/>
+         </searchReplace>
+      </import>
+      <service name="GestionPagoServicios.service">
+         <binding type="ws">
+            <attribute name="port">
+               <replace>http://xmlns.oracle.com/bpmn/bpmnProcess/GestionPagoServicios#wsdl.endpoint(GestionPagoServicios.service/GestionPagoServiciosPort)</replace>
+            </attribute>
+         </binding>
+         <callback>
+            <binding type="ws">
+               <attribute name="port">
+                  <replace>http://xmlns.oracle.com/bpmn/bpmnProcess/GestionPagoServicios#wsdl.endpoint(GestionPagoServicios.service/GestionPagoServiciosPortTypeCallBack_pt)</replace>
+               </attribute>
+            </binding>
+         </callback>
+      </service>
+      <property name="productVersion">
+         <replace>12.1.3.0.0</replace>
+      </property>
+      <property name="compositeID">
+         <replace>cadb0d5b-806a-4eaa-aebd-966111212cb9</replace>
+      </property>
+      <component name="GestionDePagosAdministrativos">
+         <property name="bpel.config.oneWayDeliveryPolicy">
+            <replace>sync</replace>
+         </property>
+         <property name="bpel.config.transaction">
+            <replace>required</replace>
+         </property>
+      </component>
+      <component name="GestionPagoServicios">
+         <property name="bpm.generated.service.reference">
+            <replace>GestionPagoServicios.service</replace>
+         </property>
+      </component>
+      <reference name="ReglasPagosAdministrativos">
+         <binding type="ws">
+            <attribute name="port">
+               <replace>http://xmlns.oracle.com/BPM-QUALITAS-PAGOS_ADMINISTRATIVOS/ReglasPagosAdministrativos/ReglasPagosAdministrativos#wsdl.endpoint(ReglasPagosAdministrativos_ep/execute_pt)</replace>
+            </attribute>
+            <attribute name="location">
+               <replace>http://localhost:7101/soa-infra/services/default/ReglasPagosAdministrativos/ReglasPagosAdministrativos_ep?WSDL</replace>
+            </attribute>
+            <property name="weblogic.wsee.wsat.transaction.flowOption">
+               <replace>WSDLDriven</replace>
+            </property>
+         </binding>
+      </reference>
+      <reference name="OrdenesPago">
+         <binding type="ws">
+            <attribute name="port">
+               <replace>http://oracle.com/sca/soapservice/GestionOrdenPagoApp/OrdenesPagoPrj/OrdenesPagoService#wsdl.endpoint(OrdenesPagpService/OrdenesPagoBPELPort)</replace>
+            </attribute>
+            <attribute name="location">
+               <replace>http://192.168.3.22:8088/mockOrdenesPagoBPELBinding?WSDL</replace>
+            </attribute>
+            <property name="weblogic.wsee.wsat.transaction.flowOption">
+               <replace>WSDLDriven</replace>
+            </property>
+         </binding>
+      </reference>
+   </composite>
+   <wsdlAndSchema name="businessCatalog/PagosAdministrativos/Comunes/BoGestionDeProceso.xsd|businessCatalog/PagosAdministrativos/Comunes/BoOrdenDePago.xsd|project_properties.wsdl|Schemas/asignarUsuario.xsd|Schemas/HTingresarSolicitudPayload.xsd|Schemas/HTingresarSolicitudWorkflowTask.xsd|Schemas/HTVerificarSolicitudPagoServiciosPayload.xsd|Schemas/HTVerificarSolicitudPagoServiciosWorkflowTask.xsd|Schemas/objetosComunes.xsd|Schemas/OrdenesPago.xsd|Schemas/TaskStateMachine.xsd|Schemas/validarNacionalidadPrestador.xsd|WSDLs/GestionPagoServicios.wsdl|WSDLs/OrdenesPagoService.wsdl|WSDLs/ReglasPagosAdministrativos_ep.wsdl">
+      <searchReplace>
+         <search/>
+         <replace/>
+      </searchReplace>
+   </wsdlAndSchema>
+</SOAConfigPlan>

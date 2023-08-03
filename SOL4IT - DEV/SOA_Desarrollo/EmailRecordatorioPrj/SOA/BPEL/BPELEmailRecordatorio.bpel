@@ -1,0 +1,260 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Thu Feb 09 10:54:01 CST 2017
+  Author:  Sol4IT Mexico
+  Type: BPEL 2.0 Process
+  Purpose: Asynchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="BPELEmailRecordatorio"
+         targetNamespace="http://xmlns.oracle.com/GPAQualitasApp/EmailRecordatorioPrj/BPELEmailRecordatorio"
+         xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:client="http://xmlns.oracle.com/GPAQualitasApp/EmailRecordatorioPrj/BPELEmailRecordatorio"
+         xmlns:ora="http://schemas.oracle.com/xpath/extension"
+         xmlns:ui="http://xmlns.oracle.com/soa/designer"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ess="http://xmlns.oracle.com/scheduler" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/GPAQualitasApp/EmailRecordatorioPrj/ConsultaEstatusOrden"
+         xmlns:ns3="http://qualitas.com.mx/ActualizarEstadoSolicitudApp/ActualizarEstadoSolicitudPrj/EmailRecordatorio"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/db/ConsultaEstatusOrden"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:ns4="http://xmlns.oracle.com/ias/pcbpel/NotificationService">
+
+    <import ui:processWSDL="true" namespace="http://xmlns.oracle.com/GPAQualitasApp/EmailRecordatorioPrj/BPELEmailRecordatorio" location="../WSDLs/BPELEmailRecordatorio.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+    <partnerLinks>
+        <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+        <partnerLink name="bpelemailrecordatorio_client" partnerLinkType="client:BPELEmailRecordatorio" myRole="BPELEmailRecordatorioProvider" partnerRole="BPELEmailRecordatorioRequester"/>
+        <partnerLink name="ConsultaEstatusOrden" partnerLinkType="ns1:ConsultaEstatusOrden_plt"
+                     partnerRole="ConsultaEstatusOrden_role"/>
+        <partnerLink name="NotificationService1" partnerLinkType="ns4:NotificationServiceLink"
+                     partnerRole="NotificationServiceProvider"/>
+        <partnerLink name="NotificationService2" partnerLinkType="ns4:NotificationServiceLink"
+                     partnerRole="NotificationServiceProvider"/>
+    </partnerLinks>
+
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        VARIABLES                                                        
+        List of messages and XML documents used within this BPEL process 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <variables>
+        <!-- Reference to the message passed as input during initiation -->
+        <variable name="inputVariable" messageType="client:BPELEmailRecordatorioRequestMessage"/>
+
+        <!-- Reference to the message that will be sent back to the requester during callback -->
+        <variable name="outputVariable" messageType="client:BPELEmailRecordatorioResponseMessage"/>
+        <variable name="VarCiclo" type="xsd:int"/>
+        <variable name="VarWhile" type="xsd:int"/>
+        <variable name="Inv_EstatusOrden_InVar" messageType="ns1:ConsultaEstatusOrdenInput_msg"/>
+        <variable name="Inv_EstatusOrden_OutVar" messageType="ns1:ConsultaEstatusOrdenOutputCollection_msg"/>
+        <variable name="VarDias" type="xsd:int">
+            <from>2</from>
+        </variable>
+        <variable name="VarDiasSum" type="xsd:int">
+            <from>1</from>
+        </variable>
+    </variables>
+
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+       ORCHESTRATION LOGIC                                               
+       Set of activities coordinating the flow of messages across the    
+       services integrated within this business process                  
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <sequence name="main">
+        <!-- Receive input from requestor. (Note: This maps to operation defined in BPELEmailRecordatorio.wsdl) -->
+        <receive name="receiveInput" partnerLink="bpelemailrecordatorio_client" portType="client:BPELEmailRecordatorio" operation="process" variable="inputVariable" createInstance="yes"/>
+        <assign name="Assign_Contador">
+            <copy>
+                <from>3</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$VarCiclo</to>
+            </copy>
+            <copy>
+                <from>1</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$VarWhile</to>
+            </copy>
+        </assign>
+        <repeatUntil name="RepeatUntil1">
+            <sequence>
+                <wait name="EsperaNotificacion">
+                    <for>'P1D'</for>
+                </wait>
+                <assign name="Assign_IdSol">
+                    <copy>
+                        <from>$inputVariable.payload/ns3:idSolicitud</from>
+                        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$Inv_EstatusOrden_InVar.ConsultaEstatusOrdenInput_msg/ns2:idSolicitud</to>
+                    </copy>
+                </assign>
+                <invoke name="Inv_EstatusOrden" bpelx:invokeAsDetail="no" partnerLink="ConsultaEstatusOrden"
+                        portType="ns1:ConsultaEstatusOrden_ptt" operation="ConsultaEstatusOrden"
+                        inputVariable="Inv_EstatusOrden_InVar" outputVariable="Inv_EstatusOrden_OutVar"/>
+                <if name="If1">
+                    <condition>$Inv_EstatusOrden_OutVar.ConsultaEstatusOrdenOutputCollection/ns2:ConsultaEstatusOrdenOutput/ns2:ID_ESTADO_SOLICITUD = 6</condition>
+                    <sequence name="Sequence3">
+                        <scope name="Email1">
+                            <bpelx:annotation>
+                                <bpelx:pattern patternName="bpelx:email"></bpelx:pattern>
+                            </bpelx:annotation>
+                            <variables>
+                                <variable name="varNotificationReq" messageType="ns4:EmailNotificationRequest"/>
+                                <variable name="varNotificationResponse" messageType="ns4:ArrayOfResponse"/>
+                                <variable name="NotificationServiceFaultVariable"
+                                          messageType="ns4:NotificationServiceErrorMessage"/>
+                            </variables>
+                            <sequence name="Sequence4">
+                                <assign name="EmailParamsAssign">
+                                    <copy>
+                                        <from>string('Default')</from>
+                                        <to variable="varNotificationReq" part="EmailPayload"><query>ns4:FromAccountName</query></to>
+                                    </copy>
+                                    <copy>
+                                        <from>string('')</from>
+                                        <to variable="varNotificationReq" part="EmailPayload"><query>ns4:Bcc</query></to>
+                                    </copy>
+                                    <copy>
+                                        <from>string('')</from>
+                                        <to variable="varNotificationReq" part="EmailPayload"><query>ns4:Cc</query></to>
+                                    </copy>
+                                    <copy>
+                                        <from>string('')</from>
+                                        <to variable="varNotificationReq" part="EmailPayload"><query>ns4:ReplyToAddress</query></to>
+                                    </copy>
+                                    <copy>
+                                        <from>concat("Notificación de Recordatorio de Actividad Asignada  ", $inputVariable.payload/ns3:idSolicitud)</from>
+                                        <to variable="varNotificationReq" part="EmailPayload"><query>ns4:Subject</query></to>
+                                    </copy>
+                                    <copy>
+                                        <from>concat($inputVariable.payload/ns3:email1, ', ', $inputVariable.payload/ns3:email2, ', ', $inputVariable.payload/ns3:email3)</from>
+                                        <to variable="varNotificationReq" part="EmailPayload"><query>ns4:To</query></to>
+                                    </copy>
+                                    <copy>
+                                        <from>concat("&lt;h1&gt;&lt;p style='COLOR:white; BACKGROUND:#008C99;' align='CENTER'&gt;GESTIÓN DE PAGOS ADMINISTRATIVOS&lt;/p&gt;&lt;/h1&gt; &lt;h3&gt;Servicio de Notificaciones&lt;/h3&gt;Estimado(a)&lt;br&gt;&lt;br&gt;Se le notifica que su actividad &lt;b&gt;Validar Solicitud de Pago de Servicios: ", $inputVariable.payload/ns3:idSolicitud, "&lt;/b&gt; correspondiente al proceso &lt;b&gt; ", $inputVariable.payload/ns3:nombreProceso, "&lt;/b&gt; asociado al Prestador &lt;b&gt;", $inputVariable.payload/ns3:razonSocial, "&lt;/b&gt; vencerá en ", $VarDias, "  días.&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;&lt;ins&gt;Por favor completar esta actividad para no generar retrasos en el proceso, de lo contrario será cancelada.&lt;/b&gt; &lt;br&gt;&lt;br&gt;&lt;em&gt;Muchas gracias por la gestión a realizar.&lt;br&gt;Saludos Cordiales, &lt;/em&gt;&lt;br&gt;&lt;br&gt;Para acceder a la herramienta y realizar la gestión haga clic aquí &lt;a href=http://11.50.0.21:8001/bpm/workspace&gt;link&lt;/a&gt;&lt;br&gt;&lt;br&gt;Este correo es generado automáticamente por favor no responder. Si necesita mas información por favor comuníquese con el equipo de TI.&lt;br&gt;&lt;br&gt;&lt;IMG SRC='http://cloudcatalogs.net/firmaGPA.jpg' WIDTH=180 HEIGHT=150&gt;")</from>
+                                        <to variable="varNotificationReq" part="EmailPayload"><query>ns4:Content/ns4:ContentBody</query></to>
+                                    </copy>
+                                    <copy>
+                                        <from>string('text/html; charset=UTF-8')</from>
+                                        <to variable="varNotificationReq" part="EmailPayload"><query>ns4:Content/ns4:MimeType</query></to>
+                                    </copy>
+                                </assign>
+                                <invoke name="InvokeNotificationService" portType="ns4:NotificationService"
+                                        partnerLink="NotificationService1" inputVariable="varNotificationReq"
+                                        outputVariable="varNotificationResponse" operation="sendEmailNotification"/>
+                            </sequence>
+                        </scope>
+                        <assign name="Assign_ContSum">
+                            <copy>
+                                <from>$VarWhile + 1</from>
+                                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$VarWhile</to>
+                            </copy>
+                            <copy>
+                                <from>$VarDias - 1</from>
+                                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$VarDias</to>
+                            </copy>
+                        </assign>
+                    </sequence>
+                    <elseif>
+                        <condition>$Inv_EstatusOrden_OutVar.ConsultaEstatusOrdenOutputCollection/ns2:ConsultaEstatusOrdenOutput/ns2:ID_ESTADO_SOLICITUD = 9</condition>
+                        <sequence name="Sequence6">
+                            <scope name="Email2">
+                                <bpelx:annotation>
+                                    <bpelx:pattern patternName="bpelx:email"></bpelx:pattern>
+                                </bpelx:annotation>
+                                <variables>
+                                    <variable name="varNotificationReq" messageType="ns4:EmailNotificationRequest"/>
+                                    <variable name="varNotificationResponse" messageType="ns4:ArrayOfResponse"/>
+                                    <variable name="NotificationServiceFaultVariable"
+                                              messageType="ns4:NotificationServiceErrorMessage"/>
+                                </variables>
+                                <sequence name="Sequence5">
+                                    <assign name="EmailParamsAssign">
+                                        <copy>
+                                            <from>string('Default')</from>
+                                            <to variable="varNotificationReq" part="EmailPayload"><query>ns4:FromAccountName</query></to>
+                                        </copy>
+                                        <copy>
+                                            <from>string('')</from>
+                                            <to variable="varNotificationReq" part="EmailPayload"><query>ns4:Bcc</query></to>
+                                        </copy>
+                                        <copy>
+                                            <from>string('')</from>
+                                            <to variable="varNotificationReq" part="EmailPayload"><query>ns4:Cc</query></to>
+                                        </copy>
+                                        <copy>
+                                            <from>string('')</from>
+                                            <to variable="varNotificationReq" part="EmailPayload"><query>ns4:ReplyToAddress</query></to>
+                                        </copy>
+                                        <copy>
+                                            <from>concat("Notificación de Recordatorio de Actividad Asignada  ", $inputVariable.payload/ns3:idSolicitud)</from>
+                                            <to variable="varNotificationReq" part="EmailPayload"><query>ns4:Subject</query></to>
+                                        </copy>
+                                        <copy>
+                                            <from>concat($inputVariable.payload/ns3:email1, ', ', $inputVariable.payload/ns3:email2, ', ', $inputVariable.payload/ns3:email3)</from>
+                                            <to variable="varNotificationReq" part="EmailPayload"><query>ns4:To</query></to>
+                                        </copy>
+                                        <copy>
+                                            <from>concat(string('
+'), "&lt;h1&gt;&lt;p style='COLOR:white; BACKGROUND:#008C99;' align='CENTER'&gt;GESTIÓN DE PAGOS ADMINISTRATIVOS&lt;/p&gt;&lt;/h1&gt; &lt;h3&gt;Servicio de Notificaciones&lt;/h3&gt;Estimado(a)&lt;br&gt;&lt;br&gt;Se le notifica que su actividad &lt;b&gt;Asignar Cuentas Contables a Solicitud de Pago de Servicios: ", $inputVariable.payload/ns3:idSolicitud, "&lt;/b&gt; correspondiente al proceso &lt;b&gt; ", $inputVariable.payload/ns3:nombreProceso, "&lt;/b&gt; asociado al Prestador &lt;b&gt;", $inputVariable.payload/ns3:razonSocial, "&lt;/b&gt; tiene un retraso de ", $VarDiasSum, "  días.&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;&lt;ins&gt;Por favor completar esta actividad para no generar retrasos en el proceso., &lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;em&gt;Muchas gracias por la gestión a realizar.&lt;br&gt;Saludos Cordiales, &lt;/em&gt;&lt;br&gt;&lt;br&gt;Para acceder a la herramienta y realizar la gestión haga clic aquí &lt;a href=http://11.50.0.21:8001/bpm/workspace&gt;link&lt;/a&gt;&lt;br&gt;&lt;br&gt;Este correo es generado automáticamente por favor no responder. Si necesita mas información por favor comuníquese con el equipo de TI.&lt;br&gt;&lt;br&gt;&lt;IMG SRC='http://cloudcatalogs.net/firmaGPA.jpg' WIDTH=180 HEIGHT=150&gt;")</from>
+                                            <to variable="varNotificationReq" part="EmailPayload"><query>ns4:Content/ns4:ContentBody</query></to>
+                                        </copy>
+                                        <copy>
+                                            <from>string('text/html; charset=UTF-8')</from>
+                                            <to variable="varNotificationReq" part="EmailPayload"><query>ns4:Content/ns4:MimeType</query></to>
+                                        </copy>
+                                    </assign>
+                                    <invoke name="InvokeNotificationService" portType="ns4:NotificationService"
+                                            partnerLink="NotificationService2" inputVariable="varNotificationReq"
+                                            outputVariable="varNotificationResponse" operation="sendEmailNotification"/>
+                                </sequence>
+                            </scope>
+                            <assign name="Assign_ContSumDias">
+                                <copy>
+                                    <from>$VarDiasSum + 1</from>
+                                    <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$VarDiasSum</to>
+                                </copy>
+                            </assign>
+                        </sequence>
+                    </elseif>
+                    <else>
+                        <assign name="Assign_SaleContador">
+                            <copy>
+                                <from>$VarCiclo</from>
+                                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$VarWhile</to>
+                            </copy>
+                        </assign>
+                    </else>
+                </if>
+            </sequence>
+            <condition>$VarCiclo &lt;= $VarWhile</condition>
+        </repeatUntil>
+        <!-- 
+          Asynchronous callback to the requester. (Note: the callback location and correlation id is transparently handled using WS-addressing.)
+        -->
+        <invoke name="callbackClient" partnerLink="bpelemailrecordatorio_client" portType="client:BPELEmailRecordatorioCallback" operation="processResponse" inputVariable="outputVariable"/>
+    </sequence>
+</process>

@@ -1,0 +1,311 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Thu Dec 01 10:38:34 CST 2016
+  Author:  Soaint
+  Type: BPEL 2.0 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="ObtenerPrestadorBPEL" targetNamespace="http://xmlns.oracle.com/ObtenerPrestadorApp/ObtenerPrestadorPrj/ObtenerPrestadorBPEL" xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:client="http://xmlns.oracle.com/ObtenerPrestadorApp/ObtenerPrestadorPrj/ObtenerPrestadorBPEL" xmlns:ora="http://schemas.oracle.com/xpath/extension" xmlns:ui="http://xmlns.oracle.com/soa/designer" xmlns:bpelx="http://schemas.oracle.com/bpel/extension" xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xml:id="id_1"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ess="http://xmlns.oracle.com/scheduler" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:ns1="http://110.10.0.98:8081/RecepcionPagosAdmon/services/recepcionCDFI"
+         xmlns:ns2="http://ws.sagfe.mx.softwareag.com" xmlns:ns3="http://qualitas.com.mx/comunes/objetosComunes/v1/">
+
+    <import ui:processWSDL="true" namespace="http://xmlns.oracle.com/ObtenerPrestadorApp/ObtenerPrestadorPrj/ObtenerPrestadorBPEL" location="../WSDLs/ObtenerPrestadorBPEL.wsdl" importType="http://schemas.xmlsoap.org/wsdl/" xml:id="id_2"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks xml:id="id_3">
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="obtenerprestadorbpel_client" partnerLinkType="client:ObtenerPrestadorBPEL" myRole="ObtenerPrestadorBPELProvider" xml:id="id_4"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables xml:id="id_5">
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:ObtenerPrestadorBPELRequestMessage" xml:id="id_6"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:ObtenerPrestadorBPELResponseMessage" xml:id="id_7"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main" xml:id="id_8">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in ObtenerPrestadorBPEL.wsdl) -->
+    <receive name="receiveInput" partnerLink="obtenerprestadorbpel_client" portType="client:ObtenerPrestadorBPEL" operation="processRequest" variable="inputVariable" createInstance="yes" xml:id="id_9"/>
+    <if name="If" xml:id="id_53">
+      <condition xml:id="id_60">$inputVariable.payload/client:numeroPrestador =  '26110'</condition>
+      <scope name="Scope1" xml:id="id_56">
+        <sequence name="Sequence1" xml:id="id_57">
+          <assign name="OutEmpNacionalPerMoral" xml:id="id_11">
+            <copy xml:id="id_12">
+              <from xml:id="id_13">$inputVariable.payload/client:numeroPrestador</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_14">$outputVariable.payload/client:numeroPrestador</to>
+            </copy>
+            <copy xml:id="id_15">
+              <from xml:id="id_16">'SOAINT MEXICO'</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_17">$outputVariable.payload/client:nombrePrestador</to>
+            </copy>
+            <copy xml:id="id_18">
+              <from xml:id="id_19">'2'</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_20">$outputVariable.payload/client:cveTipoPersona</to>
+            </copy>
+            <copy xml:id="id_21">
+              <from xml:id="id_22">'MORAL'</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_23">$outputVariable.payload/client:tipoPersona</to>
+            </copy>
+            <copy xml:id="id_24">
+              <from xml:id="id_25">'09000'</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_26">$outputVariable.payload/client:cveEntidad</to>
+            </copy>
+            <copy xml:id="id_30">
+              <from xml:id="id_31">'MEXICO DF'</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_32">$outputVariable.payload/client:entidad</to>
+            </copy>
+            <copy xml:id="id_50">
+              <from xml:id="id_51">1</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_52">$outputVariable.payload/client:cveNacionalidad</to>
+            </copy>
+            <copy xml:id="id_33">
+              <from xml:id="id_34">'MEXICANA'</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_35">$outputVariable.payload/client:nacionalidad</to>
+            </copy>
+            <copy xml:id="id_41">
+              <from xml:id="id_42">'0'</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_43">$outputVariable.payload/client:OperationResponse/ns3:codigoRespuesta</to>
+            </copy>
+            <copy xml:id="id_44">
+              <from xml:id="id_45">'EJECUCION EXITOSA'</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_46">$outputVariable.payload/client:OperationResponse/ns3:descripcionRespuesta</to>
+            </copy>
+            <copy xml:id="id_47">
+              <from xml:id="id_48">ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_49">$outputVariable.payload/client:OperationResponse/ns3:fecha</to>
+            </copy>
+          </assign>
+        </sequence>
+      </scope>
+      <elseif xml:id="id_55">
+        <documentation xml:id="id_185">
+          <![CDATA[ExtranjeraMoral]]>
+        </documentation>
+        <condition xml:id="id_61">$inputVariable.payload/client:numeroPrestador ='21040'</condition>
+        <scope name="Scope2" xml:id="id_58">
+          <sequence name="Sequence2" xml:id="id_59">
+            <assign name="OutEmpExtranjeroPerMoral" xml:id="id_62">
+              <copy xml:id="id_63">
+                <from xml:id="id_64">$inputVariable.payload/client:numeroPrestador</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_65">$outputVariable.payload/client:numeroPrestador</to>
+              </copy>
+              <copy xml:id="id_66">
+                <from xml:id="id_67">'33000'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_68">$outputVariable.payload/client:cveEntidad</to>
+              </copy>
+              <copy xml:id="id_69">
+                <from xml:id="id_70">'JATO DYNAMICS LIMITED'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_71">$outputVariable.payload/client:nombrePrestador</to>
+              </copy>
+              <copy xml:id="id_72">
+                <from xml:id="id_73">'2'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_74">$outputVariable.payload/client:cveTipoPersona</to>
+              </copy>
+              <copy xml:id="id_75">
+                <from xml:id="id_76">'MORAL'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_77">$outputVariable.payload/client:tipoPersona</to>
+              </copy>
+              <copy xml:id="id_78">
+                <from xml:id="id_79">'33000'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_80">$outputVariable.payload/client:entidad</to>
+              </copy>
+              <copy xml:id="id_81">
+                <from xml:id="id_82">'2'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_83">$outputVariable.payload/client:cveNacionalidad</to>
+              </copy>
+              <copy xml:id="id_84">
+                <from xml:id="id_85">'EXTRANJERA'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_86">$outputVariable.payload/client:nacionalidad</to>
+              </copy>
+              <copy xml:id="id_163">
+                <from xml:id="id_164">'0'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_165">$outputVariable.payload/client:OperationResponse/ns3:codigoRespuesta</to>
+              </copy>
+              <copy xml:id="id_166">
+                <from xml:id="id_167">'EJECUCION EXITOSA'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_168">$outputVariable.payload/client:OperationResponse/ns3:descripcionRespuesta</to>
+              </copy>
+              <copy xml:id="id_169">
+                <from xml:id="id_170">ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_171">$outputVariable.payload/client:OperationResponse/ns3:fecha</to>
+              </copy>
+            </assign>
+          </sequence>
+        </scope>
+      </elseif>
+      <elseif xml:id="id_87">
+        <documentation xml:id="id_186">
+          <![CDATA[MexicanaFisica]]>
+        </documentation>
+        <condition xml:id="id_90">$inputVariable.payload/client:numeroPrestador ='15551'</condition>
+        <scope name="Scope3" xml:id="id_88">
+          <sequence name="Sequence3" xml:id="id_89">
+            <assign name="EmpNacionalPerFisica" xml:id="id_91">
+              <copy xml:id="id_92">
+                <from xml:id="id_93">$inputVariable.payload/client:numeroPrestador</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_94">$outputVariable.payload/client:numeroPrestador</to>
+              </copy>
+              <copy xml:id="id_95">
+                <from xml:id="id_96">'LUNA CASTILLO ASCENCION'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_97">$outputVariable.payload/client:nombrePrestador</to>
+              </copy>
+              <copy xml:id="id_98">
+                <from xml:id="id_99">'1'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_100">$outputVariable.payload/client:cveTipoPersona</to>
+              </copy>
+              <copy xml:id="id_101">
+                <from xml:id="id_102">'FISICA'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_103">$outputVariable.payload/client:tipoPersona</to>
+              </copy>
+              <copy xml:id="id_104">
+                <from xml:id="id_105">'19000'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_106">$outputVariable.payload/client:cveEntidad</to>
+              </copy>
+              <copy xml:id="id_107">
+                <from xml:id="id_108">'MEXICO'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_109">$outputVariable.payload/client:entidad</to>
+              </copy>
+              <copy xml:id="id_110">
+                <from xml:id="id_111">'1'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_112">$outputVariable.payload/client:cveNacionalidad</to>
+              </copy>
+              <copy xml:id="id_113">
+                <from xml:id="id_114">'MEXICANA'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_115">$outputVariable.payload/client:nacionalidad</to>
+              </copy>
+              <copy xml:id="id_154">
+                <from xml:id="id_155">'0'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_156">$outputVariable.payload/client:OperationResponse/ns3:codigoRespuesta</to>
+              </copy>
+              <copy xml:id="id_157">
+                <from xml:id="id_158">'EJECUCION EXITOSA'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_159">$outputVariable.payload/client:OperationResponse/ns3:descripcionRespuesta</to>
+              </copy>
+              <copy xml:id="id_160">
+                <from xml:id="id_161">ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_162">$outputVariable.payload/client:OperationResponse/ns3:fecha</to>
+              </copy>
+            </assign>
+          </sequence>
+        </scope>
+      </elseif>
+      <elseif xml:id="id_116">
+        <documentation xml:id="id_187">
+          <![CDATA[ExtranjeraFisica]]>
+        </documentation>
+        <condition xml:id="id_184">$inputVariable.payload/client:numeroPrestador  =  '50000'</condition>
+        <scope name="Scope4" xml:id="id_118">
+          <sequence name="Sequence4" xml:id="id_119">
+            <assign name="EmpExtranjeroPerFisica" xml:id="id_120">
+              <copy xml:id="id_121">
+                <from xml:id="id_122">$inputVariable.payload/client:numeroPrestador</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_123">$outputVariable.payload/client:numeroPrestador</to>
+              </copy>
+              <copy xml:id="id_124">
+                <from xml:id="id_125">'YOUNGER &amp; ASSOCIATES'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_126">$outputVariable.payload/client:nombrePrestador</to>
+              </copy>
+              <copy xml:id="id_127">
+                <from xml:id="id_128">'1'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_129">$outputVariable.payload/client:cveTipoPersona</to>
+              </copy>
+              <copy xml:id="id_130">
+                <from xml:id="id_131">'FISICA'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_132">$outputVariable.payload/client:tipoPersona</to>
+              </copy>
+              <copy xml:id="id_133">
+                <from xml:id="id_134">'50000'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_135">$outputVariable.payload/client:cveEntidad</to>
+              </copy>
+              <copy xml:id="id_136">
+                <from xml:id="id_137">'50000'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_138">$outputVariable.payload/client:entidad</to>
+              </copy>
+              <copy xml:id="id_139">
+                <from xml:id="id_140">'2'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_141">$outputVariable.payload/client:cveNacionalidad</to>
+              </copy>
+              <copy xml:id="id_142">
+                <from xml:id="id_143">'EXTRANJERA'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_144">$outputVariable.payload/client:nacionalidad</to>
+              </copy>
+              <copy xml:id="id_145">
+                <from xml:id="id_146">'0'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_147">$outputVariable.payload/client:OperationResponse/ns3:codigoRespuesta</to>
+              </copy>
+              <copy xml:id="id_148">
+                <from xml:id="id_149">'EJECUCION EXITOSA'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_150">$outputVariable.payload/client:OperationResponse/ns3:descripcionRespuesta</to>
+              </copy>
+              <copy xml:id="id_151">
+                <from xml:id="id_152">ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_153">$outputVariable.payload/client:OperationResponse/ns3:fecha</to>
+              </copy>
+            </assign>
+          </sequence>
+        </scope>
+      </elseif>
+      <else xml:id="id_54">
+        <scope name="Scope5" xml:id="id_172">
+          <sequence name="Sequence5" xml:id="id_173">
+            <assign name="NoDataFound" xml:id="id_174">
+              <copy xml:id="id_175">
+                <from xml:id="id_176">'1'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_177">$outputVariable.payload/client:OperationResponse/ns3:codigoRespuesta</to>
+              </copy>
+              <copy xml:id="id_178">
+                <from xml:id="id_179">'NO SE ENCONTRARON DATOS'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_180">$outputVariable.payload/client:OperationResponse/ns3:descripcionRespuesta</to>
+              </copy>
+              <copy xml:id="id_181">
+                <from xml:id="id_182">ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_183">$outputVariable.payload/client:OperationResponse/ns3:fecha</to>
+              </copy>
+            </assign>
+          </sequence>
+        </scope>
+      </else>
+    </if>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="obtenerprestadorbpel_client" portType="client:ObtenerPrestadorBPEL" operation="processRequest" variable="outputVariable" xml:id="id_10"/>
+  </sequence>
+</process>

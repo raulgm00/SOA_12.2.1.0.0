@@ -1,0 +1,65 @@
+<definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Services/Utileria/EnvioCorreoUtil" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Services/Utileria/EnvioCorreoUtil" xmlns:env="http://servicios.montedepiedad.com.mx/NMP/Schema/EnvioCorreoUtil" xmlns:nmph="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:nmpsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <types>
+    <xsd:schema>
+      <xsd:import schemaLocation="../Schemas/NMPEnvioCorreoUtilXSD.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/EnvioCorreoUtil"/>
+    </xsd:schema>   
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <import schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+    </schema>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+    </schema>
+  </types>
+  <message name="envioCorreoRequestMessage">
+  <part name="req" element="env:envioCorreoRequest"/>
+  </message>
+  <message name="envioCorreoResponseMessage">
+  <part name="res" element="env:envioCorreoResponse"/>
+  </message>
+    <message name="NMPStandardFault">
+    <part name="fault" element="nmpsm:messageError"/>
+  </message>
+  <message name="NMPStandardHeaderReq">
+    <part name="headerReq" element="nmph:headerMessage"/>
+  </message>
+  <message name="NMPStandardHeaderRes">
+    <part name="headerRes" element="nmph:headerMessageResponse"/>
+  </message>
+  <portType name="NMPEnvioCorreo_PortType">
+    <operation name="enviarCorreo">
+      <input message="tns:envioCorreoRequestMessage"/>
+      <output message="tns:envioCorreoResponseMessage"/>
+      <fault message="tns:NMPStandardFault" name="envioCorreoUtilFault"/>
+    </operation>
+  </portType>
+  <binding name="NMPEnvioCorreo_PortTypeSOAP11Binding" type="tns:NMPEnvioCorreo_PortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="enviarCorreo">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/Utileria/EnvioCorreoUtil/enviarCorreo"/>
+      <input>
+        <soap:body use="literal" parts="req"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="res"/>
+      </output>
+      <fault name="envioCorreoUtilFault">
+        <soap:fault name="envioCorreoUtilFault" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+  <binding name="NMPEnvioCorreo_PortTypeSOAP12Binding" type="tns:NMPEnvioCorreo_PortType">
+    <soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="enviarCorreo">
+      <soap12:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/Utileria/EnvioCorreoUtil/enviarCorreo"/>
+      <input>
+        <soap12:body use="literal" parts="req"/>
+      </input>
+      <output>
+        <soap12:body use="literal" parts="res"/>
+      </output>
+      <fault name="envioCorreoUtilFault">
+        <soap12:fault name="envioCorreoUtilFault" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+</definitions>

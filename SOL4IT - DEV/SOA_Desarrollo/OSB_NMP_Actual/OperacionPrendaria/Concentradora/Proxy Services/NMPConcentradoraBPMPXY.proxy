@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ser:proxyServiceEntry xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env">
+    <ser:coreEntry isAutoPublish="false">
+        <ser:description>Virtualización del proceso BPM de concentradora, este flujo consta de las siguiente etapas: 1.Reglas de marcado (1) 2. Validación en sucursal (2) 3.Salida de sucursal (3) 4. Recepción de concentradora (7) 5. Revisión Partidas en concentradora (4) 6. Ingreso Almoneda (5) 7. Venta Masiva (6)
+*Nota: El número en parentesis representa el Id con el cual se identifica en Midas dicha etapa.</ser:description>
+        <ser:binding type="SOAP" xsi:type="con:SoapBindingType" isSoap12="false" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:wsdl ref="OperacionPrendaria/Concentradora/Resources/WSDLs/NMPConcentradoraBPMWSDL"/>
+            <con:binding>
+                <con:name>ConcentradoraPortTypeSOAP11Binding</con:name>
+                <con:namespace>http://xmlns.oracle.com/bpmn/bpmnProcess/Concentradora</con:namespace>
+            </con:binding>
+            <con:selector type="SOAP body"/>
+        </ser:binding>
+        <oper:operations enabled="true" xmlns:oper="http://xmlns.oracle.com/servicebus/proxy/operations">
+            <oper:messageTracing enabled="true">
+                <oper1:detailsLevel xmlns:oper1="http://xmlns.oracle.com/servicebus/operations">terse</oper1:detailsLevel>
+                <oper1:maxSize xmlns:oper1="http://xmlns.oracle.com/servicebus/operations">8192</oper1:maxSize>
+            </oper:messageTracing>
+            <oper:monitoring enabled="true" aggregationInterval="10"/>
+        </oper:operations>
+        <ser:ws-policy>
+            <ser:binding-mode>no-policies</ser:binding-mode>
+        </ser:ws-policy>
+        <ser:invoke ref="OperacionPrendaria/Concentradora/Pipelines/NMPConcentradoraBPMPL" xsi:type="con:PipelineRef" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        <ser:xqConfiguration>
+            <ser:snippetVersion>1.0</ser:snippetVersion>
+        </ser:xqConfiguration>
+    </ser:coreEntry>
+    <ser:endpointConfig>
+        <tran:provider-id>http</tran:provider-id>
+        <tran:inbound>true</tran:inbound>
+        <tran:URI>
+            <env:value>/NMP/ConcentradoraBPM/ConcentradoraFlujoBPM</env:value>
+        </tran:URI>
+        <tran:inbound-properties/>
+        <tran:provider-specific xsi:type="http:HttpEndPointConfiguration" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <http:inbound-properties/>
+        </tran:provider-specific>
+    </ser:endpointConfig>
+    <aler:alertRules xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert">
+        <aler:alertRule enabled="true" name="timeout_warning">
+            <aler:frequency>every-time</aler:frequency>
+            <aler:severity>normal</aler:severity>
+            <aler:stopProcessing>false</aler:stopProcessing>
+            <aler:condition aggregation-interval="10">
+                <con:monCondExpr xmlns:con="http://xmlns.oracle.com/servicebus/monitoring/alert/condition">
+                    <con:function>max</con:function>
+                    <con:lhs>Transport.response-time</con:lhs>
+                    <con:operator>></con:operator>
+                    <con:rhs>30000</con:rhs>
+                </con:monCondExpr>
+            </aler:condition>
+            <aler:alertDestination ref="OperacionPrendaria/Concentradora/Resources/Alerts/BPMConcentradoraAlert"/>
+        </aler:alertRule>
+    </aler:alertRules>
+</ser:proxyServiceEntry>

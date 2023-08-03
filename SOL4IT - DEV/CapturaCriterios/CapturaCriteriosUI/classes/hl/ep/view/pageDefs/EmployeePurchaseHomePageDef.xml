@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pageDefinition xmlns="http://xmlns.oracle.com/adfm/uimodel" version="11.1.2.60.17" id="EmployeePurchaseHomePageDef"
+                Package="hl.ep.view.pageDefs">
+  <parameters/>
+  <executables>
+    <variableIterator id="variables"/>
+    <page path="oracle.ui.pattern.dynamicShell.model.dynamicTabShellDefinition" id="ptb1" Refresh="ifNeeded"/>
+    <taskFlow id="CapturaCriteriosTF1" taskFlowId="/WEB-INF/TaskFlows/CapturaCriteriosTF.xml#CapturaCriteriosTF"
+              activation="deferred" xmlns="http://xmlns.oracle.com/adf/controller/binding"/>
+    <taskFlow id="CapturaTF1" taskFlowId="/WEB-INF/TaskFlows/CapturaTF.xml#CapturaTF" activation="deferred"
+              xmlns="http://xmlns.oracle.com/adf/controller/binding"/>
+    <iterator Binds="ConcentradoraVO1" RangeSize="25" DataControl="CapturaCriteriosAMDataControl"
+              id="ConcentradoraVO1Iterator"/>
+  </executables>
+  <bindings>
+    <methodAction id="openTabOrderForm" RequiresUpdateModel="true" Action="invokeMethod" MethodName="openTabOrderForm"
+                  IsViewObjectMethod="false" DataControl="CustomEventHandler"
+                  InstanceName="data.CustomEventHandler.dataProvider"/>
+    <attributeValues IterBinding="ConcentradoraVO1Iterator" id="ProyectoPantalla">
+      <AttrNames>
+        <Item Value="ProyectoPantalla"/>
+      </AttrNames>
+    </attributeValues>
+  </bindings>
+  <eventMap xmlns="http://xmlns.oracle.com/adfm/contextualEvent">
+    <event name="openTabForm">
+      <producer region="*">
+        <consumer handler="openTabOrderForm"/>
+      </producer>
+    </event>
+  </eventMap>
+</pageDefinition>

@@ -1,0 +1,29 @@
+<application xmlns:soa="http://www.oracle.com/soa/rest" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:client="http://xmlns.oracle.com/OperacionPrendaria/ObtenerPrecios/ObtenerPreciosRapaport" xmlns="http://wadl.dev.java.net/2009/02">
+  <doc title="NMPObtenerPreciosRestAsyncPXY">RestService</doc>
+  <grammars>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+      <import namespace="http://xmlns.oracle.com/OperacionPrendaria/ObtenerPrecios/ObtenerPreciosRapaport" schemaLocation="../Schemas/NMPObtenerPreciosXSD.xsd"/>
+    </schema>
+    <xsd:schema xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+    </xsd:schema>
+    <xsd:schema xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+    </xsd:schema>
+  </grammars>
+  <resources>
+    <resource path="/obtenerprecios">
+      <method name="GET" soa:wsdlOperation="obtenerprecios">
+        <request soa:paramElement="pns:obtenerPrecios" xmlns:pns="http://xmlns.oracle.com/OperacionPrendaria/ObtenerPrecios/ObtenerPreciosRapaport">
+          <param name="parametro" style="query" soa:expression="$msg.payload/client:parametro" type="xsd:string"/>
+        </request>
+        <response status="200">
+          <representation mediaType="application/json" element="cns:obtenerPreciosResponse" xmlns:cns="http://xmlns.oracle.com/OperacionPrendaria/ObtenerPrecios/ObtenerPreciosRapaport"/>
+        </response>
+        <response status="500" soa:wsdlFaultName="PreciosFault">
+          <representation mediaType="application/json" element="cns:messageError" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+        </response>
+      </method>
+    </resource>
+  </resources>
+</application>

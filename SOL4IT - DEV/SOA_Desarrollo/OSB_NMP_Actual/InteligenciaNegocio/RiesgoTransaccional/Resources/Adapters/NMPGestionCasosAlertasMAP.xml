@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-persistence xmlns="http://www.eclipse.org/eclipselink/xsds/persistence" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:eclipselink="http://www.eclipse.org/eclipselink/xsds/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="Eclipse Persistence Services - 2.5.2.v20140319-9ad6abd">
+   <name>CasoAlertas-OR</name>
+   <class-mapping-descriptors>
+      <class-mapping-descriptor xsi:type="object-relational-class-mapping-descriptor">
+         <class>CasoAlertas.RtCasos</class>
+         <alias>RT_CASOS</alias>
+         <primary-key>
+            <field table="RT_CASOS" name="ID" xsi:type="column"/>
+         </primary-key>
+         <events/>
+         <querying>
+            <queries>
+               <query name="CasoAlertasSelect" xsi:type="read-all-query">
+                  <arguments>
+                     <argument name="idCliente">
+                        <type>java.lang.String</type>
+                     </argument>
+                  </arguments>
+                  <call xsi:type="sql-call">
+                     <sql>SELECT ID, FECHA_REGISTRO, CODIGO_ESTADO, ID_ANALISTA, CALIFICACION, FECHA_REEVALUACION, SOBREAFORO, ID_CLIENTE, NRO_CREDENCIAL, ID_ALERTA_ACTUAL, ID_SUCURSAL, CALIFICACION_CASO, CALIFICACION_AJUSTADA FROM RT_CASOS WHERE (ID_CLIENTE = #idCliente)</sql>
+                  </call>
+                  <reference-class>CasoAlertas.RtCasos</reference-class>
+                  <container xsi:type="list-container-policy">
+                     <collection-type>java.util.Vector</collection-type>
+                  </container>
+               </query>
+            </queries>
+            <timeout>4</timeout>
+         </querying>
+         <attribute-mappings>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>id</attribute-name>
+               <field table="RT_CASOS" name="ID" xsi:type="column"/>
+               <attribute-classification>java.lang.Long</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>fechaRegistro</attribute-name>
+               <field table="RT_CASOS" name="FECHA_REGISTRO" xsi:type="column"/>
+               <attribute-classification>java.sql.Timestamp</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>codigoEstado</attribute-name>
+               <field table="RT_CASOS" name="CODIGO_ESTADO" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idAnalista</attribute-name>
+               <field table="RT_CASOS" name="ID_ANALISTA" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>calificacion</attribute-name>
+               <field table="RT_CASOS" name="CALIFICACION" xsi:type="column"/>
+               <attribute-classification>java.lang.Integer</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>fechaReevaluacion</attribute-name>
+               <field table="RT_CASOS" name="FECHA_REEVALUACION" xsi:type="column"/>
+               <attribute-classification>java.sql.Timestamp</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>sobreaforo</attribute-name>
+               <field table="RT_CASOS" name="SOBREAFORO" xsi:type="column"/>
+               <attribute-classification>java.lang.Float</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idAlertaActual</attribute-name>
+               <read-only>true</read-only>
+               <properties>
+                  <property name="fkPlaceholder">
+                     <value>true</value>
+                  </property>
+               </properties>
+               <field table="RT_CASOS" name="ID_ALERTA_ACTUAL" xsi:type="column"/>
+               <attribute-classification>java.lang.Long</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idCliente</attribute-name>
+               <field table="RT_CASOS" name="ID_CLIENTE" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>nroCredencial</attribute-name>
+               <field table="RT_CASOS" name="NRO_CREDENCIAL" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idSucursal</attribute-name>
+               <field table="RT_CASOS" name="ID_SUCURSAL" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            
+            <attribute-mapping xsi:type="one-to-one-mapping">
+               <attribute-name>idAlertaActual</attribute-name>
+               <reference-class>CasoAlertas.RtAlertas</reference-class>
+               <private-owned>true</private-owned>
+               <foreign-key>
+                  <field-reference>
+                     <source-field table="RT_CASOS" name="ID_ALERTA_ACTUAL" xsi:type="column"/>
+                     <target-field table="RT_ALERTAS" name="ID" xsi:type="column"/>
+                  </field-reference>
+               </foreign-key>
+               <foreign-key-fields>
+                  <field table="RT_CASOS" name="ID_ALERTA_ACTUAL" xsi:type="column"/>
+               </foreign-key-fields>
+               <batch-reading>true</batch-reading>
+               <indirection xsi:type="value-holder-indirection-policy"/>
+               <selection-query xsi:type="read-object-query">
+                  <reference-class>CasoAlertas.RtAlertas</reference-class>
+               </selection-query>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="one-to-many-mapping">
+               <attribute-name>rtAlertasCollection</attribute-name>
+               <reference-class>CasoAlertas.RtAlertas</reference-class>
+               <private-owned>true</private-owned>
+               <target-foreign-key>
+                  <field-reference>
+                     <source-field table="RT_ALERTAS" name="ID_CASO" xsi:type="column"/>
+                     <target-field table="RT_CASOS" name="ID" xsi:type="column"/>
+                  </field-reference>
+               </target-foreign-key>
+               <batch-reading>true</batch-reading>
+               <container xsi:type="list-container-policy">
+                  <collection-type>org.eclipse.persistence.indirection.IndirectList</collection-type>
+               </container>
+               <indirection xsi:type="value-holder-indirection-policy"/>
+               <selection-query xsi:type="read-all-query">
+                  <reference-class>CasoAlertas.RtAlertas</reference-class>
+                  <container xsi:type="list-container-policy">
+                     <collection-type>org.eclipse.persistence.indirection.IndirectList</collection-type>
+                  </container>
+               </selection-query>
+            </attribute-mapping>
+			
+			<attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>calificacionCaso</attribute-name>
+               <field table="RT_CASOS" name="CALIFICACION_CASO" xsi:type="column"/>
+               <attribute-classification>java.lang.Integer</attribute-classification>
+            </attribute-mapping>
+			
+			<attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>calificacionAjustada</attribute-name>
+               <field table="RT_CASOS" name="CALIFICACION_AJUSTADA" xsi:type="column"/>
+               <attribute-classification>java.lang.Integer</attribute-classification>
+            </attribute-mapping>
+			
+         </attribute-mappings>
+         <descriptor-type>independent</descriptor-type>
+         <sequencing>
+            <sequence-name>RT_SEQ_CASOS</sequence-name>
+            <sequence-field name="RT_CASOS.ID"/>
+         </sequencing>
+         <caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+            <always-refresh>true</always-refresh>
+         </caching>
+         <remote-caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+         </remote-caching>
+         <instantiation/>
+         <copying xsi:type="instantiation-copy-policy"/>
+         <tables>
+            <table name="RT_CASOS"/>
+         </tables>
+         <structure>structureName</structure>
+      </class-mapping-descriptor>
+      <class-mapping-descriptor xsi:type="object-relational-class-mapping-descriptor">
+         <class>CasoAlertas.RtAlertas</class>
+         <alias>RT_ALERTAS</alias>
+         <primary-key>
+            <field table="RT_ALERTAS" name="ID" xsi:type="column"/>
+         </primary-key>
+         <events/>
+         <querying>
+            <queries>
+               <query name="CasoAlertasSelect" xsi:type="read-all-query">
+                  <reference-class>CasoAlertas.RtAlertas</reference-class>
+                  <container xsi:type="list-container-policy">
+                     <collection-type>java.util.Vector</collection-type>
+                  </container>
+               </query>
+            </queries>
+            <timeout>4</timeout>
+         </querying>
+         <attribute-mappings>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>id</attribute-name>
+               <field table="RT_ALERTAS" name="ID" xsi:type="column"/>
+               <attribute-classification>java.lang.Long</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>codigoTipo</attribute-name>
+               <field table="RT_ALERTAS" name="CODIGO_TIPO" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>fechaRegistro</attribute-name>
+               <field table="RT_ALERTAS" name="FECHA_REGISTRO" xsi:type="column"/>
+               <attribute-classification>java.sql.Timestamp</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idTransaccion</attribute-name>
+               <field table="RT_ALERTAS" name="ID_TRANSACCION" xsi:type="column"/>
+               <attribute-classification>java.lang.Long</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>valida</attribute-name>
+               <field table="RT_ALERTAS" name="VALIDA" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idCaso</attribute-name>
+               <read-only>true</read-only>
+               <properties>
+                  <property name="fkPlaceholder">
+                     <value>true</value>
+                  </property>
+               </properties>
+               <field table="RT_ALERTAS" name="ID_CASO" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>calificacion</attribute-name>
+               <field table="RT_ALERTAS" name="CALIFICACION" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>esAutomatica</attribute-name>
+               <field table="RT_ALERTAS" name="ES_AUTOMATICA" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>sobreaforo</attribute-name>
+               <field table="RT_ALERTAS" name="SOBREAFORO" xsi:type="column"/>
+               <attribute-classification>java.lang.Long</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>scoreSiva</attribute-name>
+               <field table="RT_ALERTAS" name="SCORE_SIVA" xsi:type="column"/>
+               <attribute-classification>java.lang.Integer</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>codigoRegla</attribute-name>
+               <field table="RT_ALERTAS" name="CODIGO_REGLA" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idSucursal</attribute-name>
+               <field table="RT_ALERTAS" name="ID_SUCURSAL" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idCliente</attribute-name>
+               <field table="RT_ALERTAS" name="ID_CLIENTE" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="one-to-many-mapping">
+               <attribute-name>rtCasosCollection</attribute-name>
+               <reference-class>CasoAlertas.RtCasos</reference-class>
+               <private-owned>true</private-owned>
+               <target-foreign-key>
+                  <field-reference>
+                     <source-field table="RT_CASOS" name="ID_ALERTA_ACTUAL" xsi:type="column"/>
+                     <target-field table="RT_ALERTAS" name="ID" xsi:type="column"/>
+                  </field-reference>
+               </target-foreign-key>
+               <batch-reading>true</batch-reading>
+               <container xsi:type="list-container-policy">
+                  <collection-type>org.eclipse.persistence.indirection.IndirectList</collection-type>
+               </container>
+               <indirection xsi:type="value-holder-indirection-policy"/>
+               <selection-query xsi:type="read-all-query">
+                  <reference-class>CasoAlertas.RtCasos</reference-class>
+                  <container xsi:type="list-container-policy">
+                     <collection-type>org.eclipse.persistence.indirection.IndirectList</collection-type>
+                  </container>
+               </selection-query>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="one-to-one-mapping">
+               <attribute-name>idCaso</attribute-name>
+               <reference-class>CasoAlertas.RtCasos</reference-class>
+               <private-owned>true</private-owned>
+               <foreign-key>
+                  <field-reference>
+                     <source-field table="RT_ALERTAS" name="ID_CASO" xsi:type="column"/>
+                     <target-field table="RT_CASOS" name="ID" xsi:type="column"/>
+                  </field-reference>
+               </foreign-key>
+               <foreign-key-fields>
+                  <field table="RT_ALERTAS" name="ID_CASO" xsi:type="column"/>
+               </foreign-key-fields>
+               <batch-reading>true</batch-reading>
+               <indirection xsi:type="value-holder-indirection-policy"/>
+               <selection-query xsi:type="read-object-query">
+                  <reference-class>CasoAlertas.RtCasos</reference-class>
+               </selection-query>
+            </attribute-mapping>
+         </attribute-mappings>
+         <descriptor-type>independent</descriptor-type>
+         <sequencing>
+            <sequence-name>RT_SEQ_ALERTAS</sequence-name>
+            <sequence-field name="RT_ALERTAS.ID"/>
+         </sequencing>
+         <caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+            <always-refresh>true</always-refresh>
+         </caching>
+         <remote-caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+         </remote-caching>
+         <instantiation/>
+         <copying xsi:type="instantiation-copy-policy"/>
+         <tables>
+            <table name="RT_ALERTAS"/>
+         </tables>
+         <structure>structureName</structure>
+      </class-mapping-descriptor>
+   </class-mapping-descriptors>
+   <login xsi:type="database-login">
+      <platform-class>org.eclipse.persistence.platform.database.oracle.Oracle9Platform</platform-class>
+      <connection-url></connection-url>
+   </login>
+</object-persistence>

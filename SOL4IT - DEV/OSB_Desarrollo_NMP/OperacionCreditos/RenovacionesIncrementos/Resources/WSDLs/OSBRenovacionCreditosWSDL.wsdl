@@ -1,0 +1,57 @@
+<wsdl:definitions name="OsbEvaluacionCreditosWSDL" targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Services/Osb/EvaluacionCredito" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Services/Osb/EvaluacionCredito" xmlns:NMPEvalCrt="http://servicios.montedepiedad.com.mx/NMP/Schema/EvaluacionCredito" xmlns:NMPSTDMSG="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:NMPSTDHD="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:types>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/EvaluacionCredito" schemaLocation="../Schemas/OSBRenovacionCreditoElementosXSD.xsd"/>
+    </xsd:schema>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+    </xsd:schema>
+    <xsd:schema>
+      <xsd:import schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="processCreditoMessageRequest">
+    <wsdl:part name="payload" element="NMPEvalCrt:processCreditoRequest"/>
+  </wsdl:message>
+  <wsdl:message name="processCreditoMessageResponse">
+    <wsdl:part name="payload" element="NMPEvalCrt:processCreditoResponse"/>
+  </wsdl:message>
+  <wsdl:message name="evaluacionFaultMessage">
+    <wsdl:part name="evaluacionFault" element="NMPSTDMSG:messageError"/>
+  </wsdl:message>
+  <wsdl:message name="NMPHeaderRequest">
+    <wsdl:part name="requestHeader" element="NMPSTDHD:headerMessage"/>
+  </wsdl:message>
+  <wsdl:message name="NMPHeaderResponse">
+    <wsdl:part name="responseHeader" element="NMPSTDHD:headerMessageResponse"/>
+  </wsdl:message>
+  <wsdl:portType name="evaluacionCredito_ptt">
+    <wsdl:operation name="processCredito">
+      <wsdl:input message="tns:processCreditoMessageRequest"/>
+      <wsdl:output message="tns:processCreditoMessageResponse"/>
+      <wsdl:fault name="Fault" message="tns:evaluacionFaultMessage"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="evaluacionCredito_pttSOAP11Binding" type="tns:evaluacionCredito_ptt">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="processCredito">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Schema/EvaluacionCredito/processCredito"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="payload"/>
+        <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="payload"/>
+        <soap:header message="tns:NMPHeaderResponse" part="responseHeader" use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="Fault">
+        <soap:fault name="Fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="evaluacionCredito_ptt">
+    <wsdl:port name="evaluacionCredito_pttPort" binding="tns:evaluacionCredito_pttSOAP11Binding">
+      <soap:address location="http://servicios.montedepiedad.com.mx/NMP/Services/Osb/EvaluacionCredito"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

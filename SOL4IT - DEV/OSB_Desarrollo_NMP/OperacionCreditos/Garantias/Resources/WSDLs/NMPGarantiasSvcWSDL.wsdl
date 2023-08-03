@@ -1,0 +1,77 @@
+<wsdl:definitions name="NMPGarantiasSvc" targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Service/Garantias" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Service/Garantias" xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPGarantias" xmlns:nmpf="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:nmph="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+    <wsdl:types>
+        <xsd:schema>
+            <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPGarantias" schemaLocation="../Schemas/NMPGarantiasSvcXSD.xsd"/>
+        </xsd:schema>
+        <xsd:schema>
+            <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+        </xsd:schema>
+        <xsd:schema>
+            <xsd:import schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="crearGarantiaRequestMessage">
+        <wsdl:part name="crearGarantiaRequestPart" element="nmp:crearGarantiaRequest"/>
+    </wsdl:message>
+    <wsdl:message name="crearGarantiaResponseMessage">
+        <wsdl:part name="crearGarantiaResponsePart" element="nmp:crearGarantiaResponse"/>
+    </wsdl:message>
+    <wsdl:message name="garantiasFaultMessage">
+        <wsdl:part name="garantiasFaultPart" element="nmpf:messageError"/>
+    </wsdl:message>
+    <wsdl:portType name="garantias_port">
+        <wsdl:operation name="crearGarantia">
+            <wsdl:input message="tns:crearGarantiaRequestMessage"/>
+            <wsdl:output message="tns:crearGarantiaResponseMessage"/>
+            <wsdl:fault name="GarantiasFault" message="tns:garantiasFaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="consultarGarantia">
+            <wsdl:input message="tns:consultarGarantiaRequestMessage"/>
+            <wsdl:output message="tns:consultarGarantiaResponseMessage"/>
+            <wsdl:fault message="tns:garantiasFaultMessage" name="GarantiasFault"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="garantias_binding" type="tns:garantias_port">
+        <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="crearGarantia">
+            <soap12:operation style="document" soapAction="crearGarantia"/>
+            <wsdl:input>
+                <soap12:header message="tns:garantiasHeaderMessage" use="literal" part="garantiasHeaderPart"/>
+                <soap12:body use="literal" namespace="http://servicios.montedepiedad.com.mx/NMP/Service/Garantias"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal" namespace="http://servicios.montedepiedad.com.mx/NMP/Service/Garantias"/>
+            </wsdl:output>
+            <wsdl:fault name="GarantiasFault">
+                <soap12:fault name="GarantiasFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="consultarGarantia">
+            <soap12:operation soapAction="consultarGarantia" style="document"/>
+            <wsdl:input>
+                <soap12:header message="tns:garantiasHeaderMessage" part="garantiasHeaderPart" use="literal"/>
+                <soap12:body namespace="http://servicios.montedepiedad.com.mx/NMP/Service/Garantias" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body namespace="http://servicios.montedepiedad.com.mx/NMP/Service/Garantias" use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GarantiasFault">
+                <soap12:fault name="GarantiasFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:message name="garantiasHeaderMessage">
+        <wsdl:part name="garantiasHeaderPart" element="nmph:headerMessage"/>
+    </wsdl:message>
+    <wsdl:message name="consultarGarantiaRequestMessage">
+        <wsdl:part name="consultarGarantiaRequestPart" element="nmp:consultarGarantiaRequest"/>
+    </wsdl:message>
+    <wsdl:message name="consultarGarantiaResponseMessage">
+        <wsdl:part name="consultarGarantiaResponsePart" element="nmp:consultarGarantiaResponse"/>
+    </wsdl:message>
+    <wsdl:service name="garantias_svc_port">
+        <wsdl:port name="garantias_port" binding="tns:garantias_binding">
+            <soap12:address location="http://www.example.com"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

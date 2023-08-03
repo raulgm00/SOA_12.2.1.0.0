@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:wsdl ref="InteligenciaNegocio/RiesgoTransaccional/Resources/WSDLs/GestorTransacciones-concrete"/>
+            <con:binding>
+                <con:name>GestorTransacciones_ptt-binding</con:name>
+                <con:namespace>http://xmlns.oracle.com/pcbpel/adapter/db/QualitasGPABus/GestorTransacciones/GestorTransacciones</con:namespace>
+            </con:binding>
+        </con:binding>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:flow>
+            <con:branch-node type="operation" name="BranchNode1">
+                <con:branch-table>
+                    <con:branch name="merge">
+                        <con:operator>equals</con:operator>
+                        <con:value>merge</con:value>
+                        <con:flow>
+                            <con:route-node name="RouteMerge">
+                                <con:comment/>
+                                <con:actions>
+                                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.2.15a65fe2311.N7ff9</con2:id>
+                                        <con1:service ref="InteligenciaNegocio/RiesgoTransaccional/BusinessServices/NMPGestorTransaccionesDBBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                        <con1:operation>merge</con1:operation>
+                                        <con1:outboundTransform/>
+                                        <con1:responseTransform/>
+                                    </con1:route>
+                                </con:actions>
+                            </con:route-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="delete">
+                        <con:operator>equals</con:operator>
+                        <con:value>delete</con:value>
+                        <con:flow>
+                            <con:route-node name="RouteDelete">
+                                <con:comment/>
+                                <con:actions>
+                                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.d.15a6c42afd5.N7ff9</con2:id>
+                                        <con1:service ref="InteligenciaNegocio/RiesgoTransaccional/BusinessServices/NMPGestorTransaccionesDBBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                        <con1:operation>delete</con1:operation>
+                                        <con1:outboundTransform/>
+                                        <con1:responseTransform/>
+                                    </con1:route>
+                                </con:actions>
+                            </con:route-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="GestorTransaccionesSelect">
+                        <con:operator>equals</con:operator>
+                        <con:value>GestorTransaccionesSelect</con:value>
+                        <con:flow>
+                            <con:route-node name="RouteGestor">
+                                <con:comment/>
+                                <con:actions>
+                                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.3.15a65fefa26.N7ffd</con2:id>
+                                        <con1:service ref="InteligenciaNegocio/RiesgoTransaccional/BusinessServices/NMPGestorTransaccionesDBBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                        <con1:operation>GestorTransaccionesSelect</con1:operation>
+                                        <con1:outboundTransform/>
+                                        <con1:responseTransform/>
+                                    </con1:route>
+                                </con:actions>
+                            </con:route-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch/>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:CitaType="http://servicios.montedepiedad.com.mx/NMP/Schema/CitaType"
+            targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/CitaType"
+            elementFormDefault="qualified" xmlns:xdb="http://xmlns.oracle.com/xdb">
+  <xsd:complexType name="crearCitaRequestType">
+    <xsd:sequence>
+      <xsd:element name="Cita" type="CitaType:CitaCT"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="citaResponseType">
+    <xsd:sequence>
+      <xsd:element name="ConfirmacionEnvio" type="CitaType:ConfirmacionEnvioType" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="actualizarCitaRequestType">
+    <xsd:sequence>
+      <xsd:element name="Cita" type="CitaType:CitaCT"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="cancelarCitaRequestType">
+    <xsd:sequence>
+      <xsd:element name="clientId" type="xsd:string"/>
+      <xsd:element name="productId" type="xsd:string"/>
+      <xsd:element name="cancelOrders" type="CitaType:CancelOrderListType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="CancelOrderListType">
+    <xsd:sequence>
+      <xsd:element name="CancelOrder" type="CitaType:CancelOrderType" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="CancelOrderType">
+    <xsd:sequence>
+      <xsd:element name="orderId" type="xsd:string"/>
+      <xsd:element name="username" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="OrdenReqListType">
+    <xsd:sequence>
+      <xsd:element name="Orden" maxOccurs="unbounded" type="CitaType:OrdenReqType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="OrdenResListType">
+    <xsd:sequence>
+      <xsd:element name="Orden" maxOccurs="unbounded" type="CitaType:ConfirmacionEnvioType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="OrdenReqType">
+    <xsd:sequence>
+      <xsd:element name="orderId" type="xsd:string"/>
+      <xsd:element name="tipoOrden" type="xsd:string"/>
+      <xsd:element name="username" type="xsd:string"/>
+      <xsd:element name="Cliente" type="CitaType:ClienteCT"/>
+      <xsd:element name="Direccion" type="CitaType:DireccionCT" minOccurs="0" nillable="true"/>
+      <xsd:element name="Telefonos" type="CitaType:TelefonoListType" minOccurs="0" nillable="true"/>
+      <xsd:element name="Calificacion" minOccurs="0" type="CitaType:CalificacionCT" nillable="true"/>
+      <xsd:element name="fechaOperacion" type="xsd:date"/>
+      <xsd:element name="estatus" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="folio" minOccurs="0" type="xsd:string"/>
+      <xsd:element name="hora" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="mensajeBuro" type="xsd:string"/>
+      <xsd:element name="resultadoVisitaVtas" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="gestionVtas" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="Conyuge" minOccurs="0" type="CitaType:ConyugeCT" nillable="true"/>
+      <xsd:element name="Negocio" minOccurs="0" type="CitaType:NegocioCT" nillable="true"/>
+      <xsd:element name="Prestamo" minOccurs="0" type="CitaType:PrastamoCT" nillable="true"/>
+      <xsd:element name="Referencias" minOccurs="0" type="CitaType:ReferenciaListType" nillable="true"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="CitaCT">
+    <xsd:sequence>
+      <xsd:element name="clientId" type="xsd:string"/>
+      <xsd:element name="productId" type="xsd:string"/>
+      <xsd:element name="Ordenes" type="CitaType:OrdenReqListType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ConfirmacionEnvioType">
+    <xsd:sequence>
+      <xsd:element name="idEnvio" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ClienteCT">
+    <xsd:sequence>
+      <xsd:element name="idCliente" type="xsd:int"/>
+      <xsd:element name="primerNombre" type="xsd:string"/>
+      <xsd:element name="segundoNombre" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="apellidoPaterno" type="xsd:string"/>
+      <xsd:element name="apellidoMaterno" type="xsd:string"/>
+      <xsd:element name="genero" type="xsd:string" minOccurs="0"/>
+      <!--Fecha de nacimiento -->
+      <xsd:element name="fechaDeNacimiento" type="xsd:date"/>
+      <xsd:element name="rfc" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="escolaridad" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="nacionalidad" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="estadoCivil" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="DireccionCT">
+    <xsd:sequence>
+      <xsd:element name="nombreDelaCalle" type="xsd:string"/>
+      <xsd:element name="numeroExterior" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="numeroInterior" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="estado" type="xsd:string"/>
+      <xsd:element name="delegacionMunicipio" type="xsd:string"/>
+      <xsd:element name="colonia" type="xsd:string"/>
+      <xsd:element name="codigoPostal" type="xsd:string"/>
+      <xsd:element name="tipoDomicilio" type="xsd:string"/>
+      <xsd:element name="ciudadPoblacion" type="xsd:string"/>
+      <xsd:element name="latitud" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="longitud" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="TelefonoCT">
+    <xsd:sequence>
+      <xsd:element name="codigoPais" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="codigoArea" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="numeroTelefonico" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="extension" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="tipoTelefono" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="TelefonoListType">
+    <xsd:sequence>
+      <xsd:element name="Telefono" type="CitaType:TelefonoCT" maxOccurs="unbounded" minOccurs="0" nillable="true"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="CalificacionCT">
+    <xsd:sequence>
+      <xsd:element name="siva" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="probabilidadIncumplimiento" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="capacidadDePago" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="prestamoProm" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="prestamoPromValuacion" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="prestamosNMP" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="pagosNMP" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="numDesempeno" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ConyugeCT">
+    <xsd:sequence>
+      <xsd:element name="primerNombre" type="xsd:string"/>
+      <xsd:element name="segundoNombre" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="apellidoPaterno" type="xsd:string"/>
+      <xsd:element name="apellidoMaterno" type="xsd:string"/>
+      <xsd:element name="TelFijoConyuge" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="TelCelConyuge" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="NegocioCT">
+    <xsd:sequence>
+      <xsd:element name="Nombre" type="xsd:string"/>
+      <xsd:element name="Telefono" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="Calle" type="xsd:string"/>
+      <xsd:element name="NumExterior" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="NumInterior" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="Lote" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="Manzana" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="CP" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="Colonia" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="Delegacion" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="Estado" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="EntreCalle1" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="EntreCalle2" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="PrastamoCT">
+    <xsd:sequence>
+      <xsd:element name="Monto" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="Plazo" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="Periodicidad" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ReferenciaCT">
+    <xsd:sequence>
+      <xsd:element name="Parentesco" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="Nombre" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="Nombre2" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="APaterno" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="AMaterno" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="TelCasa" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="TelCel" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ReferenciaListType">
+    <xsd:sequence>
+      <xsd:element name="Referencia" type="CitaType:ReferenciaCT" maxOccurs="unbounded" minOccurs="0" nillable="true"/>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>

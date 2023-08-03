@@ -1,0 +1,41 @@
+<wsdl:definitions name="NmpDSRFPagoLineaDB" targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Services/TransaccionesPagoBitacora" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Services/TransaccionesPagoBitacora" xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:uap="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:top="http://servicios.montedepiedad.com.mx/NMP/Schema/bitacoraDBTransacciones" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <plt:partnerLinkType name="TransaccionesPagoBitacora_plt">
+    <plt:role name="TransaccionesPagoBitacora_role">
+      <plt:portType name="tns:TransaccionesConsultaBitacora_ptt"/>
+    </plt:role>
+  </plt:partnerLinkType>
+  <wsdl:types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">     
+      <import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos" schemaLocation="../Schemas/NMPUtileriaAdminPagosXSD.xsd"/>
+      <import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+      <import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+    </schema>
+  </wsdl:types>
+  <wsdl:message name="registrarTransaccionConsultaRequest">
+    <wsdl:part name="Req" element="uap:registrarTransaccionConsultaRequest"/>
+  </wsdl:message>
+  <wsdl:message name="registrarTransaccionConsultaResponse">
+    <wsdl:part name="Res" element="uap:registrarTransaccionConsultaResponse"/>
+  </wsdl:message>
+  <wsdl:message name="standardMessageFault">
+    <wsdl:part name="parameters" element="NMPsm:messageError"/>
+  </wsdl:message>  
+  <wsdl:portType name="TransaccionesConsultaBitacora_ptt">
+    <wsdl:operation name="registraTransaccionConsulta">
+      <wsdl:input message="tns:registrarTransaccionConsultaRequest"/>
+      <wsdl:output message="tns:registrarTransaccionConsultaResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="TransaccionesPagoBitacoraSOAP11Binding" type="tns:TransaccionesConsultaBitacora_ptt">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="registraTransaccionConsulta">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/DB/NmpDSRFPagoLineaDB/insert"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="Req"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="Res"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+</wsdl:definitions>

@@ -1,0 +1,1046 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="InversionSocial/ProcesosDonataria/Resources/WSDLs/NMPProcesoRegistroDonatariaSvcWSDL"/>
+            <con:binding>
+                <con:name>prDonataria_bind</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Service/Donataria/Registro/v1</con:namespace>
+            </con:binding>
+        </con:binding>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:pipeline type="request" name="request-af004ca.N5f0f4828.0.15e3f4b6fe0.N7fff">
+            <con:stage id="_StageId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7ffd" name="Stage1">
+                <con:context/>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af004ca.N5f0f4828.0.15e3f4b6fe0.N7ffe">
+            <con:stage id="_StageId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7ffc" name="Stage1">
+                <con:context>
+                    <con1:userNsDecl prefix="v11" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/v1" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="v1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="mock">
+                        <con2:id>_ActionId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7fc8</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>&lt;v1:RegistrarCuentaDonatariaResponse>
+         &lt;v11:idDonataria>15&lt;/v11:idDonataria>
+      &lt;/v1:RegistrarCuentaDonatariaResponse></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-af004ca.N5f0f4828.0.15e3f4b6fe0.N796d</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$mock</con2:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af004ca.N5f0f4828.0.15e3f4b6fe0.N7efc">
+            <con:stage id="_StageId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7efb" name="Stage1">
+                <con:context/>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af004ca.N5f0f4828.0.15e3f4b6fe0.N7efa">
+            <con:stage id="_StageId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7ef9" name="Stage1">
+                <con:context>
+                    <con1:userNsDecl prefix="com" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Comun" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="v12" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/CuentaUsuario/v1" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="v11" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/v1" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="v1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="mock">
+                        <con2:id>_ActionId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7ef8</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText><![CDATA[<v1:EnviarUrlActivacionCuentaResponse>
+         <com:direccionCorreo>correo@correo.com</com:direccionCorreo>
+         <v12:estatusCuenta>
+            <!--Optional:-->
+            <v12:idEstatusCuenta>1</v12:idEstatusCuenta>
+            <!--Optional:-->
+            <com:descripcion>ACTIVA</com:descripcion>
+         </v12:estatusCuenta>
+      </v1:EnviarUrlActivacionCuentaResponse>]]></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-af004ca.N5f0f4828.0.15e3f4b6fe0.N796a</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$mock</con2:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af004ca.N5f0f4828.0.15e3f4b6fe0.N7ec1">
+            <con:stage id="_StageId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7ec0" name="Stage1">
+                <con:context/>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af004ca.N5f0f4828.0.15e3f4b6fe0.N7ebf">
+            <con:stage id="_StageId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7ebe" name="Stage1">
+                <con:context>
+                    <con2:userNsDecl prefix="com" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Comun"/>
+                    <con2:userNsDecl prefix="v12" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/CuentaUsuario/v1"/>
+                    <con2:userNsDecl prefix="v11" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/v1"/>
+                    <con2:userNsDecl prefix="v1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="mock">
+                        <con2:id>_ActionId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7ebd</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText><![CDATA[<v1:ActivarCuentaResponse>
+         <com:direccionCorreo>correo@correo.com</com:direccionCorreo>
+         <v12:estatusCuenta>
+            <!--Optional:-->
+            <v12:idEstatusCuenta>1</v12:idEstatusCuenta>
+            <!--Optional:-->
+            <com:descripcion>ACTIVA</com:descripcion>
+         </v12:estatusCuenta>
+      </v1:ActivarCuentaResponse>]]></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7968</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$mock</con2:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af004ca.N5f0f4828.0.15e3f4b6fe0.N7e54">
+            <con:stage id="_StageId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7e53" name="Stage1">
+                <con:context/>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af004ca.N5f0f4828.0.15e3f4b6fe0.N7e52">
+            <con:stage id="_StageId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7e51" name="Stage1">
+                <con:context>
+                    <con2:userNsDecl prefix="com" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Comun"/>
+                    <con2:userNsDecl prefix="v12" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/InformacionGeneral/v1"/>
+                    <con2:userNsDecl prefix="v11" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/v1"/>
+                    <con2:userNsDecl prefix="v13" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/CuentaUsuario/v1"/>
+                    <con2:userNsDecl prefix="v1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="mock">
+                        <con2:id>_ActionId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7e50</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText><![CDATA[<v1:ObtenerDonatariaResponse>
+         <v1:donataria>
+            <v11:rfc>ADF457874</v11:rfc>
+            <v11:figuraJuridica>
+               <v11:id>1</v11:id>
+               <!--Optional:-->
+               <v11:descripcion>LEGAL</v11:descripcion>
+            </v11:figuraJuridica>
+            <v12:nombreDonataria>ANGELITOS</v12:nombreDonataria>
+         </v1:donataria>
+         <v1:cuentaUsuario>
+          <v13:alias>correo@correo.com</v13:alias>
+            <com:direccionCorreo>correo@correo.com</com:direccionCorreo>
+         </v1:cuentaUsuario>
+      </v1:ObtenerDonatariaResponse>]]></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7966</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$mock</con2:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af004ca.N5f0f4828.0.15e3f4b6fe0.N7de7">
+            <con:stage id="_StageId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7de6" name="Stage1">
+                <con:context/>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af004ca.N5f0f4828.0.15e3f4b6fe0.N7de5">
+            <con:stage id="_StageId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7de4" name="Stage1">
+                <con:context>
+                    <con2:userNsDecl prefix="com" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Comun"/>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                    <con2:userNsDecl prefix="v12" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/InformacionGeneral/v1"/>
+                    <con2:userNsDecl prefix="v11" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/v1"/>
+                    <con2:userNsDecl prefix="v13" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/CuentaUsuario/v1"/>
+                    <con2:userNsDecl prefix="v1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="mock">
+                        <con2:id>_ActionId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7de3</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText><![CDATA[<v1:GuardarInformacionGeneralResponse>
+         <nmp:codigo>0</nmp:codigo>
+         <nmp:descripcion>Correcto</nmp:descripcion>
+      </v1:GuardarInformacionGeneralResponse>]]></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7964</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$mock</con2:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af004ca.N5f0f4828.0.15e3f4b6fe0.N7d7a">
+            <con:stage id="_StageId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7d79" name="Stage1">
+                <con:context/>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af004ca.N5f0f4828.0.15e3f4b6fe0.N7d78">
+            <con:stage id="_StageId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7d77" name="Stage1">
+                <con:context>
+                    <con2:userNsDecl prefix="com" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Comun"/>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                    <con2:userNsDecl prefix="v12" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/InformacionGeneral/v1"/>
+                    <con2:userNsDecl prefix="v11" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/v1"/>
+                    <con2:userNsDecl prefix="v13" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/CuentaUsuario/v1"/>
+                    <con2:userNsDecl prefix="v1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="mock">
+                        <con2:id>_ActionId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7d76</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText><![CDATA[<v1:ConsultarInformacionGeneralResponse>
+         <v11:informacionGeneral>
+            <v12:nombreDonataria>ANGELITOS</v12:nombreDonataria>
+            <v12:cluni>14242</v12:cluni>
+            <v12:fechaConstitucion>2015-10-30</v12:fechaConstitucion>
+            <v12:fechaInicioOperacion>2015-10-30</v12:fechaInicioOperacion>
+            <v12:transformadaIAP>1</v12:transformadaIAP>
+            <v12:organismoRegulador>
+               <v12:id>1</v12:id>
+               <!--Optional:-->
+               <v12:descripcion>ORGANO</v12:descripcion>
+            </v12:organismoRegulador>
+            <!--Optional:-->
+            <v12:intervencionSocial>cid:1486755536186</v12:intervencionSocial>
+         </v11:informacionGeneral>
+      </v1:ConsultarInformacionGeneralResponse>]]></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7962</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$mock</con2:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af004ca.N5f0f4828.0.15e3f4b6fe0.N7d0d">
+            <con:stage id="_StageId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7d0c" name="Stage1">
+                <con:context/>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af004ca.N5f0f4828.0.15e3f4b6fe0.N7d0b">
+            <con:stage id="_StageId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7d0a" name="Stage1">
+                <con:context>
+                    <con2:userNsDecl prefix="com" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Comun"/>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                    <con2:userNsDecl prefix="v12" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/InformacionGeneral/v1"/>
+                    <con2:userNsDecl prefix="v11" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/v1"/>
+                    <con2:userNsDecl prefix="v13" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/CuentaUsuario/v1"/>
+                    <con2:userNsDecl prefix="v1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="mock">
+                        <con2:id>_ActionId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7d09</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText><![CDATA[<v1:GuardarDatosContactoResponse>
+         <nmp:codigo>0</nmp:codigo>
+         <nmp:descripcion>Correcto</nmp:descripcion>
+      </v1:GuardarDatosContactoResponse>]]></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7960</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$mock</con2:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af004ca.N5f0f4828.0.15e3f4b6fe0.N7c6f">
+            <con:stage id="_StageId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7c6e" name="Stage1">
+                <con:context/>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af004ca.N5f0f4828.0.15e3f4b6fe0.N7c6d">
+            <con:stage id="_StageId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7c6c" name="Stage1">
+                <con:context>
+                    <con2:userNsDecl prefix="com" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Comun"/>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                    <con2:userNsDecl prefix="v12" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/DatosContacto/v1"/>
+                    <con2:userNsDecl prefix="v11" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/v1"/>
+                    <con2:userNsDecl prefix="v1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="mock">
+                        <con2:id>_ActionId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7c6b</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText><![CDATA[<v1:ConsultarDatosContactoResponse>
+         <v11:datosContacto>
+            <v12:domicilios>
+               <com:mismoDomicilioCorrespondencia>true</com:mismoDomicilioCorrespondencia>
+               <!--1 or more repetitions:-->
+               <com:direccion>
+                  <!--Optional:-->
+                  <com:idDomicilio>1</com:idDomicilio>
+                  <!--Optional:-->
+                  <com:tipoDomicilio>1</com:tipoDomicilio>
+                  <!--Optional:-->
+                  <com:calle>SIEMPRE VIVA</com:calle>
+                  <!--Optional:-->
+                  <com:numeroExterior>742</com:numeroExterior>
+                  <!--Optional:-->
+                  <com:numeroInterior>b500</com:numeroInterior>
+                  <!--Optional:-->
+                  <com:codigoPostal>
+                     <com:descripcion>03321</com:descripcion>
+                     <!--1 or more repetitions:-->
+                     <com:clave origen="BLM">03321</com:clave>
+                  </com:codigoPostal>
+                  <!--Optional:-->
+                  <com:entreCalle1>SIEMPRE VIVA 1</com:entreCalle1>
+                  <!--Optional:-->
+                  <com:entreCalle2>SIEMPRE VIVA 2</com:entreCalle2>
+                  <!--Optional:-->
+                  <com:referencia>2121</com:referencia>
+                  <!--Optional:-->
+                  <com:colonia>
+                     <com:descripcion>REFORMA</com:descripcion>
+                     <!--1 or more repetitions:-->
+                     <com:clave origen="BLM">11</com:clave>
+                  </com:colonia>
+                  <!--Optional:-->
+                  <com:delegacionMunicipio>
+                     <com:descripcion>BENITO JUAREZ</com:descripcion>
+                     <!--1 or more repetitions:-->
+                     <com:clave origen="BLM">122</com:clave>
+                  </com:delegacionMunicipio>
+                  <!--Optional:-->
+                  <com:estado>
+                     <com:descripcion>MEXICO</com:descripcion>
+                     <!--1 or more repetitions:-->
+                     <com:clave origen="BLM">22</com:clave>
+                  </com:estado>
+                  <!--Optional:-->
+                  <com:ciudad>
+                     <com:descripcion>MEXICO</com:descripcion>
+                     <!--1 or more repetitions:-->
+                     <com:clave origen="BLM">899</com:clave>
+                  </com:ciudad>
+               </com:direccion>
+            </v12:domicilios>
+            <v12:telefono>12145</v12:telefono>
+            <!--Optional:-->
+            <v12:paginaWeb>www.angelitosCristal.com</v12:paginaWeb>
+            <com:correoElectronico>angelitos@correo.com</com:correoElectronico>
+            <com:correoElectronico>angelitosinfo@correo.com</com:correoElectronico>
+            <!--Optional:-->
+            <v12:facebook>facbook.com/angelitos</v12:facebook>
+            <!--Optional:-->
+            <v12:facebookAutorizado>SI</v12:facebookAutorizado>
+            <!--Optional:-->
+            <v12:twitter>@angelitos</v12:twitter>
+            <!--Optional:-->
+            <v12:twitterAjutorizado>SI</v12:twitterAjutorizado>
+         </v11:datosContacto>
+      </v1:ConsultarDatosContactoResponse>]]></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-af004ca.N5f0f4828.0.15e3f4b6fe0.N795e</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$mock</con2:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af004ca.N5f0f4828.0.15e3f4b6fe0.N7c02">
+            <con:stage id="_StageId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7c01" name="Stage1">
+                <con:context/>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af004ca.N5f0f4828.0.15e3f4b6fe0.N7c00">
+            <con:stage id="_StageId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7bff" name="Stage1">
+                <con:context>
+                    <con2:userNsDecl prefix="com" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Comun"/>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                    <con2:userNsDecl prefix="v12" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/InformacionGeneral/v1"/>
+                    <con2:userNsDecl prefix="v11" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/v1"/>
+                    <con2:userNsDecl prefix="v13" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/CuentaUsuario/v1"/>
+                    <con2:userNsDecl prefix="v1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="mock">
+                        <con2:id>_ActionId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7bfe</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText><![CDATA[<v1:GuardarPatronosConsejerosResponse>
+
+         <nmp:codigo>0</nmp:codigo>
+         <nmp:descripcion>Correcto</nmp:descripcion>
+  </v1:GuardarPatronosConsejerosResponse>]]></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-af004ca.N5f0f4828.0.15e3f4b6fe0.N795c</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$mock</con2:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af004ca.N5f0f4828.0.15e3f4b6fe0.N7b95">
+            <con:stage id="_StageId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7b94" name="Stage1">
+                <con:context/>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af004ca.N5f0f4828.0.15e3f4b6fe0.N7b93">
+            <con:stage id="_StageId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7b92" name="Stage1">
+                <con:context>
+                    <con2:userNsDecl prefix="com" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Comun"/>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                    <con2:userNsDecl prefix="v12" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/InformacionGeneral/v1"/>
+                    <con2:userNsDecl prefix="v11" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/v1"/>
+                    <con2:userNsDecl prefix="v14" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/Consejero/v1"/>
+                    <con2:userNsDecl prefix="v13" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/CuentaUsuario/v1"/>
+                    <con2:userNsDecl prefix="v1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="mock">
+                        <con2:id>_ActionId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7b91</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText><![CDATA[<v1:ConsultarPatronosConsejerosResponse>
+         <v11:patronosConsejeros>
+            <!--1 or more repetitions:-->
+            <v12:consejero>
+               <!--Optional:-->
+               <v12:idConsejero>97</v12:idConsejero>
+               <v12:nombreConsejero>Luis Perez</v12:nombreConsejero>
+               <v12:funcionConsejero>
+                  <v12:id>1</v12:id>
+                  <!--Optional:-->
+                  <v12:descripcion>Legal</v12:descripcion>
+               </v12:funcionConsejero>
+               <!--Optional:-->
+                <v12:correoElectronico>correo@correo.com</v12:correoElectronico>
+            </v12:consejero>
+            <v12:consejero>
+               <!--Optional:-->
+               <v12:idConsejero>17</v12:idConsejero>
+               <v12:nombreConsejero>Antonio Perez</v12:nombreConsejero>
+               <v12:funcionConsejero>
+                  <v12:id>2</v12:id>
+                  <!--Optional:-->
+                  <v12:descripcion>Finanzas</v12:descripcion>
+               </v12:funcionConsejero>
+               <!--Optional:-->
+                <v12:correoElectronico>correo@correo.com</v12:correoElectronico>
+            </v12:consejero>
+         </v11:patronosConsejeros>
+      </v1:ConsultarPatronosConsejerosResponse>]]></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7952</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$mock</con2:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af004ca.N5f0f4828.0.15e3f4b6fe0.N7b28">
+            <con:stage id="_StageId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7b27" name="Stage1">
+                <con:context/>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af004ca.N5f0f4828.0.15e3f4b6fe0.N7b26">
+            <con:stage id="_StageId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7b25" name="Stage1">
+                <con:context>
+                    <con2:userNsDecl prefix="com" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Comun"/>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                    <con2:userNsDecl prefix="v12" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/InformacionGeneral/v1"/>
+                    <con2:userNsDecl prefix="v11" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/v1"/>
+                    <con2:userNsDecl prefix="v13" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/CuentaUsuario/v1"/>
+                    <con2:userNsDecl prefix="v1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="mock">
+                        <con2:id>_ActionId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7b24</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText><![CDATA[<v1:GuardarActaConstitutivaResponse>
+
+
+         <nmp:codigo>0</nmp:codigo>
+         <nmp:descripcion>Correcto</nmp:descripcion>
+  </v1:GuardarActaConstitutivaResponse>]]></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7954</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$mock</con2:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af004ca.N5f0f4828.0.15e3f4b6fe0.N7abb">
+            <con:stage id="_StageId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7aba" name="Stage1">
+                <con:context/>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af004ca.N5f0f4828.0.15e3f4b6fe0.N7ab9">
+            <con:stage id="_StageId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7ab8" name="Stage1">
+                <con:context>
+                    <con2:userNsDecl prefix="com" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Comun"/>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                    <con2:userNsDecl prefix="v12" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/InformacionGeneral/v1"/>
+                    <con2:userNsDecl prefix="v11" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/v1"/>
+                    <con2:userNsDecl prefix="v14" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/ActaConstitutiva/v1"/>
+                    <con2:userNsDecl prefix="v13" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/CuentaUsuario/v1"/>
+                    <con2:userNsDecl prefix="v1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="mock">
+                        <con2:id>_ActionId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7ab7</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText><![CDATA[<v1:ConsultarActaConstitutivaResponse>
+         <v11:actaConstitutiva>
+            <!--Optional:-->
+            <v14:idActaConstitutiva>11</v14:idActaConstitutiva>
+            <v14:numeroEscritura>54545</v14:numeroEscritura>
+            <v14:fechaEscritura>2000-10-10</v14:fechaEscritura>
+            <v14:nombreNotario>Juan Allende</v14:nombreNotario>
+            <v14:numeroNotaria>4545</v14:numeroNotaria>
+            <v14:estado>
+               <com:descripcion>MEXICO</com:descripcion>
+               <!--1 or more repetitions:-->
+               <com:clave origen="BLM">5454</com:clave>
+            </v14:estado>
+            <!--Optional:-->
+            <v14:folioRPP>2421</v14:folioRPP>
+            <!--Optional:-->
+            <v14:fechaFolioRPP>4545</v14:fechaFolioRPP>
+         </v11:actaConstitutiva>
+      </v1:ConsultarActaConstitutivaResponse>]]></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7956</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$mock</con2:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af004ca.N5f0f4828.0.15e3f4b6fe0.N7a4e">
+            <con:stage id="_StageId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7a4d" name="Stage1">
+                <con:context/>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af004ca.N5f0f4828.0.15e3f4b6fe0.N7a4c">
+            <con:stage id="_StageId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7a4b" name="Stage1">
+                <con:context>
+                    <con2:userNsDecl prefix="com" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Comun"/>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                    <con2:userNsDecl prefix="v12" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/InformacionGeneral/v1"/>
+                    <con2:userNsDecl prefix="v11" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/v1"/>
+                    <con2:userNsDecl prefix="v13" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/CuentaUsuario/v1"/>
+                    <con2:userNsDecl prefix="v1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="mock">
+                        <con2:id>_ActionId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7a4a</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText><![CDATA[<v1:GuardarRepresentantesLegalesResponse>
+         <nmp:codigo>0</nmp:codigo>
+         <nmp:descripcion>Correcto</nmp:descripcion>
+  </v1:GuardarRepresentantesLegalesResponse>]]></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7958</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$mock</con2:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af004ca.N5f0f4828.0.15e3f4b6fe0.N79e1">
+            <con:stage id="_StageId-af004ca.N5f0f4828.0.15e3f4b6fe0.N79e0" name="Stage1">
+                <con:context/>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af004ca.N5f0f4828.0.15e3f4b6fe0.N79df">
+            <con:stage id="_StageId-af004ca.N5f0f4828.0.15e3f4b6fe0.N79de" name="Stage1">
+                <con:context>
+                    <con2:userNsDecl prefix="com" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Comun"/>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                    <con2:userNsDecl prefix="v12" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/InformacionGeneral/v1"/>
+                    <con2:userNsDecl prefix="v11" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/v1"/>
+                    <con2:userNsDecl prefix="v14" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/RepresentanteLegal/v1"/>
+                    <con2:userNsDecl prefix="v13" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/CuentaUsuario/v1"/>
+                    <con2:userNsDecl prefix="v1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="mock">
+                        <con2:id>_ActionId-af004ca.N5f0f4828.0.15e3f4b6fe0.N79dd</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText><![CDATA[<v1:ConsultarRepresentantesLegalesResponse>
+         <v11:representantesLegales>
+            <!--1 or more repetitions:-->
+            <v14:representanteLegal>
+               <!--Optional:-->
+               <v14:idRepresentanteLegal>45454</v14:idRepresentanteLegal>
+               <v14:nombre>Juan Perez</v14:nombre>
+               <v14:tipoPoder>
+                  <v14:id>1</v14:id>
+                  <!--Optional:-->
+                  <v14:descripcion>Total</v14:descripcion>
+               </v14:tipoPoder>
+               <v14:numeroEscritura>21212</v14:numeroEscritura>
+               <v14:fechaEscritura>2000-10-10</v14:fechaEscritura>
+               <v14:nombreNotario>Rodrigo Allende</v14:nombreNotario>
+               <v14:numeroNotaria>1212</v14:numeroNotaria>
+               <v14:estado>
+                  <com:descripcion>MEXICO</com:descripcion>
+                  <!--1 or more repetitions:-->
+                  <com:clave origen="BLM">12</com:clave>
+               </v14:estado>
+               <v14:folioRPP>212</v14:folioRPP>
+               <v14:fechaFolioRPP>2015-10-10</v14:fechaFolioRPP>
+               <v14:inicioVigencia>2000-10-10</v14:inicioVigencia>
+               <v14:finVigencia>2020-10-10</v14:finVigencia>
+            </v14:representanteLegal>
+         </v11:representantesLegales>
+      </v1:ConsultarRepresentantesLegalesResponse>]]></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-af004ca.N5f0f4828.0.15e3f4b6fe0.N794f</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$mock</con2:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af004ca.N5f0f4828.0.15e3f4b6fe0.N7974">
+            <con:stage id="_StageId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7973" name="Stage1">
+                <con:context/>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af004ca.N5f0f4828.0.15e3f4b6fe0.N7972">
+            <con:stage id="_StageId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7971" name="Stage1">
+                <con:context>
+                    <con2:userNsDecl prefix="com" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Comun"/>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                    <con2:userNsDecl prefix="v12" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/InformacionGeneral/v1"/>
+                    <con2:userNsDecl prefix="v11" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/v1"/>
+                    <con2:userNsDecl prefix="v14" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/Consejero/v1"/>
+                    <con2:userNsDecl prefix="v13" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/CuentaUsuario/v1"/>
+                    <con2:userNsDecl prefix="v16" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/RepresentanteLegal/v1"/>
+                    <con2:userNsDecl prefix="v1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Servicio/Proceso/Registro/Donataria/v1"/>
+                    <con2:userNsDecl prefix="v15" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/ActaConstitutiva/v1"/>
+                    <con2:userNsDecl prefix="v18" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Donataria/DatosContacto/v1"/>
+                    <con2:userNsDecl prefix="v17" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Documento/v1"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="mock">
+                        <con2:id>_ActionId-af004ca.N5f0f4828.0.15e3f4b6fe0.N7970</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText><![CDATA[<v1:ConsultarRegistroDonatariaResponse>
+         <v1:donataria>
+            <!--Optional:-->
+            <v11:idDonataria>15</v11:idDonataria>
+            <!--Optional:-->
+            <v11:rfc>ANG201457-B1</v11:rfc>
+            <!--Optional:-->
+            <v11:figuraJuridica>
+               <v11:id>1</v11:id>
+               <!--Optional:-->
+               <v11:descripcion>LEGAL</v11:descripcion>
+            </v11:figuraJuridica>
+            <!--Optional:-->
+            <v11:informacionGeneral>
+               <v12:nombreDonataria>ANGELITOS</v12:nombreDonataria>
+               <!--Optional:-->
+               <v12:cluni>4112</v12:cluni>
+               <v12:fechaConstitucion>2000-10-10</v12:fechaConstitucion>
+               <v12:fechaInicioOperacion>2001-10-10</v12:fechaInicioOperacion>
+               <!--Optional:-->
+               <v12:transformadaIAP>122</v12:transformadaIAP>
+               <v12:organismoRegulador>
+                  <v12:id>212</v12:id>
+                  <!--Optional:-->
+                  <v12:descripcion>ORGANO</v12:descripcion>
+               </v12:organismoRegulador>
+               <!--Optional:-->
+               <v12:intervencionSocial>cid:834917476029</v12:intervencionSocial>
+            </v11:informacionGeneral>
+            <!--Optional:-->
+            <v11:datosContacto>
+               <v13:domicilios>
+                  <com:mismoDomicilioCorrespondencia>true</com:mismoDomicilioCorrespondencia>
+                  <!--1 or more repetitions:-->
+                  <com:direccion>
+                  <!--Optional:-->
+                  <com:idDomicilio>1</com:idDomicilio>
+                  <!--Optional:-->
+                  <com:tipoDomicilio>1</com:tipoDomicilio>
+                  <!--Optional:-->
+                  <com:calle>SIEMPRE VIVA</com:calle>
+                  <!--Optional:-->
+                  <com:numeroExterior>742</com:numeroExterior>
+                  <!--Optional:-->
+                  <com:numeroInterior>b500</com:numeroInterior>
+                  <!--Optional:-->
+                  <com:codigoPostal>
+                     <com:descripcion>03321</com:descripcion>
+                     <!--1 or more repetitions:-->
+                     <com:clave origen="BLM">03321</com:clave>
+                  </com:codigoPostal>
+                  <!--Optional:-->
+                  <com:entreCalle1>SIEMPRE VIVA 1</com:entreCalle1>
+                  <!--Optional:-->
+                  <com:entreCalle2>SIEMPRE VIVA 2</com:entreCalle2>
+                  <!--Optional:-->
+                  <com:referencia>2121</com:referencia>
+                  <!--Optional:-->
+                  <com:colonia>
+                     <com:descripcion>REFORMA</com:descripcion>
+                     <!--1 or more repetitions:-->
+                     <com:clave origen="BLM">11</com:clave>
+                  </com:colonia>
+                  <!--Optional:-->
+                  <com:delegacionMunicipio>
+                     <com:descripcion>BENITO JUAREZ</com:descripcion>
+                     <!--1 or more repetitions:-->
+                     <com:clave origen="BLM">122</com:clave>
+                  </com:delegacionMunicipio>
+                  <!--Optional:-->
+                  <com:estado>
+                     <com:descripcion>MEXICO</com:descripcion>
+                     <!--1 or more repetitions:-->
+                     <com:clave origen="BLM">22</com:clave>
+                  </com:estado>
+                  <!--Optional:-->
+                  <com:ciudad>
+                     <com:descripcion>MEXICO</com:descripcion>
+                     <!--1 or more repetitions:-->
+                     <com:clave origen="BLM">899</com:clave>
+                  </com:ciudad>
+               </com:direccion>
+               </v13:domicilios>
+                 <v13:telefono>1212</v13:telefono>
+            <!--Optional:-->
+            <v13:paginaWeb>www.angelitosCristal.com</v13:paginaWeb>
+            <com:correoElectronico>angelitos@correo.com</com:correoElectronico>
+            <com:correoElectronico>angelitosinfo@correo.com</com:correoElectronico>
+            <!--Optional:-->
+            <v13:facebook>facbook.com/angelitos</v13:facebook>
+            <!--Optional:-->
+            <v13:facebookAutorizado>SI</v13:facebookAutorizado>
+            <!--Optional:-->
+            <v13:twitter>@angelitos</v13:twitter>
+            <!--Optional:-->
+            <v13:twitterAjutorizado>SI</v13:twitterAjutorizado>
+            </v11:datosContacto>
+            <!--Optional:-->
+            <v11:patronosConsejeros>
+               <!--1 or more repetitions:-->
+               <v14:consejero>
+                  <!--Optional:-->
+                  <v14:idConsejero>11221</v14:idConsejero>
+                  <v14:nombreConsejero>Juan Perez</v14:nombreConsejero>
+                  <v14:funcionConsejero>
+                     <v14:id>1</v14:id>
+                     <!--Optional:-->
+                     <v14:descripcion>LEGAL</v14:descripcion>
+                  </v14:funcionConsejero>
+                  <!--Optional:-->
+                <com:correoElectronico>angelitos@correo.com</com:correoElectronico>
+               </v14:consejero>
+            </v11:patronosConsejeros>
+            <!--Optional:-->
+            <v11:actaConstitutiva>
+            <!--Optional:-->
+            <v15:idActaConstitutiva>11</v15:idActaConstitutiva>
+            <v15:numeroEscritura>54545</v15:numeroEscritura>
+            <v15:fechaEscritura>2000-10-10</v15:fechaEscritura>
+            <v15:nombreNotario>Juan Allende</v15:nombreNotario>
+            <v15:numeroNotaria>4545</v15:numeroNotaria>
+            <v15:estado>
+               <com:descripcion>MEXICO</com:descripcion>
+               <!--1 or more repetitions:-->
+               <com:clave origen="BLM">5454</com:clave>
+            </v15:estado>
+            <!--Optional:-->
+            <v15:folioRPP>2421</v15:folioRPP>
+            <!--Optional:-->
+            <v15:fechaFolioRPP>4545</v15:fechaFolioRPP>
+         </v11:actaConstitutiva>
+            <!--Optional:-->
+            <v11:representantesLegales>
+               <!--1 or more repetitions:-->
+                 <v16:representanteLegal>
+               <!--Optional:-->
+               <v16:idRepresentanteLegal>45454</v16:idRepresentanteLegal>
+               <v16:nombre>Juan Perez</v16:nombre>
+               <v16:tipoPoder>
+                  <v16:id>1</v16:id>
+                  <!--Optional:-->
+                  <v16:descripcion>Total</v16:descripcion>
+               </v16:tipoPoder>
+               <v16:numeroEscritura>21212</v16:numeroEscritura>
+               <v16:fechaEscritura>2000-10-10</v16:fechaEscritura>
+               <v16:nombreNotario>Rodrigo Allende</v16:nombreNotario>
+               <v16:numeroNotaria>1212</v16:numeroNotaria>
+               <v16:estado>
+                  <com:descripcion>MEXICO</com:descripcion>
+                  <!--1 or more repetitions:-->
+                  <com:clave origen="BLM">12</com:clave>
+               </v16:estado>
+               <v16:folioRPP>212</v16:folioRPP>
+               <v16:fechaFolioRPP>2015-10-10</v16:fechaFolioRPP>
+               <v16:inicioVigencia>2000-10-10</v16:inicioVigencia>
+               <v16:finVigencia>2020-10-10</v16:finVigencia>
+            </v16:representanteLegal>
+            </v11:representantesLegales>
+            <!--Optional:-->
+            <v11:documentos>
+               <!--1 or more repetitions:-->
+               <v17:documento>
+                  <!--Optional:-->
+                  <v17:idDocumento>12121121585</v17:idDocumento>
+                  <v17:tipo>
+                     <v17:id>1</v17:id>
+                     <!--Optional:-->
+                     <v17:descripcion>ACTA CONSTITUTIVA</v17:descripcion>
+                  </v17:tipo>
+                  <v17:estado>
+                     <v17:id>1</v17:id>
+                     <!--Optional:-->
+                     <v17:descripcion>POR REVISAR</v17:descripcion>
+                  </v17:estado>
+                  <v17:nombre>actaConstitutiva.pdf</v17:nombre>
+                  <v17:usuarioModifica>hperez</v17:usuarioModifica>
+                  <v17:fase>
+                     <v17:id>1</v17:id>
+                     <!--Optional:-->
+                     <v17:descripcion>REGISTRO</v17:descripcion>
+                  </v17:fase>
+                  <v17:ruta>/angelitos/registro/actaConstitutiva.pdf</v17:ruta>
+               </v17:documento>
+            </v11:documentos>
+         </v1:donataria>
+      </v1:ConsultarRegistroDonatariaResponse>]]></con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-af004ca.N5f0f4828.0.15e3f4b6fe0.N795a</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$mock</con2:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:branch-node type="operation" id="_FlowId-af004ca.N5f0f4828.0.15e3f4b6fe0.N8000" name="BranchNodeRegistroDonataria">
+                <con:context/>
+                <con:branch-table>
+                    <con:branch name="registrarCuentaDonataria">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairRegistrarCuenta">
+                                <con:request>request-af004ca.N5f0f4828.0.15e3f4b6fe0.N7fff</con:request>
+                                <con:response>response-af004ca.N5f0f4828.0.15e3f4b6fe0.N7ffe</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="enviarUrlActivacionCuenta">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairUrlActivarCuenta">
+                                <con:request>request-af004ca.N5f0f4828.0.15e3f4b6fe0.N7efc</con:request>
+                                <con:response>response-af004ca.N5f0f4828.0.15e3f4b6fe0.N7efa</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="activarCuenta">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairActivarCuenta">
+                                <con:request>request-af004ca.N5f0f4828.0.15e3f4b6fe0.N7ec1</con:request>
+                                <con:response>response-af004ca.N5f0f4828.0.15e3f4b6fe0.N7ebf</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="obtenerDonataria">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairObtenerDonataria">
+                                <con:request>request-af004ca.N5f0f4828.0.15e3f4b6fe0.N7e54</con:request>
+                                <con:response>response-af004ca.N5f0f4828.0.15e3f4b6fe0.N7e52</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="guardarInformacionGeneral">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairGuardarInfoGeneral">
+                                <con:request>request-af004ca.N5f0f4828.0.15e3f4b6fe0.N7de7</con:request>
+                                <con:response>response-af004ca.N5f0f4828.0.15e3f4b6fe0.N7de5</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="consultarInformacionGeneral">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairConsultaInfoGeneral">
+                                <con:request>request-af004ca.N5f0f4828.0.15e3f4b6fe0.N7d7a</con:request>
+                                <con:response>response-af004ca.N5f0f4828.0.15e3f4b6fe0.N7d78</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="guardarDatosContacto">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairGuardarDatos">
+                                <con:request>request-af004ca.N5f0f4828.0.15e3f4b6fe0.N7d0d</con:request>
+                                <con:response>response-af004ca.N5f0f4828.0.15e3f4b6fe0.N7d0b</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="consultarDatosContacto">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairConsultaDatosContacto">
+                                <con:request>request-af004ca.N5f0f4828.0.15e3f4b6fe0.N7c6f</con:request>
+                                <con:response>response-af004ca.N5f0f4828.0.15e3f4b6fe0.N7c6d</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="guardarPatronosConsejeros">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairGuardarPatronos">
+                                <con:request>request-af004ca.N5f0f4828.0.15e3f4b6fe0.N7c02</con:request>
+                                <con:response>response-af004ca.N5f0f4828.0.15e3f4b6fe0.N7c00</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="consultarPatronosConsejeros">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairConsultarPatronos">
+                                <con:request>request-af004ca.N5f0f4828.0.15e3f4b6fe0.N7b95</con:request>
+                                <con:response>response-af004ca.N5f0f4828.0.15e3f4b6fe0.N7b93</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="guardarActaConstitutiva">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePaiGuardarActa">
+                                <con:request>request-af004ca.N5f0f4828.0.15e3f4b6fe0.N7b28</con:request>
+                                <con:response>response-af004ca.N5f0f4828.0.15e3f4b6fe0.N7b26</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="consultarActaConstitutiva">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePaiConsultarActa">
+                                <con:request>request-af004ca.N5f0f4828.0.15e3f4b6fe0.N7abb</con:request>
+                                <con:response>response-af004ca.N5f0f4828.0.15e3f4b6fe0.N7ab9</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="guardarRepresentantesLegales">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairGuardarRepresentante">
+                                <con:request>request-af004ca.N5f0f4828.0.15e3f4b6fe0.N7a4e</con:request>
+                                <con:response>response-af004ca.N5f0f4828.0.15e3f4b6fe0.N7a4c</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="consultarRepresentantesLegales">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairConsultaRepresentante">
+                                <con:request>request-af004ca.N5f0f4828.0.15e3f4b6fe0.N79e1</con:request>
+                                <con:response>response-af004ca.N5f0f4828.0.15e3f4b6fe0.N79df</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="consultarRegistroDonataria">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairConsultaDonataria">
+                                <con:request>request-af004ca.N5f0f4828.0.15e3f4b6fe0.N7974</con:request>
+                                <con:response>response-af004ca.N5f0f4828.0.15e3f4b6fe0.N7972</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

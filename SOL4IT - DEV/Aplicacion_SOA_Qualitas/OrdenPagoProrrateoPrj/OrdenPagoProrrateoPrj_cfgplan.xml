@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAConfigPlan xmlns:jca="http://platform.integration.oracle/blocks/adapter/fw/metadata"
+               xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
+               xmlns:orawsp="http://schemas.oracle.com/ws/2006/01/policy"
+               xmlns:edl="http://schemas.oracle.com/events/edl" xmlns="http://schemas.oracle.com/soa/configplan">
+  <composite name="OrdenPagoProrrateoPrj">
+    <!--Add search and replace rules for the import section of a composite
+	Example:
+	<searchReplace>
+		<search>http://my-dev-server</search>
+		<replace>http://my-test-server</replace>
+	<searchReplace>
+	<searchReplace>
+		<search>8888</search>
+		<replace>8889</replace>
+	<searchReplace>-->
+    <import>
+      <searchReplace>
+        <search>http://11.50.0.73</search>
+        <replace>http://11.50.0.73</replace>
+      </searchReplace>
+      <searchReplace>
+        <search>9010</search>
+        <replace>9010</replace>
+      </searchReplace>
+    </import>
+    <service name="ordenpagoprorrateo_client_ep">
+      <binding type="ws">
+        <attribute name="port">
+          <replace>http://xmlns.oracle.com/GestionOrdenPagoApp/OrdenPagoProrrateoPrj/OrdenPagoProrrateo#wsdl.endpoint(ordenpagoprorrateo_client_ep/OrdenPagoProrrateo_pt)</replace>
+        </attribute>
+      </binding>
+    </service>
+    <property name="compositeID">
+      <replace>bd0efa40-bccb-4d5e-805d-40831d9560b0</replace>
+    </property>
+    <property name="productVersion">
+      <replace>12.2.1.0.0.151013</replace>
+    </property>
+    <!--Add search and replace rules for the component properties
+	For components and service/reference bindings, you can add policy references.
+	Example:
+	<component name="*">
+		<wsp:PolicyReference orawsp:category="management" orawsp:status="enabled" URI="oracle/log_policy"/>
+	</component>-->
+    <component name="OrdenPagoProrrateo">
+      <property name="bpel.config.transaction">
+        <replace>required</replace>
+      </property>
+    </component>
+    <reference name="OrdenPago">
+      <!--Add search and replace rules for the binding properties-->
+      <binding type="ws">
+        <attribute name="port">
+          <replace>http://service.pagos.qualitas.com.mx/#wsdl.endpoint(PagosServiceService/PagosServicePort)</replace>
+        </attribute>
+        <attribute name="location">
+          <replace>http://11.50.0.73:9010/pagos-web/servicios/pagosService?wsdl</replace>
+        </attribute>
+        <property name="weblogic.wsee.wsat.transaction.flowOption">
+          <replace>WSDLDriven</replace>
+        </property>
+      </binding>
+    </reference>
+  </composite>
+  <!--To configure monitor.config: 
+	<property name="enabled"><replace>true</replace></property>
+	<property name="dataObjectsFolder"><searchReplace><search>mydev</search><replace>myproduction</replace></searchReplace></property>
+	
+	sample properties to configure for adapter: 
+	<jca:property name="QueueName"><replace>medmq1</replace></jca:property>
+	
+	To add search and replace rules for wsdls, xsd and jca files
+	Example:
+	<searchReplace>
+		<search>http://my-dev-server</search>
+		<replace>http://my-test-server</replace>
+	<searchReplace>
+	<searchReplace>
+		<search>8888</search>
+		<replace>8889</replace>
+	<searchReplace>
+	-->
+  <wsdlAndSchema name="Schemas/OrdenPagoProrrateo.xsd|WSDLs/OrdenPagoProrrateo.wsdl|WSDLs/PagosServiceWrapper.wsdl">
+    <searchReplace>
+      <search>http://11.50.0.73</search>
+      <replace>http://11.50.0.73</replace>
+    </searchReplace>
+    <searchReplace>
+      <search>9010</search>
+      <replace>9010</replace>
+    </searchReplace>
+  </wsdlAndSchema>
+</SOAConfigPlan>

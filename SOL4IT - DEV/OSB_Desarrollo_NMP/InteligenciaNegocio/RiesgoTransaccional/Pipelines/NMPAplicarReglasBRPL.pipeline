@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+    <con:coreEntry>
+        <con:description>Enruta al BS NMPAplicarReglaBRBS el cual contiene el conjunto de reglas que determina la apertura de un caso de riesgo transaccional. El conjunto de reglas definidas son las siguientes:
+ACD-MPMX = Acumulado Diario - Transacciones del día anterior
+ACS-MPMX = Acumulado Semanal - Transacciones de los últimos 7 días
+ACM-MPMX = Acumulado Mensual - Transacciones de los últimos 30 días
+ALB-MPMX = Alerta B	- Transacciones del día en curso
+DSUM-MPMX = Distintas sucursales por mes - Transacciones de los últimos 30 días
+DSUD-MPMX = Distintas sucursales por día - Transacciones del día en curso
+CNUE-MPMX = Cliente Nuevo - Transacciones de los últimos 61 días. Días transcurridos desde la fecha de registro del cliente hasta la fecha actual (díasRegistroCliente)
+PASENETO15 = Pase Neto 15 días - Transacciones de los últimos 15 días, de tipo empeño, refrendo, pase, venta billete.  
+PASENETO45 = Pase Neto 45 días - Transacciones de los últimos 45 días, de tipo empeño, refrendo, pase, venta billete.</con:description>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:wsdl ref="InteligenciaNegocio/RiesgoTransaccional/Resources/WSDLs/NMPAplicarReglaBRWSDL"/>
+            <con:binding>
+                <con:name>execute_pttBinding</con:name>
+                <con:namespace>http://xmlns.oracle.com/RiesgoTransaccionalBPMApp/BRMSRiesgoTransaccional/AplicarReglaMediator</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:logging enabled="false" level="debug"/>
+            <oper:monitoring enabled="true" level="service" aggregationInterval="5"/>
+            <oper:reporting>false</oper:reporting>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router errorHandler="_onErrorHandler-a1e030f.N31a57db3.26.151f00e8599.N8000">
+        <con:pipeline name="_onErrorHandler-a1e030f.N31a57db3.26.151f00e8599.N8000" type="error">
+            <con:stage name="stageFault">
+                <con:context>
+                    <con1:varNsDecl prefix="ries" namespace="http://servicios.montepiedad.com.mx/RiesgoTransaccional/Schema/RiesgoTransaccional" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:report xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N31a57db3.26.151f00e8599.N7fff</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con1:expr>
+                    </con1:report>
+                    <con1:report xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N4c30c2c3.73.1524780f7f3.N7ffd</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault</con:xqueryText>
+                        </con1:expr>
+                        <con1:labels>
+                            <con1:key>Reason:</con1:key>
+                            <con1:varName>fault</con1:varName>
+                            <con1:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./ctx:reason</con:xpathText>
+                            </con1:value>
+                        </con1:labels>
+                    </con1:report>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode1_request" type="request">
+            <con:stage name="stageValidacion">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="rt" namespace="http://servicios.montepiedad.com.mx/RiesgoTransaccional/Schema/commons/RT" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="rtt" namespace="http://servicios.montedepiedad.com.mx/RiesgoTransaccional/Schema/RTTransaccionesDbXSD" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:userNsDecl prefix="NMPsh" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="ries" namespace="http://servicios.montepiedad.com.mx/RiesgoTransaccional/Schema/RiesgoTransaccional" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="ries1" namespace="http://servicios.montepiedad.com.mx/NMP/Schema/RiesgoTransaccional" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:validate xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N12cc666b.20.15b881ea1c0.N8000</con2:id>
+                        <con2:disabled xmlns:con2="http://www.bea.com/wli/sb/stages/config">true</con2:disabled>
+                        <con1:schema ref="Common/XSD/NMPStandardHeader"/>
+                        <con1:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con1:schemaElement>
+                        <con1:varName>header</con1:varName>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./NMPsh:headerMessage</con:xpathText>
+                        </con1:location>
+                        <con1:resultVarName/>
+                    </con1:validate>
+                    <con1:validate xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N4c30c2c3.17.1521d1fc75d.N8000</con2:id>
+                        <con2:disabled xmlns:con2="http://www.bea.com/wli/sb/stages/config">true</con2:disabled>
+                        <con1:schema ref="InteligenciaNegocio/RiesgoTransaccional/Resources/Schemas/NMPRiesgoTransaccionalMsgXSD"/>
+                        <con1:schemaElement xmlns:ries="http://servicios.montepiedad.com.mx/RiesgoTransaccional/Schema/RiesgoTransaccional">ries:aplicaReglaRequest</con1:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./ries:aplicaReglaRequest</con:xpathText>
+                        </con1:location>
+                        <con1:resultVarName/>
+                    </con1:validate>
+                    <con:report xmlns:con="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N4c30c2c3.16.1521d152b21.N7ffe</con1:id>
+                        <con:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con:expr>
+                        <con:labels>
+                            <con:key>idCliente</con:key>
+                            <con:varName>body</con:varName>
+                            <con:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./ries:aplicaReglaRequest/ries:validaAlerta/rt:idCliente/rt:idCliente</con:xpathText>
+                            </con:value>
+                        </con:labels>
+                    </con:report>
+                </con:actions>
+            </con:stage>
+            <con:stage name="stage1">
+                <con:context>
+                    <con1:varNsDecl prefix="ries" namespace="http://servicios.montepiedad.com.mx/RiesgoTransaccional/Schema/RiesgoTransaccional" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="header" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N31a57db3.33.1520e0ea8c6.N7fff</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">&lt;soap:Header xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+&lt;/soap:Header></con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode1_response" type="response">
+            <con:stage name="stage1">
+                <con:context>
+                    <con1:varNsDecl prefix="ries" namespace="http://servicios.montepiedad.com.mx/RiesgoTransaccional/Schema/RiesgoTransaccional" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="ries1" namespace="http://servicios.montepiedad.com.mx/NMP/Schema/RiesgoTransaccional" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N31a57db3.2e.151f57763a6.N7ffe</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:count($body/ries1:aplicaReglaResponse) = 0</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N31a57db3.38.1520e38eeee.N7ffd</con2:id>
+                                    <con1:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<soapenv:Body xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+<tns:aplicaReglaResponse xmlns:tns="http://servicios.montepiedad.com.mx/RiesgoTransaccional/Schema/RiesgoTransaccional" xmlns:ns2="http://servicios.montepiedad.com.mx/RiesgoTransaccional/Schema/commons/RT">
+            <tns:alertasList>
+               <ns2:reglaId/>
+               <ns2:cantidadAlertas>0</ns2:cantidadAlertas>
+               <ns2:cantidadDuplicadas>0</ns2:cantidadDuplicadas>
+               <ns2:cantidadValidas>0</ns2:cantidadValidas>
+            </tns:alertasList>
+</tns:aplicaReglaResponse>
+</soapenv:Body>]]></con:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="PipelinePairNode1">
+                <con:request>PipelinePairNode1_request</con:request>
+                <con:response>PipelinePairNode1_response</con:response>
+            </con:pipeline-node>
+            <con:route-node name="RouteNode1">
+                <con:actions>
+                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N31a57db3.22.151eff4dc52.N8000</con2:id>
+                        <con1:service ref="InteligenciaNegocio/RiesgoTransaccional/BusinessServices/NMPAplicarReglaBRBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                        <con1:operation>execute</con1:operation>
+                        <con1:outboundTransform/>
+                        <con1:responseTransform/>
+                    </con1:route>
+                </con:actions>
+            </con:route-node>
+        </con:flow>
+    </con:router>
+    <aler:alertRules xsi:nil="true" xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+</con:pipelineEntry>

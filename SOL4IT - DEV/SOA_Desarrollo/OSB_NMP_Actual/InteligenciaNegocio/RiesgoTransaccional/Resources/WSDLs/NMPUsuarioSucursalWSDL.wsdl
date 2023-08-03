@@ -1,0 +1,42 @@
+<wsdl:definitions name="ConsultaCatalogo" targetNamespace="http://xmlns.oracle.com/RiesgoTransaccional/ConsultaCatalogo/ConsultaCatalogo" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:client="http://xmlns.oracle.com/RiesgoTransaccional/ConsultaCatalogo/ConsultaCatalogo" xmlns:ns1="http://servicios.montepiedad.com.mx/NMP/Schema/RiesgoTransaccional" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:documentation>
+        <abstractWSDL>http://dcpsoadev1n1.nmp.com.mx:17004/soa-infra/services/RT_BPM/ConsultaCatalogo!1.0/WSDLs/ConsultaCatalogo.wsdl</abstractWSDL>
+    </wsdl:documentation>
+  <plnk:partnerLinkType name="ConsultaCatalogo">
+    <plnk:role name="ConsultaCatalogoProvider" portType="client:ConsultaCatalogo"/>
+  </plnk:partnerLinkType>
+  <wsdl:types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://servicios.montepiedad.com.mx/NMP/Schema/RiesgoTransaccional" schemaLocation="../Schemas/NMPRiesgoTransaccionalMsgXSD.xsd"/>
+    </schema>
+  </wsdl:types>
+  <wsdl:message name="ConsultaCatalogoRequestMessage">
+    <wsdl:part name="payload" element="ns1:infoUsSucRequest"/>
+  </wsdl:message>
+  <wsdl:message name="ConsultaCatalogoResponseMessage">
+    <wsdl:part name="payload" element="ns1:infoUsSucResponse"/>
+  </wsdl:message>
+  <wsdl:portType name="ConsultaCatalogo">
+    <wsdl:operation name="consultaUsuario">
+      <wsdl:input message="client:ConsultaCatalogoRequestMessage"/>
+      <wsdl:output message="client:ConsultaCatalogoResponseMessage"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ConsultaCatalogoBinding" type="client:ConsultaCatalogo">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="consultaUsuario">
+      <soap:operation style="document" soapAction="consultaUsuario"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="consultacatalogo_client_ep">
+    <wsdl:port name="ConsultaCatalogo_pt" binding="client:ConsultaCatalogoBinding">
+      <soap:address location="http://dcpsoadev1n1.nmp.com.mx:17004/soa-infra/services/RT_BPM/ConsultaCatalogo/consultacatalogo_client_ep"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,626 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+    <con:coreEntry>
+        <con:description>Auto sin Resguardo</con:description>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="PoC/AutosSinResguardo/CotizacionContrato/Resources/WSDL/GetCotizacionContratoWSDL"/>
+            <con:binding>
+                <con:name>cotizacionContratoBinding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Services/AutoSinResguardo</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:logging enabled="false" level="debug"/>
+            <oper:monitoring enabled="true" level="service" aggregationInterval="10"/>
+            <oper:reporting>false</oper:reporting>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router errorHandler="error-af10c87.N77030f0d.0.155feac2216.N7d0e">
+        <con:pipeline type="error" name="error-af10c87.N77030f0d.0.155feac2216.N7d0e">
+            <con:stage id="_StageId-af10c87.N77030f0d.0.155feac2216.N7d0d" name="Stage1">
+                <con:context>
+                    <con1:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-af10c87.N77030f0d.0.155feac2216.N7c3b</con1:id>
+                        <con2:case id="_BranchId-af10c87.N77030f0d.0.155feac2216.N7c3a">
+                            <con2:condition>
+                                <con1:xqueryText>not(fn:empty($fault/ctx:details/con1:ReceivedFaultDetail))</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace varName="body" contents-only="true">
+                                    <con1:id>_ActionId-af10c87.N77030f0d.0.155feac2216.N7c39</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con1:xsltTransform>
+                                            <con1:resource ref="PoC/AutosSinResguardo/CotizacionContrato/Resources/XSLT/TransformCotizacionContratoFault"/>
+                                            <con1:input>$fault</con1:input>
+                                            <con1:param name="detailFault">
+                                                <con1:path>$fault//con1:faultstring/text()</con1:path>
+                                            </con1:param>
+                                            <con1:param name="codigoFault">
+                                                <con1:path>$fault//con1:faultcode/text()</con1:path>
+                                            </con1:param>
+                                        </con1:xsltTransform>
+                                    </con2:expr>
+                                </con2:replace>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default>
+                            <con2:replace varName="body" contents-only="true">
+                                <con1:id>_ActionId-af10c87.N77030f0d.0.155feac2216.N7c38</con1:id>
+                                <con2:location>
+                                    <con1:xpathText>.</con1:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con1:xsltTransform>
+                                        <con1:resource ref="PoC/AutosSinResguardo/CotizacionContrato/Resources/XSLT/TransformCotizacionContratoFault"/>
+                                        <con1:input>$fault</con1:input>
+                                        <con1:param name="detailFault">
+                                            <con1:path>$fault/ctx:reason/text()</con1:path>
+                                        </con1:param>
+                                        <con1:param name="codigoFault">
+                                            <con1:path>$fault/ctx:errorCode/text()</con1:path>
+                                        </con1:param>
+                                    </con1:xsltTransform>
+                                </con2:expr>
+                            </con2:replace>
+                        </con2:default>
+                    </con2:ifThenElse>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-af10c87.N77030f0d.0.155feac2216.N7c35</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af10c87.3624989c.0.155e51ed131.N7ed2">
+            <con:stage id="_StageId-af10c87.3624989c.0.155e51ed131.N7ed0" name="StageGetContratoRes">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:userNsDecl prefix="con" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Contrato"/>
+                </con:context>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-af10c87.166e7ffd.0.155e9cb3e8c.N7f93</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="PoC/AutosSinResguardo/CotizacionContrato/Resources/XSLT/TransformSapContratoRes"/>
+                                <con1:input>$body_res</con1:input>
+                                <con1:param name="folio">
+                                    <con1:path>$body_tmp//con:Folio/text()</con1:path>
+                                </con1:param>
+                                <con1:param name="proceso">
+                                    <con1:path>$body_tmp//con:Proceso/text()</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-af10c87.N1cfcaa68.0.1560ead2bcd.N7dbb">
+            <con:stage id="_StageId-af10c87.N1cfcaa68.0.1560ead2bcd.N7dba" name="ErrorBPMCall">
+                <con:context>
+                    <con1:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                </con:context>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-af10c87.1382d122.0.1561458f4c1.N7ff8</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xqueryText><![CDATA[<con:ContratoResponse xmlns:con="http://servicios.montedepiedad.com.mx/NMP/Schema/Contrato">
+		 <con:ContratoError>
+            <con:codigo>{$fault/ctx:errorCode/text()}</con:codigo>
+            <con:error>{$fault/ctx:details/con1:ReceivedFaultDetail/con1:faultstring/text()}</con:error>
+         </con:ContratoError>
+         </con:ContratoResponse>]]></con1:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply isError="false">
+                        <con1:id>_ActionId-a1e030f.N7d8edf5d.18.1566c268ec6.N8000</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="_onErrorHandler-a1e030f.N7d8edf5d.1f.156751eac31.N8000" type="error">
+            <con:stage name="ErrorUpdateStatus">
+                <con:context>
+                    <con1:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                    <con1:varNsDecl prefix="con" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Contrato"/>
+                    <con1:varNsDecl prefix="cot" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Cotizacion"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N7d8edf5d.20.156751f03da.N8000</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<con:ContratoResponse xmlns:con="http://servicios.montedepiedad.com.mx/NMP/Schema/Contrato">
+		 <con:ContratoError>
+            <con:codigo>{$fault/ctx:errorCode/text()}</con:codigo>
+            <con:error>{$fault/ctx:details/con1:ReceivedFaultDetail/con1:faultstring/text()}</con:error>
+         </con:ContratoError>
+         </con:ContratoResponse>]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:reply isError="false">
+                        <con1:id>_ActionId-a1e030f.N7d8edf5d.21.156751f2be5.N8000</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af10c87.3624989c.0.155e51ed131.N7ed3">
+            <con:stage id="_StageId-af10c87.3624989c.0.155e51ed131.N7ed1" name="StageGetContratoReq" errorHandler="error-af10c87.166e7ffd.0.155e9cb3e8c.N7ddb">
+                <con:context>
+                    <con1:varNsDecl prefix="con" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Contrato"/>
+                    <con1:varNsDecl prefix="cot" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Cotizacion"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="body_tmp">
+                        <con1:id>_ActionId-af10c87.c41c959.0.155e61a801b.N7f26</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$body</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:assign varName="body_req">
+                        <con1:id>_ActionId-af10c87.3624989c.0.155e51ed131.N7c63</con1:id>
+                        <con2:expr>
+                            <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="PoC/AutosSinResguardo/CotizacionContrato/Resources/XSLT/TransformSapContratoReq"/>
+                                <con:input>$body</con:input>
+                            </con:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con3:report xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con1:id>_ActionId-a1e030f.N7d8edf5d.d.15651777099.N7fff</con1:id>
+                        <con3:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body_req</con:xqueryText>
+                        </con3:expr>
+                    </con3:report>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-af10c87.166e7ffd.0.155e9cb3e8c.N7e44</con1:id>
+                        <con2:service ref="PoC/AutosSinResguardo/CotizacionContrato/Business Services/SAPCreaContratoBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>ZlmRfcCreaContrato</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">body_req</con2:body>
+                            <con2:header/>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">body_res</con2:body>
+                            <con2:header/>
+                        </con2:response>
+                        <con2:requestTransform/>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-af10c87.N1cfcaa68.0.1560ead2bcd.N7dc2" name="StageBPM" errorHandler="error-af10c87.N1cfcaa68.0.1560ead2bcd.N7dbb">
+                <con:context>
+                    <con1:userNsDecl prefix="con" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Contrato"/>
+                    <con1:varNsDecl prefix="cot" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Cotizacion"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="cliente">
+                        <con1:id>_ActionId-af10c87.N1cfcaa68.0.1560ead2bcd.N7d4d</con1:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/con:ContratoRequest/con:DatosCliente/con:IdCliente/text()</con:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:assign varName="Folio">
+                        <con1:id>_ActionId-af10c87.1382d122.0.1561458f4c1.N7ffe</con1:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/con:ContratoRequest/con:DatosCliente/con:Folio/text()</con:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:assign varName="Proceso">
+                        <con1:id>_ActionId-af10c87.1382d122.0.1561458f4c1.N7ffb</con1:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/con:ContratoRequest/con:DatosCliente/con:Proceso/text()</con:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:assign varName="Credencial">
+                        <con1:id>_ActionId-a1e030f.N7d8edf5d.10.15651833bb1.N8000</con1:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/con:ContratoRequest/con:DatosCliente/con:Credencial/text()</con:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:assign varName="body_reqBpm">
+                        <con1:id>_ActionId-af10c87.N1cfcaa68.0.1560ead2bcd.N7dbf</con1:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<not:notificaFinEventoRequest xmlns:not="http://servicios.montedepiedad.com.mx/NMP/Schema/NotificaEventosProceso">
+         <not:identificadores proceso="{$Proceso}">
+            <not:identificador tipo="IdCliente">
+                <not:id>{$Credencial}</not:id>
+            </not:identificador>
+	       <not:identificador tipo="Folio">
+               <not:id>{$Folio}</not:id>
+            </not:identificador>
+         </not:identificadores>
+         <not:parametros>
+         </not:parametros>
+        </not:notificaFinEventoRequest>]]></con:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-af10c87.N1cfcaa68.0.1560ead2bcd.N7dbc</con1:id>
+                        <con2:service ref="PoC/AutosSinResguardo/CorrelacionSrv/Proxy Services/CorrelacionPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>notificaFinEvento</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">body_reqBpm</con2:body>
+                            <con2:header/>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">body_respBpm</con2:body>
+                            <con2:header/>
+                        </con2:response>
+                        <con2:requestTransform/>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                    <con3:report xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con1:id>_ActionId-a1e030f.N7d8edf5d.e.156517afb94.N8000</con1:id>
+                        <con3:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body_reqBpm</con:xqueryText>
+                        </con3:expr>
+                    </con3:report>
+                    <con3:report xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con1:id>_ActionId-a1e030f.N7d8edf5d.f.156517b6061.N8000</con1:id>
+                        <con3:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body_respBpm</con:xqueryText>
+                        </con3:expr>
+                    </con3:report>
+                </con:actions>
+            </con:stage>
+            <con:stage name="stageUpdateStatus" errorHandler="_onErrorHandler-a1e030f.N7d8edf5d.1f.156751eac31.N8000">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="con" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Contrato"/>
+                    <con1:varNsDecl prefix="cot" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Cotizacion"/>
+                </con:context>
+                <con:actions>
+                    <con:wsCallout xmlns:con="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con1:id>_ActionId-a1e030f.N7d8edf5d.1c.15675138bbd.N8000</con1:id>
+                        <con:service ref="PoC/AutosSinResguardo/NmpDB/Business Service/NmpClientesAutoDB2" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con:operation>updateClienteAutoInfo</con:operation>
+                        <con:request>
+                            <con:body wrapped="false">bodyUpdate_req</con:body>
+                            <con:header/>
+                        </con:request>
+                        <con:response>
+                            <con:body wrapped="false">bodyUpdate_res</con:body>
+                            <con:header/>
+                        </con:response>
+                        <con:requestTransform>
+                            <con:assign varName="bodyUpdate_req">
+                                <con1:id>_ActionId-a1e030f.N7d8edf5d.1e.15675177d25.N8000</con1:id>
+                                <con:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<cli:updateClientesInfoCollection xmlns:cli="http://servicios.montedepiedad.com.mx/NMP/Schema/ClientesAutoInfoDB">
+    <cli:NmpClientesInfo>
+        <cli:numCredencial>{$body/con:ContratoRequest/con:DatosCliente/con:Credencial/text()}</cli:numCredencial>
+        <cli:folioTramite>{$body/con:ContratoRequest/con:DatosCliente/con:Folio/text()}</cli:folioTramite>
+        <cli:estado>Finalizado</cli:estado>
+    </cli:NmpClientesInfo>
+</cli:updateClientesInfoCollection>]]></con:xqueryText>
+                                </con:expr>
+                            </con:assign>
+                        </con:requestTransform>
+                        <con:responseTransform/>
+                    </con:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af10c87.3624989c.0.155e51ed131.N7ed6">
+            <con:stage id="_StageId-af10c87.3624989c.0.155e51ed131.N7ed4" name="StageGetCotizacionRes">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-af10c87.166e7ffd.0.155e9cb3e8c.N7f8c</con1:id>
+                        <con2:case id="_BranchId-af10c87.166e7ffd.0.155e9cb3e8c.N7f8b">
+                            <con2:condition>
+                                <con1:xqueryText>not(fn:empty($faultVar))</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:assign varName="errREs">
+                                    <con1:id>_ActionId-af10c87.166e7ffd.0.155e9cb3e8c.N7f88</con1:id>
+                                    <con2:expr>
+                                        <con1:xqueryText>"fault"</con1:xqueryText>
+                                    </con2:expr>
+                                </con2:assign>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:case id="_BranchId-af10c87.166e7ffd.0.155e9cb3e8c.N7f24">
+                            <con2:condition>
+                                <con1:xqueryText>not(fn:empty($body/soap-env:Fault))</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:assign varName="errREs">
+                                    <con1:id>_ActionId-af10c87.166e7ffd.0.155e9cb3e8c.N7f21</con1:id>
+                                    <con2:expr>
+                                        <con1:xqueryText>"soap-env:Fault"</con1:xqueryText>
+                                    </con2:expr>
+                                </con2:assign>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default>
+                            <con2:assign varName="errREs">
+                                <con1:id>_ActionId-af10c87.166e7ffd.0.155e9cb3e8c.N7e41</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText>"OK"</con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                        </con2:default>
+                    </con2:ifThenElse>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-af10c87.c41c959.0.155e61a801b.N7ff1</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="PoC/AutosSinResguardo/CotizacionContrato/Resources/XSLT/TransformSapCotizacionRes"/>
+                                <con1:input>$body_res</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-af10c87.166e7ffd.0.155e9cb3e8c.N7dd0">
+            <con:stage id="_StageId-af10c87.166e7ffd.0.155e9cb3e8c.N7dcf" name="Stage1">
+                <con:context>
+                    <con1:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-7f000001.6232776.0.155f015a1b1.N7f25</con1:id>
+                        <con2:case id="_BranchId-7f000001.6232776.0.155f015a1b1.N7f24">
+                            <con2:condition>
+                                <con1:xqueryText>not(fn:empty($fault/ctx:details/con1:ReceivedFaultDetail))</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace varName="body" contents-only="true">
+                                    <con1:id>_ActionId-af10c87.166e7ffd.0.155e9cb3e8c.N7dc9</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con1:xsltTransform>
+                                            <con1:resource ref="PoC/AutosSinResguardo/CotizacionContrato/Resources/XSLT/TransformCotizacionContratoFault"/>
+                                            <con1:input>$fault</con1:input>
+                                            <con1:param name="detailFault">
+                                                <con1:path>$fault//con1:faultstring/text()</con1:path>
+                                            </con1:param>
+                                            <con1:param name="codigoFault">
+                                                <con1:path>$fault//con1:faultcode/text()</con1:path>
+                                            </con1:param>
+                                        </con1:xsltTransform>
+                                    </con2:expr>
+                                </con2:replace>
+                                <con2:replace varName="body" contents-only="true">
+                                    <con1:id>_ActionId-af10c87.N705befbc.0.155ffbdcbbd.N7ffb</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con1:xqueryText><![CDATA[<cot:CotizacionResponse xmlns:cot="http://servicios.montedepiedad.com.mx/NMP/Schema/Cotizacion">
+		 <cot:CotizacionError>
+            <cot:codigo>{$fault/ctx:errorCode/text()}</cot:codigo>
+            <cot:error>{$fault/ctx:details/con1:ReceivedFaultDetail/con1:faultstring/text()}</cot:error>
+         </cot:CotizacionError>
+         </cot:CotizacionResponse>]]></con1:xqueryText>
+                                    </con2:expr>
+                                </con2:replace>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default>
+                            <con2:replace varName="body" contents-only="true">
+                                <con1:id>_ActionId-N3f57feba.N7788bb2e.0.155fb1447b4.N7ffa</con1:id>
+                                <con2:location>
+                                    <con1:xpathText>.</con1:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con1:xsltTransform>
+                                        <con1:resource ref="PoC/AutosSinResguardo/CotizacionContrato/Resources/XSLT/TransformCotizacionContratoFault"/>
+                                        <con1:input>$fault</con1:input>
+                                        <con1:param name="detailFault">
+                                            <con1:path>$fault/ctx:reason/text()</con1:path>
+                                        </con1:param>
+                                        <con1:param name="codigoFault">
+                                            <con1:path>$fault/ctx:errorCode/text()</con1:path>
+                                        </con1:param>
+                                    </con1:xsltTransform>
+                                </con2:expr>
+                            </con2:replace>
+                        </con2:default>
+                    </con2:ifThenElse>
+                    <con1:reply isError="false">
+                        <con1:id>_ActionId-af10c87.166e7ffd.0.155e9cb3e8c.N7dcc</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-af10c87.166e7ffd.0.155e9cb3e8c.N7ddb">
+            <con:stage id="_StageId-af10c87.166e7ffd.0.155e9cb3e8c.N7dda" name="Stage11">
+                <con:context>
+                    <con1:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                    <con1:userNsDecl prefix="con" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Contrato"/>
+                    <con1:userNsDecl prefix="ns" namespace="http://www.sap.com/webas/710/soap/runtime/abap/fault/system/"/>
+                    <con1:userNsDecl prefix="n0" namespace="urn:sap-com:document:sap:soap:functions:mc-style"/>
+                    <con1:varNsDecl prefix="cot" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Cotizacion"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-a1e030f.N5cd7677c.1.156b852e159.N7ffc</con1:id>
+                        <con2:case id="_BranchId-af10c87.N77030f0d.0.155feac2216.N7d12">
+                            <con2:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">not(fn:empty($fault//n0:ZlmRfcCreaContrato.Exception))</con:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace varName="body" contents-only="true">
+                                    <con1:id>_ActionId-a1e030f.N5cd7677c.1.156b852e159.N7ffa</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<con:ContratoResponse xmlns:con="http://servicios.montedepiedad.com.mx/NMP/Schema/Contrato">
+		 <con:ContratoError>
+            <con:codigo>1</con:codigo>
+            <con:error>ERROR en CML: {$fault//Text/text()}</con:error>
+         </con:ContratoError>
+         </con:ContratoResponse>]]></con:xqueryText>
+                                    </con2:expr>
+                                </con2:replace>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:case>
+                            <con2:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">not(fn:empty($fault//ns:SystemFault))</con:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace varName="body" contents-only="true">
+                                    <con1:id>_ActionId-a1e030f.N5cd7677c.1.156b852e159.N7ff9</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<con:ContratoResponse xmlns:con="http://servicios.montedepiedad.com.mx/NMP/Schema/Contrato">
+		 <con:ContratoError>
+            <con:codigo>1</con:codigo>
+            <con:error>ERROR en CML: {$fault//con1:faultstring/text()}</con:error>
+         </con:ContratoError>
+         </con:ContratoResponse>]]></con:xqueryText>
+                                    </con2:expr>
+                                </con2:replace>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default>
+                            <con2:replace varName="body" contents-only="true">
+                                <con1:id>_ActionId-a1e030f.N5cd7677c.1.156b852e159.N7ff8</con1:id>
+                                <con2:location>
+                                    <con1:xpathText>.</con1:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                        <con:resource ref="PoC/AutosSinResguardo/CotizacionContrato/Resources/XSLT/TransformCotizacionContratoFault"/>
+                                        <con:input>$fault</con:input>
+                                        <con:param name="detailFault">
+                                            <con:path>$fault/ctx:reason/text()</con:path>
+                                        </con:param>
+                                        <con:param name="codigoFault">
+                                            <con:path>$fault/ctx:errorCode/text()</con:path>
+                                        </con:param>
+                                    </con:xsltTransform>
+                                </con2:expr>
+                            </con2:replace>
+                            <con2:replace varName="body" contents-only="true">
+                                <con1:id>_ActionId-a1e030f.N5cd7677c.1.156b852e159.N7ff7</con1:id>
+                                <con2:location>
+                                    <con1:xpathText>.</con1:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<con:ContratoResponse xmlns:con="http://servicios.montedepiedad.com.mx/NMP/Schema/Contrato">
+		 <con:ContratoError>
+            <con:codigo>{$fault/ctx:errorCode/text()}</con:codigo>
+            <con:error>{$fault/ctx:reason/text()}</con:error>
+         </con:ContratoError>
+         </con:ContratoResponse>]]></con:xqueryText>
+                                </con2:expr>
+                            </con2:replace>
+                        </con2:default>
+                    </con2:ifThenElse>
+                    <con1:reply isError="false">
+                        <con1:id>_ActionId-a1e030f.N5cd7677c.1.156b852e159.N7ff6</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af10c87.3624989c.0.155e51ed131.N7ed7">
+            <con:stage id="_StageId-af10c87.3624989c.0.155e51ed131.N7ed5" name="stageGetCotizacionReq" errorHandler="error-af10c87.166e7ffd.0.155e9cb3e8c.N7dd0">
+                <con:context>
+                    <con1:userNsDecl prefix="cot" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Cotizacion"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="operacion">
+                        <con1:id>_ActionId-af10c87.3624989c.0.155e51ed131.N7c37</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$inbound/ctx:service/ctx:operation</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:assign varName="body_tmp">
+                        <con1:id>_ActionId-af10c87.3624989c.0.155e51ed131.N7c34</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$body</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:assign varName="body_req">
+                        <con1:id>_ActionId-af10c87.3624989c.0.155e51ed131.N7e96</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="PoC/AutosSinResguardo/CotizacionContrato/Resources/XSLT/TransformSapCotizacionReq"/>
+                                <con1:input>$body</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-af10c87.166e7ffd.0.155e9cb3e8c.N7ffe</con1:id>
+                        <con2:service ref="PoC/AutosSinResguardo/CotizacionContrato/Business Services/SAPCotizacionBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>ZlmRfcCotizacion</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">body_req</con2:body>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">body_res</con2:body>
+                        </con2:response>
+                        <con2:requestTransform/>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:branch-node type="operation" id="_FlowId-af10c87.3624989c.0.155e51ed131.N7fce" name="BranchNode1">
+                <con:context/>
+                <con:branch-table>
+                    <con:branch name="getCotizacion">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="getCotizacionNode">
+                                <con:request>request-af10c87.3624989c.0.155e51ed131.N7ed7</con:request>
+                                <con:response>response-af10c87.3624989c.0.155e51ed131.N7ed6</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="getContrato">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="getContratoNode">
+                                <con:request>request-af10c87.3624989c.0.155e51ed131.N7ed3</con:request>
+                                <con:response>response-af10c87.3624989c.0.155e51ed131.N7ed2</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+        <con:partner-links/>
+    </con:router>
+    <aler:alertRules xsi:nil="true" xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert"/>
+</con:pipelineEntry>

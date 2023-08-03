@@ -1,0 +1,55 @@
+<wsdl:definitions name="TransferenciaArchivo" targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Services/TransferenciaArchivoUtil" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Services/TransferenciaArchivoUtil" xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:NmpFile="http://servicios.montedepiedad.com.mx/NMP/Schema/TransferenciaArchivoUtil" xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:pc="http://xmlns.oracle.com/pcbpel/" xmlns:opaque="http://xmlns.oracle.com/pcbpel/adapter/opaque/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"> 
+  
+  <wsdl:types>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/TransferenciaArchivoUtil" schemaLocation="../XSD/TransferenciaArchivoUtilXSD.xsd"/>
+            <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+            <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+        </xsd:schema>
+    </wsdl:types>
+  <wsdl:message name="enviaArchivoRequest">
+    <wsdl:part name="request" element="NmpFile:enviaArchivoRequest"/>
+  </wsdl:message>
+  <wsdl:message name="enviaArchivoResponse">
+    <wsdl:part name="response" element="NmpFile:enviaArchivoResponse"/>
+  </wsdl:message>
+  <wsdl:message name="NMPHeaderRequest">
+    <wsdl:part name="header" element="NMPsh:headerMessage"/>
+  </wsdl:message>
+  <wsdl:message name="NMPFaultMessage">
+        <wsdl:part name="error" element="NMPsm:messageError"/>
+    </wsdl:message>
+  <wsdl:portType name="TransferenciaArchivoUtilPT">
+    <wsdl:operation name="enviaArchivo">
+      <wsdl:input message="tns:enviaArchivoRequest"/>
+      <wsdl:output message="tns:enviaArchivoResponse"/>
+      <wsdl:fault name="enviaArchivoFault" message="tns:NMPFaultMessage"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <plt:partnerLinkType name="TransferenciaArchivoUtilPLink">
+    <plt:role name="TransferenciaArchivoUtilRole">
+      <plt:portType name="tns:TransferenciaArchivoUtilPT"/>
+    </plt:role>
+  </plt:partnerLinkType>
+  <wsdl:binding name="TransferArchivoUtilPTSOAP11Binding" type="tns:TransferenciaArchivoUtilPT">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="enviaArchivo">
+      <soap:operation style="document" soapAction="http://xmlns.oracle.com/pcbpel/adapter/ftp/ApplicationSOADevNMP/testProject/TransferenciaArchivo/enviaArchivo"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="request"/>
+        <soap:header message="tns:NMPHeaderRequest" part="header" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="response"/>
+      </wsdl:output>
+      <wsdl:fault name="enviaArchivoFault">
+        <soap:fault name="enviaArchivoFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="TransferArchivoUtilService">
+    <wsdl:port name="TransferArchivoUtilPort" binding="tns:TransferArchivoUtilPTSOAP11Binding">
+      <soap:address location="http://servicios.montedepiedad.com.mx/service/transferenciaArchivoUtil"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

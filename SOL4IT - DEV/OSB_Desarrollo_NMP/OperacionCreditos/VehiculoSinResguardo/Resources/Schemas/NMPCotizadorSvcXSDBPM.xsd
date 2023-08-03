@@ -1,0 +1,50 @@
+<xsd:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/CotizadorBPM" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:NMPCotiza="http://servicios.montedepiedad.com.mx/NMP/Schema/CotizadorBPM" xmlns:NMPComun="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/ComunBPM" xmlns:NMPVehiculo="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPVehiculoBPM">
+    <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/ComunBPM" schemaLocation="NMPComun_TIPOSBPM.xsd"/>
+    <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPVehiculoBPM" schemaLocation="NMPVehiculoXSDBPM.xsd"/>
+    <xsd:element name="cotizarVehiculoRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="cliente" type="NMPCotiza:ClienteType" maxOccurs="1" minOccurs="0"/>
+                <xsd:element name="datosCotizar" type="NMPCotiza:CotizarVehiculoType" maxOccurs="1"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="cotizarVehiculoResponse" type="NMPCotiza:CotizacionType"/>
+    <xsd:element name="tipoVehiculo" type="NMPVehiculo:tipoVehiculoType"/>
+    <xsd:element name="montoAvaluo" type="NMPComun:decimalType"/>
+    <xsd:element name="montoPrestamoSolicitado" type="NMPComun:decimalType"/>
+    <xsd:element name="montoMaximoPrestamo" type="NMPComun:decimalType"/>
+    <xsd:element name="plazo" type="xsd:int"/>
+    <xsd:complexType name="ClienteType">
+        <xsd:sequence>
+            <xsd:element name="calificacion" minOccurs="1" type="NMPCotiza:CalificacionType" maxOccurs="1"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="CalificacionType">
+        <xsd:sequence>
+            <xsd:element name="calificacionMidas" minOccurs="1" type="NMPComun:decimalType" maxOccurs="1"/>
+            <xsd:element name="sobreAforo" minOccurs="1" type="NMPComun:decimalType" maxOccurs="1"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="CotizarVehiculoBaseType">
+        <xsd:sequence>
+            <xsd:element ref="NMPCotiza:tipoVehiculo"/>
+            <xsd:element ref="NMPCotiza:plazo" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="CotizarVehiculoType">
+        <xsd:sequence>
+            <xsd:element ref="NMPCotiza:tipoVehiculo"/>
+            <xsd:element ref="NMPCotiza:plazo" minOccurs="0"/>
+            <xsd:element maxOccurs="1" ref="NMPCotiza:montoAvaluo"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="CotizacionType">
+        <xsd:sequence>
+            <xsd:element name="montoMinimoPrestamo" type="NMPComun:decimalType"/>
+            <xsd:element ref="NMPCotiza:montoMaximoPrestamo"/>
+            <xsd:element ref="NMPCotiza:montoAvaluo"/>
+            <xsd:element name="montoCastigo" type="NMPComun:decimalType"/>
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

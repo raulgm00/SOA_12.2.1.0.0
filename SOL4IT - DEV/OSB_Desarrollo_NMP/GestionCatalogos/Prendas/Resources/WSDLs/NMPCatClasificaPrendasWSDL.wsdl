@@ -1,0 +1,77 @@
+<definitions targetNamespace="urn:catalogoMidasWsdl" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="urn:catalogoMidasWsdl" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:smcmnsn="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCatMidasSvc" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage">
+  <types>
+    <xsd:schema targetNamespace="urn:catalogoMidasWsdl/types" elementFormDefault="qualified"/>
+    <xsd:schema>
+      <xsd:import schemaLocation="../Schemas/NMPCatClasificaPrendasMsgXSD.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCatMidasSvc"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+    </xsd:schema>
+  </types>
+  <message name="NMPHeaderRequest">
+    <part name="requestHeader" element="NMPsh:headerMessage"/>
+  </message>
+  <message name="NMPHeaderResponse">
+    <part name="responseHeader" element="NMPsh:headerMessageResponse"/>
+  </message>
+  <message name="getCatalogosRequest">
+    <part name="part" element="smcmnsn:getCatalogosRequest"/>
+  </message>
+  <message name="getCatalogosResponse">
+    <part name="part" element="smcmnsn:getCatalogosResponse"/>
+  </message>
+  <message name="getSubCatalogoRequest">
+    <part name="part" element="smcmnsn:getSubCatalogoRequest"/>
+  </message>
+  <message name="getSubCatalogoResponse">
+    <part name="part" element="smcmnsn:getSubCatalogoResponse"/>
+  </message>
+  <message name="standardMessageFault">
+    <part name="part" element="NMPsm:messageError"/>
+  </message>
+  <portType name="catalogoMidasPortType">
+    <operation name="getCatalogos">
+      <input message="tns:getCatalogosRequest"/>
+      <output message="tns:getCatalogosResponse"/>
+      <fault message="tns:standardMessageFault" name="Fault"/>
+    </operation>
+    <operation name="getSubCatalogo">
+      <input message="tns:getSubCatalogoRequest"/>
+      <output message="tns:getSubCatalogoResponse"/>
+      <fault message="tns:standardMessageFault" name="Fault"/>
+    </operation>
+  </portType>
+  <binding name="catalogoMidasBinding" type="tns:catalogoMidasPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="getCatalogos">
+      <soap:operation style="document" soapAction="urn:catalogoMidasWsdl/getCatalogos"/>
+      <input>
+         <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+         <soap:body use="literal" parts="part"/>
+      </input>
+      <output>
+         <soap:header message="tns:NMPHeaderResponse" part="responseHeader" use="literal"/>
+         <soap:body use="literal" parts="part"/>
+      </output>
+      <fault name="Fault">
+        <soap:fault name="Fault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="getSubCatalogo">
+      <soap:operation style="document" soapAction="urn:catalogoMidasWsdl/getSubCatalogo"/>
+      <input>
+        <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+        <soap:body use="literal" parts="part"/>
+      </input>
+      <output>
+        <soap:header message="tns:NMPHeaderResponse" part="responseHeader" use="literal"/>
+        <soap:body use="literal" parts="part"/>
+      </output>
+      <fault name="Fault">
+        <soap:fault name="Fault" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+  <service name="CatalogoMidasSvc">
+    <port name="catalogoMidasSvc" binding="tns:catalogoMidasBinding"/>
+  </service>
+</definitions>

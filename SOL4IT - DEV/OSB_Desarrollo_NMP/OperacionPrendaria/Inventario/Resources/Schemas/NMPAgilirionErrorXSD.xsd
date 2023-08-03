@@ -1,0 +1,42 @@
+<xsd:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPlataformacomercialError" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:NMPPart="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPlataformacomercialError" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage">
+    <xsd:import schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+    <xsd:element name="obteneArticuloAgilirionErrorRequest" type="NMPPart:ConsultaCreditoRequestType"/>
+    <xsd:element name="obteneArticuloAgilirionErrorResponse" type="NMPPart:detallesArticuloType"/>
+    <xsd:element name="trazabilidad" type="NMPPart:trazabilidadType"/>
+    <xsd:complexType name="trazabilidadType">
+        <xsd:sequence>
+            <xsd:element name="GUID" type="xsd:string"/>
+            <xsd:element name="urlCallBack" type="xsd:string" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="ConsultaCreditoRequestType">
+        <xsd:sequence>
+            <xsd:element ref="NMPPart:trazabilidad"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="detallesArticuloType">
+        <xsd:sequence>
+            <xsd:element name="response">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="response" type="NMPPart:detalleArticuloType" maxOccurs="unbounded" minOccurs="0"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="detalleArticuloType">
+        <xsd:sequence minOccurs="1">
+            <xsd:element name="articuloErrorQueue" minOccurs="0" maxOccurs="1" type="NMPPart:articulosType"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="articulosType">
+        <xsd:sequence>
+            <xsd:element name="Operacion" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="ProductName" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="ProductCode" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="status" type="xsd:integer" minOccurs="0"/>
+            <xsd:element name="error_message" type="xsd:string" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

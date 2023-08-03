@@ -1,0 +1,76 @@
+<definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Services/VitamedicaLayout" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Services/VitamedicaLayout" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:vmd="http://servicios.montedepiedad.com.mx/NMP/Schema/VitamedicaLayout" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">
+  <types>
+    <xsd:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VitamedicaLayout/types" elementFormDefault="qualified"/>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VitamedicaLayout" schemaLocation="../Schemas/VITAMEDICATransferenciaFtpTiposXSD.xsd"/>
+    </xsd:schema>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+    </xsd:schema>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+    </xsd:schema>
+  </types>
+  <message name="NMPHeaderRequest">
+    <part name="requestHeader" element="NMPsh:headerMessage"/>
+  </message>
+  <message name="sendLayoutIncapPermisosRequestMessage">
+    <part name="layoutIncapPermisosRequest" element="vmd:RequestSendLayoutIncapPermisos"/>
+  </message>
+  <message name="sendLayoutIncapPermisosResponseMessage">
+    <part name="layoutIncapPermisosoResponse" element="vmd:ResponseLayoutIncapPermisos"/>
+  </message>
+  <message name="sendLayoutPagosRequestMessage">
+    <part name="layoutPagosRequest" element="vmd:RequestSendLayoutPagos"/>
+  </message>
+  <message name="sendLayoutPagosResponseMessage">
+    <part name="layoutPagosResponse" element="vmd:ResponseLayoutPagos"/>
+  </message>
+  <message name="sendLayoutFaultMessage">
+    <part name="sendLayoutFault" element="NMPsm:messageError"/>
+  </message>
+  <portType name="VitamedicaLayout_ptt">
+    <operation name="IncapacidadesPermisos">
+      <input message="tns:sendLayoutIncapPermisosRequestMessage"/>
+      <output message="tns:sendLayoutIncapPermisosResponseMessage"/>
+      <fault message="tns:sendLayoutFaultMessage" name="Fault"/>
+    </operation>
+    <operation name="Pagos">
+      <input message="tns:sendLayoutPagosRequestMessage"/>
+      <output message="tns:sendLayoutPagosResponseMessage"/>
+      <fault message="tns:sendLayoutFaultMessage" name="Fault"/>
+    </operation>
+  </portType>
+  <binding name="VitamedicaLayoutBinding" type="tns:VitamedicaLayout_ptt">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="IncapacidadesPermisos">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/VitamedicaLayout/sendLayoutIncapacidadPermiso"/>
+      <input>
+        <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+        <soap:body use="literal" parts="layoutIncapPermisosRequest"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="layoutIncapPermisosoResponse"/>
+      </output>
+      <fault name="Fault">
+        <soap:fault name="Fault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="Pagos">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/VitamedicaLayout/sendLayoutPagos"/>
+      <input>
+        <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+        <soap:body use="literal" parts="layoutPagosRequest"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="layoutPagosResponse"/>
+      </output>
+      <fault name="Fault">
+        <soap:fault name="Fault" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+  <service name="VitamedicaLayout">
+    <port name="VitamedicaLayoutPort" binding="tns:VitamedicaLayoutBinding"/>
+  </service>
+</definitions>

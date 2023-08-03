@@ -1,0 +1,904 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-persistence xmlns="http://www.eclipse.org/eclipselink/xsds/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:eclipselink="http://www.eclipse.org/eclipselink/xsds/persistence" version="Eclipse Persistence Services - 2.6.1.v20150916-55dc7c3">
+   <name>HistorialViaticosEmpleadoDataSvc-OR</name>
+   <class-mapping-descriptors>
+      <class-mapping-descriptor xsi:type="object-relational-class-mapping-descriptor">
+         <class>HistorialViaticosEmpleadoDataSvc.Gpa001Solicitud</class>
+         <alias>GPA001_SOLICITUD</alias>
+         <primary-key>
+            <field table="GPA001_SOLICITUD" name="ID_SOLICITUD" xsi:type="column"/>
+         </primary-key>
+         <events/>
+         <querying>
+            <queries>
+               <query name="HistorialViaticosEmpleadoDataSvcSelect" xsi:type="read-all-query">
+                  <arguments>
+                     <argument name="pLogin">
+                        <type>java.lang.String</type>
+                     </argument>
+                  </arguments>
+                  <call xsi:type="sql-call">
+                     <sql>SELECT ID_SOLICITUD, ID_TP_SOLICITUD, NU_EMPLEADO, NOMBRE_EMPLEADO, FH_ACTUALIZACION, ID_USUARIO, TOTAL_PAGAR, FH_CREACION, NU_ORDEN, FH_FIN_PROCESO, ID_ESTADO_SOLICITUD, OFICINA_DESTINO, PROCESABLE, AUX_IDPROYECTO, ID_SUBTP_SOLIC, AUX_IDSERVICIO FROM GPA001_SOLICITUD WHERE ID_SOLICITUD in (SELECT max(B.ID_SOLICITUD) from GPA001_SOLICITUD B where B.ID_USUARIO = #pLogin and B.ID_TP_SOLICITUD = 2)</sql>
+                  </call>
+                  <reference-class>HistorialViaticosEmpleadoDataSvc.Gpa001Solicitud</reference-class>
+                  <container xsi:type="list-container-policy">
+                     <collection-type>java.util.Vector</collection-type>
+                  </container>
+               </query>
+            </queries>
+         </querying>
+         <attribute-mappings>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idSolicitud</attribute-name>
+               <field table="GPA001_SOLICITUD" name="ID_SOLICITUD" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idTpSolicitud</attribute-name>
+               <field table="GPA001_SOLICITUD" name="ID_TP_SOLICITUD" xsi:type="column"/>
+               <attribute-classification>java.lang.Integer</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>nuEmpleado</attribute-name>
+               <field table="GPA001_SOLICITUD" name="NU_EMPLEADO" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>nombreEmpleado</attribute-name>
+               <field table="GPA001_SOLICITUD" name="NOMBRE_EMPLEADO" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>fhActualizacion</attribute-name>
+               <field table="GPA001_SOLICITUD" name="FH_ACTUALIZACION" xsi:type="column"/>
+               <attribute-classification>java.sql.Timestamp</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idUsuario</attribute-name>
+               <field table="GPA001_SOLICITUD" name="ID_USUARIO" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>totalPagar</attribute-name>
+               <field table="GPA001_SOLICITUD" name="TOTAL_PAGAR" xsi:type="column"/>
+               <attribute-classification>java.lang.Double</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>fhCreacion</attribute-name>
+               <field table="GPA001_SOLICITUD" name="FH_CREACION" xsi:type="column"/>
+               <attribute-classification>java.sql.Timestamp</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>nuOrden</attribute-name>
+               <field table="GPA001_SOLICITUD" name="NU_ORDEN" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>fhFinProceso</attribute-name>
+               <field table="GPA001_SOLICITUD" name="FH_FIN_PROCESO" xsi:type="column"/>
+               <attribute-classification>java.sql.Timestamp</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idEstadoSolicitud</attribute-name>
+               <field table="GPA001_SOLICITUD" name="ID_ESTADO_SOLICITUD" xsi:type="column"/>
+               <attribute-classification>java.lang.Integer</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>oficinaDestino</attribute-name>
+               <field table="GPA001_SOLICITUD" name="OFICINA_DESTINO" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>procesable</attribute-name>
+               <field table="GPA001_SOLICITUD" name="PROCESABLE" xsi:type="column"/>
+               <attribute-classification>java.lang.Integer</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>auxIdservicio</attribute-name>
+               <read-only>true</read-only>
+               <properties>
+                  <property name="fkPlaceholder">
+                     <value>true</value>
+                  </property>
+               </properties>
+               <field table="GPA001_SOLICITUD" name="AUX_IDSERVICIO" xsi:type="column"/>
+               <attribute-classification>java.lang.Long</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>auxIdproyecto</attribute-name>
+               <field table="GPA001_SOLICITUD" name="AUX_IDPROYECTO" xsi:type="column"/>
+               <attribute-classification>java.lang.Long</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idSubtpSolic</attribute-name>
+               <field table="GPA001_SOLICITUD" name="ID_SUBTP_SOLIC" xsi:type="column"/>
+               <attribute-classification>java.lang.Integer</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="one-to-one-mapping">
+               <attribute-name>servicio</attribute-name>
+               <properties>
+                  <property name="enabled">
+                     <value>true</value>
+                  </property>
+               </properties>
+               <reference-class>HistorialViaticosEmpleadoDataSvc.Gpa015Servicios</reference-class>
+               <foreign-key>
+                  <field-reference>
+                     <source-field table="GPA001_SOLICITUD" name="AUX_IDSERVICIO" xsi:type="column"/>
+                     <target-field table="GPA015_SERVICIOS" name="ID_SERVICIO" xsi:type="column"/>
+                  </field-reference>
+               </foreign-key>
+               <foreign-key-fields>
+                  <field table="GPA001_SOLICITUD" name="AUX_IDSERVICIO" xsi:type="column"/>
+               </foreign-key-fields>
+               <batch-reading>true</batch-reading>
+               <indirection xsi:type="value-holder-indirection-policy"/>
+               <selection-query xsi:type="read-object-query">
+                  <reference-class>HistorialViaticosEmpleadoDataSvc.Gpa015Servicios</reference-class>
+               </selection-query>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="one-to-many-mapping">
+               <attribute-name>pagos</attribute-name>
+               <properties>
+                  <property name="enabled">
+                     <value>true</value>
+                  </property>
+               </properties>
+               <reference-class>HistorialViaticosEmpleadoDataSvc.Gpa019Pagos</reference-class>
+               <private-owned>true</private-owned>
+               <target-foreign-key>
+                  <field-reference>
+                     <source-field table="GPA019_PAGOS" name="ID_SOLICITUD" xsi:type="column"/>
+                     <target-field table="GPA001_SOLICITUD" name="ID_SOLICITUD" xsi:type="column"/>
+                  </field-reference>
+               </target-foreign-key>
+               <batch-reading>true</batch-reading>
+               <container xsi:type="list-container-policy">
+                  <collection-type>org.eclipse.persistence.indirection.IndirectList</collection-type>
+               </container>
+               <indirection xsi:type="value-holder-indirection-policy"/>
+               <selection-query xsi:type="read-all-query">
+                  <reference-class>HistorialViaticosEmpleadoDataSvc.Gpa019Pagos</reference-class>
+                  <container xsi:type="list-container-policy">
+                     <collection-type>org.eclipse.persistence.indirection.IndirectList</collection-type>
+                  </container>
+               </selection-query>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="one-to-many-mapping">
+               <attribute-name>seguimientos</attribute-name>
+               <properties>
+                  <property name="enabled">
+                     <value>true</value>
+                  </property>
+               </properties>
+               <reference-class>HistorialViaticosEmpleadoDataSvc.Gpa005Seguimiento</reference-class>
+               <private-owned>true</private-owned>
+               <target-foreign-key>
+                  <field-reference>
+                     <source-field table="GPA005_SEGUIMIENTO" name="ID_SOLICITUD" xsi:type="column"/>
+                     <target-field table="GPA001_SOLICITUD" name="ID_SOLICITUD" xsi:type="column"/>
+                  </field-reference>
+               </target-foreign-key>
+               <batch-reading>true</batch-reading>
+               <container xsi:type="list-container-policy">
+                  <collection-type>org.eclipse.persistence.indirection.IndirectList</collection-type>
+               </container>
+               <indirection xsi:type="value-holder-indirection-policy"/>
+               <selection-query xsi:type="read-all-query">
+                  <reference-class>HistorialViaticosEmpleadoDataSvc.Gpa005Seguimiento</reference-class>
+                  <container xsi:type="list-container-policy">
+                     <collection-type>org.eclipse.persistence.indirection.IndirectList</collection-type>
+                  </container>
+               </selection-query>
+            </attribute-mapping>
+         </attribute-mappings>
+         <descriptor-type>independent</descriptor-type>
+         <caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+            <always-refresh>true</always-refresh>
+         </caching>
+         <remote-caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+         </remote-caching>
+         <instantiation/>
+         <copying xsi:type="instantiation-copy-policy"/>
+         <tables>
+            <table name="GPA001_SOLICITUD"/>
+         </tables>
+         <structure>structureName</structure>
+      </class-mapping-descriptor>
+      <class-mapping-descriptor xsi:type="object-relational-class-mapping-descriptor">
+         <class>HistorialViaticosEmpleadoDataSvc.Gpa005Seguimiento</class>
+         <alias>GPA005_SEGUIMIENTO</alias>
+         <primary-key>
+            <field table="GPA005_SEGUIMIENTO" name="ID_SEGUIMIENTO" xsi:type="column"/>
+         </primary-key>
+         <events/>
+         <querying/>
+         <attribute-mappings>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idSeguimiento</attribute-name>
+               <field table="GPA005_SEGUIMIENTO" name="ID_SEGUIMIENTO" xsi:type="column"/>
+               <attribute-classification>java.lang.Long</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idSolicitud</attribute-name>
+               <read-only>true</read-only>
+               <properties>
+                  <property name="fkPlaceholder">
+                     <value>true</value>
+                  </property>
+               </properties>
+               <field table="GPA005_SEGUIMIENTO" name="ID_SOLICITUD" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>actividad</attribute-name>
+               <field table="GPA005_SEGUIMIENTO" name="ACTIVIDAD" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>fhCreacion</attribute-name>
+               <field table="GPA005_SEGUIMIENTO" name="FH_CREACION" xsi:type="column"/>
+               <attribute-classification>java.sql.Timestamp</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>usuario</attribute-name>
+               <field table="GPA005_SEGUIMIENTO" name="USUARIO" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>fhActualizacion</attribute-name>
+               <field table="GPA005_SEGUIMIENTO" name="FH_ACTUALIZACION" xsi:type="column"/>
+               <attribute-classification>java.sql.Timestamp</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>nuIteracion</attribute-name>
+               <field table="GPA005_SEGUIMIENTO" name="NU_ITERACION" xsi:type="column"/>
+               <attribute-classification>java.lang.Integer</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idEstado</attribute-name>
+               <field table="GPA005_SEGUIMIENTO" name="ID_ESTADO" xsi:type="column"/>
+               <attribute-classification>java.lang.Long</attribute-classification>
+            </attribute-mapping>
+         </attribute-mappings>
+         <descriptor-type>independent</descriptor-type>
+         <caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+            <always-refresh>true</always-refresh>
+         </caching>
+         <remote-caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+         </remote-caching>
+         <instantiation/>
+         <copying xsi:type="instantiation-copy-policy"/>
+         <tables>
+            <table name="GPA005_SEGUIMIENTO"/>
+         </tables>
+         <structure>structureName</structure>
+      </class-mapping-descriptor>
+      <class-mapping-descriptor xsi:type="object-relational-class-mapping-descriptor">
+         <class>HistorialViaticosEmpleadoDataSvc.Gpa006Estados</class>
+         <alias>GPA006_ESTADOS</alias>
+         <primary-key>
+            <field table="GPA006_ESTADOS" name="ID_ESTADO" xsi:type="column"/>
+         </primary-key>
+         <events/>
+         <querying/>
+         <attribute-mappings>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idEstado</attribute-name>
+               <field table="GPA006_ESTADOS" name="ID_ESTADO" xsi:type="column"/>
+               <attribute-classification>java.lang.Long</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>descripcion</attribute-name>
+               <field table="GPA006_ESTADOS" name="DESCRIPCION" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>stRegistro</attribute-name>
+               <field table="GPA006_ESTADOS" name="ST_REGISTRO" xsi:type="column"/>
+               <attribute-classification>java.lang.Integer</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>clasificacion</attribute-name>
+               <field table="GPA006_ESTADOS" name="CLASIFICACION" xsi:type="column"/>
+               <attribute-classification>java.lang.Integer</attribute-classification>
+            </attribute-mapping>
+         </attribute-mappings>
+         <descriptor-type>independent</descriptor-type>
+         <caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+            <always-refresh>true</always-refresh>
+         </caching>
+         <remote-caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+         </remote-caching>
+         <instantiation/>
+         <copying xsi:type="instantiation-copy-policy"/>
+         <tables>
+            <table name="GPA006_ESTADOS"/>
+         </tables>
+         <structure>structureName</structure>
+      </class-mapping-descriptor>
+      <class-mapping-descriptor xsi:type="object-relational-class-mapping-descriptor">
+         <class>HistorialViaticosEmpleadoDataSvc.Gpa015Servicios</class>
+         <alias>GPA015_SERVICIOS</alias>
+         <primary-key>
+            <field table="GPA015_SERVICIOS" name="ID_SERVICIO" xsi:type="column"/>
+         </primary-key>
+         <events/>
+         <querying/>
+         <attribute-mappings>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idServicio</attribute-name>
+               <read-only>true</read-only>
+               <properties>
+                  <property name="fkPlaceholder">
+                     <value>true</value>
+                  </property>
+               </properties>
+               <field table="GPA015_SERVICIOS" name="ID_SERVICIO" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>descServicio</attribute-name>
+               <field table="GPA015_SERVICIOS" name="DESC_SERVICIO" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idTpServicio</attribute-name>
+               <field table="GPA015_SERVICIOS" name="ID_TP_SERVICIO" xsi:type="column"/>
+               <attribute-classification>java.lang.Integer</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>centroCosto</attribute-name>
+               <field table="GPA015_SERVICIOS" name="CENTRO_COSTO" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idSolicitud</attribute-name>
+               <field table="GPA015_SERVICIOS" name="ID_SOLICITUD" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idPrestador</attribute-name>
+               <field table="GPA015_SERVICIOS" name="ID_PRESTADOR" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>fhRegistro</attribute-name>
+               <field table="GPA015_SERVICIOS" name="FH_REGISTRO" xsi:type="column"/>
+               <attribute-classification>java.sql.Timestamp</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>descOficina</attribute-name>
+               <field table="GPA015_SERVICIOS" name="DESC_OFICINA" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>descArea</attribute-name>
+               <field table="GPA015_SERVICIOS" name="DESC_AREA" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>responsableArea</attribute-name>
+               <field table="GPA015_SERVICIOS" name="RESPONSABLE_AREA" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>cveOficina</attribute-name>
+               <field table="GPA015_SERVICIOS" name="CVE_OFICINA" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>procesable</attribute-name>
+               <field table="GPA015_SERVICIOS" name="PROCESABLE" xsi:type="column"/>
+               <attribute-classification>java.lang.Integer</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="one-to-one-mapping">
+               <attribute-name>viatico</attribute-name>
+               <properties>
+                  <property name="enabled">
+                     <value>true</value>
+                  </property>
+               </properties>
+               <reference-class>HistorialViaticosEmpleadoDataSvc.Gpa022Viaticos</reference-class>
+               <foreign-key>
+                  <field-reference>
+                     <source-field table="GPA015_SERVICIOS" name="ID_SERVICIO" xsi:type="column"/>
+                     <target-field table="GPA022_VIATICOS" name="ID_VIATICO" xsi:type="column"/>
+                  </field-reference>
+               </foreign-key>
+               <foreign-key-fields>
+                  <field table="GPA015_SERVICIOS" name="ID_SERVICIO" xsi:type="column"/>
+               </foreign-key-fields>
+               <batch-reading>true</batch-reading>
+               <indirection xsi:type="value-holder-indirection-policy"/>
+               <selection-query xsi:type="read-object-query">
+                  <reference-class>HistorialViaticosEmpleadoDataSvc.Gpa022Viaticos</reference-class>
+               </selection-query>
+            </attribute-mapping>
+         </attribute-mappings>
+         <descriptor-type>independent</descriptor-type>
+         <caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+            <always-refresh>true</always-refresh>
+         </caching>
+         <remote-caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+         </remote-caching>
+         <instantiation/>
+         <copying xsi:type="instantiation-copy-policy"/>
+         <tables>
+            <table name="GPA015_SERVICIOS"/>
+         </tables>
+         <structure>structureName</structure>
+      </class-mapping-descriptor>
+      <class-mapping-descriptor xsi:type="object-relational-class-mapping-descriptor">
+         <class>HistorialViaticosEmpleadoDataSvc.Gpa018Cdeudoras</class>
+         <alias>GPA018_CDEUDORAS</alias>
+         <primary-key>
+            <field table="GPA018_CDEUDORAS" name="ID_CEDUDORAS" xsi:type="column"/>
+         </primary-key>
+         <events/>
+         <querying/>
+         <attribute-mappings>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idCedudoras</attribute-name>
+               <field table="GPA018_CDEUDORAS" name="ID_CEDUDORAS" xsi:type="column"/>
+               <attribute-classification>java.lang.Long</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>nuCdeudoras</attribute-name>
+               <field table="GPA018_CDEUDORAS" name="NU_CDEUDORAS" xsi:type="column"/>
+               <attribute-classification>java.lang.Long</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>descDeudoras</attribute-name>
+               <field table="GPA018_CDEUDORAS" name="DESC_DEUDORAS" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>stRegistro</attribute-name>
+               <field table="GPA018_CDEUDORAS" name="ST_REGISTRO" xsi:type="column"/>
+               <attribute-classification>java.lang.Integer</attribute-classification>
+            </attribute-mapping>
+         </attribute-mappings>
+         <descriptor-type>independent</descriptor-type>
+         <caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+            <always-refresh>true</always-refresh>
+         </caching>
+         <remote-caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+         </remote-caching>
+         <instantiation/>
+         <copying xsi:type="instantiation-copy-policy"/>
+         <tables>
+            <table name="GPA018_CDEUDORAS"/>
+         </tables>
+         <structure>structureName</structure>
+      </class-mapping-descriptor>
+      <class-mapping-descriptor xsi:type="object-relational-class-mapping-descriptor">
+         <class>HistorialViaticosEmpleadoDataSvc.Gpa019Pagos</class>
+         <alias>GPA019_PAGOS</alias>
+         <primary-key>
+            <field table="GPA019_PAGOS" name="ID_PAGOS" xsi:type="column"/>
+         </primary-key>
+         <events/>
+         <querying/>
+         <attribute-mappings>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idPagos</attribute-name>
+               <field table="GPA019_PAGOS" name="ID_PAGOS" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>numOrden</attribute-name>
+               <field table="GPA019_PAGOS" name="NUM_ORDEN" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>numCaratula</attribute-name>
+               <field table="GPA019_PAGOS" name="NUM_CARATULA" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idSolicitud</attribute-name>
+               <read-only>true</read-only>
+               <properties>
+                  <property name="fkPlaceholder">
+                     <value>true</value>
+                  </property>
+               </properties>
+               <field table="GPA019_PAGOS" name="ID_SOLICITUD" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>estadoPago</attribute-name>
+               <field table="GPA019_PAGOS" name="ESTADO_PAGO" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>fhCreacion</attribute-name>
+               <field table="GPA019_PAGOS" name="FH_CREACION" xsi:type="column"/>
+               <attribute-classification>java.sql.Timestamp</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>fhActualizacion</attribute-name>
+               <field table="GPA019_PAGOS" name="FH_ACTUALIZACION" xsi:type="column"/>
+               <attribute-classification>java.sql.Timestamp</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>procesable</attribute-name>
+               <field table="GPA019_PAGOS" name="PROCESABLE" xsi:type="column"/>
+               <attribute-classification>java.lang.Integer</attribute-classification>
+            </attribute-mapping>
+         </attribute-mappings>
+         <descriptor-type>independent</descriptor-type>
+         <caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+            <always-refresh>true</always-refresh>
+         </caching>
+         <remote-caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+         </remote-caching>
+         <instantiation/>
+         <copying xsi:type="instantiation-copy-policy"/>
+         <tables>
+            <table name="GPA019_PAGOS"/>
+         </tables>
+         <structure>structureName</structure>
+      </class-mapping-descriptor>
+      <class-mapping-descriptor xsi:type="object-relational-class-mapping-descriptor">
+         <class>HistorialViaticosEmpleadoDataSvc.Gpa022Viaticos</class>
+         <alias>GPA022_VIATICOS</alias>
+         <primary-key>
+            <field table="GPA022_VIATICOS" name="ID_VIATICO" xsi:type="column"/>
+         </primary-key>
+         <events/>
+         <querying/>
+         <attribute-mappings>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idViatico</attribute-name>
+               <field table="GPA022_VIATICOS" name="ID_VIATICO" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idCtaDeudora</attribute-name>
+               <read-only>true</read-only>
+               <properties>
+                  <property name="fkPlaceholder">
+                     <value>true</value>
+                  </property>
+               </properties>
+               <field table="GPA022_VIATICOS" name="ID_CTA_DEUDORA" xsi:type="column"/>
+               <attribute-classification>java.lang.Long</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>fhInicioViaje</attribute-name>
+               <field table="GPA022_VIATICOS" name="FH_INICIO_VIAJE" xsi:type="column"/>
+               <attribute-classification>java.sql.Timestamp</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>fhFinViaje</attribute-name>
+               <field table="GPA022_VIATICOS" name="FH_FIN_VIAJE" xsi:type="column"/>
+               <attribute-classification>java.sql.Timestamp</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>justificacion</attribute-name>
+               <field table="GPA022_VIATICOS" name="JUSTIFICACION" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>loginAutorizador</attribute-name>
+               <field table="GPA022_VIATICOS" name="LOGIN_AUTORIZADOR" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>nroDiasViaje</attribute-name>
+               <field table="GPA022_VIATICOS" name="NRO_DIAS_VIAJE" xsi:type="column"/>
+               <attribute-classification>java.lang.Integer</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>nroKms</attribute-name>
+               <field table="GPA022_VIATICOS" name="NRO_KMS" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idViaticoMarco</attribute-name>
+               <read-only>true</read-only>
+               <properties>
+                  <property name="fkPlaceholder">
+                     <value>true</value>
+                  </property>
+               </properties>
+               <field table="GPA022_VIATICOS" name="ID_VIATICO_MARCO" xsi:type="column"/>
+               <attribute-classification>java.lang.Long</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>valorAnticipo</attribute-name>
+               <field table="GPA022_VIATICOS" name="VALOR_ANTICIPO" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>cveOficinaDestino</attribute-name>
+               <read-only>true</read-only>
+               <properties>
+                  <property name="fkPlaceholder">
+                     <value>true</value>
+                  </property>
+               </properties>
+               <field table="GPA022_VIATICOS" name="CVE_OFICINA_DESTINO" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idEstado</attribute-name>
+               <read-only>true</read-only>
+               <properties>
+                  <property name="fkPlaceholder">
+                     <value>true</value>
+                  </property>
+               </properties>
+               <field table="GPA022_VIATICOS" name="ID_ESTADO" xsi:type="column"/>
+               <attribute-classification>java.lang.Long</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="one-to-many-mapping">
+               <attribute-name>complementos</attribute-name>
+               <properties>
+                  <property name="enabled">
+                     <value>true</value>
+                  </property>
+               </properties>
+               <reference-class>HistorialViaticosEmpleadoDataSvc.Gpa022Viaticos</reference-class>
+               <private-owned>true</private-owned>
+               <target-foreign-key>
+                  <field-reference>
+                     <source-field table="GPA022_VIATICOS" name="ID_VIATICO_MARCO" xsi:type="column"/>
+                     <target-field table="GPA022_VIATICOS" name="ID_VIATICO" xsi:type="column"/>
+                  </field-reference>
+               </target-foreign-key>
+               <batch-reading>true</batch-reading>
+               <container xsi:type="list-container-policy">
+                  <collection-type>org.eclipse.persistence.indirection.IndirectList</collection-type>
+               </container>
+               <indirection xsi:type="value-holder-indirection-policy"/>
+               <selection-query xsi:type="read-all-query">
+                  <reference-class>HistorialViaticosEmpleadoDataSvc.Gpa022Viaticos</reference-class>
+                  <container xsi:type="list-container-policy">
+                     <collection-type>org.eclipse.persistence.indirection.IndirectList</collection-type>
+                  </container>
+               </selection-query>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="one-to-many-mapping">
+               <attribute-name>categorias</attribute-name>
+               <properties>
+                  <property name="enabled">
+                     <value>true</value>
+                  </property>
+               </properties>
+               <reference-class>HistorialViaticosEmpleadoDataSvc.Gpa023CatViaticos</reference-class>
+               <private-owned>true</private-owned>
+               <target-foreign-key>
+                  <field-reference>
+                     <source-field table="GPA023_CAT_VIATICOS" name="ID_VIATICO" xsi:type="column"/>
+                     <target-field table="GPA022_VIATICOS" name="ID_VIATICO" xsi:type="column"/>
+                  </field-reference>
+               </target-foreign-key>
+               <batch-reading>true</batch-reading>
+               <container xsi:type="list-container-policy">
+                  <collection-type>org.eclipse.persistence.indirection.IndirectList</collection-type>
+               </container>
+               <indirection xsi:type="value-holder-indirection-policy"/>
+               <selection-query xsi:type="read-all-query">
+                  <reference-class>HistorialViaticosEmpleadoDataSvc.Gpa023CatViaticos</reference-class>
+                  <container xsi:type="list-container-policy">
+                     <collection-type>org.eclipse.persistence.indirection.IndirectList</collection-type>
+                  </container>
+               </selection-query>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="one-to-one-mapping">
+               <attribute-name>ctadeudora</attribute-name>
+               <properties>
+                  <property name="enabled">
+                     <value>true</value>
+                  </property>
+               </properties>
+               <reference-class>HistorialViaticosEmpleadoDataSvc.Gpa018Cdeudoras</reference-class>
+               <foreign-key>
+                  <field-reference>
+                     <source-field table="GPA022_VIATICOS" name="ID_CTA_DEUDORA" xsi:type="column"/>
+                     <target-field table="GPA018_CDEUDORAS" name="ID_CEDUDORAS" xsi:type="column"/>
+                  </field-reference>
+               </foreign-key>
+               <foreign-key-fields>
+                  <field table="GPA022_VIATICOS" name="ID_CTA_DEUDORA" xsi:type="column"/>
+               </foreign-key-fields>
+               <batch-reading>true</batch-reading>
+               <indirection xsi:type="value-holder-indirection-policy"/>
+               <selection-query xsi:type="read-object-query">
+                  <reference-class>HistorialViaticosEmpleadoDataSvc.Gpa018Cdeudoras</reference-class>
+               </selection-query>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="one-to-one-mapping">
+               <attribute-name>oficina</attribute-name>
+               <properties>
+                  <property name="enabled">
+                     <value>true</value>
+                  </property>
+               </properties>
+               <reference-class>HistorialViaticosEmpleadoDataSvc.GpaCatOficina</reference-class>
+               <private-owned>true</private-owned>
+               <foreign-key>
+                  <field-reference>
+                     <source-field table="GPA022_VIATICOS" name="CVE_OFICINA_DESTINO" xsi:type="column"/>
+                     <target-field table="GPA_CAT_OFICINA" name="CV_OFICINA" xsi:type="column"/>
+                  </field-reference>
+               </foreign-key>
+               <foreign-key-fields>
+                  <field table="GPA022_VIATICOS" name="CVE_OFICINA_DESTINO" xsi:type="column"/>
+               </foreign-key-fields>
+               <batch-reading>true</batch-reading>
+               <indirection xsi:type="value-holder-indirection-policy"/>
+               <selection-query xsi:type="read-object-query">
+                  <reference-class>HistorialViaticosEmpleadoDataSvc.GpaCatOficina</reference-class>
+               </selection-query>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="one-to-one-mapping">
+               <attribute-name>estado</attribute-name>
+               <properties>
+                  <property name="enabled">
+                     <value>true</value>
+                  </property>
+               </properties>
+               <reference-class>HistorialViaticosEmpleadoDataSvc.Gpa006Estados</reference-class>
+               <foreign-key>
+                  <field-reference>
+                     <source-field table="GPA022_VIATICOS" name="ID_ESTADO" xsi:type="column"/>
+                     <target-field table="GPA006_ESTADOS" name="ID_ESTADO" xsi:type="column"/>
+                  </field-reference>
+               </foreign-key>
+               <foreign-key-fields>
+                  <field table="GPA022_VIATICOS" name="ID_ESTADO" xsi:type="column"/>
+               </foreign-key-fields>
+               <batch-reading>true</batch-reading>
+               <indirection xsi:type="value-holder-indirection-policy"/>
+               <selection-query xsi:type="read-object-query">
+                  <reference-class>HistorialViaticosEmpleadoDataSvc.Gpa006Estados</reference-class>
+               </selection-query>
+            </attribute-mapping>
+         </attribute-mappings>
+         <descriptor-type>independent</descriptor-type>
+         <caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+            <always-refresh>true</always-refresh>
+         </caching>
+         <remote-caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+         </remote-caching>
+         <instantiation/>
+         <copying xsi:type="instantiation-copy-policy"/>
+         <tables>
+            <table name="GPA022_VIATICOS"/>
+         </tables>
+         <structure>structureName</structure>
+      </class-mapping-descriptor>
+      <class-mapping-descriptor xsi:type="object-relational-class-mapping-descriptor">
+         <class>HistorialViaticosEmpleadoDataSvc.Gpa023CatViaticos</class>
+         <alias>GPA023_CAT_VIATICOS</alias>
+         <primary-key>
+            <field table="GPA023_CAT_VIATICOS" name="CODIGO_TARIFA" xsi:type="column"/>
+            <field table="GPA023_CAT_VIATICOS" name="ID_VIATICO" xsi:type="column"/>
+         </primary-key>
+         <events/>
+         <querying/>
+         <attribute-mappings>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>idViatico</attribute-name>
+               <read-only>true</read-only>
+               <properties>
+                  <property name="fkPlaceholder">
+                     <value>true</value>
+                  </property>
+               </properties>
+               <field table="GPA023_CAT_VIATICOS" name="ID_VIATICO" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>codigoTarifa</attribute-name>
+               <field table="GPA023_CAT_VIATICOS" name="CODIGO_TARIFA" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>valorTarifa</attribute-name>
+               <field table="GPA023_CAT_VIATICOS" name="VALOR_TARIFA" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>valorAnticipo</attribute-name>
+               <field table="GPA023_CAT_VIATICOS" name="VALOR_ANTICIPO" xsi:type="column"/>
+               <attribute-classification>java.math.BigDecimal</attribute-classification>
+            </attribute-mapping>
+         </attribute-mappings>
+         <descriptor-type>independent</descriptor-type>
+         <caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+            <always-refresh>true</always-refresh>
+         </caching>
+         <remote-caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+         </remote-caching>
+         <instantiation/>
+         <copying xsi:type="instantiation-copy-policy"/>
+         <tables>
+            <table name="GPA023_CAT_VIATICOS"/>
+         </tables>
+         <structure>structureName</structure>
+      </class-mapping-descriptor>
+      <class-mapping-descriptor xsi:type="object-relational-class-mapping-descriptor">
+         <class>HistorialViaticosEmpleadoDataSvc.GpaCatOficina</class>
+         <alias>GPA_CAT_OFICINA</alias>
+         <primary-key>
+            <field table="GPA_CAT_OFICINA" name="CV_OFICINA" xsi:type="column"/>
+         </primary-key>
+         <events/>
+         <querying/>
+         <attribute-mappings>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>cvOficina</attribute-name>
+               <field table="GPA_CAT_OFICINA" name="CV_OFICINA" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>descOficina</attribute-name>
+               <field table="GPA_CAT_OFICINA" name="DESC_OFICINA" xsi:type="column"/>
+               <attribute-classification>java.lang.String</attribute-classification>
+            </attribute-mapping>
+            <attribute-mapping xsi:type="direct-mapping">
+               <attribute-name>stRegistro</attribute-name>
+               <field table="GPA_CAT_OFICINA" name="ST_REGISTRO" xsi:type="column"/>
+               <attribute-classification>java.lang.Integer</attribute-classification>
+            </attribute-mapping>
+         </attribute-mappings>
+         <descriptor-type>independent</descriptor-type>
+         <caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+            <always-refresh>true</always-refresh>
+         </caching>
+         <remote-caching>
+            <cache-type>weak-reference</cache-type>
+            <cache-size>-1</cache-size>
+         </remote-caching>
+         <instantiation/>
+         <copying xsi:type="instantiation-copy-policy"/>
+         <tables>
+            <table name="GPA_CAT_OFICINA"/>
+         </tables>
+         <structure>structureName</structure>
+      </class-mapping-descriptor>
+   </class-mapping-descriptors>
+   <login xsi:type="database-login">
+      <platform-class>org.eclipse.persistence.platform.database.oracle.Oracle9Platform</platform-class>
+      <connection-url></connection-url>
+   </login>
+</object-persistence>

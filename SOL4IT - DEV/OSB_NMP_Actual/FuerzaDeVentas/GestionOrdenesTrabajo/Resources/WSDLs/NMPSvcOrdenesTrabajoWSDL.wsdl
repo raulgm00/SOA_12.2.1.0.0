@@ -1,0 +1,144 @@
+<definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Services/OrdenesTrabajo" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:OrdE="http://servicios.montedepiedad.com.mx/NMP/Schema/Elementos/OrdenesTrabajo" xmlns:OrTrS="http://servicios.montedepiedad.com.mx/NMP/Services/OrdenesTrabajo" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage">
+  <types>
+    <xsd:schema>
+      <xsd:import schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+    </xsd:schema>
+    <xsd:schema>
+      <xsd:import schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+    </xsd:schema>
+    <xsd:schema>
+      <xsd:import schemaLocation="../Schemas/NMPSvcOrdenesTrabajoElementosXSD.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Elementos/OrdenesTrabajo"/>
+    </xsd:schema>
+  </types>
+  <message name="NMPStandardHeader">
+    <part name="part" element="NMPsh:headerMessage"/>
+  </message>
+  <message name="actualizarGestionRequestMessage">
+    <part name="part" element="OrdE:actualizarGestionOrdenRequest"/>
+  </message>
+  <message name="actualizarGestionResponseMessage">
+    <part name="part" element="OrdE:actualizarGestionOrdenResponse"/>
+  </message>
+  <message name="ordenTrabajoFaultMessage">
+    <part name="part" element="NMPsm:messageError"/>
+  </message>
+  <message name="autoasignarRequestMessage">
+    <part name="part" element="OrdE:autoasignarOrdenRequest"/>
+  </message>
+  <message name="autoasignarResponseMessage">
+    <part name="part" element="OrdE:autoasignarOrdenResponse"/>
+  </message> 
+  <message name="consultarAgendaRequestMessage">
+    <part name="part" element="OrdE:consultarAgendaPromotorRequest"/>
+  </message>
+  <message name="consultarAgendaResponseMessage">
+    <part name="part" element="OrdE:consultarAgendaPromotorResponse"/>
+  </message>
+  <message name="realizarPreregistroRequestMessage">
+    <part name="part" element="OrdE:realizarPreregistroOrdenRequest"/>
+  </message>
+  <message name="realizarPreregistroResponseMessage">
+    <part name="part" element="OrdE:realizarPreregistroOrdenResponse"/>
+  </message>  
+  <message name="pendienteRquestMessage">
+    <part name="part" element="OrdE:actualizarPendientesOrdenRequest"/>
+  </message>
+  <message name="pendienteResponseMessage">
+    <part name="part" element="OrdE:actualizarPendientesOrdenResponse"/>
+  </message>
+  <portType name="OrdenesTrabajo_ptt">
+    <operation name="actualizarGestion">
+      <input message="OrTrS:actualizarGestionRequestMessage"/>
+      <output message="OrTrS:actualizarGestionResponseMessage"/>
+      <fault message="OrTrS:ordenTrabajoFaultMessage" name="ordenTrabajoFaultMessage"/>
+    </operation>
+    <operation name="autoasignar">
+      <input message="OrTrS:autoasignarRequestMessage"/>
+      <output message="OrTrS:autoasignarResponseMessage"/>
+      <fault message="OrTrS:ordenTrabajoFaultMessage" name="ordenTrabajoFaultMessage"/>
+    </operation>
+    <operation name="consultarAgenda">
+      <input message="OrTrS:consultarAgendaRequestMessage"/>
+      <output message="OrTrS:consultarAgendaResponseMessage"/>
+      <fault message="OrTrS:ordenTrabajoFaultMessage" name="ordenTrabajoFaultMessage"/>
+    </operation>
+    <operation name="realizarPreregistro">
+      <input message="OrTrS:realizarPreregistroRequestMessage"/>
+      <output message="OrTrS:realizarPreregistroResponseMessage"/>
+      <fault message="OrTrS:ordenTrabajoFaultMessage" name="ordenTrabajoFaultMessage"/>
+    </operation>
+    <operation name="actualizarPendientes">
+      <input message="OrTrS:pendienteRquestMessage"/>
+      <output message="OrTrS:pendienteResponseMessage"/>
+      <fault message="OrTrS:ordenTrabajoFaultMessage" name="ordenTrabajoFaultMessage"/>
+    </operation>
+  </portType>
+  <binding name="OrdenesTrabajoBinding" type="OrTrS:OrdenesTrabajo_ptt">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="actualizarGestion">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovil/actualizarGestion"/>
+      <input>
+        <soap:body use="literal" parts="part"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="part"/>
+      </output>
+      <fault name="ordenTrabajoFaultMessage">
+        <soap:fault name="ordenTrabajoFaultMessage" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="autoasignar">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovil/autoasignacion"/>
+      <input>
+        <soap:body use="literal" parts="part"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="part"/>
+      </output>
+      <fault name="ordenTrabajoFaultMessage">
+        <soap:fault name="ordenTrabajoFaultMessage" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="consultarAgenda">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovil/consultarAgenda"/>
+      <input>
+        <soap:body use="literal" parts="part"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="part"/>
+      </output>
+      <fault name="ordenTrabajoFaultMessage">
+        <soap:fault name="ordenTrabajoFaultMessage" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="realizarPreregistro">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovil/preregistro"/>
+      <input>
+        <soap:body use="literal" parts="part"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="part"/>
+      </output>
+      <fault name="ordenTrabajoFaultMessage">
+        <soap:fault name="ordenTrabajoFaultMessage" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="actualizarPendientes">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionMovil/pendiente"/>
+      <input>
+        <soap:body use="literal" parts="part"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="part"/>
+      </output>
+      <fault name="ordenTrabajoFaultMessage">
+        <soap:fault name="ordenTrabajoFaultMessage" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+  <service name="OrdenesTrabajo_ptt">
+    <port name="OrdenesTrabajo_pttPort" binding="OrTrS:OrdenesTrabajoBinding">
+      <soap:address location=""/>
+    </port>
+  </service>
+</definitions>

@@ -1,0 +1,27 @@
+<wsdl:definitions name="ParametracionService" targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Service/RiesgoTransaccional/ParametrizacionService" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Service/RiesgoTransaccional/ParametrizacionService" xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/" xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:top="http://xmlns.oracle.com/pcbpel/adapter/db/top/ParametracionService" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <plt:partnerLinkType name="ParametracionService_plt">
+    <plt:role name="ParametracionService_role">
+      <plt:portType name="tns:ParametracionService_ptt"/>
+    </plt:role>
+  </plt:partnerLinkType>
+    <wsdl:types>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema">
+        <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/ParametracionService" schemaLocation="../Schemas/ParametracionService_table.xsd"/>
+      </schema>
+    </wsdl:types>
+    <wsdl:message name="selectByPrimaryKey_inputParameters">
+        <wsdl:part name="selectByPrimaryKey_inputParameters" element="top:ParametrosGlobalesPrimaryKey"/>
+    </wsdl:message>
+    <wsdl:message name="ParametrosGlobalesCollection_msg">
+        <wsdl:part name="ParametrosGlobalesCollection" element="top:ParametrosGlobalesCollection"/>
+    </wsdl:message>
+    <wsdl:portType name="ParametracionService_ptt">
+        <wsdl:operation name="merge">
+            <wsdl:input message="tns:ParametrosGlobalesCollection_msg"/>
+        </wsdl:operation>
+        <wsdl:operation name="selectByPrimaryKey">
+            <wsdl:input message="tns:selectByPrimaryKey_inputParameters"/>
+            <wsdl:output message="tns:ParametrosGlobalesCollection_msg"/>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>

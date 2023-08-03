@@ -1,0 +1,276 @@
+<xsd:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito" elementFormDefault="qualified" version="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:NMPCred="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito" xmlns:NMPPago="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPago">
+  <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPago" schemaLocation="NMPPago.xsd"/>
+  <!--Example Element-->
+  <xsd:element name="Credito" type="NMPCred:CreditoType"/>
+  <!-- Simple Type -->
+  <xsd:simpleType name="decimalType">
+    <xsd:restriction base="xsd:decimal">
+      <xsd:fractionDigits value="5"/>
+      <xsd:totalDigits value="15"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="pagoVencidosType">    
+    <xsd:simpleContent>
+        <xsd:extension base="xsd:int">
+        <xsd:attribute name="cardexNum" type="xsd:int"/>
+      </xsd:extension>
+    </xsd:simpleContent>      
+  </xsd:complexType>
+  <!-- Complex Type-->
+  <xsd:complexType name="cardexPagosVencidosType">
+    <xsd:sequence>
+      <xsd:element name="pagoVencido" type="NMPCred:pagoVencidosType" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="CreditoType">
+    <xsd:sequence>
+      <xsd:element name="idCliente" minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="13"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="contrato" minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="13"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="estatus" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="codicionesContrato" type="NMPCred:CondicionesContratoType" minOccurs="0"/>
+      <xsd:element name="saldo" type="NMPCred:SaldoType" minOccurs="0"/>
+      <xsd:element name="solicitud" type="NMPCred:SolicitudType" minOccurs="0"/>
+      <xsd:element name="pago" type="NMPCred:SaldoType" minOccurs="0"/>
+      <xsd:element name="tablaAmortizacion" type="NMPCred:AmortizacionListType" minOccurs="0"/>
+      <xsd:element name="proyeccionPagos" type="NMPCred:ProyeccionPagoListType" minOccurs="0"/>
+      <xsd:element name="proyeccionMoratorios" type="NMPCred:ProyeccionMoratoriosListType" minOccurs="0"/>
+      <xsd:element name="vencimientos" type="NMPCred:VencimientoListType" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="CondicionesContratoType">
+    <xsd:sequence>
+      <xsd:element name="moneda" minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="13"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="productoTipo" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="subProductoTipo" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="plazo" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="frecuencia" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="desembolso" type="NMPPago:decimalType" minOccurs="0"/>
+      <xsd:element name="montoPagoPeriodico" type="NMPCred:decimalType" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="SaldoType">
+    <xsd:sequence>
+      <xsd:element name="producto" minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="50"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="desembolso" type="NMPCred:decimalType" minOccurs="0"/>
+      <xsd:element name="capitalVigente" type="NMPCred:decimalType" minOccurs="0"/>
+      <xsd:element name="capitalVencido" type="NMPCred:decimalType" minOccurs="0"/>
+      <xsd:element name="saldoVigente" type="NMPCred:decimalType" minOccurs="0"/>
+      <xsd:element name="saldoVencido" type="NMPCred:decimalType" minOccurs="0"/>
+      <xsd:element name="saldoCapital" type="NMPCred:decimalType" minOccurs="0"/>
+      <xsd:element name="interesVigente" type="NMPCred:decimalType" minOccurs="0"/>
+      <xsd:element name="interesVencido" type="NMPCred:decimalType" minOccurs="0"/>
+      <xsd:element name="saldoInteres" type="NMPCred:decimalType" minOccurs="0"/>
+      <xsd:element name="saldoComision" type="NMPCred:decimalType" minOccurs="0"/>
+      <xsd:element name="pagosNoAplicados" type="NMPCred:decimalType" minOccurs="0"/>
+      <xsd:element name="cuotasDevengadas" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="saldoLiquida" type="NMPCred:decimalType" minOccurs="0"/>
+      <xsd:element name="porcentajeCapitalPagado" type="NMPCred:decimalType" minOccurs="0"/>
+      <xsd:element name="listaCardexPagosVencidos" type="NMPCred:cardexPagosVencidosType" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="SolicitudType">
+    <xsd:sequence>
+      <xsd:element name="cveProducto" minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="25"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="estatus" minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="20"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="subEstatus" minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="20"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="pendiente" minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="2"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="motivoPendiente" minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="40"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="estatusPago" minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="20"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="estatusAnterior" minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="20"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="fechaSolicitud" type="xsd:date" minOccurs="0"/>
+      <xsd:element name="fechaSuscripcion" type="xsd:date" minOccurs="0"/>
+      <xsd:element name="tiempoAprobacion" minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:int">
+            <xsd:totalDigits value="10"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="fechaAutorizacion" type="xsd:date" minOccurs="0"/>
+      <xsd:element name="fechaDesembolso" type="xsd:date" minOccurs="0"/>
+      <xsd:element name="fechaPrimerPago" type="xsd:date" minOccurs="0"/>
+      <xsd:element name="destino" minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="2"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="gerenteSucursal" minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="12"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="desembolso" type="NMPCred:decimalType" minOccurs="0"/>
+      <xsd:element name="frecuencia" minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:int">
+            <xsd:totalDigits value="2"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="numPagos" minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:int">
+            <xsd:totalDigits value="15"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="AmortizacionType">
+    <xsd:sequence>
+      <xsd:element name="numeroPago" minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:int">
+            <xsd:totalDigits value="10"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="fechaPago" type="xsd:date" minOccurs="0"/>
+      <xsd:element name="pagoTotal" type="NMPCred:decimalType" minOccurs="0"/>
+      <xsd:element name="capital" type="NMPCred:decimalType" minOccurs="0"/>
+      <xsd:element name="interes" type="NMPCred:decimalType" minOccurs="0"/>
+      <xsd:element name="IVAInteres" type="NMPCred:decimalType" minOccurs="0"/>
+      <xsd:element name="saldoCapital" type="NMPCred:decimalType" minOccurs="0"/>
+      <xsd:element name="saldoInteres" type="NMPCred:decimalType" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ProyeccionPagoType">
+    <xsd:sequence>
+      <xsd:element name="saldoActual" type="NMPCred:decimalType" minOccurs="0"/>
+      <xsd:element name="fechaCorte" type="xsd:date" minOccurs="0"/>
+      <xsd:element name="saldoCorte" type="NMPCred:decimalType" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="VencimientoType">
+    <xsd:sequence>
+      <xsd:element name="fechaVencimiento" type="xsd:date" minOccurs="0"/>
+      <xsd:element name="planeado-real" minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="1"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="interes" type="NMPCred:decimalType" minOccurs="0"/>
+      <xsd:element name="IVAInteres" type="NMPCred:decimalType" minOccurs="0"/>
+      <xsd:element name="importe" type="NMPCred:decimalType" minOccurs="0"/>
+      <xsd:element name="concepto" minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="30"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ProyeccionMoratoriosType">
+    <xsd:sequence>
+      <xsd:element name="monto" type="NMPCred:decimalType" minOccurs="0"/>
+      <xsd:element name="tasa" type="NMPCred:decimalType" minOccurs="0"/>
+      <xsd:element name="dias" minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:int">
+            <xsd:totalDigits value="5"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="importeBase" type="NMPCred:decimalType" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="AmortizacionListType">
+    <xsd:sequence>
+      <xsd:element name="Amortizacion" type="NMPCred:AmortizacionType" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ProyeccionPagoListType">
+    <xsd:sequence>
+      <xsd:element name="ProyeccionPago" type="NMPCred:ProyeccionPagoType" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="VencimientoListType">
+    <xsd:sequence>
+      <xsd:element name="Vencimiento" type="NMPCred:VencimientoType" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="PagoListType">
+    <xsd:sequence>
+      <xsd:element name="Pago" type="NMPPago:PagoType" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ProyeccionMoratoriosListType">
+    <xsd:sequence>
+      <xsd:element name="ProyeccionMoratorios" type="NMPCred:ProyeccionMoratoriosType" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="codicionesContrato"/>
+</xsd:schema>

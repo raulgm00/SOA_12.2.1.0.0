@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:businessServiceEntry xmlns:con="http://xmlns.oracle.com/servicebus/business/config">
+    <con:coreEntry>
+        <con1:binding type="Mixed" xsi:type="con:MixedBindingType" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config" xmlns:con1="http://xmlns.oracle.com/servicebus/business/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:request type="XML">
+                <con2:schema ref="PoC/Rapaport/Resources/Schemas/EmailSubOpPrendario" element="EmailPayload" xmlns:con2="http://www.bea.com/wli/sb/typesystem/config"/>
+            </con:request>
+        </con1:binding>
+        <oper:operations enabled="true" xmlns:oper="http://xmlns.oracle.com/servicebus/business/operations">
+            <oper:throttling enabled="false"/>
+            <oper:resultCachingEnabled>true</oper:resultCachingEnabled>
+        </oper:operations>
+        <con:xqConfiguration>
+            <ser:snippetVersion xmlns:ser="http://www.bea.com/wli/sb/services">1.0</ser:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:endpointConfig>
+        <tran:provider-id xmlns:tran="http://www.bea.com/wli/sb/transports">email</tran:provider-id>
+        <tran:inbound xmlns:tran="http://www.bea.com/wli/sb/transports">false</tran:inbound>
+        <tran:URI xmlns:tran="http://www.bea.com/wli/sb/transports">
+            <env:value xmlns:env="http://www.bea.com/wli/config/env">mailto:op.prendario@outlook.nmp.com.mx</env:value>
+        </tran:URI>
+        <tran:outbound-properties xmlns:tran="http://www.bea.com/wli/sb/transports">
+            <tran:load-balancing-algorithm>round-robin</tran:load-balancing-algorithm>
+            <tran:retry-count>0</tran:retry-count>
+            <tran:retry-interval>30</tran:retry-interval>
+        </tran:outbound-properties>
+        <tran:provider-specific xsi:type="ema:EmailEndPointConfiguration" xmlns:ema="http://www.bea.com/wli/sb/transports/email" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <ema:use-ssl>false</ema:use-ssl>
+            <ema:outbound-properties>
+                <ema:smtp-resource ref="System/SMTP Servers/opPrendarioSMTPServer"/>
+                <ema:connection-timeout>0</ema:connection-timeout>
+                <ema:timeout>0</ema:timeout>
+                <ema:from-address>jose.cervantes@diamonds.net</ema:from-address>
+                <ema:from-name>opPrendario</ema:from-name>
+                <ema:reply-to-address>op.prendario@montepiedad.com.mx</ema:reply-to-address>
+                <ema:reply-to-name>opPrendarioRes</ema:reply-to-name>
+                <ema:mail-session-jndiname/>
+            </ema:outbound-properties>
+            <ema:request-encoding>iso-8859-1</ema:request-encoding>
+        </tran:provider-specific>
+    </con:endpointConfig>
+</con:businessServiceEntry>

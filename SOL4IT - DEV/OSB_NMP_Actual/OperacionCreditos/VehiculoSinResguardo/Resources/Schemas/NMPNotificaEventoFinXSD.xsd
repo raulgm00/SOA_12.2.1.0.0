@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://servicios.montedepiedad.com.mx/NMP/Schema/NotificaEventosProceso"
+     targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NotificaEventosProceso"
+     xmlns:ns1="http://servicios.montedepiedad.com.mx/NMP/Schema/NotificaEventosProceso"
+     elementFormDefault="qualified">
+    <xsd:element name="notificaInicioEventoRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="identificadores" type="correlacionType"/>
+                <xsd:element name="parametros" type="xsd:anyType" minOccurs="0"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="notificaInicioEventoResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="resultado" type="resultadoType" minOccurs="0"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="notificaFinEventoRequest" type="resultadoEventoType"/>
+    <xsd:element name="notificaFinEventoResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="resultado" type="resultadoType" minOccurs="0"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="notificacionResponse" type="resultadoEventoType"/>
+    <xsd:element name="customHeaderBPEL" type="customHeaderType"/>
+    <xsd:complexType name="resultadoEventoType">
+        <xsd:sequence>
+            <xsd:element name="resultado" minOccurs="0" type="resultadoType"/>
+            <xsd:element name="identificadores" type="correlacionType"/>
+            <xsd:element name="parametros" type="xsd:anyType"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="correlacionType">
+        <xsd:sequence>
+            <xsd:element name="identificador" maxOccurs="unbounded">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="id" type="xsd:string" fixed="null"/>
+                    </xsd:sequence>
+                    <xsd:attribute name="tipo" type="xsd:string"/>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="proceso" type="xsd:string"/>
+    </xsd:complexType>
+    <xsd:complexType name="resultadoType">
+        <xsd:sequence>
+            <xsd:element name="estado" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="mensaje" type="xsd:string" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="customHeaderType">
+        <xsd:sequence>
+            <xsd:element name="resultado" type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

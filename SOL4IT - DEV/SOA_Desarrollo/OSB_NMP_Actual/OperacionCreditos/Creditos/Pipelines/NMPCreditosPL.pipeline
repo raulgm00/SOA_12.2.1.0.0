@@ -1,0 +1,1346 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/publish/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="OperacionCreditos/Creditos/Resources/WSDLs/NMPCreditosSvcWSDL"/>
+            <con:binding>
+                <con:name>CreditoBinding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Services/NMPCredito</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations>
+            <oper:tracingEnabled>true</oper:tracingEnabled>
+            <oper:logging enabled="false" level="debug"/>
+            <oper:monitoring enabled="true" level="action" aggregationInterval="5"/>
+            <oper:pipeline-alerting enabled="false" level="normal"/>
+        </oper:operations>
+    </con:coreEntry>
+    <con:router errorHandler="_onErrorHandler-3708010327031629053-b5d49be.14dbb932212.-7f82" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config">
+        <con:pipeline type="request" name="PipelinePairSimular_request">
+            <con:stage name="stageRequest" errorHandler="error-N5601d8a2.N14b41a90.0.15651c81563.N7ece">
+                <con:comment/>
+                <con:context>
+                    <con2:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con2:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="simularPagosReq">
+                        <con2:id>_ActionId-3708010327031629053-b5d49be.14dbb932212.-7ef5</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("<urn:ZlmRfcSimulaPago xmlns:urn='urn:sap-com:document:sap:soap:functions:mc-style'>
+         	    <Contrato>",$body/nmp1:simularPagosRequest/nmp1:contrato,"</Contrato>
+	            <Fecha>",$body/nmp1:simularPagosRequest/nmp1:fechaPago,"</Fecha>
+	            <Monto>",$body/nmp1:simularPagosRequest/nmp1:montoPago,"</Monto>
+              </urn:ZlmRfcSimulaPago>"))]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-3708010327031629053-b5d49be.14dbb932212.-7ef4</con2:id>
+                        <con1:service ref="OperacionCreditos/Creditos/Business Services/SAPSimularPagoBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>ZlmRfcSimulaPago</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">simularPagosReq</con1:body>
+                            <con1:header/>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">simularPagosRes</con1:body>
+                            <con1:header/>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:routing-options>
+                                <con2:id>_ActionId-N3f57c7ff.63d05b41.0.157c02e52c6.N7f39</con2:id>
+                                <con1:uriExpr>
+                                    <con2:xqueryText>$targetEndpoint</con2:xqueryText>
+                                </con1:uriExpr>
+                            </con1:routing-options>
+                        </con1:requestTransform>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="PipelinePairSaldosTA_response">
+            <con:stage name="stageSaldosTAResponse">
+                <con:context/>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-3461430447088281888-627ac2ea.14dde90d5c2.-7e19</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText><![CDATA[fn-bea:inlinedXML(concat(
+'<NMPCred:getSaldosTAResponse xmlns:NMPCred="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito">
+  <NMPCred:saldo>
+    <NMPCred:producto>producto</NMPCred:producto>
+    <NMPCred:moneda>moneda</NMPCred:moneda>
+    <NMPCred:desembolso>1</NMPCred:desembolso>
+    <NMPCred:capitalVigente>1</NMPCred:capitalVigente>
+    <NMPCred:capitalVencido>1</NMPCred:capitalVencido>
+    <NMPCred:saldoVigente>1</NMPCred:saldoVigente>
+    <NMPCred:saldoVencido>1</NMPCred:saldoVencido>
+    <NMPCred:saldoCapital>1</NMPCred:saldoCapital>
+    <NMPCred:interesVigente>1</NMPCred:interesVigente>
+    <NMPCred:interesVencido>1</NMPCred:interesVencido>
+    <NMPCred:saldoInteres>1</NMPCred:saldoInteres>
+    <NMPCred:saldoComision>1</NMPCred:saldoComision>
+    <NMPCred:pagosNoAplicados>1</NMPCred:pagosNoAplicados>
+  </NMPCred:saldo>
+  <NMPCred:tablaAmortizacion>
+    <NMPCred:amortization>
+      <NMPCred:numeroPago>1</NMPCred:numeroPago>
+      <NMPCred:fechaPago>2014-06-18</NMPCred:fechaPago>
+      <NMPCred:pagoTotal>1</NMPCred:pagoTotal>
+      <NMPCred:capital>1</NMPCred:capital>
+      <NMPCred:interes>1</NMPCred:interes>
+      <NMPCred:IVAInteres>1</NMPCred:IVAInteres>
+      <NMPCred:saldoCapital>1</NMPCred:saldoCapital>
+      <NMPCred:saldoInteres>1</NMPCred:saldoInteres>
+    </NMPCred:amortization>
+  </NMPCred:tablaAmortizacion>
+  <NMPCred:proyeccionPago>
+    <NMPCred:moneda></NMPCred:moneda>
+    <NMPCred:saldoActual>1</NMPCred:saldoActual>
+    <NMPCred:fechaCorte1>2014-06-18</NMPCred:fechaCorte1>
+    <NMPCred:saldoCorte1>1</NMPCred:saldoCorte1>
+    <NMPCred:fechaCorte2>2014-06-18</NMPCred:fechaCorte2>
+    <NMPCred:saldoCorte2>1</NMPCred:saldoCorte2>
+    <NMPCred:fechaCorte3>2014-06-18</NMPCred:fechaCorte3>
+    <NMPCred:saldoCorte3>1</NMPCred:saldoCorte3>
+  </NMPCred:proyeccionPago>
+</NMPCred:getSaldosTAResponse>'
+))]]></con2:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N5601d8a2.N14b41a90.0.15651c81563.N7d2a">
+            <con2:stage name="ServiceErrorHandler" id="_StageId-N5601d8a2.N14b41a90.0.15651c81563.N7cf1" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/pipeline/config">
+                <con2:context>
+                    <con3:userNsDecl prefix="con" namespace="http://www.bea.com/wli/sb/context" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="n0" namespace="urn:sap-com:document:sap:soap:functions:mc-style" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="ns1" namespace="urn:mx.com.nmp.clientes" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="crm" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="NMPConsultaC" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:varNsDecl prefix="nmp3" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:varNsDecl prefix="nmp2" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                </con2:context>
+                <con2:actions>
+                    <con1:replace varName="header" contents-only="false" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N5601d8a2.N14b41a90.0.15651c81563.N7cf0</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML('&lt;soapenv:Header xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">&lt;/soapenv:Header>')</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con3:replace varName="body" contents-only="true" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con4:id xmlns:con4="http://www.bea.com/wli/sb/stages/config">_ActionId-N5601d8a2.N14b41a90.0.15651c81563.N7cef</con4:id>
+                        <con3:expr>
+                            <con4:xsltTransform xmlns:con4="http://www.bea.com/wli/sb/stages/config">
+                                <con4:resource ref="OperacionCreditos/Creditos/Resources/Transformations/TranformCreditosFault"/>
+                                <con4:input>$fault</con4:input>
+                                <con4:param name="app">
+                                    <con4:path>1</con4:path>
+                                </con4:param>
+                            </con4:xsltTransform>
+                        </con3:expr>
+                    </con3:replace>
+                    <con4:reply isError="true" xmlns:con4="http://www.bea.com/wli/sb/stages/config">
+                        <con4:id>_ActionId-N5601d8a2.N14b41a90.0.15651c81563.N7cee</con4:id>
+                    </con4:reply>
+                </con2:actions>
+            </con2:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af0042b.23e6284e.0.1516a5ec620.N7fcf">
+            <con:stage id="_StageId-af0042b.23e6284e.0.1516a5ec620.N7fcd" name="Response Stage">
+                <con:context/>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-N3f57fff6.N2af36d87.0.15184c5914d.N7ff0</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>fn-bea:inlinedXML("&lt;NMPCred:getEstadoCuentaResponse xmlns:NMPCred='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito'>
+                      &lt;NMPCred:respuesta>El correo electrónico con el estado de cuenta ha sido enviado correctamente&lt;/NMPCred:respuesta>
+                   &lt;/NMPCred:getEstadoCuentaResponse>")</con2:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.63d05b41.0.157c02e52c6.N7fce"/>
+        <con:pipeline type="response" name="PipelinePairSaldos_response">
+            <con:stage name="stageSaldosResponse">
+                <con:context>
+                    <con2:userNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente"/>
+                    <con2:varNsDecl prefix="nmp2" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito"/>
+                    <con2:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="header" contents-only="false" xmlns:con2="http://www.bea.com/wli/sb/pipeline/config">
+                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-3708010327031629053-b5d49be.14dbb932212.-7fbd</con3:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(&lt;soap:Header xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"/>)</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-3708010327031629053-b5d49be.14dbb932212.-7fbc</con2:id>
+                        <con1:expr>
+                            <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="OperacionCreditos/Creditos/Resources/Transformations/TrZLMConsultaSaldosToGetSaldosResponse"/>
+                                <con:input>$getSaldosRes</con:input>
+                            </con:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="PipelinePairSaldosTA_request"/>
+        <con:pipeline type="error" name="error-N5601d8a2.N14b41a90.0.15651c81563.N7bec">
+            <con2:stage name="ServiceErrorHandler" id="_StageId-N5601d8a2.N14b41a90.0.15651c81563.N7bb3" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/pipeline/config">
+                <con2:context>
+                    <con3:userNsDecl prefix="con" namespace="http://www.bea.com/wli/sb/context" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="n0" namespace="urn:sap-com:document:sap:soap:functions:mc-style" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="ns1" namespace="urn:mx.com.nmp.clientes" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="crm" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="NMPConsultaC" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:varNsDecl prefix="nmp3" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:varNsDecl prefix="nmp2" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                </con2:context>
+                <con2:actions>
+                    <con1:replace varName="header" contents-only="false" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N5601d8a2.N14b41a90.0.15651c81563.N7bb2</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML('&lt;soapenv:Header xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">&lt;/soapenv:Header>')</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con3:replace varName="body" contents-only="true" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con4:id xmlns:con4="http://www.bea.com/wli/sb/stages/config">_ActionId-N5601d8a2.N14b41a90.0.15651c81563.N7bb1</con4:id>
+                        <con3:expr>
+                            <con4:xsltTransform xmlns:con4="http://www.bea.com/wli/sb/stages/config">
+                                <con4:resource ref="OperacionCreditos/Creditos/Resources/Transformations/TranformCreditosFault"/>
+                                <con4:input>$fault</con4:input>
+                                <con4:param name="app">
+                                    <con4:path>1</con4:path>
+                                </con4:param>
+                            </con4:xsltTransform>
+                        </con3:expr>
+                    </con3:replace>
+                    <con4:reply isError="true" xmlns:con4="http://www.bea.com/wli/sb/stages/config">
+                        <con4:id>_ActionId-N5601d8a2.N14b41a90.0.15651c81563.N7bb0</con4:id>
+                    </con4:reply>
+                </con2:actions>
+            </con2:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.63d05b41.0.157c02e52c6.N7fcf">
+            <con:stage id="_StageId-N3f57c7ff.63d05b41.0.157c02e52c6.N7fcd" name="StageTargetEndpoint">
+                <con:context>
+                    <con2:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="endpoints">
+                        <con2:id>_ActionId-N3f57c7ff.63d05b41.0.157c02e52c6.N7fae</con2:id>
+                        <con1:expr>
+                            <con2:xqueryTransform>
+                                <con2:resource ref="OperacionCreditos/Creditos/Resources/Transformations/NMPCreditosEnrutamientoSAP"/>
+                            </con2:xqueryTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="targetEndpoint">
+                        <con2:id>_ActionId-N3f57c7ff.63d05b41.0.157c02e52c6.N7fab</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$endpoints//route[@establishment=$header/nmph:headerMessage/nmph:idDestino/text()]/operations/operation[@name=fn:data($operation)]/endpointURL/text()</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-N3f57c7ff.63d05b41.0.157c02e52c6.N7f42</con2:id>
+                        <con1:case id="_BranchId-N3f57c7ff.63d05b41.0.157c02e52c6.N7f41">
+                            <con1:condition>
+                                <con2:xqueryText>fn:string-length($targetEndpoint) = 0</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:assign varName="targetEndpoint">
+                                    <con2:id>_ActionId-N3f57c7ff.63d05b41.0.157c02e52c6.N7f3c</con2:id>
+                                    <con1:expr>
+                                        <con2:xqueryText>$endpoints//route[@establishment='SAP']/operations/operation[@name=fn:data($operation)]/endpointURL/text()</con2:xqueryText>
+                                    </con1:expr>
+                                </con1:assign>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af0042b.23e6284e.0.1516a5ec620.N7fd0">
+            <con:stage id="_StageId-af0042b.23e6284e.0.1516a5ec620.N7fce" name="SAP Request Stage" errorHandler="error-N5601d8a2.N14b41a90.0.15651c81563.N7bec">
+                <con:context>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito"/>
+                </con:context>
+                <con:actions>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-N3f57fff6.N6b8e4f2d.0.1517fe648a0.N7cf5</con2:id>
+                        <con1:service ref="OperacionCreditos/Creditos/Business Services/SAPEstadoCuentaBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>ZlmRfcEstadoCuenta</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">getEstadoCuentaReq</con1:body>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">getEstadoCuentaRes</con1:body>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:routing-options>
+                                <con2:id>_ActionId-N3f57c7ff.63d05b41.0.157c02e52c6.N7e6e</con2:id>
+                                <con1:uriExpr>
+                                    <con2:xqueryText>$targetEndpoint</con2:xqueryText>
+                                </con1:uriExpr>
+                            </con1:routing-options>
+                            <con1:assign varName="getEstadoCuentaBody">
+                                <con2:id>_ActionId-N3f57fff6.N2af36d87.0.15184c5914d.N7ff6</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText>$body</con2:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                            <con1:replace varName="getEstadoCuentaReq" contents-only="false">
+                                <con2:id>_ActionId-N3f57fff6.N6b8e4f2d.0.1517fe648a0.N7cf2</con2:id>
+                                <con1:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="OperacionCreditos/Creditos/Resources/Transformations/TrGetEstadoCuentaReqToSAPEstadoCuenta"/>
+                                        <con2:input>$getEstadoCuentaBody/*</con2:input>
+                                    </con2:xsltTransform>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:requestTransform>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57fff6.N2af36d87.0.15184c5914d.N7fff" name="Email Service Stage">
+                <con:context>
+                    <con2:userNsDecl prefix="tns" namespace="urn:sap-com:document:sap:soap:functions:mc-style"/>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito"/>
+                </con:context>
+                <con:actions>
+                    <con3:route xmlns:con3="http://www.bea.com/wli/sb/stages/publish/config">
+                        <con2:id>_ActionId-N3f57fff6.N2af36d87.0.15184c5914d.N7ffc</con2:id>
+                        <con3:service ref="Utileria/MensajeriaUtil/Business Services/BPELEmailServiceBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con3:operation>process</con3:operation>
+                        <con3:outboundTransform>
+                            <con1:assign varName="emailBody" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con2:id>_ActionId-N3f57fff7.N68596671.0.151d2cf86ad.N7ffe</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText><![CDATA["<![CDATA[Estimado cliente:<br><br>
+
+Adjunto podrás encontrar tu estado de cuenta.<br><br>
+
+En caso de alguna duda o aclaración, nos ponemos a su disposición a través de nuestra Línea en donde con gusto le atenderemos en los siguientes teléfonos:
+01 800 286 27575<br><br><br><br><br><br><br>
+ 
+----------------------------------------- ******************PRIVACIDAD DE ESTE MENSAJE**********************<br>
+Este mensaje está dirigido exclusivamente a las personas que tienen las direcciones de correo electrónico especificadas en los destinatarios dentro de su encabezado. Si por error usted ha recibido este mensaje, por ningún motivo debe revelar su contenido, copiarlo, distribuirlo o utilizarlo. Le solicitamos por favor comunique del error a la dirección de correo electrónico remitente y elimine dicho mensaje junto con cualquier documento adjunto que pudiera contener. Los derechos de privacidad y confidencialidad de la información en este mensaje no deben perderse por el hecho de haberse trasmitido erróneamente o por causas de interferencias en el funcionamiento de los sistemas de correo y canales de comunicación. Este mensaje no debe interpretarse, por ningún motivo como una oferta de venta o de compra de valores ni de instrumentos financieros relacionados.</html>]]]]>><![CDATA["]]></con2:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                            <con1:replace varName="body" contents-only="true" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con2:id>_ActionId-N3f57fff6.N2af36d87.0.15184c5914d.N7ff3</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText><![CDATA[fn-bea:inlinedXML(fn:concat("<ema:process xmlns:ema='http://servicios.montedepiedad.com.mx/NMP/Services/Mensajeria/Email'>
+    <ema:emisor></ema:emisor>
+    <ema:destinatario>",$body/nmp:getEstadoCuentaRequest/nmp:email,"</ema:destinatario>
+    <ema:tituloMensaje>Estado de Cuenta ", $body/nmp:getEstadoCuentaRequest/nmp:mes,"/",$body/nmp:getEstadoCuentaRequest/nmp:anio,"</ema:tituloMensaje>
+    <ema:cuerpoMensaje>",$emailBody,"</ema:cuerpoMensaje>
+    <ema:adjunto>",$getEstadoCuentaRes/EstadoDeCuenta,"</ema:adjunto>
+    <ema:nombreAdjunto>EstadoCuenta",$body/nmp:getEstadoCuentaRequest/nmp:mes,$body/nmp:getEstadoCuentaRequest/nmp:anio,".pdf</ema:nombreAdjunto>
+</ema:process>"))]]></con2:xqueryText>
+                                </con1:expr>
+                            </con1:replace>
+                        </con3:outboundTransform>
+                    </con3:route>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N5601d8a2.N14b41a90.0.15651c81563.N7ece">
+            <con2:stage name="ServiceErrorHandler" id="_StageId-N5601d8a2.N14b41a90.0.15651c81563.N7e64" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/pipeline/config">
+                <con2:context>
+                    <con3:userNsDecl prefix="con" namespace="http://www.bea.com/wli/sb/context" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="n0" namespace="urn:sap-com:document:sap:soap:functions:mc-style" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="ns1" namespace="urn:mx.com.nmp.clientes" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="crm" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="NMPConsultaC" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:varNsDecl prefix="nmp3" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:varNsDecl prefix="nmp2" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                </con2:context>
+                <con2:actions>
+                    <con1:replace varName="header" contents-only="false" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N5601d8a2.N14b41a90.0.15651c81563.N7e63</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML('&lt;soapenv:Header xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">&lt;/soapenv:Header>')</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con3:replace varName="body" contents-only="true" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con4:id xmlns:con4="http://www.bea.com/wli/sb/stages/config">_ActionId-N5601d8a2.N14b41a90.0.15651c81563.N7e62</con4:id>
+                        <con3:expr>
+                            <con4:xsltTransform xmlns:con4="http://www.bea.com/wli/sb/stages/config">
+                                <con4:resource ref="OperacionCreditos/Creditos/Resources/Transformations/TranformCreditosFault"/>
+                                <con4:input>$fault</con4:input>
+                                <con4:param name="app">
+                                    <con4:path>1</con4:path>
+                                </con4:param>
+                            </con4:xsltTransform>
+                        </con3:expr>
+                    </con3:replace>
+                    <con4:reply isError="true" xmlns:con4="http://www.bea.com/wli/sb/stages/config">
+                        <con4:id>_ActionId-N5601d8a2.N14b41a90.0.15651c81563.N7e61</con4:id>
+                    </con4:reply>
+                </con2:actions>
+            </con2:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="PipelinePairInfoCredito_response">
+            <con:stage name="stageInfoResponse">
+                <con:context>
+                    <con2:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con2:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-3461430447088281888-627ac2ea.14dde90d5c2.-7da4</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(
+'<NMPCred:getInfoCreditoResponse  xmlns:NMPCred="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito">
+  <NMPCred:Cliente>
+    <NMPCred:numCliente>numCliente</NMPCred:numCliente>
+    <NMPCred:nombreCliente>nombreCliente</NMPCred:nombreCliente>
+    <NMPCred:apPaterno>apPaterno</NMPCred:apPaterno>
+    <NMPCred:apMaterno>apMaterno</NMPCred:apMaterno>
+  </NMPCred:Cliente>
+  <NMPCred:Saldo>
+    <NMPCred:producto>producto</NMPCred:producto>
+    <NMPCred:moneda>moneda</NMPCred:moneda>
+    <NMPCred:desembolso>1</NMPCred:desembolso>
+    <NMPCred:capitalVigente>1</NMPCred:capitalVigente>
+    <NMPCred:capitalVencido>1</NMPCred:capitalVencido>
+    <NMPCred:saldoVigente>1</NMPCred:saldoVigente>
+    <NMPCred:saldoVencido>1</NMPCred:saldoVencido>
+    <NMPCred:saldoCapital>1</NMPCred:saldoCapital>
+    <NMPCred:interesVigente>1</NMPCred:interesVigente>
+    <NMPCred:interesVencido>1</NMPCred:interesVencido>
+    <NMPCred:saldoInteres>1</NMPCred:saldoInteres>
+    <NMPCred:saldoComision>1</NMPCred:saldoComision>
+    <NMPCred:pagosNoAplicados>1</NMPCred:pagosNoAplicados>
+  </NMPCred:Saldo>
+  <NMPCred:Solicitud>
+    <NMPCred:cveProducto>cveProducto</NMPCred:cveProducto>
+    <NMPCred:estatus>estatus</NMPCred:estatus>
+    <NMPCred:subEstatus>subEstatus</NMPCred:subEstatus>
+    <NMPCred:pendiente>1</NMPCred:pendiente>
+    <NMPCred:motivoPendiente>motivoPendiente</NMPCred:motivoPendiente>
+    <NMPCred:estatusPago>estatusPago</NMPCred:estatusPago>
+    <NMPCred:estatusAnterior>estatusAnterior</NMPCred:estatusAnterior>
+    <NMPCred:fechaSolicitud>2014-06-18</NMPCred:fechaSolicitud>
+    <NMPCred:fechaSuscripcion>2014-06-18</NMPCred:fechaSuscripcion>
+    <NMPCred:tiempoAprobacion>1</NMPCred:tiempoAprobacion>
+    <NMPCred:fechaAutorizacion>2014-06-18</NMPCred:fechaAutorizacion>
+    <NMPCred:fechaDesembolso>2014-06-18</NMPCred:fechaDesembolso>
+    <NMPCred:fechaPrimerPago>2014-06-18</NMPCred:fechaPrimerPago>
+    <NMPCred:destino></NMPCred:destino>
+    <NMPCred:horaCita>09:00:00</NMPCred:horaCita>
+    <NMPCred:gerenteSucursal>gerenteSucursal</NMPCred:gerenteSucursal>
+    <NMPCred:desembolso>1</NMPCred:desembolso>
+    <NMPCred:moneda>moneda</NMPCred:moneda>
+    <NMPCred:frecuencia>1</NMPCred:frecuencia>
+    <NMPCred:numPagos>numPagos</NMPCred:numPagos>
+  </NMPCred:Solicitud>
+  <NMPCred:GestionVenta>
+    <NMPCred:estatus>1</NMPCred:estatus>
+    <NMPCred:fechaCreacion>2014-06-18</NMPCred:fechaCreacion>
+    <NMPCred:promotor>promotor</NMPCred:promotor>
+    <NMPCred:resultadoVisitaVentas>resultadoVisitaVentas</NMPCred:resultadoVisitaVentas>
+    <NMPCred:gestionVentas>gestionVentas</NMPCred:gestionVentas>
+    <NMPCred:resultadoVisitaVentas2>resultadoVisitaVentas2</NMPCred:resultadoVisitaVentas2>
+    <NMPCred:gestionTransmision>gestionTransmision</NMPCred:gestionTransmision>
+  </NMPCred:GestionVenta>
+  <NMPCred:TablaAmortizacion>
+    <NMPCred:Amortizacion>
+      <NMPCred:numeroPago>1</NMPCred:numeroPago>
+      <NMPCred:fechaPago>2014-06-18</NMPCred:fechaPago>
+      <NMPCred:pagoTotal>1</NMPCred:pagoTotal>
+      <NMPCred:capital>1</NMPCred:capital>
+      <NMPCred:interes>1</NMPCred:interes>
+      <NMPCred:IVAInteres>1</NMPCred:IVAInteres>
+      <NMPCred:saldoCapital>1</NMPCred:saldoCapital>
+      <NMPCred:saldoInteres>1</NMPCred:saldoInteres>
+    </NMPCred:Amortizacion>
+  </NMPCred:TablaAmortizacion>
+  <NMPCred:ProyeccionPago>
+    <NMPCred:moneda>moneda</NMPCred:moneda>
+    <NMPCred:saldoActual>1</NMPCred:saldoActual>
+    <NMPCred:fechaCorte1>2014-06-18</NMPCred:fechaCorte1>
+    <NMPCred:saldoCorte1>1</NMPCred:saldoCorte1>
+    <NMPCred:fechaCorte2>2014-06-18</NMPCred:fechaCorte2>
+    <NMPCred:saldoCorte2>1</NMPCred:saldoCorte2>
+    <NMPCred:fechaCorte3>2014-06-18</NMPCred:fechaCorte3>
+    <NMPCred:saldoCorte3>1</NMPCred:saldoCorte3>
+  </NMPCred:ProyeccionPago>
+  <NMPCred:PartidasAbiertas>
+    <NMPCred:PartidaAbierta>
+      <NMPCred:fechaValor>2014-06-18</NMPCred:fechaValor>
+      <NMPCred:fechaContable>2014-06-18</NMPCred:fechaContable>
+      <NMPCred:moneda>moneda</NMPCred:moneda>
+      <NMPCred:monto>1</NMPCred:monto>
+      <NMPCred:descripcion>descripcion</NMPCred:descripcion>
+    </NMPCred:PartidaAbierta>
+  </NMPCred:PartidasAbiertas>
+  <NMPCred:Vencimientos>
+    <NMPCred:Vencimiento>
+      <NMPCred:fechaVencimiento>2014-06-18</NMPCred:fechaVencimiento>
+      <NMPCred:planeado-real>1</NMPCred:planeado-real>
+      <NMPCred:interes>1</NMPCred:interes>
+      <NMPCred:otros>1</NMPCred:otros>
+      <NMPCred:IVAInteres>1</NMPCred:IVAInteres>
+      <NMPCred:importe>1</NMPCred:importe>
+      <NMPCred:moneda>moneda</NMPCred:moneda>
+      <NMPCred:concepto>concepto</NMPCred:concepto>
+    </NMPCred:Vencimiento>
+  </NMPCred:Vencimientos>
+  <NMPCred:Pagos>
+    <NMPCred:Pago>
+      <NMPCred:fechaPago>2014-06-18</NMPCred:fechaPago>
+      <NMPCred:capital>1</NMPCred:capital>
+      <NMPCred:interes>1</NMPCred:interes>
+      <NMPCred:otros>1</NMPCred:otros>
+      <NMPCred:iva>1</NMPCred:iva>
+      <NMPCred:importe>1</NMPCred:importe>
+      <NMPCred:moneda>moneda</NMPCred:moneda>
+      <NMPCred:concepto>concepto</NMPCred:concepto>
+    </NMPCred:Pago>
+  </NMPCred:Pagos>
+  <NMPCred:ProyeccionMoratorios>
+    <NMPCred:monto>1</NMPCred:monto>
+    <NMPCred:tasa>1</NMPCred:tasa>
+    <NMPCred:dias>dias</NMPCred:dias>
+    <NMPCred:importeBase>1</NMPCred:importeBase>
+    <NMPCred:texto>texto</NMPCred:texto>
+  </NMPCred:ProyeccionMoratorios>
+</NMPCred:getInfoCreditoResponse>
+'
+)]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-3708010327031629053-b5d49be.14dbb932212.-7f59</con2:id>
+                        <con1:expr>
+                            <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="OperacionCreditos/Creditos/Resources/Transformations/TrZLMinfoCreditTogetinfoCreditResponse"/>
+                                <con:input>$getInfoCreditRes</con:input>
+                            </con:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="PipelinePairSimular_response">
+            <con:stage name="stageSimularResponse">
+                <con:context>
+                    <con2:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con2:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-3461430447088281888-627ac2ea.14dde90d5c2.-7dec</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(
+'<NMPCred:simularPagosResponse xmlns:NMPCred="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito">
+  <NMPCred:SaldosSimulado>
+    <NMPCred:producto>producto</NMPCred:producto>
+    <NMPCred:moneda>moneda</NMPCred:moneda>
+    <NMPCred:desembolso>1</NMPCred:desembolso>
+    <NMPCred:capitalVigente>1</NMPCred:capitalVigente>
+    <NMPCred:capitalVencido>1</NMPCred:capitalVencido>
+    <NMPCred:saldoVigente>1</NMPCred:saldoVigente>
+    <NMPCred:saldoVencido>1</NMPCred:saldoVencido>
+    <NMPCred:saldoCapital>1</NMPCred:saldoCapital>
+    <NMPCred:interesVigente>1</NMPCred:interesVigente>
+    <NMPCred:interesVencido>1</NMPCred:interesVencido>
+    <NMPCred:saldoInteres>1</NMPCred:saldoInteres>
+    <NMPCred:saldoComision>1</NMPCred:saldoComision>
+    <NMPCred:pagosNoAplicados>1</NMPCred:pagosNoAplicados>
+  </NMPCred:SaldosSimulado>
+  <NMPCred:TablaAmortizacion>
+    <NMPCred:Amortizacion>
+      <NMPCred:numeroPago>1</NMPCred:numeroPago>
+      <NMPCred:fechaPago>2014-06-18</NMPCred:fechaPago>
+      <NMPCred:pagoTotal>1</NMPCred:pagoTotal>
+      <NMPCred:capital>1</NMPCred:capital>
+      <NMPCred:interes>1</NMPCred:interes>
+      <NMPCred:IVAInteres>1</NMPCred:IVAInteres>
+      <NMPCred:saldoCapital>1</NMPCred:saldoCapital>
+      <NMPCred:saldoInteres>1</NMPCred:saldoInteres>
+    </NMPCred:Amortizacion>
+  </NMPCred:TablaAmortizacion>
+</NMPCred:simularPagosResponse>'
+)]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-3708010327031629053-b5d49be.14dbb932212.-7ef3</con2:id>
+                        <con1:expr>
+                            <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="OperacionCreditos/Creditos/Resources/Transformations/TrZLMSimulaPagoToSimularPagoResponse"/>
+                                <con:input>$simularPagosRes</con:input>
+                            </con:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N5601d8a2.N14b41a90.0.15651c81563.N7c8b">
+            <con2:stage name="ServiceErrorHandler" id="_StageId-N5601d8a2.N14b41a90.0.15651c81563.N7c52" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/pipeline/config">
+                <con2:context>
+                    <con3:userNsDecl prefix="con" namespace="http://www.bea.com/wli/sb/context" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="n0" namespace="urn:sap-com:document:sap:soap:functions:mc-style" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="ns1" namespace="urn:mx.com.nmp.clientes" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="crm" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="NMPConsultaC" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:varNsDecl prefix="nmp3" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:varNsDecl prefix="nmp2" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                </con2:context>
+                <con2:actions>
+                    <con1:replace varName="header" contents-only="false" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N5601d8a2.N14b41a90.0.15651c81563.N7c51</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML('&lt;soapenv:Header xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">&lt;/soapenv:Header>')</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con3:replace varName="body" contents-only="true" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con4:id xmlns:con4="http://www.bea.com/wli/sb/stages/config">_ActionId-N5601d8a2.N14b41a90.0.15651c81563.N7c50</con4:id>
+                        <con3:expr>
+                            <con4:xsltTransform xmlns:con4="http://www.bea.com/wli/sb/stages/config">
+                                <con4:resource ref="OperacionCreditos/Creditos/Resources/Transformations/TranformCreditosFault"/>
+                                <con4:input>$fault</con4:input>
+                                <con4:param name="app">
+                                    <con4:path>1</con4:path>
+                                </con4:param>
+                            </con4:xsltTransform>
+                        </con3:expr>
+                    </con3:replace>
+                    <con4:reply isError="true" xmlns:con4="http://www.bea.com/wli/sb/stages/config">
+                        <con4:id>_ActionId-N5601d8a2.N14b41a90.0.15651c81563.N7c4f</con4:id>
+                    </con4:reply>
+                </con2:actions>
+            </con2:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af0042b.23e6284e.0.1516a5ec620.N7fcb">
+            <con:stage id="_StageId-af004a0.5ab61297.0.1518802467e.N7f5d" name="Response Stage">
+                <con:context/>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-af004a0.5ab61297.0.1518802467e.N7f8f</con2:id>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="OperacionCreditos/Creditos/Resources/Transformations/TrSAPEstatusSolicitudToGetEstatusSolicitudRes"/>
+                                <con2:input>$getEstatusSolicitudRes</con2:input>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="_onErrorHandler-3708010327031629053-b5d49be.14dbb932212.-7f82" type="error">
+            <con2:stage name="Error Handler General" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/pipeline/config">
+                <con2:context>
+                    <con3:userNsDecl prefix="con" namespace="http://www.bea.com/wli/sb/context" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="n0" namespace="urn:sap-com:document:sap:soap:functions:mc-style" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="ns1" namespace="urn:mx.com.nmp.clientes" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="crm" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="NMPConsultaC" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:varNsDecl prefix="nmp3" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:varNsDecl prefix="nmp2" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                </con2:context>
+                <con2:actions>
+                    <con1:replace varName="header" contents-only="false" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-3708010327031629053-b5d49be.14dbb932212.-7f81</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML('&lt;soapenv:Header xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">&lt;/soapenv:Header>')</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con3:replace varName="body" contents-only="true" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con4:id xmlns:con4="http://www.bea.com/wli/sb/stages/config">_ActionId-N5601d8a2.N14b41a90.0.15651c81563.N7fcd</con4:id>
+                        <con3:expr>
+                            <con4:xsltTransform xmlns:con4="http://www.bea.com/wli/sb/stages/config">
+                                <con4:resource ref="OperacionCreditos/Creditos/Resources/Transformations/TranformCreditosFault"/>
+                                <con4:input>$fault</con4:input>
+                                <con4:param name="app">
+                                    <con4:path>0</con4:path>
+                                </con4:param>
+                            </con4:xsltTransform>
+                        </con3:expr>
+                    </con3:replace>
+                    <con4:reply isError="true" xmlns:con4="http://www.bea.com/wli/sb/stages/config">
+                        <con4:id>_ActionId-N5601d8a2.N14b41a90.0.15651c81563.N7f99</con4:id>
+                    </con4:reply>
+                </con2:actions>
+            </con2:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="PipelinePairSaldos_request">
+            <con:stage name="stageSaldosRequest" errorHandler="error-N5601d8a2.N14b41a90.0.15651c81563.N7d2a">
+                <con:comment/>
+                <con:context>
+                    <con2:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con2:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="getSaldosReq">
+                        <con2:id>_ActionId-3708010327031629053-b5d49be.14dbb932212.-7fbf</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(fn:concat("&lt;urn:ZlmRfcConsultaSaldos xmlns:urn='urn:sap-com:document:sap:soap:functions:mc-style'>
+	&lt;Cliente>" ,$body/nmp1:getSaldosRequest/nmp1:idCliente/text(), "&lt;/Cliente>
+&lt;/urn:ZlmRfcConsultaSaldos>"))</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-3708010327031629053-b5d49be.14dbb932212.-7fbe</con2:id>
+                        <con1:service ref="OperacionCreditos/Creditos/Business Services/SAPConsultarSaldosBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>ZlmRfcConsultaSaldos</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">getSaldosReq</con1:body>
+                            <con1:header/>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">getSaldosRes</con1:body>
+                            <con1:header/>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:routing-options>
+                                <con2:id>_ActionId-N3f57c7ff.63d05b41.0.157c02e52c6.N7f05</con2:id>
+                                <con1:uriExpr>
+                                    <con2:xqueryText>$targetEndpoint</con2:xqueryText>
+                                </con1:uriExpr>
+                            </con1:routing-options>
+                        </con1:requestTransform>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N5601d8a2.N14b41a90.0.15651c81563.N7b4d">
+            <con2:stage name="ServiceErrorHandler" id="_StageId-N5601d8a2.N14b41a90.0.15651c81563.N7b14" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/pipeline/config">
+                <con2:context>
+                    <con3:userNsDecl prefix="con" namespace="http://www.bea.com/wli/sb/context" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="n0" namespace="urn:sap-com:document:sap:soap:functions:mc-style" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="ns1" namespace="urn:mx.com.nmp.clientes" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="crm" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="NMPConsultaC" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:varNsDecl prefix="nmp3" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:varNsDecl prefix="nmp2" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                    <con3:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal" xmlns:con3="http://www.bea.com/wli/sb/stages/config"/>
+                </con2:context>
+                <con2:actions>
+                    <con1:replace varName="header" contents-only="false" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-N5601d8a2.N14b41a90.0.15651c81563.N7b13</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML('&lt;soapenv:Header xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">&lt;/soapenv:Header>')</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con3:replace varName="body" contents-only="true" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con4:id xmlns:con4="http://www.bea.com/wli/sb/stages/config">_ActionId-N5601d8a2.N14b41a90.0.15651c81563.N7b12</con4:id>
+                        <con3:expr>
+                            <con4:xsltTransform xmlns:con4="http://www.bea.com/wli/sb/stages/config">
+                                <con4:resource ref="OperacionCreditos/Creditos/Resources/Transformations/TranformCreditosFault"/>
+                                <con4:input>$fault</con4:input>
+                                <con4:param name="app">
+                                    <con4:path>1</con4:path>
+                                </con4:param>
+                            </con4:xsltTransform>
+                        </con3:expr>
+                    </con3:replace>
+                    <con4:reply isError="true" xmlns:con4="http://www.bea.com/wli/sb/stages/config">
+                        <con4:id>_ActionId-N5601d8a2.N14b41a90.0.15651c81563.N7b11</con4:id>
+                    </con4:reply>
+                </con2:actions>
+            </con2:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="PipelinePairInfoCredito_request">
+            <con:stage name="stageInfoRequest" errorHandler="error-N5601d8a2.N14b41a90.0.15651c81563.N7c8b">
+                <con:comment/>
+                <con:context>
+                    <con2:userNsDecl prefix="urn" namespace="urn:sap-com:document:sap:soap:functions:mc-style"/>
+                    <con2:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con2:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con2:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="getInfoCreditReq">
+                        <con2:id>_ActionId-3708010327031629053-b5d49be.14dbb932212.-7fa9</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat("<urn:ZlmRfcInfoCredBp xmlns:urn='urn:sap-com:document:sap:soap:functions:mc-style'>
+         <Contrato>" , $body/nmp1:getInfoCreditoRequest/nmp1:contrato,"</Contrato>
+         <FechaFin>", $body/nmp1:getInfoCreditoRequest/nmp1:fechaFinal,"</FechaFin>
+         <FechaInicio>", $body/nmp1:getInfoCreditoRequest/nmp1:fechaInicial,"</FechaInicio>
+      </urn:ZlmRfcInfoCredBp>"))]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-3708010327031629053-b5d49be.14dbb932212.-7fa2</con2:id>
+                        <con1:service ref="OperacionCreditos/Creditos/Business Services/SAPInfoCreditoBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>ZlmRfcInfoCredBp</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">getInfoCreditReq</con1:body>
+                            <con1:header/>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">getInfoCreditRes</con1:body>
+                            <con1:header/>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:routing-options>
+                                <con2:id>_ActionId-N3f57c7ff.63d05b41.0.157c02e52c6.N7ea1</con2:id>
+                                <con1:uriExpr>
+                                    <con2:xqueryText>$targetEndpoint</con2:xqueryText>
+                                </con1:uriExpr>
+                            </con1:routing-options>
+                            <con4:report xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con4="http://www.bea.com/wli/sb/stages/logging/config">
+                                <con1:id xmlns:con5="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.77e03d19.5.1583fe3f9cd.N8000</con1:id>
+                                <con4:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$getInfoCreditReq</con:xqueryText>
+                                </con4:expr>
+                                <con4:labels>
+                                    <con4:key>idDestino</con4:key>
+                                    <con4:varName>header</con4:varName>
+                                    <con4:value>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./nmph:headerMessage/nmph:idDestino</con:xpathText>
+                                    </con4:value>
+                                </con4:labels>
+                            </con4:report>
+                        </con1:requestTransform>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af0042b.23e6284e.0.1516a5ec620.N7fcc">
+            <con:stage id="_StageId-af0042b.23e6284e.0.1516a5ec620.N7fca" name="Request Stage" errorHandler="error-N5601d8a2.N14b41a90.0.15651c81563.N7b4d">
+                <con:context/>
+                <con:actions>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-af004a0.5ab61297.0.1518802467e.N7f95</con2:id>
+                        <con1:service ref="OperacionCreditos/Creditos/Business Services/SAPEstatusSolicitudBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>ZlmRfcEstatusSolicitud</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">getEstatusSolicitudReq</con1:body>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">getEstatusSolicitudRes</con1:body>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:routing-options>
+                                <con2:id>_ActionId-N3f57c7ff.63d05b41.0.157c02e52c6.N7e3b</con2:id>
+                                <con1:uriExpr>
+                                    <con2:xqueryText>$targetEndpoint</con2:xqueryText>
+                                </con1:uriExpr>
+                            </con1:routing-options>
+                            <con1:replace varName="getEstatusSolicitudReq">
+                                <con2:id>_ActionId-af004a0.5ab61297.0.1518802467e.N7f92</con2:id>
+                                <con1:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="OperacionCreditos/Creditos/Resources/Transformations/TrGetEstadusSolicitudReqToSAPEstatusSolicitud"/>
+                                        <con2:input>$body/*</con2:input>
+                                    </con2:xsltTransform>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:requestTransform>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af0042b.79dfa67f.0.15a67697d9c.N8000">
+            <con:stage id="_StageId-af0042b.79dfa67f.0.15a67697d9c.N7ffe" name="StageValidar">
+                <con:context>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito"/>
+                    <con2:userNsDecl prefix="n0" namespace="urn:sap-com:document:sap:soap:functions:mc-style"/>
+                    <con2:userNsDecl prefix="nmpHeader" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="header_temp">
+                        <con2:id>_ActionId-af0047a.N17212f07.0.15a958c768f.N7bfb</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$header</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con3:replace varName="header" contents-only="true">
+                        <con2:id>_ActionId-af0042b.79dfa67f.0.15a67697d9c.N7ff7</con2:id>
+                        <con3:expr>
+                            <con2:xqueryTransform>
+                                <con2:resource ref="Common/XQ/TRHeadersRest"/>
+                                <con2:param name="inbound">
+                                    <con2:path>$inbound</con2:path>
+                                </con2:param>
+                                <con2:param name="requestHeader">
+                                    <con2:path>$header</con2:path>
+                                </con2:param>
+                            </con2:xqueryTransform>
+                        </con3:expr>
+                    </con3:replace>
+                    <con3:validate>
+                        <con2:id>_ActionId-af0042b.79dfa67f.0.15a67697d9c.N7ffa</con2:id>
+                        <con3:schema ref="Common/XSD/NMPStandardHeader"/>
+                        <con3:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con3:schemaElement>
+                        <con3:varName>header</con3:varName>
+                        <con3:location>
+                            <con2:xpathText>./nmpHeader:headerMessage</con2:xpathText>
+                        </con3:location>
+                    </con3:validate>
+                    <con3:validate>
+                        <con2:id>_ActionId-af0042b.79dfa67f.0.15a67697d9c.N7ff4</con2:id>
+                        <con3:schema ref="OperacionCreditos/Creditos/Resources/Schemas/NMPCreditoSvcElementosXSD"/>
+                        <con3:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito">nmp:obtenerTablaAmortizacionRequest</con3:schemaElement>
+                        <con3:varName>body</con3:varName>
+                        <con3:location>
+                            <con2:xpathText>./nmp:obtenerTablaAmortizacionRequest</con2:xpathText>
+                        </con3:location>
+                    </con3:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-af0047a.N17212f07.0.15a958c768f.N7d96" name="StageCotizacion" errorHandler="error-af0047a.N17212f07.0.15a958c768f.N7d5f">
+                <con:context/>
+                <con:actions>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-af0047a.N17212f07.0.15a958c768f.N7d95</con2:id>
+                        <con1:service ref="OperacionCreditos/Creditos/Business Services/SAPCotizacionBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>ZlmRfcCotizacion</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">getCotizacionReq</con1:body>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">getCotizacionRes</con1:body>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:assign varName="getCotizacionReq">
+                                <con2:id>_ActionId-af004b9.2999912f.0.15aa4aeff3b.N7bc6</con2:id>
+                                <con1:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="OperacionCreditos/Creditos/Resources/Transformations/TrGetCotizacionReqToSAPCotizacion"/>
+                                        <con2:input>$body/*</con2:input>
+                                    </con2:xsltTransform>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:requestTransform>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af0042b.79dfa67f.0.15a67697d9c.N7fff">
+            <con:stage id="_StageId-af0042b.79dfa67f.0.15a67697d9c.N7ffd" name="StageResponse">
+                <con:context>
+                    <con2:userNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="header" contents-only="true">
+                        <con2:id>_ActionId-af0047a.N17212f07.0.15a958c768f.N7c2e</con2:id>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xqueryTransform>
+                                <con2:resource ref="Common/XQ/TRHeadersResponse"/>
+                                <con2:param name="requestHeader">
+                                    <con2:path>$header_temp</con2:path>
+                                </con2:param>
+                            </con2:xqueryTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:assign varName="getCotizacionResponse">
+                        <con2:id>_ActionId-af004b9.2999912f.0.15aa4aeff3b.N7afc</con2:id>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="OperacionCreditos/Creditos/Resources/Transformations/TrGetCotizacionResToSAPCotizacion"/>
+                                <con2:input>$getCotizacionRes</con2:input>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-af004b9.2999912f.0.15aa4aeff3b.N7ac8</con2:id>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xqueryText>$getCotizacionResponse</con2:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-af0047a.N17212f07.0.15a958c768f.N7d5f">
+            <con:stage id="_StageId-af0047a.N17212f07.0.15a958c768f.N7d5e" name="StageCotizacionError">
+                <con:context/>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-af004b9.2999912f.0.15aa4aeff3b.N7d30</con2:id>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="OperacionCreditos/Creditos/Resources/Transformations/TrCreditosFault"/>
+                                <con2:input>$fault</con2:input>
+                                <con2:param name="app">
+                                    <con2:path>1</con2:path>
+                                </con2:param>
+                                <con2:param name="serviceName">
+                                    <con2:path>'Obtener Tabla Amortización'</con2:path>
+                                </con2:param>
+                                <con2:param name="soapFault">
+                                    <con2:path>$body</con2:path>
+                                </con2:param>
+                                <con2:param name="operacion">
+                                    <con2:path>'co:obtenerTablaAmortizacionFault'</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con2:reply isError="true">
+                        <con2:id>_ActionId-af0047a.N17212f07.0.15a958c768f.N7d2b</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af004b9.2999912f.0.15aa4aeff3b.N7fcf">
+            <con:stage id="_StageId-af004b9.2999912f.0.15aa4aeff3b.N7fcd" name="StageValidar">
+                <con:context>
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito"/>
+                    <con2:userNsDecl prefix="nmpHeader" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="header_temp">
+                        <con2:id>_ActionId-af004b9.2999912f.0.15aa4aeff3b.N7f99</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$header</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="header" contents-only="true">
+                        <con2:id>_ActionId-af004b9.2999912f.0.15aa4aeff3b.N7f66</con2:id>
+                        <con1:expr>
+                            <con2:xqueryTransform>
+                                <con2:resource ref="Common/XQ/TRHeadersRest"/>
+                                <con2:param name="inbound">
+                                    <con2:path>$inbound</con2:path>
+                                </con2:param>
+                                <con2:param name="requestHeader">
+                                    <con2:path>$header</con2:path>
+                                </con2:param>
+                            </con2:xqueryTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:validate>
+                        <con2:id>_ActionId-af004b9.2999912f.0.15aa4aeff3b.N7f32</con2:id>
+                        <con1:schema ref="Common/XSD/NMPStandardHeader"/>
+                        <con1:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con1:schemaElement>
+                        <con1:varName>header</con1:varName>
+                        <con1:location>
+                            <con2:xpathText>./nmpHeader:headerMessage</con2:xpathText>
+                        </con1:location>
+                        <con1:resultVarName/>
+                    </con1:validate>
+                    <con1:validate>
+                        <con2:id>_ActionId-af004b9.2999912f.0.15aa4aeff3b.N7efd</con2:id>
+                        <con1:schema ref="OperacionCreditos/Creditos/Resources/Schemas/NMPCreditoSvcElementosXSD"/>
+                        <con1:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito">nmp:generarContratoRequest</con1:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con2:xpathText>./nmp:generarContratoRequest</con2:xpathText>
+                        </con1:location>
+                    </con1:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-af004b9.2999912f.0.15aa4aeff3b.N7ec9" name="StageGeneraContrato" errorHandler="error-af004b9.2999912f.0.15aa4aeff3b.N7dfe">
+                <con:context/>
+                <con:actions>
+                    <con1:assign varName="creaContratoReq">
+                        <con2:id>_ActionId-af004b9.2999912f.0.15aa4aeff3b.N7e61</con2:id>
+                        <con2:disabled>true</con2:disabled>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="OperacionCreditos/Creditos/Resources/Transformations/TrGeneraContratoReqToSAPGeneraContrato"/>
+                                <con2:input>$body</con2:input>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-af004b9.2999912f.0.15aa4aeff3b.N7ec8</con2:id>
+                        <con1:service ref="OperacionCreditos/Creditos/Business Services/SAPGeneraContratoBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>ZlmRfcCreaContrato</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">creaContratoReq</con1:body>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">creaContratoRes</con1:body>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:replace varName="body" contents-only="true">
+                                <con2:id>_ActionId-af004b9.2999912f.0.15aa4aeff3b.N7c93</con2:id>
+                                <con1:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="OperacionCreditos/Creditos/Resources/Transformations/TrGeneraContratoReqToSAPGeneraContrato"/>
+                                        <con2:input>$body</con2:input>
+                                    </con2:xsltTransform>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:requestTransform>
+                        <con1:responseTransform>
+                            <con1:replace varName="body" contents-only="true">
+                                <con2:id>_ActionId-af004b9.2999912f.0.15aa4aeff3b.N7cc8</con2:id>
+                                <con1:location>
+                                    <con2:xpathText>.</con2:xpathText>
+                                </con1:location>
+                                <con1:expr>
+                                    <con2:xqueryText><![CDATA[<n0:ZlmRfcCreaContratoResponse xmlns:n0="urn:sap-com:document:sap:soap:functions:mc-style">
+         <Contrato>1455</Contrato>
+         <DatosCliente>
+            <IdCliente>10</IdCliente>
+            <Cliente>
+               <PrimerNombre>JOSE LUIS</PrimerNombre>
+               <SegundoNombre/>
+               <ApellidoPaterno>SOTO</ApellidoPaterno>
+               <ApellidoMaterno>RIVERA</ApellidoMaterno>
+               <FechaNacimiento>1963-08-19</FechaNacimiento>
+               <Rfc>SORJ630819</Rfc>
+            </Cliente>
+            <Domicilio>
+               <Calle>NOPAL</Calle>
+               <NumExt>1</NumExt>
+               <NumInt>204</NumInt>
+               <IdColonia/>
+               <Cp>06450</Cp>
+               <IdMunicipio/>
+               <IdEstado>9</IdEstado>
+            </Domicilio>
+         </DatosCliente>
+         <DatosContrato>
+            <Sociedad>01</Sociedad>
+            <Producto>601</Producto>
+            <MontoSolicitado>1000.0</MontoSolicitado>
+            <Frecuencia>30</Frecuencia>
+            <Plazo>03</Plazo>
+            <TasaInteres>1000.0</TasaInteres>
+            <FechaDesembolso>2017-03-06</FechaDesembolso>
+            <FechaPrimerCobro>2017-04-07</FechaPrimerCobro>
+            <MultMoratorio>0.0</MultMoratorio>
+            <Origen/>
+            <Destino/>
+            <TipoDePago>2</TipoDePago>
+            <DiasGracia>000000</DiasGracia>
+         </DatosContrato>
+      </n0:ZlmRfcCreaContratoResponse>]]></con2:xqueryText>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:responseTransform>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af004b9.2999912f.0.15aa4aeff3b.N7fce">
+            <con:stage id="_StageId-af004b9.2999912f.0.15aa4aeff3b.N7fcc" name="StageResponse">
+                <con:context/>
+                <con:actions>
+                    <con1:replace contents-only="true" varName="header">
+                        <con2:id>_ActionId-af004b9.2999912f.0.15aa4aeff3b.N7e94</con2:id>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xqueryTransform>
+                                <con2:resource ref="Common/XQ/TRHeadersResponse"/>
+                                <con2:param name="requestHeader">
+                                    <con2:path>$header_temp</con2:path>
+                                </con2:param>
+                            </con2:xqueryTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-af004b9.2999912f.0.15aa4aeff3b.N7d64</con2:id>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="OperacionCreditos/Creditos/Resources/Transformations/TrGeneraContratoResToSAPGeneraContrato"/>
+                                <con2:input>$body/*</con2:input>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-af004b9.2999912f.0.15aa4aeff3b.N7dfe">
+            <con:stage id="_StageId-af004b9.2999912f.0.15aa4aeff3b.N7dfd" name="StageGeneraContratoError">
+                <con:context/>
+                <con:actions>
+                    <con2:resume>
+                        <con2:id>_ActionId-af004b9.2999912f.0.15aa4aeff3b.N7d97</con2:id>
+                    </con2:resume>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-af004b9.2999912f.0.15aa4aeff3b.N7cfc</con2:id>
+                        <con2:disabled>true</con2:disabled>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="OperacionCreditos/Creditos/Resources/Transformations/TrCreditosFault"/>
+                                <con2:input>$fault</con2:input>
+                                <con2:param name="app">
+                                    <con2:path>1</con2:path>
+                                </con2:param>
+                                <con2:param name="serviceName">
+                                    <con2:path>'Generar Contrato'</con2:path>
+                                </con2:param>
+                                <con2:param name="soapFault">
+                                    <con2:path>$body</con2:path>
+                                </con2:param>
+                                <con2:param name="operacion">
+                                    <con2:path>'co:generarContratoFault'</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con2:reply isError="true">
+                        <con2:id>_ActionId-af004b9.2999912f.0.15aa4aeff3b.N7dca</con2:id>
+                        <con2:disabled>true</con2:disabled>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="PipelineCreditos">
+                <con:request>request-N3f57c7ff.63d05b41.0.157c02e52c6.N7fcf</con:request>
+                <con:response>response-N3f57c7ff.63d05b41.0.157c02e52c6.N7fce</con:response>
+            </con:pipeline-node>
+            <con:branch-node type="operation" name="BranchCreditosOperations">
+                <con:context/>
+                <con:branch-table>
+                    <con:branch name="getSaldosTA">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairSaldosTA">
+                                <con:comment>Este metodo no esta implementado actualmente</con:comment>
+                                <con:request>PipelinePairSaldosTA_request</con:request>
+                                <con:response>PipelinePairSaldosTA_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="simularPagos">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairSimular">
+                                <con:request>PipelinePairSimular_request</con:request>
+                                <con:response>PipelinePairSimular_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="getSaldos">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairSaldos">
+                                <con:request>PipelinePairSaldos_request</con:request>
+                                <con:response>PipelinePairSaldos_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="getInfoCredito">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairInfoCredito">
+                                <con:request>PipelinePairInfoCredito_request</con:request>
+                                <con:response>PipelinePairInfoCredito_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="getEstadoCuenta">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairEstadoCuenta">
+                                <con:request>request-af0042b.23e6284e.0.1516a5ec620.N7fd0</con:request>
+                                <con:response>response-af0042b.23e6284e.0.1516a5ec620.N7fcf</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="getEstatusSolicitud">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairEstatusSolicitud">
+                                <con:request>request-af0042b.23e6284e.0.1516a5ec620.N7fcc</con:request>
+                                <con:response>response-af0042b.23e6284e.0.1516a5ec620.N7fcb</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="obtenerTablaAmortizacion">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairObtenerTabla">
+                                <con:request>request-af0042b.79dfa67f.0.15a67697d9c.N8000</con:request>
+                                <con:response>response-af0042b.79dfa67f.0.15a67697d9c.N7fff</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="generarContrato">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairNode1">
+                                <con:request>request-af004b9.2999912f.0.15aa4aeff3b.N7fcf</con:request>
+                                <con:response>response-af004b9.2999912f.0.15aa4aeff3b.N7fce</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+        <con:partner-links>
+            <con:partner-link>
+                <con:service ref="CRMFaseII/GestionMovil/Business Services/SAPEstatusSolicitudBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+            </con:partner-link>
+        </con:partner-links>
+    </con:router>
+</con:pipelineEntry>

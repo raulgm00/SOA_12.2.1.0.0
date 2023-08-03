@@ -1,0 +1,119 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Tue Jan 17 16:52:27 CST 2017
+  Author:  Sol4IT Mexico
+  Type: BPEL 2.0 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="OrdenPagoProrrateo"
+               targetNamespace="http://xmlns.oracle.com/GestionOrdenPagoApp/OrdenPagoProrrateoPrj/OrdenPagoProrrateo"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/GestionOrdenPagoApp/OrdenPagoProrrateoPrj/OrdenPagoProrrateo"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:ui="http://xmlns.oracle.com/soa/designer"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ns1="http://service.pagos.qualitas.com.mx/"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ess="http://xmlns.oracle.com/scheduler" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap">
+
+    <import ui:processWSDL="true" namespace="http://xmlns.oracle.com/GestionOrdenPagoApp/OrdenPagoProrrateoPrj/OrdenPagoProrrateo" location="../WSDLs/OrdenPagoProrrateo.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="ordenpagoprorrateo_client" partnerLinkType="client:OrdenPagoProrrateo" myRole="OrdenPagoProrrateoProvider"/>
+    <partnerLink name="OrdenPago" partnerLinkType="ns1:OrdenPago" partnerRole="PagosService"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:OrdenPagoProrrateoRequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:OrdenPagoProrrateoResponseMessage"/>
+    <variable name="Inv_OP_InVar" messageType="ns1:generaOrden"/>
+    <variable name="Inv_OP_OutVar" messageType="ns1:generaOrdenResponse"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in OrdenPagoProrrateo.wsdl) -->
+    <receive name="receiveInput" partnerLink="ordenpagoprorrateo_client" portType="client:OrdenPagoProrrateo" operation="process" variable="inputVariable" createInstance="yes"/>
+    <if name="If1">
+      <condition>$inputVariable.payload/client:monto = 41755.36</condition>
+      <assign name="Transformation1">
+        <bpelx:annotation>
+          <bpelx:pattern patternName="bpelx:transformation"></bpelx:pattern>
+        </bpelx:annotation>
+        <copy>
+          <from>ora:doXSLTransformForDoc("../Transformations/Transformation1_1.xsl", $inputVariable.payload)</from>
+          <to variable="Inv_OP_InVar" part="parameters"/>
+        </copy>
+      </assign>
+      <elseif>
+        <condition>$inputVariable.payload/client:monto =  138193.06 </condition>
+        <assign name="Transformation2">
+          <bpelx:annotation>
+            <bpelx:pattern patternName="bpelx:transformation"></bpelx:pattern>
+          </bpelx:annotation>
+          <copy>
+            <from>ora:doXSLTransformForDoc("../Transformations/Transformation2_1.xsl", $inputVariable.payload)</from>
+            <to variable="Inv_OP_InVar" part="parameters"/>
+          </copy>
+        </assign>
+      </elseif>
+    </if>
+    <invoke name="Inv_OP" bpelx:invokeAsDetail="no" partnerLink="OrdenPago" portType="ns1:PagosService"
+            operation="generaOrden" inputVariable="Inv_OP_InVar" outputVariable="Inv_OP_OutVar"/>
+    <assign name="Assign1">
+      <copy>
+        <from>$Inv_OP_OutVar.parameters/RespuestaOrdenPago/mensaje</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$outputVariable.payload/client:mensaje</to>
+      </copy>
+      <copy>
+        <from>0</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$outputVariable.payload/client:codigo</to>
+      </copy>
+      <copy>
+        <from>$Inv_OP_OutVar.parameters/RespuestaOrdenPago/numOrdenPago</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$outputVariable.payload/client:numOrden</to>
+      </copy>
+    </assign>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="ordenpagoprorrateo_client" portType="client:OrdenPagoProrrateo" operation="process" variable="outputVariable"/>
+  </sequence>
+</process>

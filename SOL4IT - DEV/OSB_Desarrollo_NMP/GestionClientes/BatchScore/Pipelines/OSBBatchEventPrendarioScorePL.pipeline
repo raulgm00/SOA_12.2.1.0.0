@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+    <con:coreEntry>
+        <con:description>Primera parte del procesamiento del flujo del batch Prendario al aplicativo Customer Score, en el que se seleccionan y transforman los mensajes de las operaciones que se deben enviar a la aplicación</con:description>
+        <con:binding type="Mixed" xsi:type="con:MixedBindingType">
+            <con:request type="XML">
+                <con5:schema ref="GestionClientes/BatchScore/Resources/Schemas/OSBBatchPrendarioSvcXSD" element="TaDetalleOperacionCollection" xmlns:con5="http://www.bea.com/wli/sb/typesystem/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con4="http://www.bea.com/wli/sb/stages/publish/config" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:jms="http://www.bea.com/wli/sb/transports/jms" xmlns:env="http://www.bea.com/wli/config/env" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con1="http://www.bea.com/wli/sb/pipeline/config"/>
+            </con:request>
+        </con:binding>
+        <oper:operations>
+            <oper:logging enabled="false" level="debug"/>
+            <oper:monitoring enabled="true" level="action" aggregationInterval="60"/>
+            <oper:reporting>false</oper:reporting>
+        </oper:operations>
+    </con:coreEntry>
+    <con1:router errorHandler="error-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7d21" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:con="http://www.bea.com/wli/sb/typesystem/config" xmlns:jms="http://www.bea.com/wli/sb/transports/jms" xmlns:con1="http://www.bea.com/wli/sb/pipeline/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con4="http://www.bea.com/wli/sb/stages/publish/config">
+        <con1:pipeline type="error" name="error-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7d21">
+            <con:stage id="_StageId-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7cea" name="StageGeneralErrorHandler" xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:jca="http://www.bea.com/wli/sb/transports/jca">
+                <con:comment>Manejador general de errores que no se ha podido manejar en los manejadores de stage o pipeline</con:comment>
+                <con:context/>
+                <con:actions>
+                    <con5:alert xmlns:con5="http://www.bea.com/wli/sb/stages/alert/config">
+                        <con2:comment>Generar alerta de error</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7ce9</con2:id>
+                        <con5:destination ref="GestionClientes/BatchScore/Resources/Alerts/NMPBatchPrendarioErrorAlert"/>
+                        <con5:description>Sucedio un error en el procesamiento de mesaje a Score.</con5:description>
+                        <con5:severity>major</con5:severity>
+                        <con5:payload>
+                            <con2:xqueryText>$faultStage</con2:xqueryText>
+                        </con5:payload>
+                    </con5:alert>
+                    <con3:replace contents-only="true" varName="body">
+                        <con2:comment>Generar estructura de respuesta</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N719a</con2:id>
+                        <con3:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con3:location>
+                        <con3:expr>
+                            <con2:xqueryText>fn-bea:inlinedXML(fn:concat("&lt;nmp:response xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Services/BatchScore'>",
+                              "&lt;nmp:ack>OK&lt;/nmp:ack>",
+                            "&lt;/nmp:response>"))</con2:xqueryText>
+                        </con3:expr>
+                    </con3:replace>
+                    <con2:reply isError="true">
+                        <con2:comment>Responder con error</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7ce8</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con1:pipeline>
+        <con1:pipeline type="error" name="_onErrorHandler-4696946362066881433-19b24fc9.14bc6e46669.-7ed2">
+            <con:stage id="_StageId-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7dbc" name="StagePipelineErrorHandler" xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:jca="http://www.bea.com/wli/sb/transports/jca">
+                <con:comment>Manejador de errores que no se han podido manejar en los manejadores de stage</con:comment>
+                <con:context/>
+                <con:actions>
+                    <con4:route>
+                        <con2:comment>Registrar en la bitácora el error y la petición que fallo en su procesamiento</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7dbb</con2:id>
+                        <con4:service ref="GestionClientes/BatchScore/Business Services/OSBRegistrarBitacoraBatchPrestamoBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con4:operation>insert</con4:operation>
+                        <con4:outboundTransform>
+                            <con3:routing-options>
+                                <con2:comment>Establecer que al configuración será de tipo One-Way y Exactly Once</con2:comment>
+                                <con2:id>_ActionId-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7dba</con2:id>
+                                <con3:mode>request</con3:mode>
+                                <con3:qualityOfService>exactly-once</con3:qualityOfService>
+                            </con3:routing-options>
+                            <con3:replace contents-only="true" varName="body">
+                                <con2:comment>Generar estructura requerida para registrar el error en la bitácora del servicio</con2:comment>
+                                <con2:id>_ActionId-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7db8</con2:id>
+                                <con3:location>
+                                    <con2:xpathText>.</con2:xpathText>
+                                </con3:location>
+                                <con3:expr>
+                                    <con2:xqueryTransform>
+                                        <con2:resource ref="GestionClientes/BatchScore/Resources/Transformations/TRErrorBatchPrestamoToBitacora"/>
+                                        <con2:param name="idMensaje">
+                                            <con2:path>fn:concat($msgId,'.SCR')</con2:path>
+                                        </con2:param>
+                                        <con2:param name="codigoError">
+                                            <con2:path>$faultStage/*:detail/*:messageError/*:codigoError/text()</con2:path>
+                                        </con2:param>
+                                        <con2:param name="fechaRegistro">
+                                            <con2:path>fn:current-dateTime()</con2:path>
+                                        </con2:param>
+                                        <con2:param name="componente">
+                                            <con2:path>'Score Flow: OSBBatchEventPrendarioScorePL'</con2:path>
+                                        </con2:param>
+                                        <con2:param name="paylodad">
+                                            <con2:path>$BatchScoreEvReq</con2:path>
+                                        </con2:param>
+                                        <con2:param name="detalleError">
+                                            <con2:path>$faultStage/*:detail/*:messageError/*:descripcionError/text()</con2:path>
+                                        </con2:param>
+                                    </con2:xqueryTransform>
+                                </con3:expr>
+                            </con3:replace>
+                        </con4:outboundTransform>
+                    </con4:route>
+                    <con3:replace contents-only="true" varName="body">
+                        <con2:comment>Generar respuesta</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7201</con2:id>
+                        <con3:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con3:location>
+                        <con3:expr>
+                            <con2:xqueryText>fn-bea:inlinedXML(fn:concat("&lt;nmp:response xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Services/BatchScore'>",
+                              "&lt;nmp:ack>OK&lt;/nmp:ack>",
+                            "&lt;/nmp:response>"))</con2:xqueryText>
+                        </con3:expr>
+                    </con3:replace>
+                    <con2:reply isError="true">
+                        <con2:comment>Responder con error</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7db7</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con1:pipeline>
+        <con1:pipeline type="response" name="PipelinePairNode1_response">
+            <con1:stage id="_StageId-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7819" name="StageResponderAck">
+                <con1:comment>Propagar respuesta exitosa</con1:comment>
+                <con1:context/>
+                <con1:actions>
+                    <con3:replace contents-only="true" varName="body" xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:jca="http://www.bea.com/wli/sb/transports/jca">
+                        <con2:comment>Genear estructura de respuesta</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N71cd</con2:id>
+                        <con3:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con3:location>
+                        <con3:expr>
+                            <con2:xqueryText>fn-bea:inlinedXML(fn:concat("&lt;nmp:response xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Services/BatchScore'>",
+                              "&lt;nmp:ack>OK&lt;/nmp:ack>",
+                            "&lt;/nmp:response>"))</con2:xqueryText>
+                        </con3:expr>
+                    </con3:replace>
+                    <con2:reply>
+                        <con2:comment>Responder con exito</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7818</con2:id>
+                    </con2:reply>
+                </con1:actions>
+            </con1:stage>
+        </con1:pipeline>
+        <con1:pipeline type="error" name="error-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7c4a">
+            <con:stage id="_StageId-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7bfd" name="StageEnvioToScoreErrorHandler" xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:jca="http://www.bea.com/wli/sb/transports/jca">
+                <con:comment>Manejo de las excepciones que se generan en el envío del evento al recurso JMS para Customer Score</con:comment>
+                <con:context/>
+                <con:actions>
+                    <con3:assign varName="faultStage" xmlns:con1="http://www.bea.com/wli/sb/pipeline/config" xmlns:con="http://www.bea.com/wli/sb/typesystem/config">
+                        <con2:comment>Transformar SOAP Fault generado por la validación a el Fault para los servicios SOA de NMP</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7412</con2:id>
+                        <con3:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="GestionClientes/BatchScore/Resources/Transformations/TRBatchPrendarioFault"/>
+                                <con2:input>$fault</con2:input>
+                                <con2:param name="AppError">
+                                    <con2:path>'(Send Ops. to Score)'</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con3:expr>
+                    </con3:assign>
+                    <con4:route>
+                        <con2:comment>Enviar petición a recurso JMS después de haberse generado un error en su procesamiento</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7bfb</con2:id>
+                        <con4:service ref="GestionClientes/BatchScore/Business Services/OSBEncolarErrorToScoreBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con4:outboundTransform>
+                            <con3:routing-options>
+                                <con2:comment>Establecer que al configuración será de tipo One-Way y Exactly Once</con2:comment>
+                                <con2:id>_ActionId-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7bfa</con2:id>
+                                <con3:mode>request</con3:mode>
+                                <con3:qualityOfService>exactly-once</con3:qualityOfService>
+                            </con3:routing-options>
+                            <con3:transport-headers>
+                                <con2:comment>Propagar el ID de la petición de origen en el Correlation ID</con2:comment>
+                                <con2:id>_ActionId-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7bf9</con2:id>
+                                <con3:header-set>outbound-request</con3:header-set>
+                                <con3:header value="expression" name="JMSCorrelationID">
+                                    <con2:xqueryText>fn:concat($msgId,'.SCR')</con2:xqueryText>
+                                </con3:header>
+                            </con3:transport-headers>
+                            <con3:replace contents-only="true" varName="body">
+                                <con2:comment>Asignar payload de la petición fallida a la variable body</con2:comment>
+                                <con2:id>_ActionId-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7bf8</con2:id>
+                                <con3:location>
+                                    <con2:xpathText>.</con2:xpathText>
+                                </con3:location>
+                                <con3:expr>
+                                    <con2:xqueryText>$BatchSidEvReq</con2:xqueryText>
+                                </con3:expr>
+                            </con3:replace>
+                        </con4:outboundTransform>
+                    </con4:route>
+                    <con4:route>
+                        <con2:comment>Reportar en bitácora el error ocurrido en el procesamiento del evento hacia Customer Score</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7bf7</con2:id>
+                        <con4:service ref="GestionClientes/BatchScore/Business Services/OSBRegistrarBitacoraBatchPrestamoBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con4:operation>insert</con4:operation>
+                        <con4:outboundTransform>
+                            <con3:routing-options>
+                                <con2:comment>Establecer que al configuración será de tipo One-Way y Exactly Once</con2:comment>
+                                <con2:id>_ActionId-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7bf6</con2:id>
+                                <con3:mode>request</con3:mode>
+                                <con3:qualityOfService>exactly-once</con3:qualityOfService>
+                            </con3:routing-options>
+                            <con3:replace contents-only="true" varName="body">
+                                <con2:comment>Generar petición para el registro en la bitácora de acuerdo a la estructura requerida</con2:comment>
+                                <con2:id>_ActionId-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7bf4</con2:id>
+                                <con3:location>
+                                    <con2:xpathText>.</con2:xpathText>
+                                </con3:location>
+                                <con3:expr>
+                                    <con2:xqueryTransform>
+                                        <con2:resource ref="GestionClientes/BatchScore/Resources/Transformations/TRErrorBatchPrestamoToBitacora"/>
+                                        <con2:param name="idMensaje">
+                                            <con2:path>fn:concat($msgId,'.SCR')</con2:path>
+                                        </con2:param>
+                                        <con2:param name="codigoError">
+                                            <con2:path>$faultStage/*:detail/*:messageError/*:codigoError/text()</con2:path>
+                                        </con2:param>
+                                        <con2:param name="fechaRegistro">
+                                            <con2:path>fn:current-dateTime()</con2:path>
+                                        </con2:param>
+                                        <con2:param name="componente">
+                                            <con2:path>'Score Flow: OSBBatchEventPrendarioScorePL'</con2:path>
+                                        </con2:param>
+                                        <con2:param name="paylodad">
+                                            <con2:path>fn-bea:inlinedXML('&lt;TaDetalleOperacionCollection/>')</con2:path>
+                                        </con2:param>
+                                        <con2:param name="detalleError">
+                                            <con2:path>$faultStage/*:detail/*:messageError/*:descripcionError/text()</con2:path>
+                                        </con2:param>
+                                    </con2:xqueryTransform>
+                                </con3:expr>
+                            </con3:replace>
+                        </con4:outboundTransform>
+                    </con4:route>
+                    <con3:replace contents-only="true" varName="body">
+                        <con2:comment>Generar respuesta del servicio</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7236</con2:id>
+                        <con3:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con3:location>
+                        <con3:expr>
+                            <con2:xqueryText>fn-bea:inlinedXML(fn:concat("&lt;nmp:response xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Services/BatchScore'>",
+                              "&lt;nmp:ack>OK&lt;/nmp:ack>",
+                            "&lt;/nmp:response>"))</con2:xqueryText>
+                        </con3:expr>
+                    </con3:replace>
+                    <con2:reply isError="true">
+                        <con2:comment>Responder con error</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7bf3</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con1:pipeline>
+        <con1:pipeline type="error" name="error-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7f6a">
+            <con1:stage id="_StageId-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7f69" name="StageValidationMsg">
+                <con1:comment>Manejo de las excepciones que se generan cuando sucede un error de validación en la estructura de la petición</con1:comment>
+                <con1:context/>
+                <con1:actions>
+                    <con3:assign varName="faultStage">
+                        <con2:comment>Transformar SOAP Fault generado por la validación a el Fault para los servicios SOA de NMP</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7446</con2:id>
+                        <con3:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="GestionClientes/BatchScore/Resources/Transformations/TRBatchPrendarioFault"/>
+                                <con2:input>$fault</con2:input>
+                                <con2:param name="AppError">
+                                    <con2:path>'(Validation Msg to Score)'</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con3:expr>
+                    </con3:assign>
+                    <con4:route>
+                        <con2:comment>Registrar en la bitácora del servicio el error de validación generado</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7f03</con2:id>
+                        <con4:service ref="GestionClientes/BatchScore/Business Services/OSBRegistrarBitacoraBatchPrestamoBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con4:operation>insert</con4:operation>
+                        <con4:outboundTransform>
+                            <con3:routing-options>
+                                <con2:comment>Establecer que al configuración será de tipo One-Way y Exactly Once</con2:comment>
+                                <con2:id>_ActionId-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7efc</con2:id>
+                                <con3:mode>request</con3:mode>
+                                <con3:qualityOfService>exactly-once</con3:qualityOfService>
+                            </con3:routing-options>
+                            <con3:replace contents-only="true" varName="body" xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:jca="http://www.bea.com/wli/sb/transports/jca">
+                                <con2:comment>Generar petición para el registro en la bitácora de acuerdo a la estructura requerida</con2:comment>
+                                <con2:id>_ActionId-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7ec5</con2:id>
+                                <con3:location>
+                                    <con2:xpathText>.</con2:xpathText>
+                                </con3:location>
+                                <con3:expr>
+                                    <con2:xqueryTransform>
+                                        <con2:resource ref="GestionClientes/BatchScore/Resources/Transformations/TRErrorBatchPrestamoToBitacora"/>
+                                        <con2:param name="idMensaje">
+                                            <con2:path>$msgId</con2:path>
+                                        </con2:param>
+                                        <con2:param name="codigoError">
+                                            <con2:path>$faultStage/*:detail/*:messageError/*:codigoError/text()</con2:path>
+                                        </con2:param>
+                                        <con2:param name="fechaRegistro">
+                                            <con2:path>fn:current-dateTime()</con2:path>
+                                        </con2:param>
+                                        <con2:param name="componente">
+                                            <con2:path>'Score Flow: OSBBatchEventPrendarioScorePL'</con2:path>
+                                        </con2:param>
+                                        <con2:param name="paylodad">
+                                            <con2:path>$BatchScoreEvReq</con2:path>
+                                        </con2:param>
+                                        <con2:param name="detalleError">
+                                            <con2:path>$faultStage/*:detail/*:messageError/*:descripcionError/text()</con2:path>
+                                        </con2:param>
+                                    </con2:xqueryTransform>
+                                </con3:expr>
+                            </con3:replace>
+                        </con4:outboundTransform>
+                    </con4:route>
+                    <con3:replace contents-only="true" varName="body" xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:jca="http://www.bea.com/wli/sb/transports/jca">
+                        <con2:comment>Generar respuesta del servicio</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7337</con2:id>
+                        <con3:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con3:location>
+                        <con3:expr>
+                            <con2:xqueryText>fn-bea:inlinedXML(fn:concat("&lt;nmp:response xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Services/BatchScore'>",
+                              "&lt;nmp:ack>OK&lt;/nmp:ack>",
+                            "&lt;/nmp:response>"))</con2:xqueryText>
+                        </con3:expr>
+                    </con3:replace>
+                    <con2:reply isError="true">
+                        <con2:comment>Responder con error</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7eff</con2:id>
+                    </con2:reply>
+                </con1:actions>
+            </con1:stage>
+        </con1:pipeline>
+        <con1:pipeline type="request" name="PipelinePairNode1_request" errorHandler="_onErrorHandler-4696946362066881433-19b24fc9.14bc6e46669.-7ed2">
+            <con1:stage name="stageValidation" errorHandler="error-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7f6a">
+                <con1:comment>Obtener ID de la petición del origen, respaldo de la petición y validación de la estructura del payload</con1:comment>
+                <con1:context>
+                    <con2:varNsDecl namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/DBAdapterBatchScore" prefix="dbad"/>
+                    <con2:varNsDecl namespace="http://servicios.montedepiedad.com.mx/NMP/Services/BatchScore" prefix="bat"/>
+                </con1:context>
+                <con1:actions>
+                    <con3:assign varName="BatchScoreEvReq">
+                        <con2:comment>Respaldar payload del evento para Customer Score obtenido del recurso JMS</con2:comment>
+                        <con2:id>_ActionId-2356119021643723595-36f3e6f.14db00a401e.-7bb4</con2:id>
+                        <con3:expr>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con3:expr>
+                    </con3:assign>
+                    <con3:assign varName="msgId">
+                        <con2:comment>Obtener el ID origen de la petición</con2:comment>
+                        <con2:id>_ActionId-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7f9d</con2:id>
+                        <con3:expr>
+                            <con2:xqueryText>$inbound/ctx:transport/ctx:request/tp:headers/jms:JMSCorrelationID/text()</con2:xqueryText>
+                        </con3:expr>
+                    </con3:assign>
+                    <con3:validate>
+                        <con2:comment>Validar que la estructura de la petición esta cumpliendo con la definida en el esquema del servicio</con2:comment>
+                        <con2:id>_ActionId-6652016243404353549-2cf4e65b.14bbdc9c088.-7e0c</con2:id>
+                        <con3:schema ref="GestionClientes/BatchScore/Resources/Schemas/OSBBatchPrendarioSvcXSD"/>
+                        <con3:schemaElement xmlns:dbad="http://xmlns.oracle.com/pcbpel/adapter/db/top/DBAdapterBatchScore" xmlns:bat="http://servicios.montedepiedad.com.mx/NMP/Services/BatchScore">bat:TaDetalleOperacionCollection</con3:schemaElement>
+                        <con3:varName>body</con3:varName>
+                        <con3:location>
+                            <con2:xpathText>./*:TaDetalleOperacionCollection</con2:xpathText>
+                        </con3:location>
+                        <con3:resultVarName/>
+                    </con3:validate>
+                </con1:actions>
+            </con1:stage>
+            <con1:stage name="stageEnviarOperacionesToScore" errorHandler="error-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7c4a">
+                <con5:context xmlns:jca="http://www.bea.com/wli/sb/transports/jca" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con5="http://www.bea.com/wli/sb/pipeline/config">
+                    <con2:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPrestamo"/>
+                    <con2:varNsDecl namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/DBAdapterBatchScore" prefix="dbad"/>
+                    <con2:varNsDecl prefix="bat" namespace="http://servicios.montedepiedad.com.mx/NMP/Services/BatchScore"/>
+                </con5:context>
+                <con5:actions xmlns:jca="http://www.bea.com/wli/sb/transports/jca" xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con5="http://www.bea.com/wli/sb/pipeline/config">
+                    <con3:assign varName="dvmTipoOperacion">
+                        <con2:comment>Almacenar en variable DVM de tipo operaciones</con2:comment>
+                        <con2:id>_ActionId-4696946362066881433-19b24fc9.14bc6e46669.-7e9f</con2:id>
+                        <con3:expr>
+                            <con2:xqueryTransform>
+                                <con2:resource ref="GestionClientes/BatchScore/Resources/Transformations/OSBTipoOperacionBatchPrendarioDVM"/>
+                            </con2:xqueryTransform>
+                        </con3:expr>
+                    </con3:assign>
+                    <con3:replace varName="body" contents-only="true">
+                        <con2:comment>Generar estructura prestamo de los eventos contenidos en la petición y descartar aquellas que no se deben enviar a Customer Score</con2:comment>
+                        <con2:id>_ActionId-6652016243404353549-2cf4e65b.14bbdc9c088.-7e2e</con2:id>
+                        <con3:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con3:location>
+                        <con3:expr>
+                            <con2:xqueryTransform>
+                                <con2:resource ref="GestionClientes/BatchScore/Resources/Transformations/TREstructuraOpsLoanToScore"/>
+                                <con2:param name="dvmTipoOperacion">
+                                    <con2:path>$dvmTipoOperacion</con2:path>
+                                </con2:param>
+                                <con2:param name="operaciones">
+                                    <con2:path>$body/*</con2:path>
+                                </con2:param>
+                            </con2:xqueryTransform>
+                        </con3:expr>
+                    </con3:replace>
+                    <con3:assign varName="TotalEventosBatchScore">
+                        <con2:comment>Obtener el total de eventos prestamo contenidos en la petición</con2:comment>
+                        <con2:id>_ActionId-6652016243404353549-2cf4e65b.14bbdc9c088.-7e2d</con2:id>
+                        <con3:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:count($body/nmp:BatchScoreEventsDB/nmp:updatePrestamoRequest)</con:xqueryText>
+                        </con3:expr>
+                    </con3:assign>
+                    <con3:assign varName="ListaEventosBatchScore">
+                        <con2:comment>Asignar estructura de la petición a viariable para realizar el recorrido y extracción de los eventos de tipo prestamo</con2:comment>
+                        <con2:id>_ActionId-6652016243404353549-2cf4e65b.14bbdc9c088.-7e2c</con2:id>
+                        <con3:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con3:expr>
+                    </con3:assign>
+                    <con3:foreach>
+                        <con2:comment>Realizar el recorrido y extracción de los eventos de tipo prestamo para su envió a Customer Score</con2:comment>
+                        <con2:id>_ActionId-6652016243404353549-2cf4e65b.14bbdc9c088.-7e27</con2:id>
+                        <con3:variable>ListaEventosBatchScore</con3:variable>
+                        <con3:expression>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./nmp:BatchScoreEventsDB/nmp:updatePrestamoRequest</con:xpathText>
+                        </con3:expression>
+                        <con3:value-variable>EventoBatchScore</con3:value-variable>
+                        <con3:index-variable>indexListaEventosBatchScore</con3:index-variable>
+                        <con3:total-variable>TotalEventosBatchScore</con3:total-variable>
+                        <con3:actions>
+                            <con3:assign varName="msgIdOp">
+                                <con2:comment>Adicionar un indice al ID de la petición, para identificar la el evento de tipo prestamo a enviar a Customer Score</con2:comment>
+                                <con2:id>_ActionId-N3f57c7ff.N3a6c3bcb.0.157f72f204c.N7b5e</con2:id>
+                                <con3:expr>
+                                    <con2:xqueryText>fn:concat($msgId, '.', $indexListaEventosBatchScore)</con2:xqueryText>
+                                </con3:expr>
+                            </con3:assign>
+                            <con3:replace varName="body" contents-only="true">
+                                <con2:comment>Asignar a la variable body el evento prestamo que se ha extraido de la petición para su envío a Customer Score</con2:comment>
+                                <con2:id>_ActionId-6652016243404353549-2cf4e65b.14bbdc9c088.-7e2a</con2:id>
+                                <con3:location>
+                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                </con3:location>
+                                <con3:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$EventoBatchScore</con:xqueryText>
+                                </con3:expr>
+                            </con3:replace>
+                            <con3:ifThenElse>
+                                <con2:comment>Verificar si existen operaciones para propagarse a Customer Score</con2:comment>
+                                <con2:id>_ActionId-5559266075854687503--3f767a98.14bd7811bd1.-7ffb</con2:id>
+                                <con3:case>
+                                    <con3:condition>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:count($body/nmp:updatePrestamoRequest/nmp:ListaOperaciones/nmp:Operacion) > 0</con:xqueryText>
+                                    </con3:condition>
+                                    <con3:actions>
+                                        <con4:route>
+                                            <con2:comment>Enviar operacion prendaria a OSBBatchOpsPrendarioToScorePXY para su envío a Customer Score</con2:comment>
+                                            <con2:id>_ActionId-5559266075854687503--3f767a98.14bd7811bd1.-7ff8</con2:id>
+                                            <con4:service ref="GestionClientes/BatchScore/Proxy Services/OSBBatchOpsPrendarioToScorePXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                            <con4:outboundTransform>
+                                                <con3:routing-options>
+                                                    <con2:comment>Establecer que al configuración será de tipo One-Way y Exactly Once</con2:comment>
+                                                    <con2:id>_ActionId-5559266075854687503--3f767a98.14bd7811bd1.-7ff7</con2:id>
+                                                    <con3:mode>request</con3:mode>
+                                                    <con3:qualityOfService>exactly-once</con3:qualityOfService>
+                                                </con3:routing-options>
+                                                <con3:transport-headers copy-all="false">
+                                                    <con2:comment>Propagar el ID de la petición de origen en el Correlation ID para dar trazabilidad</con2:comment>
+                                                    <con2:id>_ActionId-a1e030f.24c85e56.12.15772fa3783.N7ffc</con2:id>
+                                                    <con3:header-set>outbound-request</con3:header-set>
+                                                    <con3:header name="JMSCorrelationID" value="expression">
+                                                        <con2:xqueryText>fn:data($msgIdOp)</con2:xqueryText>
+                                                    </con3:header>
+                                                </con3:transport-headers>
+                                            </con4:outboundTransform>
+                                        </con4:route>
+                                    </con3:actions>
+                                </con3:case>
+                            </con3:ifThenElse>
+                        </con3:actions>
+                    </con3:foreach>
+                </con5:actions>
+            </con1:stage>
+        </con1:pipeline>
+        <con1:flow>
+            <con1:pipeline-node name="PipelineBatchPrendarioToScore">
+                <con1:request>PipelinePairNode1_request</con1:request>
+                <con1:response>PipelinePairNode1_response</con1:response>
+            </con1:pipeline-node>
+        </con1:flow>
+    </con1:router>
+</con:pipelineEntry>

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="Utileria/LeerArchivoNotificaciones/Resources/WSDL/NMPLeerNotificacionesClientesANotificar-concreteWSDL"/>
+            <con:binding>
+                <con:name>Read_ptt-binding</con:name>
+                <con:namespace>http://xmlns.oracle.com/pcbpel/adapter/file/LecturaArchivoNotificaciones/NMPLeerArchivoNotificacionesPush/LecturaClientesANotificar</con:namespace>
+            </con:binding>
+        </con:binding>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router errorHandler="_onErrorHandler-a1e030f.N71c997df.10.15aaab8381a.N7ffe">
+        <con:pipeline name="_onErrorHandler-a1e030f.N71c997df.10.15aaab8381a.N7ffe" type="error">
+            <con:stage name="General Error Handler Stage" id="_StageId-N53e1fd0e.N2dea3070.0.15122608620.N7f1f" xmlns:con2="http://www.bea.com/wli/sb/pipeline/config" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+                <con:context>
+                    <con1:userNsDecl prefix="con" namespace="http://www.bea.com/wli/sb/context"/>
+                    <con1:userNsDecl prefix="con1" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                    <con1:userNsDecl prefix="ns1" namespace="urn:mx.com.nmp.clientes"/>
+                    <con1:userNsDecl prefix="NMPConsultaC" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente"/>
+                    <con1:userNsDecl prefix="crm" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal"/>
+                    <con1:userNsDecl prefix="nmp4" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPSucursal"/>
+                    <con1:varNsDecl prefix="nmp2" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente"/>
+                    <con1:varNsDecl prefix="cit" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/CitaType"/>
+                    <con1:varNsDecl prefix="nmp3" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCitas"/>
+                    <con1:varNsDecl prefix="nmp5" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPNotificacionesPush"/>
+                    <con4:variable name="messageFault" path="$messageFault" asChild="false" xmlns:con4="http://www.bea.com/wli/sb/typesystem/config">
+                        <con4:schema ref="Common/XSD/NMPStandardMessage" element="messageError"/>
+                    </con4:variable>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="header" contents-only="false" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con4:id xmlns:con4="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N71c997df.12.15aaacbdd4e.N7ffe</con4:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML('&lt;soapenv:Header xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">&lt;/soapenv:Header>')</con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:replace varName="body" contents-only="true" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con4:id xmlns:con4="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N71c997df.12.15aaacbdd4e.N7ffd</con4:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="Utileria/LeerArchivoNotificaciones/Resources/Transformations/TransformFault"/>
+                                <con:input>$fault</con:input>
+                            </con:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con3:log>
+                        <con1:id>_ActionId-a1e030f.N71c997df.1a.15aaef69f65.N8000</con1:id>
+                        <con3:logLevel>debug</con3:logLevel>
+                        <con3:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault</con:xqueryText>
+                        </con3:expr>
+                        <con3:message/>
+                    </con3:log>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-a1e030f.N71c997df.12.15aaacbdd4e.N7ffb</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode1_request" type="request">
+            <con:stage name="stage_LeerArchivo">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Services/NMPNotificacionesPush" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:report xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.Na171ddb.14.15aa54a9c92.N7ff9</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con1:expr>
+                        <con1:labels>
+                            <con1:key>LeerNotificacionesRequest</con1:key>
+                            <con1:varName>body</con1:varName>
+                            <con1:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./nmp:mensajes/nmp:mensaje</con:xpathText>
+                            </con1:value>
+                        </con1:labels>
+                    </con1:report>
+                </con:actions>
+            </con:stage>
+            <con:stage name="stage_LLamadoNotificacion">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Services/NMPNotificacionesPush" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="nmp1" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPNotificacionesPush" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:foreach xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N71c997df.19.15aaec2abd2.N8000</con2:id>
+                        <con1:variable>body</con1:variable>
+                        <con1:expression>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./nmp1:mensajes/nmp1:mensaje</con:xpathText>
+                        </con1:expression>
+                        <con1:value-variable>mensajes</con1:value-variable>
+                        <con1:index-variable>indice</con1:index-variable>
+                        <con1:total-variable>contador</con1:total-variable>
+                        <con1:actions>
+                            <con1:wsCallout>
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N71c997df.19.15aaec2abd2.N7fff</con2:id>
+                                <con1:service ref="Utileria/NotificacionesPush/ProxyServices/NMPNotificacionesPushSoapPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                <con1:operation>notificar</con1:operation>
+                                <con1:request>
+                                    <con1:body wrapped="true">body</con1:body>
+                                    <con1:header/>
+                                </con1:request>
+                                <con1:response>
+                                    <con1:body wrapped="true">bodyRes</con1:body>
+                                    <con1:header/>
+                                </con1:response>
+                                <con1:requestTransform>
+                                    <con1:assign varName="body" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N71c997df.19.15aaec2abd2.N7ffe</con2:id>
+                                        <con1:expr>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<soap-env:Body>
+      <nmp1:input>
+         <nmp1:data>
+            <nmp1:idCliente>{$mensajes/nmp1:Cliente/text()}</nmp1:idCliente>
+            <nmp1:message>{$mensajes/nmp1:message/text()}</nmp1:message>
+         </nmp1:data>
+      </nmp1:input>  
+</soap-env:Body>]]></con:xqueryText>
+                                        </con1:expr>
+                                    </con1:assign>
+                                    <con2:report xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config">
+                                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N71c997df.19.15aaec2abd2.N7ffd</con3:id>
+                                        <con2:expr>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                                        </con2:expr>
+                                    </con2:report>
+                                </con1:requestTransform>
+                                <con1:responseTransform/>
+                            </con1:wsCallout>
+                        </con1:actions>
+                    </con1:foreach>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode1_response" type="response"/>
+        <con:flow>
+            <con:pipeline-node name="PipelinePairNode1">
+                <con:request>PipelinePairNode1_request</con:request>
+                <con:response>PipelinePairNode1_response</con:response>
+            </con:pipeline-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

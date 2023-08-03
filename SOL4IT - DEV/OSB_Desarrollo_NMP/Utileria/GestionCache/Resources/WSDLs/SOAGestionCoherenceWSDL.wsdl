@@ -1,0 +1,110 @@
+<wsdl:definitions name="SOACoherenceGetBS" targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Services/GestionCoherence" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Services/GestionCoherence" xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/" xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:gc="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCache" xmlns:coh="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCoherence" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCache" schemaLocation="../Schemas/NMPGestionCacheXSD.xsd"/>
+    </schema>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/GestionCoherence" schemaLocation="../Schemas/SOAGestionCoherenceXSD.xsd"/>
+    </schema>
+  </wsdl:types>
+  <wsdl:message name="consultarLlaveRequest">
+    <wsdl:part name="req" element="coh:GetRequest"/>
+  </wsdl:message>
+  <wsdl:message name="consultarLlaveResponse">
+    <wsdl:part name="res" element="gc:llavesXML"/>
+  </wsdl:message>
+  <wsdl:message name="generarLlaveRequest">
+    <wsdl:part name="req" element="gc:llavesXML"/>
+  </wsdl:message>
+  <wsdl:message name="generarLlaveResponse">
+    <wsdl:part name="res" element="coh:PutResponse"/>
+  </wsdl:message>
+  <wsdl:message name="listarLlavesRequest">
+    <wsdl:part name="req" element="coh:QueryRequest"/>
+  </wsdl:message>
+  <wsdl:message name="listarLlavesResponse">
+    <wsdl:part name="res" element="gc:listarLlavesResponse"/>
+  </wsdl:message>
+  <wsdl:message name="removerLlaveRequest">
+    <wsdl:part name="req" element="coh:RemoveRequest"/>
+  </wsdl:message>
+  <wsdl:message name="removerLlaveResponse">
+    <wsdl:part name="res" element="coh:RemoveResponse"/>
+  </wsdl:message>
+  <wsdl:message name="depurarCacheRequest">
+    <wsdl:part name="req" element="coh:RemoveRequest"/>
+  </wsdl:message>
+  <wsdl:message name="depurarCacheResponse">
+    <wsdl:part name="res" element="coh:RemoveResponse"/>
+  </wsdl:message>
+  <wsdl:portType name="GestionCoherencePT">
+    <wsdl:operation name="consultarLlave">
+      <wsdl:input message="tns:consultarLlaveRequest"/>
+      <wsdl:output message="tns:consultarLlaveResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="generarLlave">
+      <wsdl:input message="tns:generarLlaveRequest"/>
+      <wsdl:output message="tns:generarLlaveResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="listarLlaves">
+      <wsdl:input message="tns:listarLlavesRequest"/>
+      <wsdl:output message="tns:listarLlavesResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="removerLlave">
+      <wsdl:input message="tns:removerLlaveRequest"/>
+      <wsdl:output message="tns:removerLlaveResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="depurarCache">
+      <wsdl:input message="tns:depurarCacheRequest"/>
+      <wsdl:output message="tns:depurarCacheResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="GestionCoherencePTSOAP11Binding" type="tns:GestionCoherencePT">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="consultarLlave">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/GestionCoherence/consultarLlave"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="req"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="res"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="generarLlave">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/GestionCoherence/generarLlave"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="req"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="res"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="listarLlaves">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/GestionCoherence/listarLlaves"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="req"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="res"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="removerLlave">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/GestionCoherence/removerLlave"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="req"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="res"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="depurarCache">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/GestionCoherence/depurarCache"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="req"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="res"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+</wsdl:definitions>

@@ -1,0 +1,125 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Wed Jan 04 15:08:17 CST 2017
+  Author:  Sol4IT Mexico
+  Type: BPEL 2.0 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="ObtenerArchivoProrrateoBPEL"
+               targetNamespace="http://xmlns.oracle.com/ObtenerArchivoProrrateo/ObtenerArchivoProrrateoPrj/ObtenerArchivoProrrateoBPEL"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/ObtenerArchivoProrrateo/ObtenerArchivoProrrateoPrj/ObtenerArchivoProrrateoBPEL"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:ui="http://xmlns.oracle.com/soa/designer"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ns2="http://qualitas.com.mx/comunes/objetosComunes/v1/"
+         xmlns:ns1="http://qualitas.com.mx/Comunes/Prorrateo/obtenerArchivoProrrateo/v1/"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ess="http://xmlns.oracle.com/scheduler" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap" xml:id="id_1">
+
+    <import ui:processWSDL="true" namespace="http://xmlns.oracle.com/ObtenerArchivoProrrateo/ObtenerArchivoProrrateoPrj/ObtenerArchivoProrrateoBPEL" location="../WSDLs/ObtenerArchivoProrrateoBPEL.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"
+            xml:id="id_2"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks xml:id="id_3">
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="obtenerarchivoprorrateobpel_client" partnerLinkType="client:ObtenerArchivoProrrateoBPEL" myRole="ObtenerArchivoProrrateoBPELProvider"
+                 xml:id="id_4"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables xml:id="id_5">
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:ObtenerArchivoProrrateoBPELRequestMessage" xml:id="id_6"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:ObtenerArchivoProrrateoBPELResponseMessage" xml:id="id_7"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main" xml:id="id_8">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in ObtenerArchivoProrrateoBPEL.wsdl) -->
+    <receive name="receiveInput" partnerLink="obtenerarchivoprorrateobpel_client" portType="client:ObtenerArchivoProrrateoBPEL" operation="process" variable="inputVariable" createInstance="yes"
+             xml:id="id_9"/>
+    <if name="idSolicitud" xml:id="id_10">
+      <documentation xml:id="id_11">
+        <![CDATA[12345]]>
+      </documentation>
+      <condition xml:id="id_12">$inputVariable.payload/ns1:Input/ns1:id_solicitud != 12345</condition>
+      <assign name="Assign_Binario" xml:id="id_13">
+        <copy xml:id="id_14">
+          <from xml:id="id_15">"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"</from>
+          <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_16">$outputVariable.payload/ns1:resultDataResponse/ns1:archivoProrrateo</to>
+        </copy>
+        <copy xml:id="id_17">
+          <from xml:id="id_18">"Archivo_Prueba"</from>
+          <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_19">$outputVariable.payload/ns1:resultDataResponse/ns1:nombreArchivo</to>
+        </copy>
+        <copy xml:id="id_20">
+          <from xml:id="id_21">0</from>
+          <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_22">$outputVariable.payload/ns1:OperationResponse/ns2:codigoRespuesta</to>
+        </copy>
+        <copy xml:id="id_23">
+          <from xml:id="id_24">ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+          <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_25">$outputVariable.payload/ns1:OperationResponse/ns2:fecha</to>
+        </copy>
+        <copy xml:id="id_26">
+          <from xml:id="id_27">"Se obtuvo Archivo correctamente"</from>
+          <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_28">$outputVariable.payload/ns1:OperationResponse/ns2:descripcionRespuesta</to>
+        </copy>
+      </assign>
+      <else xml:id="id_29">
+        <assign name="Assign_Error" xml:id="id_30">
+          <copy xml:id="id_31">
+            <from xml:id="id_32">1</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_33">$outputVariable.payload/ns1:OperationResponse/ns2:codigoRespuesta</to>
+          </copy>
+          <copy xml:id="id_34">
+            <from xml:id="id_35">"No se encontro ningun archivo"</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_36">$outputVariable.payload/ns1:OperationResponse/ns2:descripcionRespuesta</to>
+          </copy>
+          <copy xml:id="id_37">
+            <from xml:id="id_38">ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+            <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_39">$outputVariable.payload/ns1:OperationResponse/ns2:fecha</to>
+          </copy>
+        </assign>
+      </else>
+    </if>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="obtenerarchivoprorrateobpel_client" portType="client:ObtenerArchivoProrrateoBPEL" operation="process" variable="outputVariable"
+           xml:id="id_40"/>
+  </sequence>
+</process>

@@ -1,0 +1,179 @@
+<xsd:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:veh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPVehiculo" xmlns:cot="http://servicios.montedepiedad.com.mx/NMP/Schema/Cotizador" xmlns:NMPIniciaASR="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculoSinResguardo/Flujo" xmlns:NMPPers="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPersona" xmlns:NMPDoc="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo">
+  <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPVehiculo" schemaLocation="../../../../Common/XSD/NMPVehiculoXSD.xsd"/>
+  <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPersona" schemaLocation="../../../../Common/XSD/NMPPersona.xsd"/>
+  <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Cotizador" schemaLocation="../../../Cotizador/Resources/Schemas/NMPCotizadorSvcXSD.xsd"/>
+  <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculoSinResguardo/Flujo" schemaLocation="NMPFlujoVehiculosSinResguardoSvcXSD.xsd"/>
+  <xsd:import schemaLocation="../../../../Utileria/AdminDocumentos/Resources/Schemas/NMPAdministraDocumentosXSD.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc"/>
+  <xsd:element name="obtenerSolicitudesRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="NMPIniciaASR:numeroCredencial"/>
+        <xsd:element name="fechainicio" type="xsd:dateTime" minOccurs="0" nillable="true"/>
+        <xsd:element name="fechafin" type="xsd:dateTime" minOccurs="0" nillable="true"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="obtenerSolicitudesResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="solicitudes">
+          <xsd:complexType>
+            <xsd:sequence minOccurs="1">
+              <xsd:element name="solicitud" minOccurs="0" maxOccurs="unbounded">
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element ref="NMPIniciaASR:numeroCredencial"/>
+                    <xsd:element ref="NMPIniciaASR:folio"/>
+                    <xsd:element ref="NMPIniciaASR:estadoSolicitud"/>
+                    <xsd:element name="fechaSolicitud" type="xsd:dateTime"/>
+                    <xsd:element name="montoSolicitado" type="xsd:decimal"/>
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="obtenerMontoPrestamoRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="vehiculo">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element ref="veh:marca"/>
+              <xsd:element ref="veh:submarca"/>
+              <xsd:element ref="veh:modelo"/>
+              <xsd:element ref="veh:version"/>
+              <xsd:element ref="veh:kilometraje"/>
+              <xsd:element ref="veh:complementos"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="cliente" type="cot:CalificacionType" minOccurs="0"/>
+        <xsd:element name="cotizar" type="cot:CotizarVehiculoBaseType"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="obtenerMontoPrestamoResponse" type="cot:CotizacionType"/>
+  <xsd:element name="generarSolicitudRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element minOccurs="1" ref="NMPIniciaASR:cliente"/>
+        <xsd:element name="vehiculo" type="veh:vehiculoType"/>
+        <xsd:element minOccurs="1" ref="NMPIniciaASR:cotizacion"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="generarSolicitudResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="NMPIniciaASR:folio"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="cancelarSolicitudRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="NMPIniciaASR:folio"/>
+        <xsd:element ref="NMPIniciaASR:numeroCredencial"/>
+        <xsd:element name="motivo" type="xsd:string" minOccurs="0"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="cancelarSolicitudResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="codigoRespuesta" type="xsd:string"/>
+        <xsd:element name="descripcion" type="xsd:string"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="actualizarSolicitudRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="NMPIniciaASR:folio"/>
+        <xsd:element ref="NMPIniciaASR:estadoSolicitud"/>
+        <xsd:element minOccurs="1" ref="NMPIniciaASR:cliente"/>
+        <xsd:element name="vehiculo" type="veh:vehiculoType"/>
+        <xsd:element minOccurs="1" name="cotizacion" type="cot:cotizacionSolicitudType"/>
+        <xsd:element name="Documentos" type="NMPDoc:AlmacenaDocAttachmentType" minOccurs="0"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="actualizarSolicitudResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="codigoRespuesta" type="xsd:string"/>
+        <xsd:element name="descripcion" type="xsd:string"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="consultarSolicitudRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="NMPIniciaASR:folio"/>
+        <xsd:element ref="NMPIniciaASR:numeroCredencial"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="consultarSolicitudResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="NMPIniciaASR:folio"/>
+        <xsd:element ref="NMPIniciaASR:estadoSolicitud"/>
+        <xsd:element minOccurs="1" ref="NMPIniciaASR:cliente"/>
+        <xsd:element name="vehiculo" minOccurs="1" type="veh:vehiculoType"/>
+        <xsd:element name="cotizacion" minOccurs="1" type="cot:cotizacionSolicitudType"/>
+        <xsd:element name="documentos" type="NMPDoc:documentoURLType" minOccurs="0"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="analisisCreditoRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="NMPIniciaASR:folio"/>
+        <xsd:element ref="NMPIniciaASR:numeroCredencial"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="analisisCreditoResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="codigoRespuesta" type="xsd:string"/>
+        <xsd:element name="descripcion" type="xsd:string"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="generarContratoRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="element1"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="generarContratoResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="element1"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="firmarContratoRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="NMPIniciaASR:folio"/>
+        <xsd:element ref="NMPIniciaASR:numeroCredencial"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="firmarContratoResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="codigoRespuesta" type="xsd:string"/>
+        <xsd:element name="descripcion" type="xsd:string"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>

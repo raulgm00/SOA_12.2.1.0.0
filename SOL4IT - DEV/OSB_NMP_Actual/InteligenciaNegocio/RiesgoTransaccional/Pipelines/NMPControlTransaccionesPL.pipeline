@@ -1,0 +1,485 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:wsdl ref="InteligenciaNegocio/RiesgoTransaccional/Resources/WSDLs/GestionTrabajoWSDL"/>
+            <con:binding>
+                <con:name>RTGestionTrabajoPortBinding</con:name>
+                <con:namespace>http://comunes.rt.nmp.com/</con:namespace>
+            </con:binding>
+        </con:binding>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:pipeline name="PipelinePairNode4_response" type="response"/>
+        <con:pipeline name="PipelinePairNode1_response" type="response">
+            <con:stage name="SetResponse">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="com" namespace="http://comunes.rt.nmp.com/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.23.15ab2c21468.N7ffe</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">&lt;ns0:continuarResponse xmlns:ns0="http://comunes.rt.nmp.com/">
+         &lt;return>{$continuar}&lt;/return>
+      &lt;/ns0:continuarResponse></con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode4_request" type="request">
+            <con:stage name="ConfirmarInicio">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="com" namespace="http://comunes.rt.nmp.com/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:wsCallout xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.7.15a6612241f.N7ffb</con2:id>
+                        <con1:service ref="InteligenciaNegocio/RiesgoTransaccional/ProxyServices/NMPParametrizacionTransaccionesPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                        <con1:operation>selectByPrimaryKey</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">parametrizacionInput</con1:body>
+                            <con1:header/>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">parametrizacionOutput</con1:body>
+                            <con1:header/>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:assign varName="parametrizacionInput">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.7.15a6612241f.N7ffa</con2:id>
+                                <con1:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">&lt;par:ParametrosGlobalesPrimaryKey xmlns:par="http://xmlns.oracle.com/pcbpel/adapter/db/top/ParametracionService">
+&lt;par:parametro>rt.global.numTxs&lt;/par:parametro>
+&lt;/par:ParametrosGlobalesPrimaryKey></con:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:requestTransform>
+                        <con1:responseTransform>
+                            <con1:assign varName="transaccionesCurso">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.7.15a6612241f.N7ff9</con2:id>
+                                <con1:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$parametrizacionOutput//*:ParametrosGlobales/*:valor/text()</con:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:responseTransform>
+                    </con1:wsCallout>
+                    <con1:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.0.15a4c27c10e.N7ffa</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">xs:float($transaccionesCurso) >= xs:float(0)</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:assign varName="nuevoNivelActual">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.0.15a4c27c10e.N7ff9</con2:id>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">xs:float($transaccionesCurso)  + xs:float(1)</con:xqueryText>
+                                    </con1:expr>
+                                </con1:assign>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.0.15a4c27c10e.N7ff8</con2:id>
+                                    <con1:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<par:ParametrosGlobalesCollection xmlns:par="http://xmlns.oracle.com/pcbpel/adapter/db/top/ParametracionService">
+         <par:ParametrosGlobales>
+            <par:parametro>rt.global.numTxs</par:parametro>
+            <par:valor>{$nuevoNivelActual}</par:valor>
+         </par:ParametrosGlobales>
+   </par:ParametrosGlobalesCollection>]]></con:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                                <con2:log xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config">
+                                    <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.0.15a4c27c10e.N7ff7</con3:id>
+                                    <con2:logLevel>warning</con2:logLevel>
+                                    <con2:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                                    </con2:expr>
+                                    <con2:message>Actualizar Configuración Systema Payload//Confirmar Inicio</con2:message>
+                                </con2:log>
+                                <con2:route xmlns:con2="http://www.bea.com/wli/sb/stages/publish/config">
+                                    <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.0.15a4c27c10e.N7ff6</con3:id>
+                                    <con2:service ref="InteligenciaNegocio/RiesgoTransaccional/ProxyServices/NMPParametrizacionTransaccionesPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                    <con2:operation>merge</con2:operation>
+                                    <con2:outboundTransform/>
+                                </con2:route>
+                                <con1:assign varName="continuar">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.0.15a4c27c10e.N7ff5</con2:id>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:true()</con:xqueryText>
+                                    </con1:expr>
+                                </con1:assign>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:default>
+                            <con1:assign varName="continuar">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.0.15a4c27c10e.N7ff4</con2:id>
+                                <con1:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:false()</con:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                            <con2:log xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.0.15a4c27c10e.N7ff3</con3:id>
+                                <con2:logLevel>error</con2:logLevel>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'NO ES POSIBLE CONFIRMAR INICIO'</con:xqueryText>
+                                </con2:expr>
+                                <con2:message>Registro Inicio de Proceso</con2:message>
+                            </con2:log>
+                        </con1:default>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode1_request" type="request">
+            <con:stage name="ValidarContinuar">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="com" namespace="http://comunes.rt.nmp.com/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:wsCallout xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1d.15a8f0b5d28.N7ff9</con2:id>
+                        <con1:service ref="InteligenciaNegocio/RiesgoTransaccional/ProxyServices/NMPParametrizacionTransaccionesPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                        <con1:operation>selectByPrimaryKey</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">parametrizacionInput</con1:body>
+                            <con1:header/>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">parametrizacionOutput</con1:body>
+                            <con1:header/>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:assign varName="parametrizacionInput">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1b.15a8ed98ed9.N7ff9</con2:id>
+                                <con1:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">&lt;par:ParametrosGlobalesPrimaryKey xmlns:par="http://xmlns.oracle.com/pcbpel/adapter/db/top/ParametracionService">
+&lt;par:parametro>rt.global.maxNumTxs&lt;/par:parametro>
+&lt;/par:ParametrosGlobalesPrimaryKey></con:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:requestTransform>
+                        <con1:responseTransform>
+                            <con1:assign varName="transaccionesMaximas">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.15.15a8479d8b6.N7fbc</con2:id>
+                                <con1:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$parametrizacionOutput//*:ParametrosGlobales/*:valor/text()</con:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:responseTransform>
+                    </con1:wsCallout>
+                    <con1:wsCallout xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.30.15ac504f133.N7ffe</con2:id>
+                        <con1:service ref="InteligenciaNegocio/RiesgoTransaccional/ProxyServices/NMPParametrizacionTransaccionesPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                        <con1:operation>selectByPrimaryKey</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">parametrizacionInput</con1:body>
+                            <con1:header/>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">parametrizacionOutput</con1:body>
+                            <con1:header/>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:assign varName="parametrizacionInput">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.30.15ac504f133.N7ffd</con2:id>
+                                <con1:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">&lt;par:ParametrosGlobalesPrimaryKey xmlns:par="http://xmlns.oracle.com/pcbpel/adapter/db/top/ParametracionService">
+&lt;par:parametro>rt.global.numTxs&lt;/par:parametro>
+&lt;/par:ParametrosGlobalesPrimaryKey></con:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:requestTransform>
+                        <con1:responseTransform>
+                            <con1:assign varName="transaccionesCurso">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.30.15ac504f133.N7ffc</con2:id>
+                                <con1:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$parametrizacionOutput//*:ParametrosGlobales/*:valor/text()</con:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:responseTransform>
+                    </con1:wsCallout>
+                    <con1:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.c.15a6c392db4.N7ffe</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">xs:float($transaccionesCurso) &lt; xs:float($transaccionesMaximas)</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:assign varName="continuar">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.c.15a6c392db4.N7ffd</con2:id>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:true()</con:xqueryText>
+                                    </con1:expr>
+                                </con1:assign>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:default>
+                            <con1:assign varName="continuar">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.2d.15ac00acf3a.N7ffd</con2:id>
+                                <con1:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:false()</con:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:default>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode3_request" type="request">
+            <con:stage name="Encolar">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="com" namespace="http://comunes.rt.nmp.com/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.12.15a80efe7e6.N7ffa</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:string-length($body/com:encolar/transaccion/xml) > 0</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.12.15a80efe7e6.N7ff8</con2:id>
+                                    <con1:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<ges:MensajesProcesoCollection xmlns:ges="http://xmlns.oracle.com/pcbpel/adapter/db/top/GestorTransacciones">
+         <ges:MensajesProceso>
+            <ges:huella>data_init</ges:huella>
+            <ges:mensaje>{fn:concat('<mensaje><![CDATA[', $body/com:encolar/transaccion/xml/text(),']]]]>><![CDATA[</mensaje>') }</ges:mensaje>
+            <ges:fecha>{fn:current-dateTime()}</ges:fecha>
+            <ges:reintentos>0</ges:reintentos>
+            <ges:estado>1</ges:estado>
+         </ges:MensajesProceso>
+      </ges:MensajesProcesoCollection>]]></con:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                                <con2:log xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config">
+                                    <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.12.15a80efe7e6.N7ff7</con3:id>
+                                    <con2:logLevel>warning</con2:logLevel>
+                                    <con2:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                                    </con2:expr>
+                                    <con2:message>Encolar transacción de negocio</con2:message>
+                                </con2:log>
+                                <con2:route xmlns:con2="http://www.bea.com/wli/sb/stages/publish/config">
+                                    <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.12.15a80efe7e6.N7ff6</con3:id>
+                                    <con2:service ref="InteligenciaNegocio/RiesgoTransaccional/ProxyServices/NMPGestorTransaccionesPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                    <con2:operation>merge</con2:operation>
+                                    <con2:outboundTransform/>
+                                </con2:route>
+                                <con1:assign varName="continuar">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.2a.15ab2d365c9.N7ffb</con2:id>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:true()</con:xqueryText>
+                                    </con1:expr>
+                                </con1:assign>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:default>
+                            <con1:assign varName="continuar">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.12.15a80efe7e6.N7ff5</con2:id>
+                                <con1:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:false()</con:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                            <con2:log xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.12.15a80efe7e6.N7ff4</con3:id>
+                                <con2:logLevel>error</con2:logLevel>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'NO ES POSIBLE ENCOLAR'</con:xqueryText>
+                                </con2:expr>
+                                <con2:message>ERROR DE ENCOLAMIENTO DE TXS EN CURSO</con2:message>
+                            </con2:log>
+                        </con1:default>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode2_response" type="response"/>
+        <con:pipeline name="PipelinePairNode3_response" type="response">
+            <con:stage name="stage1">
+                <con:context>
+                    <con1:userNsDecl prefix="com" namespace="http://comunes.rt.nmp.com/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.2c.15ab3256281.N7ffe</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">&lt;ns0:encolarResponse xmlns:ns0="http://comunes.rt.nmp.com/">
+         &lt;return>{$continuar}&lt;/return>
+      &lt;/ns0:encolarResponse></con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode2_request" type="request">
+            <con:stage name="Liberar">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="par" namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/ParametracionService" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="com" namespace="http://comunes.rt.nmp.com/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:wsCallout xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1d.15a8f0b5d28.N7ff5</con2:id>
+                        <con1:service ref="InteligenciaNegocio/RiesgoTransaccional/ProxyServices/NMPParametrizacionTransaccionesPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                        <con1:operation>selectByPrimaryKey</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">parametrizacionInput</con1:body>
+                            <con1:header/>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">parametrizacionOutput</con1:body>
+                            <con1:header/>
+                        </con1:response>
+                        <con1:requestTransform>
+                            <con1:assign varName="parametrizacionInput">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1d.15a8f0b5d28.N7ff4</con2:id>
+                                <con1:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">&lt;par:ParametrosGlobalesPrimaryKey xmlns:par="http://xmlns.oracle.com/pcbpel/adapter/db/top/ParametracionService">
+&lt;par:parametro>rt.global.numTxs&lt;/par:parametro>
+&lt;/par:ParametrosGlobalesPrimaryKey></con:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:requestTransform>
+                        <con1:responseTransform>
+                            <con1:assign varName="transaccionesCurso">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1d.15a8f0b5d28.N7ff3</con2:id>
+                                <con1:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$parametrizacionOutput//*:ParametrosGlobales/*:valor/text()</con:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                        </con1:responseTransform>
+                    </con1:wsCallout>
+                    <con1:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1d.15a8f0b5d28.N7ff2</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">xs:float($transaccionesCurso) > xs:float(0)</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:assign varName="nuevoNivelActual">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1d.15a8f0b5d28.N7ff1</con2:id>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">xs:float($transaccionesCurso)  - xs:float(1)</con:xqueryText>
+                                    </con1:expr>
+                                </con1:assign>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.6.15a66118c09.N7ff8</con2:id>
+                                    <con1:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<par:ParametrosGlobalesCollection xmlns:par="http://xmlns.oracle.com/pcbpel/adapter/db/top/ParametracionService">
+         <par:ParametrosGlobales>
+            <par:parametro>rt.global.numTxs</par:parametro>
+            <par:valor>{$nuevoNivelActual}</par:valor>
+         </par:ParametrosGlobales>
+   </par:ParametrosGlobalesCollection>]]></con:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                                <con2:log xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config">
+                                    <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.3.15a65fefa26.N7ffc</con3:id>
+                                    <con2:logLevel>warning</con2:logLevel>
+                                    <con2:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                                    </con2:expr>
+                                    <con2:message>Actualizar Configuración Systema Payload</con2:message>
+                                </con2:log>
+                                <con2:route xmlns:con2="http://www.bea.com/wli/sb/stages/publish/config">
+                                    <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.29.15ab2d33fb2.N7ff0</con3:id>
+                                    <con2:service ref="InteligenciaNegocio/RiesgoTransaccional/ProxyServices/NMPParametrizacionTransaccionesPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                    <con2:operation>merge</con2:operation>
+                                    <con2:outboundTransform/>
+                                </con2:route>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:default>
+                            <con1:assign varName="continuar">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.1d.15a8f0b5d28.N7ff0</con2:id>
+                                <con1:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:false()</con:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                            <con2:log xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.2e.15ac47038f0.N7ffd</con3:id>
+                                <con2:logLevel>warning</con2:logLevel>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'NO HAY TRANSACCIONES EN CURSO'</con:xqueryText>
+                                </con2:expr>
+                                <con2:message>PROCESO LIBERACIÓN DE TXS EN CURSO</con2:message>
+                            </con2:log>
+                        </con1:default>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:branch-node type="operation" name="BranchNode1">
+                <con:branch-table>
+                    <con:branch name="continuar">
+                        <con:operator>equals</con:operator>
+                        <con:value>continuar</con:value>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairNode1">
+                                <con:request>PipelinePairNode1_request</con:request>
+                                <con:response>PipelinePairNode1_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="encolar">
+                        <con:operator>equals</con:operator>
+                        <con:value>encolar</con:value>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairNode3">
+                                <con:request>PipelinePairNode3_request</con:request>
+                                <con:response>PipelinePairNode3_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="liberar">
+                        <con:operator>equals</con:operator>
+                        <con:value>liberar</con:value>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairNode2">
+                                <con:request>PipelinePairNode2_request</con:request>
+                                <con:response>PipelinePairNode2_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="confirmarInicio">
+                        <con:operator>equals</con:operator>
+                        <con:value>confirmarInicio</con:value>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairNode4">
+                                <con:request>PipelinePairNode4_request</con:request>
+                                <con:response>PipelinePairNode4_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch/>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

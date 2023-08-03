@@ -1,0 +1,15 @@
+<adapter-config name="ConsultaInformacionMidas" adapter="db" wsdlLocation="../WSDL/ConsultaInformacionMidas.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  <connection-factory UIConnectionName="MidasInformixDev" location="eis/DB/InformixBatchScore"/>
+  <endpoint-interaction portType="ConsultaInformacionMidas_ptt" operation="ConsultaTotalProcesados">
+    <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+      <property name="SqlString" value="select  min(id) idMin, max(id) idMax, count(id) Total from ta_detalle_proceso_bpm where  procesado=#flaProcesado and numero_etapa = #numEtapa "/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  <endpoint-interaction portType="ConsultaInformacionMidas_ptt" operation="ConsultaBloqueProcesados">
+    <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+      <property name="SqlString" value="SELECT SKIP #InicioBloque FIRST #FinBloque     tdp.id,     tdp.numero_etapa,     tdp.numero_sub_etapa,     tdp.id_solicitud,     tdp.proyecto,     tdp.tipo_operacion_evento,     tdp.fecha_operacion,     tdp.sucursal,     tdp.total_partidas,     tdp.partidas_exitosas,     tdp.partidas_no_exitosas,     tdp.mensaje   FROM ta_detalle_proceso_bpm AS tdp    where  procesado=#flaProcesado and numero_etapa = #numEtapa   order by id asc"/>      
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+</adapter-config>

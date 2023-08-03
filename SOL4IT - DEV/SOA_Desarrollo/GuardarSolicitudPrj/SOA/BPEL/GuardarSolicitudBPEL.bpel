@@ -1,0 +1,349 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Sun Dec 11 21:50:27 CST 2016
+  Author:  Soaint
+  Type: BPEL 2.0 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="GuardarSolicitudBPEL" targetNamespace="http://qualitas.com.mx/GuardarSolicitudApp/GuardarSolicitudPrj/GuardarSolicitudBPEL" xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:client="http://qualitas.com.mx/GuardarSolicitudApp/GuardarSolicitudPrj/GuardarSolicitudBPEL" xmlns:ora="http://schemas.oracle.com/xpath/extension" xmlns:ui="http://xmlns.oracle.com/soa/designer" xmlns:bpelx="http://schemas.oracle.com/bpel/extension" xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xml:id="id_1"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/GuardarSolicitudApp/GuardarSolicitudPrj/SPactualizarSolicitudDB"
+         xmlns:ns2="http://qualitas.com.mx/CrearServicioApp/CrearServicioPrj/CrearServicioBPEL"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/db/GuardarSolicitudApp/GuardarSolicitudPrj/SPGuardarImportesDB"
+         xmlns:ns8="http://qualitas.com.mx/Importes/v1/"
+         xmlns:ns4="http://qualitas.com.mx/Solicitud/GuardarSolicitud/v1/"
+         xmlns:ns5="http://qualitas.com.mx/comunes/objetosComunes/v1/"
+         xmlns:ns6="http://qualitas.com.mx/Comun/Servicio/v1/"
+         xmlns:ns9="http://qualitas.com.mx/Comun/Servicio/CrearServicioPorTipo/v1/"
+         xmlns:ns10="http://qualitas.com.mx/Comun/Servicio/ProyectoData/v1/"
+         xmlns:ns7="http://qualitas.com.mx/Comun/Servicio/ServicioData/v1/"
+         xmlns:ns11="http://xmlns.oracle.com/pcbpel/adapter/db/sp/SPactualizarSolicitudDB"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ess="http://xmlns.oracle.com/scheduler" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:ns12="http://xmlns.oracle.com/pcbpel/adapter/db/sp/SPGuardarImportesDB"
+         xmlns:ns14="http://qualitas.com.mx/Comun/Servicio/TipoServicioData/v1/"
+         xmlns:ns13="http://qualitas.com.mx/Comun/Servicio/TipoServicio/v1/"
+         xmlns:ns15="http://xmlns.oracle.com/pcbpel/adapter/db/GuardarSolicitudApp/GuardarSolicitudPrj/SPCrearSegProyectoDB"
+         xmlns:ns16="http://xmlns.oracle.com/pcbpel/adapter/db/sp/SPCrearSegProyectoDB"
+         xmlns:ns17="http://xmlns.oracle.com/pcbpel/adapter/db/GuardarSolicitud/GuardarSolicitudPrj/GuardarImportesSolicitud"
+         xmlns:ns18="http://xmlns.oracle.com/pcbpel/adapter/db/top/GuardarImportesSolicitud">
+
+    <import ui:processWSDL="true" namespace="http://qualitas.com.mx/GuardarSolicitudApp/GuardarSolicitudPrj/GuardarSolicitudBPEL" location="../WSDLs/GuardarSolicitudBPEL.wsdl" importType="http://schemas.xmlsoap.org/wsdl/" xml:id="id_2"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks xml:id="id_3">
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="guardarsolicitudbpel_client" partnerLinkType="client:GuardarSolicitudBPEL" myRole="GuardarSolicitudBPELProvider" xml:id="id_4"/>
+    <partnerLink name="SPactualizarSolicitudPL" partnerLinkType="ns1:SPactualizarSolicitudDB_plt"
+                 partnerRole="SPactualizarSolicitudDB_role" xml:id="id_11"/>
+    <partnerLink name="WSCrearServicioPL" partnerLinkType="ns2:CrearServicioBPEL"
+                 partnerRole="CrearServicioBPELProvider" xml:id="id_15"/>
+    <partnerLink name="SPCrearSegProyectoDB" partnerLinkType="ns15:SPCrearSegProyectoDB_plt"
+                 partnerRole="SPCrearSegProyectoDB_role" xml:id="id_186"/>
+    <partnerLink name="GuardarImportesSolicitud" partnerLinkType="ns17:GuardarImportesSolicitud_plt"
+                 partnerRole="GuardarImportesSolicitud_role" xml:id="id_263"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables xml:id="id_5">
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:GuardarSolicitudBPELRequestMessage" xml:id="id_6"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:GuardarSolicitudBPELResponseMessage" xml:id="id_7"/>
+    <variable name="actualizarSolInvoke_InputVariable" messageType="ns1:args_in_msg" xml:id="id_13"/>
+    <variable name="actualizarSolInvoke_OutputVariable" messageType="ns1:args_out_msg" xml:id="id_14"/>
+    <variable name="CrearServicioInvoke_InputVariable" messageType="ns2:CrearServicioBPELRequestMessage"
+              xml:id="id_17"/>
+    <variable name="CrearServicioInvoke_OutputVariable" messageType="ns2:CrearServicioBPELResponseMessage"
+              xml:id="id_18"/>
+    <variable name="CrearSegProyectoInvoke_InputVariable" messageType="ns15:args_in_msg" xml:id="id_188"/>
+    <variable name="CrearSegProyectoInvoke_OutputVariable" messageType="ns15:args_out_msg" xml:id="id_189"/>
+    <variable name="GuardarImportes_InputVariable" messageType="ns17:Gpa002ImportesCollection_msg" xml:id="id_265"/>
+    <variable name="GuardarImportes_OutputVariable" messageType="ns17:Gpa002ImportesCollection_msg" xml:id="id_266"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main" xml:id="id_8">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in GuardarSolicitudBPEL.wsdl) -->
+    <receive name="receiveInput" partnerLink="guardarsolicitudbpel_client" portType="client:GuardarSolicitudBPEL" operation="process" variable="inputVariable" createInstance="yes" xml:id="id_9"/>
+    <if name="If" xml:id="id_162">
+      <documentation xml:id="id_170">
+        <![CDATA[Crear Servicio]]>
+      </documentation>
+      <condition xml:id="id_169">$inputVariable.payload/ns4:Input/ns4:servicio/ns13:idTipoServicio = 1 or $inputVariable.payload/ns4:Input/ns4:servicio/ns13:idTipoServicio = 2</condition>
+      <scope name="CrearServiceScope" xml:id="id_154">
+        <sequence name="CreaServiceSequence" xml:id="id_155">
+          <assign name="InputServTransform" xml:id="id_230">
+            <bpelx:annotation xml:id="id_231">
+              <bpelx:pattern patternName="bpelx:transformation" xml:id="id_232"></bpelx:pattern>
+            </bpelx:annotation>
+            <copy xml:id="id_233">
+              <from xml:id="id_234">ora:doXSLTransformForDoc("../Transformations/InputServTransform.xsl", $inputVariable.payload)</from>
+              <to xml:id="id_235" variable="CrearServicioInvoke_InputVariable" part="payload"/>
+            </copy>
+          </assign>
+          <invoke name="CrearServicioInvoke" xml:id="id_16" partnerLink="WSCrearServicioPL"
+                  portType="ns2:CrearServicioBPEL" operation="process" inputVariable="CrearServicioInvoke_InputVariable"
+                  outputVariable="CrearServicioInvoke_OutputVariable" bpelx:invokeAsDetail="no"/>
+        </sequence>
+      </scope>
+      <elseif xml:id="id_168">
+        <documentation xml:id="id_171">
+          <![CDATA[Tracking Proyecto]]>
+        </documentation>
+        <condition xml:id="id_174">$inputVariable.payload/ns4:Input/ns4:servicio/ns13:idTipoServicio = 3</condition>
+        <scope name="TrackProyectoScope" xml:id="id_172">
+          <sequence name="TrackProyectoSequence" xml:id="id_173">
+            <assign name="InputDataProyecto" xml:id="id_175">
+              <copy xml:id="id_190">
+                <from xml:id="id_191">$inputVariable.payload/ns4:Input/ns4:idSolicitud</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_192">$CrearSegProyectoInvoke_InputVariable.InputParameters/ns16:P_IDSOLICITUD</to>
+              </copy>
+              <copy xml:id="id_193">
+                <from xml:id="id_194">$inputVariable.payload/ns4:Input/ns4:servicio/ns13:proyecto/ns14:idProyecto</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_195">$CrearSegProyectoInvoke_InputVariable.InputParameters/ns16:P_IDPROYECTO</to>
+              </copy>
+              <copy xml:id="id_285">
+                <from xml:id="id_286">$inputVariable.payload/ns4:Input/ns4:totalPagar</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_287">$CrearSegProyectoInvoke_InputVariable.InputParameters/ns16:P_COMPLEMENTO</to>
+              </copy>
+            </assign>
+            <invoke name="CrearSegProyectoInvoke" xml:id="id_187"
+                    partnerLink="SPCrearSegProyectoDB" portType="ns15:SPCrearSegProyectoDB_ptt"
+                    operation="SPCrearSegProyectoDB" inputVariable="CrearSegProyectoInvoke_InputVariable"
+                    outputVariable="CrearSegProyectoInvoke_OutputVariable" bpelx:invokeAsDetail="no"/>
+            <if name="If" xml:id="id_196">
+              <documentation xml:id="id_210">
+                <![CDATA[Error]]>
+              </documentation>
+              <condition xml:id="id_198">$CrearSegProyectoInvoke_OutputVariable.OutputParameters/ns16:P_OUTCVE  != 0</condition>
+              <sequence name="Sequence3" xml:id="id_245">
+                <assign name="ErrorCrearSegPro" xml:id="id_199">
+                  <copy xml:id="id_200">
+                    <from xml:id="id_201">'1'</from>
+                    <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_202">$outputVariable.payload/ns4:OperationResponse/ns5:codigoRespuesta</to>
+                  </copy>
+                  <copy xml:id="id_203">
+                    <from xml:id="id_204">'ERROR AL INTENTAR CREAR SEGUIMIENTO de PROYECTO' </from>
+                    <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_205">$outputVariable.payload/ns4:OperationResponse/ns5:descripcionRespuesta</to>
+                  </copy>
+                  <copy xml:id="id_206">
+                    <from xml:id="id_207">ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+                    <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_208">$outputVariable.payload/ns4:OperationResponse/ns5:fecha</to>
+                  </copy>
+                </assign>
+                <reply name="Reply1" xml:id="id_246" partnerLink="guardarsolicitudbpel_client"
+                       variable="outputVariable" portType="client:GuardarSolicitudBPEL" operation="process"/>
+                <exit name="ExitCrearSegPro" xml:id="id_247"/>
+              </sequence>
+              <else xml:id="id_197">
+                <empty name="Continue" xml:id="id_209"/>
+              </else>
+            </if>
+          </sequence>
+        </scope>
+      </elseif>
+      <else xml:id="id_163">
+        <documentation xml:id="id_211">
+          <![CDATA[Error TipoSol]]>
+        </documentation>
+        <scope name="ErrorTipoSolScope" xml:id="id_166">
+          <sequence name="ErrorTipoSolSequence" xml:id="id_167">
+            <assign name="ErrorIdTipoSol" xml:id="id_176">
+              <copy xml:id="id_177">
+                <from xml:id="id_178">'1'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_179">$outputVariable.payload/ns4:OperationResponse/ns5:codigoRespuesta</to>
+              </copy>
+              <copy xml:id="id_180">
+                <from xml:id="id_181">'ERROR ID TIPO SOLICITUD INVALIDO'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_182">$outputVariable.payload/ns4:OperationResponse/ns5:descripcionRespuesta</to>
+              </copy>
+              <copy xml:id="id_183">
+                <from xml:id="id_184">ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_185">$outputVariable.payload/ns4:OperationResponse/ns5:fecha</to>
+              </copy>
+            </assign>
+          </sequence>
+        </scope>
+      </else>
+    </if>
+    <scope name="GuardarSolicitudScope" xml:id="id_23">
+      <sequence name="GuardarSolicitudSequence" xml:id="id_24">
+        <if name="If" xml:id="id_56">
+          <documentation xml:id="id_60">
+            <![CDATA[CreateService Success]]>
+          </documentation>
+          <condition xml:id="id_58">$CrearServicioInvoke_OutputVariable.payload/ns9:OperationResponse/ns5:codigoRespuesta = 0 or $CrearSegProyectoInvoke_OutputVariable.OutputParameters/ns16:P_OUTCVE = 0</condition>
+          <sequence name="CreateImportesSequence" xml:id="id_59">
+            <scope name="Scope3" xml:id="id_277">
+              <faultHandlers xml:id="id_279">
+                <catchAll xml:id="id_280">
+                  <assign name="AssignError" xml:id="id_281">
+                    <copy xml:id="id_282">
+                      <from xml:id="id_283">0</from>
+                      <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_284">$GuardarImportes_OutputVariable.Gpa002ImportesCollection/ns18:Gpa002Importes/ns18:idSolicitud</to>
+                    </copy>
+                  </assign>
+                </catchAll>
+              </faultHandlers>
+              <sequence xml:id="id_278">
+                <assign name="TransGuardarImportes" xml:id="id_267">
+                  <bpelx:annotation xml:id="id_268">
+                    <bpelx:pattern patternName="bpelx:transformation" xml:id="id_269"></bpelx:pattern>
+                  </bpelx:annotation>
+                  <copy xml:id="id_270">
+                    <from xml:id="id_271">ora:doXSLTransformForDoc("../Transformations/TransGuardarImportes.xsl", $inputVariable.payload)</from>
+                    <to xml:id="id_272" variable="GuardarImportes_InputVariable" part="Gpa002ImportesCollection"/>
+                  </copy>
+                </assign>
+                <invoke name="InvokeGuardarImportes" xml:id="id_264" bpelx:invokeAsDetail="no"
+                        partnerLink="GuardarImportesSolicitud" portType="ns17:GuardarImportesSolicitud_ptt"
+                        operation="insert" inputVariable="GuardarImportes_InputVariable"
+                        outputVariable="GuardarImportes_OutputVariable"/>
+              </sequence>
+            </scope>
+          </sequence>
+          <else xml:id="id_57">
+            <sequence name="CompensateSequence" xml:id="id_61">
+              <assign name="ErrorInsertServicio" xml:id="id_64">
+                <copy xml:id="id_68">
+                  <from xml:id="id_69">'ERROR AL CREAR EL SERVICIO'</from>
+                  <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_70">$outputVariable.payload/ns4:OperationResponse/ns5:descripcionRespuesta</to>
+                </copy>
+                <copy xml:id="id_71">
+                  <from xml:id="id_72">ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+                  <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_73">$outputVariable.payload/ns4:OperationResponse/ns5:fecha</to>
+                </copy>
+                <copy xml:id="id_74">
+                  <from xml:id="id_75">'BE-GPA001'</from>
+                  <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_76">$outputVariable.payload/ns4:OperationResponse/ns5:listaErrores/ns5:error/@idMotivo</to>
+                </copy>
+                <copy xml:id="id_249">
+                  <from xml:id="id_250">1</from>
+                  <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_251">$outputVariable.payload/ns4:OperationResponse/ns5:codigoRespuesta</to>
+                </copy>
+                <copy xml:id="id_77">
+                  <from xml:id="id_78">'ERROR AL CREAR SERVICIO'</from>
+                  <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_79">$outputVariable.payload/ns4:OperationResponse/ns5:listaErrores/ns5:error/@descripcion</to>
+                </copy>
+              </assign>
+              <reply name="Reply2" xml:id="id_248" partnerLink="guardarsolicitudbpel_client" variable="outputVariable"
+                     portType="client:GuardarSolicitudBPEL" operation="process"/>
+              <exit name="ExitInsertServicio" xml:id="id_252"/>
+            </sequence>
+          </else>
+        </if>
+      </sequence>
+    </scope>
+    <if name="If" xml:id="id_135">
+      <documentation xml:id="id_150">
+        <![CDATA[EvalOutImporte]]>
+      </documentation>
+      <condition xml:id="id_149">$inputVariable.payload/ns4:Input/ns4:idSolicitud = $GuardarImportes_OutputVariable.Gpa002ImportesCollection/ns18:Gpa002Importes/ns18:idSolicitud</condition>
+      <scope name="Scope1" xml:id="id_44">
+        <sequence name="Sequence1" xml:id="id_45">
+          <assign name="actualizarSolInput" xml:id="id_46">
+            <copy xml:id="id_47">
+              <from xml:id="id_48">$inputVariable.payload/ns4:Input/ns4:idSolicitud</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_49">$actualizarSolInvoke_InputVariable.InputParameters/ns11:P_IDSOLICITUD</to>
+            </copy>
+            <copy xml:id="id_260">
+              <from xml:id="id_261">$inputVariable.payload/ns4:Input/ns4:oficinaDestino</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_262">$actualizarSolInvoke_InputVariable.InputParameters/ns11:P_OFICDEST</to>
+            </copy>
+            <copy xml:id="id_50">
+              <from xml:id="id_51">$inputVariable.payload/ns4:Input/ns4:totalPagar</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_52">$actualizarSolInvoke_InputVariable.InputParameters/ns11:P_TOTALPAGAR</to>
+            </copy>
+            <copy xml:id="id_53">
+              <from xml:id="id_54">$inputVariable.payload/ns4:Input/ns4:idUsuario</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_55">$actualizarSolInvoke_InputVariable.InputParameters/ns11:P_USUARIO</to>
+            </copy>
+          </assign>
+          <invoke name="actualizarSolInvoke" xml:id="id_12" partnerLink="SPactualizarSolicitudPL"
+                  portType="ns1:SPactualizarSolicitudDB_ptt" operation="SPactualizarSolicitudDB"
+                  inputVariable="actualizarSolInvoke_InputVariable" outputVariable="actualizarSolInvoke_OutputVariable"
+                  bpelx:invokeAsDetail="no"/>
+          <assign name="actualizarSolOutput" xml:id="id_80">
+            <copy xml:id="id_81">
+              <from xml:id="id_82">string($actualizarSolInvoke_OutputVariable.OutputParameters/ns11:P_OUTCVE)</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_83">$outputVariable.payload/ns4:OperationResponse/ns5:codigoRespuesta</to>
+            </copy>
+            <copy xml:id="id_84">
+              <from xml:id="id_85">'EJECUCION EXITOSA'</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_86">$outputVariable.payload/ns4:OperationResponse/ns5:descripcionRespuesta</to>
+            </copy>
+            <copy xml:id="id_87">
+              <from xml:id="id_88">ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_89">$outputVariable.payload/ns4:OperationResponse/ns5:fecha</to>
+            </copy>
+            <copy xml:id="id_90">
+              <from xml:id="id_91">$actualizarSolInvoke_InputVariable.InputParameters/ns11:P_IDSOLICITUD</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_92">$outputVariable.payload/ns4:idSolicitud</to>
+            </copy>
+          </assign>
+        </sequence>
+      </scope>
+      <else xml:id="id_136">
+        <documentation xml:id="id_151">
+          <![CDATA[ErrorImporte]]>
+        </documentation>
+        <scope name="Scope2" xml:id="id_137">
+          <sequence name="Sequence2" xml:id="id_138">
+            <assign name="ErrorInsertImportes" xml:id="id_139">
+              <copy xml:id="id_143">
+                <from xml:id="id_144">'ERROR AL INTENTAR INSERTAR IMPORTES'</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_145">$outputVariable.payload/ns4:OperationResponse/ns5:descripcionRespuesta</to>
+              </copy>
+              <copy xml:id="id_146">
+                <from xml:id="id_147">ora:getCurrentDateTime("MM/dd/yyyy HH:mm:ss")</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_148">$outputVariable.payload/ns4:OperationResponse/ns5:fecha</to>
+              </copy>
+              <copy xml:id="id_254">
+                <from xml:id="id_255">1</from>
+                <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" xml:id="id_256">$outputVariable.payload/ns4:OperationResponse/ns5:codigoRespuesta</to>
+              </copy>
+            </assign>
+            <reply name="Reply3" xml:id="id_253" partnerLink="guardarsolicitudbpel_client" variable="outputVariable"
+                   portType="client:GuardarSolicitudBPEL" operation="process"/>
+          </sequence>
+        </scope>
+      </else>
+    </if>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="guardarsolicitudbpel_client" portType="client:GuardarSolicitudBPEL" operation="process" variable="outputVariable" xml:id="id_10"/>
+  </sequence>
+</process>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ser:proxyServiceEntry xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:con="http://www.bea.com/wli/sb/services/security/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oper="http://xmlns.oracle.com/servicebus/proxy/operations" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env">
+    <ser:coreEntry isAutoPublish="false">
+        <ser:description>Servicio SOAP expuesto usado para consultar, actualizar e insertar información en las tablas NMP_TRANSACCIONES,  NMP_PARTIDAS las cuales contienen información de los transaciones que generarn los clientes.</ser:description>
+        <ser:binding type="SOAP" xsi:type="con:SoapBindingType" isSoap12="false" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config">
+            <con:wsdl ref="InteligenciaNegocio/RiesgoTransaccional/Resources/WSDLs/NMPGestionTransaccionesRTWSDL"/>
+            <con:binding>
+                <con:name>NmpTransacciones_SOAP11Binding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Service/RTTransaccionesDb</con:namespace>
+            </con:binding>
+            <con:selector type="SOAP body"/>
+        </ser:binding>
+        <oper:operations enabled="true">
+            <oper:monitoring enabled="true" aggregationInterval="5"/>
+        </oper:operations>
+        <ser:ws-policy>
+            <ser:binding-mode>no-policies</ser:binding-mode>
+        </ser:ws-policy>
+        <ser:invoke ref="InteligenciaNegocio/RiesgoTransaccional/Pipelines/NMPGestionTransaccionesRTPL" xsi:type="con:PipelineRef" xmlns:con="http://www.bea.com/wli/sb/pipeline/config"/>
+        <ser:xqConfiguration>
+            <ser:snippetVersion>1.0</ser:snippetVersion>
+        </ser:xqConfiguration>
+    </ser:coreEntry>
+    <ser:endpointConfig>
+        <tran:provider-id>http</tran:provider-id>
+        <tran:inbound>true</tran:inbound>
+        <tran:URI>
+            <env:value>/NMP/InteligenciaNegocio/RT/Transacciones</env:value>
+        </tran:URI>
+        <tran:inbound-properties/>
+        <tran:provider-specific xsi:type="http:HttpEndPointConfiguration" xmlns:http="http://www.bea.com/wli/sb/transports/http">
+            <http:inbound-properties/>
+        </tran:provider-specific>
+    </ser:endpointConfig>
+    <aler:alertRules xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert">
+        <aler:alertRule enabled="true" name="timeout_warning">
+            <aler:frequency>every-time</aler:frequency>
+            <aler:severity>warning</aler:severity>
+            <aler:stopProcessing>false</aler:stopProcessing>
+            <aler:condition aggregation-interval="10">
+                <con1:monCondExpr xmlns:con1="http://xmlns.oracle.com/servicebus/monitoring/alert/condition">
+                    <con1:function>max</con1:function>
+                    <con1:lhs>Transport.response-time</con1:lhs>
+                    <con1:operator>></con1:operator>
+                    <con1:rhs>30000</con1:rhs>
+                </con1:monCondExpr>
+            </aler:condition>
+            <aler:alertDestination ref="InteligenciaNegocio/RiesgoTransaccional/Resources/Alerts/OSBRiesgoTransaccionalAlert"/>
+        </aler:alertRule>
+    </aler:alertRules>
+</ser:proxyServiceEntry>

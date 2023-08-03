@@ -1,0 +1,64 @@
+<wsdl:definitions name="GetFingerPrintService" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:tns="http://tempuri.org/" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="../Schemas/CRMFingerprintServiceElementosXSD.xsd" namespace="http://tempuri.org/"/>
+      <xsd:import schemaLocation="../Schemas/CRMFingerprintServiceTXSD.xsd" namespace="http://schemas.microsoft.com/2003/10/Serialization/"/>
+      <xsd:import schemaLocation="../Schemas/CRMFingerprintService0XSD.xsd" namespace="http://schemas.datacontract.org/2004/07/CRMServices.Errores"/>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IGetFingerPrint_GetHuellaByID_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetHuellaByID"/>
+  </wsdl:message>
+  <wsdl:message name="IGetFingerPrint_GetHuellaByID_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetHuellaByIDResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IGetFingerPrint_GetHuellaByNoCredential_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetHuellaByNoCredential"/>
+  </wsdl:message>
+  <wsdl:message name="IGetFingerPrint_GetHuellaByNoCredential_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetHuellaByNoCredentialResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IGetFingerPrint_GetHuellaByNoCredential_ServiceErrorFault_FaultMessage">
+    <wsdl:part name="detail" element="q1:ServiceError" xmlns:q1="http://schemas.datacontract.org/2004/07/CRMServices.Errores"/>
+  </wsdl:message>
+  <wsdl:portType name="IGetFingerPrint">
+    <wsdl:operation name="GetHuellaByID">
+      <wsdl:input wsaw:Action="http://tempuri.org/IGetFingerPrint/GetHuellaByID" message="tns:IGetFingerPrint_GetHuellaByID_InputMessage"/>
+      <wsdl:output wsaw:Action="http://tempuri.org/IGetFingerPrint/GetHuellaByIDResponse" message="tns:IGetFingerPrint_GetHuellaByID_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="GetHuellaByNoCredential">
+      <wsdl:input wsaw:Action="http://tempuri.org/IGetFingerPrint/GetHuellaByNoCredential" message="tns:IGetFingerPrint_GetHuellaByNoCredential_InputMessage"/>
+      <wsdl:output wsaw:Action="http://tempuri.org/IGetFingerPrint/GetHuellaByNoCredentialResponse" message="tns:IGetFingerPrint_GetHuellaByNoCredential_OutputMessage"/>
+      <wsdl:fault wsaw:Action="http://tempuri.org/IGetFingerPrint/GetHuellaByNoCredentialServiceErrorFault" name="ServiceErrorFault" message="tns:IGetFingerPrint_GetHuellaByNoCredential_ServiceErrorFault_FaultMessage"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BasicHttpBinding_IGetFingerPrint" type="tns:IGetFingerPrint">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="GetHuellaByID">
+      <soap:operation soapAction="http://tempuri.org/IGetFingerPrint/GetHuellaByID" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetHuellaByNoCredential">
+      <soap:operation soapAction="http://tempuri.org/IGetFingerPrint/GetHuellaByNoCredential" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ServiceErrorFault">
+        <soap:fault name="ServiceErrorFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="GetFingerPrintService">
+    <wsdl:port name="BasicHttpBinding_IGetFingerPrint" binding="tns:BasicHttpBinding_IGetFingerPrint">
+      <soap:address location="http://10.30.2.23/CRMServices/GetFingerPrintService.svc/basic"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

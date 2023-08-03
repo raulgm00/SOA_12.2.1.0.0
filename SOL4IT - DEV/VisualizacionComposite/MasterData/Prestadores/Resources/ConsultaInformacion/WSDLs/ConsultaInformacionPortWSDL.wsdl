@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://service.centroscosto.qualitas.com.mx/" name="ConsultaInformacionWs" targetNamespace="http://service.centroscosto.qualitas.com.mx/">
+    <wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://service.centroscosto.qualitas.com.mx/" elementFormDefault="unqualified" targetNamespace="http://service.centroscosto.qualitas.com.mx/" version="1.0">
+
+  <xs:element name="validaEntradas" type="tns:validaEntradas"/>
+
+  <xs:element name="validaEntradasResponse" type="tns:validaEntradasResponse"/>
+
+  <xs:complexType name="validaEntradas">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="entradas" type="tns:entradas"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="entradas">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="entrada" nillable="true" type="tns:entrada"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="entrada">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="archivo" type="xs:string"/>
+      <xs:element minOccurs="0" name="atributos" type="xs:string"/>
+      <xs:element minOccurs="0" name="formato" type="xs:string"/>
+      <xs:element minOccurs="0" name="llave" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="validaEntradasResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="salidas" type="tns:salidas"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="salidas">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="salida" nillable="true" type="tns:salida"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="salida">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="atributos" nillable="true" type="tns:atributo"/>
+      <xs:element minOccurs="0" name="llave" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="atributo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="atributo" type="xs:string"/>
+      <xs:element minOccurs="0" name="valor" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>
+    </wsdl:types>
+    <wsdl:message name="validaEntradas">
+        <wsdl:part element="ns1:validaEntradas" name="parameters"/>
+    </wsdl:message>
+    <wsdl:message name="validaEntradasResponse">
+        <wsdl:part element="ns1:validaEntradasResponse" name="parameters"/>
+    </wsdl:message>
+    <wsdl:portType name="ConsultaInformacionWs">
+        <wsdl:operation name="validaEntradas">
+            <wsdl:input message="ns1:validaEntradas" name="validaEntradas"/>
+            <wsdl:output message="ns1:validaEntradasResponse" name="validaEntradasResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>

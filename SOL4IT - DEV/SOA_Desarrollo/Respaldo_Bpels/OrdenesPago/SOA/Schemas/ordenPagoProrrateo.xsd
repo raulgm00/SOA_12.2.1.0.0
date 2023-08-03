@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://qualitas.com.mx/Comunes/Prorrateo/ordenPagoProrrateo/v1/" xmlns:tns="http://qualitas.com.mx/Comunes/Prorrateo/ordenPagoProrrateo/v1/" xmlns:tnsq="http://qualitas.com.mx/comunes/objetosComunes/v1/" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://qualitas.com.mx/comunes/objetosComunes/v1/" schemaLocation="objetosComunes.xsd"/>
+   <element name="ordenPagProrrateoRequest">
+      <complexType>
+         <sequence>
+            <element name="OperationRequest" type="tnsq:HeaderInformationRequest"/>
+            <element name="Input" type="tns:ordenPagoProrrateo"/>
+         </sequence>
+      </complexType>
+   </element>
+   <element name="ordenPagProrrateoResponse">
+      <complexType>
+         <sequence>
+            <element name="OperationResponse" type="tnsq:OperationResponse"/>
+            <element name="resultDataResponse" type="tns:reponseOrdenPagoReq" minOccurs="0" maxOccurs="1"/>
+         </sequence>
+      </complexType>
+   </element>
+   <complexType name="ordenPagoProrrateo">
+      <sequence>
+         <element name="id_solicitud" type="string"/>
+      </sequence>
+   </complexType>
+   <complexType name="reponseOrdenPagoReq">
+      <sequence>
+         <element name="ctaPagos" type="tns:cuentaPago" minOccurs="0" maxOccurs="unbounded"/>
+         <element name="cveBen" type="string"/>
+         <element name="monePag" type="string"/>
+         <element name="observ" type="string"/>
+         <element name="ofnaPag" type="string"/>
+         <element name="tipBen" type="string"/>
+         <element name="usuario" type="string"/>
+      </sequence>
+   </complexType>
+   <complexType name="cuentaPago">
+      <sequence>
+         <element name="ctaPago" type="string"/>
+         <element name="cveOficinaMov" type="string"/>
+         <element name="descMov" type="string"/>
+         <element name="importe" type="string"/>
+         <element name="tipMov" type="string"/>
+         <element name="varCta" type="string"/>
+      </sequence>
+   </complexType>
+</schema>

@@ -1,0 +1,105 @@
+<definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCitas" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:NMPCitas="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCitas" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage">
+  <types>
+    <xsd:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCitas/types" elementFormDefault="qualified"/>
+    <xsd:schema>
+      <xsd:import schemaLocation="../Schemas/Citas_ELEMENTOS.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCitas"/>
+    </xsd:schema>
+    <xsd:schema>
+      <xsd:import schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+    </xsd:schema>
+    <xsd:schema>
+      <xsd:import schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+    </xsd:schema>
+  </types>
+  <message name="NMPStandardHeader">
+    <part name="part" element="NMPsh:headerMessage"/>
+  </message>
+  <message name="crearCitaRequestMessage">
+    <part name="part" element="NMPCitas:crearCitaRequest"/>
+  </message>
+  <message name="crearCitaResponseMessage">
+    <part name="part" element="NMPCitas:crearCitaResponse"/>
+  </message>
+  <message name="crearCitaFaultMessage">
+    <part name="part" element="NMPsm:messageError"/>
+  </message>
+  <message name="actualizarCitaRequestMessage">
+    <part name="part" element="NMPCitas:actualizarCitaRequest"/>
+  </message>
+  <message name="actualizarCitaResponseMessage">
+    <part name="part" element="NMPCitas:actualizarCitaResponse"/>
+  </message>
+  <message name="actualizarCitaFaultMessage">
+    <part name="part" element="NMPsm:messageError"/>
+  </message>
+  <message name="cancelarCitaRequestMessage">
+    <part name="part" element="NMPCitas:cancelarCitaRequest"/>
+  </message>
+  <message name="cancelarCitaResponseMessage">
+    <part name="part" element="NMPCitas:cancelarCitaResponse"/>
+  </message>
+  <message name="cancelarCitaFaultMessage">
+    <part name="part" element="NMPsm:messageError"/>
+  </message>
+  <portType name="Citas_ptt">
+    <operation name="crearCita">
+      <input message="NMPCitas:crearCitaRequestMessage"/>
+      <output message="NMPCitas:crearCitaResponseMessage"/>
+      <fault name="crearCitaFault" message="NMPCitas:crearCitaFaultMessage"/>
+    </operation>
+    <operation name="actualizarCita">
+      <input message="NMPCitas:actualizarCitaRequestMessage"/>
+      <output message="NMPCitas:actualizarCitaResponseMessage"/>
+      <fault message="NMPCitas:crearCitaFaultMessage" name="actualizarCitaFault"/>
+    </operation>
+    <operation name="cancelarCita">
+      <input message="NMPCitas:cancelarCitaRequestMessage"/>
+      <output message="NMPCitas:cancelarCitaResponseMessage"/>
+      <fault message="NMPCitas:crearCitaFaultMessage" name="cancelarCitaFault"/>
+    </operation>
+  </portType>
+  <binding name="CitasBinding" type="NMPCitas:Citas_ptt">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="crearCita">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCitas/crearCita"/>
+      <input>
+        <soap:body use="literal" parts="part"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="part"/>
+      </output>
+      <fault name="crearCitaFault">
+        <soap:fault name="crearCitaFault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="actualizarCita">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCitas/actualizarCita"/>
+      <input>
+        <soap:body use="literal" parts="part"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="part"/>
+      </output>
+      <fault name="actualizarCitaFault">
+        <soap:fault name="actualizarCitaFault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="cancelarCita">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCitas/cancelarCita"/>
+      <input>
+        <soap:body use="literal" parts="part"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="part"/>
+      </output>
+      <fault name="cancelarCitaFault">
+        <soap:fault name="cancelarCitaFault" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+  <service name="Citas">
+    <port name="Citas_pttPort" binding="NMPCitas:CitasBinding">
+      <soap:address location=""/>
+    </port>
+  </service>
+</definitions>

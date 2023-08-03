@@ -1,0 +1,1213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con4="http://www.bea.com/wli/sb/stages/publish/config">
+    <con:coreEntry>
+        <con:description>OfertasPrendarioPL : componente encargado de implementar la lógica para crear, guardar y actualizar ofertas de un cliente en CRM.</con:description>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="OperacionPrendaria/Ofertas/Resources/WSDLs/NMPOfertasSvcWSDL"/>
+            <con:binding>
+                <con:name>OfertasBinding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Services/Ofertas</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:cus="http://www.bea.com/wli/config/customizations" xmlns:xt="http://www.bea.com/wli/config/xmltypes" xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert">
+            <oper:logging enabled="false" level="debug"/>
+            <oper:monitoring enabled="true" level="service" aggregationInterval="1"/>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router errorHandler="error-N3f57a4ff.129fb3f7.0.1562e4f9bf3.N8000">
+        <con:pipeline type="request" name="request-N3f57a4ff.N14b1f57d.0.155e4f77616.N7f7b">
+            <con:stage id="_StageId-N3f57a4ff.N14b1f57d.0.155e4f77616.N7f79" name="StageValidacionGuardarOfertas">
+                <con:comment>StageValidacion: Guardar Ofertas, es el primer filtro de validación para el header, este se encarga de ver si la peticion invocada por un tercero tiene los datos requeridos en el encabezado</con:comment>
+                <con:context>
+                    <con1:userNsDecl prefix="ofer" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Ofertas"/>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:userNsDecl prefix="ofer1" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/Ofertas"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:comment>If Then: componente que ayuda a validar el header comun para NMP : id, idConsumidor, idDestino</con1:comment>
+                        <con1:id>_ActionId-N3f57a4ff.N202b92df.0.15604584e93.N7fd7</con1:id>
+                        <con2:case id="_BranchId-N3f57a4ff.N202b92df.0.15604584e93.N7fd6">
+                            <con2:condition>
+                                <con1:xqueryText>$header/nmp:headerMessage</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:validate>
+                                    <con1:comment>valida el headerMessage de los XSD comunes de NMP</con1:comment>
+                                    <con1:id>_ActionId-N3f57a4ff.N581071a5.0.155ea3cfb8e.N7fee</con1:id>
+                                    <con2:schema ref="Common/XSD/NMPStandardHeader"/>
+                                    <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con2:schemaElement>
+                                    <con2:varName>header</con2:varName>
+                                    <con2:location>
+                                        <con1:xpathText>./nmp:headerMessage</con1:xpathText>
+                                    </con2:location>
+                                </con2:validate>
+                                <con2:assign varName="header_tmp">
+                                    <con1:comment>Asignacion de $header a una variable temporal</con1:comment>
+                                    <con1:id>_ActionId-N3f57a4ff.N4ba3c1e8.0.156474120f0.N7e49</con1:id>
+                                    <con2:expr>
+                                        <con1:xqueryText>$header</con1:xqueryText>
+                                    </con2:expr>
+                                </con2:assign>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default>
+                            <con2:Error>
+                                <con1:comment>Propaga un error NMP-008  = Hacen falta datos en el header</con1:comment>
+                                <con1:id>_ActionId-N3f57a4ff.N202b92df.0.15604584e93.N7fc5</con1:id>
+                                <con2:errCode>NMP-020</con2:errCode>
+                                <con2:message>Hacen falta datos en el header</con2:message>
+                            </con2:Error>
+                        </con2:default>
+                    </con2:ifThenElse>
+                    <con2:validate>
+                        <con1:comment>Validacion de body : de la operacion GuardarOfertasRequest</con1:comment>
+                        <con1:id>_ActionId-N3f57a4ff.N581071a5.0.155ea3cfb8e.N7ffb</con1:id>
+                        <con2:schema ref="OperacionPrendaria/Ofertas/Resources/Schemas/NMPOfertasSvcElementosXSD"/>
+                        <con2:schemaElement xmlns:ofer="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Ofertas">ofer:GuardarOfertasRequest</con2:schemaElement>
+                        <con2:varName>body</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./ofer:GuardarOfertasRequest</con1:xpathText>
+                        </con2:location>
+                    </con2:validate>
+                    <con2:assign varName="body_tmp">
+                        <con1:comment>Asignacion de $body a una variable temporal</con1:comment>
+                        <con1:id>_ActionId-N3f57a4ff.N6b18b22e.0.156338d297b.N7cfc</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$body</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:assign varName="id_mensaje">
+                        <con1:id>_ActionId-N3f57a4ff.N7f3328e.0.1567b70d889.N7ff5</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$messageID</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con3:report>
+                        <con1:id>_ActionId-N3f57b7ff.47b4ec0a.0.157dddc04da.N7ffb</con1:id>
+                        <con3:expr>
+                            <con1:xqueryText>$body</con1:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>guardarOferta_idClienteReq</con3:key>
+                            <con3:varName>body</con3:varName>
+                            <con3:value>
+                                <con1:xpathText>./ofer:GuardarOfertasRequest/ofer1:idCliente/text()</con1:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57a4ff.N4ba3c1e8.0.156474120f0.N7fcd" name="StageInvocacionBpelOfertaPrendariaResequencer" errorHandler="error-N3f57a4ff.2e94d058.0.1566feeba1a.N7f03">
+                <con:comment>Stage: que implementara la invocacion al BpelOfertaPrendariaResequencer, encargado de guardar todas aquellas ofertas creadas para el  cliente en CRM de manera goteo</con:comment>
+                <con:context>
+                    <con1:userNsDecl prefix="ofer" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Ofertas"/>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:userNsDecl prefix="ofer1" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/Ofertas"/>
+                    <con1:userNsDecl prefix="pren" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Oferta/Prendario"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-N3f57b7ff.592c927a.0.157beba1ab4.N7f2f</con1:id>
+                        <con2:case id="_BranchId-N3f57b7ff.592c927a.0.157beba1ab4.N7f2e">
+                            <con2:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:count($body/ofer:GuardarOfertasRequest/ofer1:listaOfertas/pren:Oferta) > 0</con:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con4:route>
+                                    <con1:comment>Publish: componente encargado de publicar las asignaciones del header y el body a travez de la invocacion de BpelOfertaPrendariaResequencer</con1:comment>
+                                    <con1:id>_ActionId-N3f57a4ff.N4ba3c1e8.0.156474120f0.N7ec0</con1:id>
+                                    <con4:service ref="OperacionPrendaria/Ofertas/Business Services/SOAOfertaPrendariaResequencerBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                    <con4:operation>guardarOfertas</con4:operation>
+                                    <con4:outboundTransform>
+                                        <con2:assign varName="header">
+                                            <con1:comment>Asignacion: del $header a una variable temporal</con1:comment>
+                                            <con1:id>_ActionId-N3f57a4ff.N4ba3c1e8.0.156474120f0.N7fc7</con1:id>
+                                            <con2:expr>
+                                                <con1:xqueryText>$header</con1:xqueryText>
+                                            </con2:expr>
+                                        </con2:assign>
+                                        <con2:assign varName="body">
+                                            <con1:comment>Asignacion: del $body a una variable temporal</con1:comment>
+                                            <con1:id>_ActionId-N3f57a4ff.N4ba3c1e8.0.156474120f0.N7ef4</con1:id>
+                                            <con2:expr>
+                                                <con1:xqueryText>$body</con1:xqueryText>
+                                            </con2:expr>
+                                        </con2:assign>
+                                    </con4:outboundTransform>
+                                </con4:route>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default>
+                            <con2:Error>
+                                <con1:id>_ActionId-N3f57b7ff.592c927a.0.157beba1ab4.N7f28</con1:id>
+                                <con2:errCode>NMP-022</con2:errCode>
+                                <con2:message>No hay ofertas que guardar</con2:message>
+                            </con2:Error>
+                        </con2:default>
+                    </con2:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57a4ff.N14b1f57d.0.155e4f77616.N7f7a">
+            <con:stage id="_StageId-N3f57a4ff.129fb3f7.0.1562e4f9bf3.N7f92" name="StageResponseGuardarOfertas">
+                <con:comment>Stage: que responde con codigord =0 "Ejecucion satisfacoria" , al realizar la operacion GardarOfertas  a traves de la invocacion de una Bpel</con:comment>
+                <con:context>
+                    <con1:userNsDecl prefix="ofer" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Ofertas"/>
+                    <con1:userNsDecl prefix="ofer1" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/Ofertas"/>
+                </con:context>
+                <con:actions>
+                    <con2:replace varName="header" contents-only="true">
+                        <con1:comment>Remplazo de un nodo por la variable header_tmp para asignar un ok de respuesta con codigoRespuesta = 0 Ejecucion satisfacoria</con1:comment>
+                        <con1:id>_ActionId-N3f57a4ff.N4ba3c1e8.0.156474120f0.N7e4f</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionPrendaria/Ofertas/Resources/Transformations/TROfertasPrendarioSIVA3Header"/>
+                                <con1:input>$header_tmp/*</con1:input>
+                                <con1:param name="codigoRespuesta">
+                                    <con1:path>0</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:comment>Remplazo de body Response de  la tranfromacion RBpelGuardarOfertasPrendariasResequencerToGuardasOfertasRes, este nos indica el estado el codigo y mensaje de la operacion guardarOferta en CRM</con1:comment>
+                        <con1:id>_ActionId-N3f57a4ff.N4ba3c1e8.0.156474120f0.N7e4c</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xqueryTransform>
+                                <con1:resource ref="OperacionPrendaria/Ofertas/Resources/Transformations/TRBpelGuardarOfertasPrendariasResequencerResToGuardasOfertasRes"/>
+                            </con1:xqueryTransform>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57a4ff.f535dcf.0.15637fce510.N7fcf">
+            <con:stage id="_StageId-N3f57a4ff.f535dcf.0.15637fce510.N7fce" name="StageManejadorErroresCRMActualizarPfertas">
+                <con:context>
+                    <con1:userNsDecl prefix="ofer" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Ofertas"/>
+                    <con1:userNsDecl prefix="ofer1" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/Ofertas"/>
+                    <con1:userNsDecl prefix="aco" namespace="http://tempuri.org/"/>
+                </con:context>
+                <con:actions>
+                    <con2:replace varName="header" contents-only="true">
+                        <con1:id>_ActionId-N3f57a4ff.f535dcf.0.15637fce510.N7f35</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionPrendaria/Ofertas/Resources/Transformations/TROfertasPrendarioSIVA3Header"/>
+                                <con1:input>$header/*</con1:input>
+                                <con1:param name="codigoRespuesta">
+                                    <con1:path>803</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57a4ff.f535dcf.0.15637fce510.N7f68</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionPrendaria/Ofertas/Resources/Transformations/TROfertasPrendarioSIVA3FaultBody"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="app">
+                                    <con1:path>3</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con3:report>
+                        <con1:id>_ActionId-N3f57a4ff.f535dcf.0.15637fce510.N7f02</con1:id>
+                        <con3:expr>
+                            <con1:xqueryText>$body</con1:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>actualizarOferta_idCliente_errorHandler</con3:key>
+                            <con3:varName>body_tmp</con3:varName>
+                            <con3:value>
+                                <con1:xpathText>./ofer:ActualizarOfertasRequest/ofer1:idCliente/text()</con1:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57a4ff.f535dcf.0.15637fce510.N7ece</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57a4ff.129fb3f7.0.1562e4f9bf3.N7f8f">
+            <con:stage id="_StageId-N3f57a4ff.129fb3f7.0.1562e4f9bf3.N7f8d" name="StageDefault">
+                <con:context/>
+                <con:actions>
+                    <con2:Error>
+                        <con1:comment>Propaga un error de NMP-007 : Operacion no permitida</con1:comment>
+                        <con1:id>_ActionId-N3f57a4ff.129fb3f7.0.1562e4f9bf3.N7f89</con1:id>
+                        <con2:errCode>NMP-021</con2:errCode>
+                        <con2:message>Operación no permitida</con2:message>
+                    </con2:Error>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57a4ff.N14b1f57d.0.155e4f77616.N7f7f">
+            <con:stage id="_StageId-N3f57a4ff.N14b1f57d.0.155e4f77616.N7f7d" name="StageValidacionGenerarOfertas">
+                <con:comment>StageValidacion: Generar Ofertas, es el primer filtro de validación para el header, este se encarga de ver si la peticion invocada por un tercero tiene los datos requeridos en el encabezado</con:comment>
+                <con:context>
+                    <con1:userNsDecl prefix="ofer" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Ofertas"/>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:userNsDecl prefix="ofer1" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/Ofertas"/>
+                    <con1:userNsDecl prefix="cli" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Cliente"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:comment>If Then: componente que ayuda a validar el header comun para NMP : id, idConsumidor, idDestino</con1:comment>
+                        <con1:id>_ActionId-N3f57a4ff.N202b92df.0.15604584e93.N7ff1</con1:id>
+                        <con2:case id="_BranchId-N3f57a4ff.N202b92df.0.15604584e93.N7ff0">
+                            <con2:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$header/nmp:headerMessage</con:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:validate>
+                                    <con1:comment>valida el headerMessage de los XSD comunes de NMP</con1:comment>
+                                    <con1:id>_ActionId-N3f57a4ff.N581071a5.0.155ea3cfb8e.N7ff1</con1:id>
+                                    <con2:schema ref="Common/XSD/NMPStandardHeader"/>
+                                    <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con2:schemaElement>
+                                    <con2:varName>header</con2:varName>
+                                    <con2:location>
+                                        <con1:xpathText>./nmp:headerMessage</con1:xpathText>
+                                    </con2:location>
+                                    <con2:resultVarName/>
+                                </con2:validate>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default>
+                            <con2:Error>
+                                <con1:comment>Propaga un error NMP-008  = Hacen falta datos en el header</con1:comment>
+                                <con1:id>_ActionId-N3f57a4ff.N202b92df.0.15604584e93.N7fec</con1:id>
+                                <con2:errCode>NMP-020</con2:errCode>
+                                <con2:message>Hacen falta datos en el header</con2:message>
+                            </con2:Error>
+                        </con2:default>
+                    </con2:ifThenElse>
+                    <con2:validate>
+                        <con1:comment>Validacion de body : de la operacion  guardarOfertasRequest</con1:comment>
+                        <con1:id>_ActionId-N3f57a4ff.N581071a5.0.155ea3cfb8e.N7ffe</con1:id>
+                        <con2:schema ref="OperacionPrendaria/Ofertas/Resources/Schemas/NMPOfertasSvcElementosXSD"/>
+                        <con2:schemaElement xmlns:ofer="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Ofertas">ofer:GenerarOfertasRequest</con2:schemaElement>
+                        <con2:varName>body</con2:varName>
+                        <con2:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./ofer:GenerarOfertasRequest</con:xpathText>
+                        </con2:location>
+                        <con2:resultVarName/>
+                    </con2:validate>
+                    <con2:assign varName="header_tmp">
+                        <con1:id>_ActionId-N3f57a4ff.2ae93fab.0.15655f53829.N7ffd</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$header</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:assign varName="body_tmp">
+                        <con1:comment>Asignacion de $body a una variable temporal</con1:comment>
+                        <con1:id>_ActionId-N3f57a4ff.N6ad3ed94.0.1560ec33695.N7ffe</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$body</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:assign varName="id_mensaje">
+                        <con1:id>_ActionId-N3f57a4ff.N7f3328e.0.1567b70d889.N7ffb</con1:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$messageID</con:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:insert varName="body">
+                        <con1:id>_ActionId-a1e030f.77e03d19.2.1582286a614.N8000</con1:id>
+                        <con2:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./ofer:GenerarOfertasRequest/ofer1:InformacionTransaccion</con:xpathText>
+                        </con2:location>
+                        <con2:where>first-child</con2:where>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(concat('&lt;ofer1:idTransaccion xmlns:ofer1="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/Ofertas">',$id_mensaje,'&lt;/ofer1:idTransaccion>'))</con:xqueryText>
+                        </con2:expr>
+                    </con2:insert>
+                    <con3:report>
+                        <con1:id>_ActionId-N3f57b7ff.47b4ec0a.0.157dddc04da.N7ffe</con1:id>
+                        <con3:expr>
+                            <con1:xqueryText>$body</con1:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>generarOferta_idClienteReq</con3:key>
+                            <con3:varName>body</con3:varName>
+                            <con3:value>
+                                <con1:xpathText>./ofer:GenerarOfertasRequest/ofer1:InformacionCliente/cli:idCliente/text()</con1:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57a4ff.Nf1de9df.0.156097b0d9c.N8000" name="StageInvocacionOBROfertasPrendario" errorHandler="error-N3f57a4ff.666cf164.0.1560e2451ef.N7fcf">
+                <con:comment>Stage: en el cual se implementa la invocacion al Oracle Busness Rule que es el componente que genera "n" numero de ofertas para el cliente que llega a sucursal</con:comment>
+                <con:context>
+                    <con1:userNsDecl prefix="ofer" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Ofertas"/>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:userNsDecl prefix="ofer1" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/Ofertas"/>
+                    <con1:userNsDecl prefix="cli" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Cliente"/>
+                </con:context>
+                <con:actions>
+                    <con2:wsCallout>
+                        <con1:comment>ServiceCallout: que invoca al BS de OBR</con1:comment>
+                        <con1:id>_ActionId-N3f57a4ff.Nf1de9df.0.156097b0d9c.N7ffd</con1:id>
+                        <con1:disabled>true</con1:disabled>
+                        <con2:service ref="OperacionPrendaria/Ofertas/Business Services/OBROfertasPrendarioBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>generarOfertas</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">OBROfertasPrendarioRequest</con2:body>
+                            <con2:header>headerOBROfertasPrendarioRequest</con2:header>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">OBROfertasPrendarioResponse</con2:body>
+                            <con2:header>headerOBROfertasPrendarioResponse</con2:header>
+                        </con2:response>
+                        <con2:requestTransform>
+                            <con2:assign varName="headerOBROfertasPrendarioRequest">
+                                <con1:comment>Asignacion: del header a una variable temporal</con1:comment>
+                                <con1:id>_ActionId-N3f57a4ff.Nf1de9df.0.156097b0d9c.N7ff3</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText>$header</con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:assign varName="OBROfertasPrendarioRequest">
+                                <con1:comment>Asignacion del payload de OBR Request</con1:comment>
+                                <con1:id>_ActionId-N3f57a4ff.Nf1de9df.0.156097b0d9c.N7ff9</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryTransform>
+                                        <con1:resource ref="OperacionPrendaria/Ofertas/Resources/Transformations/TRGenerarOfertasReqToOBROfertasPrendarioSIVA3Req"/>
+                                        <con1:param name="GenerarOfertasRequest">
+                                            <con1:path>$body/ofer:GenerarOfertasRequest</con1:path>
+                                        </con1:param>
+                                    </con1:xqueryTransform>
+                                </con2:expr>
+                            </con2:assign>
+                        </con2:requestTransform>
+                        <con2:responseTransform>
+                            <con2:ifThenElse>
+                                <con1:comment>If-Then : ayuda a validar la invocación de la respuesta de OBR:
+*Exitoso (lista de ofertas) : se realiza un reemplazo de nodos tanto para el header como para el body y asigna un codigoRespuesta: 0 "Ejecucion satisfacoria" en el header,
+* Fallido (lista de ofertas = 0 ) : realiza un reemplazo de nodos para el header y el body , asignando un codigoError 801 "No existe una regla de negocio para los parametros entrantes"</con1:comment>
+                                <con1:id>_ActionId-N3f57a4ff.Nf1de9df.0.156097b0d9c.N7fe9</con1:id>
+                                <con2:case id="_BranchId-N3f57a4ff.Nf1de9df.0.156097b0d9c.N7fe8">
+                                    <con2:condition>
+                                        <con1:xqueryText>fn:count($OBROfertasPrendarioResponse//*:Oferta) = 0</con1:xqueryText>
+                                    </con2:condition>
+                                    <con2:actions>
+                                        <con2:replace varName="header" contents-only="true">
+                                            <con1:comment>Remplazo del header por default de SIVA3a travez de un XSLT en caso de ser fallida la generacion de Ofertas por OBR</con1:comment>
+                                            <con1:id>_ActionId-a1e030f.N4089bba8.26.1560ac24a45.N8000</con1:id>
+                                            <con2:location>
+                                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                            </con2:location>
+                                            <con2:expr>
+                                                <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                                    <con:resource ref="OperacionPrendaria/Ofertas/Resources/Transformations/TROfertasPrendarioSIVA3Header"/>
+                                                    <con:input>$header_tmp/*</con:input>
+                                                    <con:param name="codigoRespuesta">
+                                                        <con:path>801</con:path>
+                                                    </con:param>
+                                                </con:xsltTransform>
+                                            </con2:expr>
+                                        </con2:replace>
+                                        <con2:replace varName="body" contents-only="true">
+                                            <con1:comment>Remplazo de body de la operacion generarOfertasResponse poe medio de un XQueryExpresion en caso de ser fallida la generacion de Ofertas por OBR</con1:comment>
+                                            <con1:id>_ActionId-N3f57a4ff.Nf1de9df.0.156097b0d9c.N7faa</con1:id>
+                                            <con2:location>
+                                                <con1:xpathText>.</con1:xpathText>
+                                            </con2:location>
+                                            <con2:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(fn:concat('&lt;ofer:GenerarOfertasResponse xmlns:ofer="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Ofertas">','&lt;ofer1:generarOfertasBase xmlns:ofer1="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/Ofertas">',xs:boolean(dvm:lookupValue("OperacionPrendaria/Ofertas/Resources/DVMs/GenerarOfertaBaseApp","Consumidor",$header_tmp/nmp:headerMessage/nmp:idConsumidor/text() ,"Flag2","true","")),'&lt;/ofer1:generarOfertasBase>&lt;/ofer:GenerarOfertasResponse>'))</con:xqueryText>
+                                            </con2:expr>
+                                        </con2:replace>
+                                    </con2:actions>
+                                </con2:case>
+                                <con2:default>
+                                    <con2:replace varName="header" contents-only="true">
+                                        <con1:comment>Remplazo del header por default de SIVA3a travez de un XSLT en caso de la generacion exitosa de ofertas por parte de OBR</con1:comment>
+                                        <con1:id>_ActionId-a1e030f.N4089bba8.1c.1560a27514c.N7ffe</con1:id>
+                                        <con2:location>
+                                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                        </con2:location>
+                                        <con2:expr>
+                                            <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                                <con:resource ref="OperacionPrendaria/Ofertas/Resources/Transformations/TROfertasPrendarioSIVA3Header"/>
+                                                <con:input>$header_tmp/*</con:input>
+                                                <con:param name="codigoRespuesta">
+                                                    <con:path>0</con:path>
+                                                </con:param>
+                                            </con:xsltTransform>
+                                        </con2:expr>
+                                    </con2:replace>
+                                    <con2:replace varName="body" contents-only="true">
+                                        <con1:comment>Remplazo de body de la operacion generarOfertasResponse Vs OBRResponse por medio de un Xquery en caso de la generacion exitosa de ofertas por parte de OBR</con1:comment>
+                                        <con1:id>_ActionId-a1e030f.N4089bba8.1c.1560a27514c.N7ffd</con1:id>
+                                        <con2:location>
+                                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                        </con2:location>
+                                        <con2:expr>
+                                            <con:xqueryTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                                <con:resource ref="OperacionPrendaria/Ofertas/Resources/Transformations/TROBROfertasPrendarioSIVA3ResToGenerarOfertasRes"/>
+                                                <con:param name="Header">
+                                                    <con:path>$header_tmp/*</con:path>
+                                                </con:param>
+                                                <con:param name="CallFunctionStatelessDecision">
+                                                    <con:path>$OBROfertasPrendarioResponse</con:path>
+                                                </con:param>
+                                            </con:xqueryTransform>
+                                        </con2:expr>
+                                    </con2:replace>
+                                </con2:default>
+                            </con2:ifThenElse>
+                        </con2:responseTransform>
+                    </con2:wsCallout>
+                    <con2:wsCallout>
+                        <con1:comment>ServiceCallout: que invoca al BS de OBR</con1:comment>
+                        <con1:id>_ActionId-af0049b.2f9dfd9e.0.15d5c0cbebd.N7f49</con1:id>
+                        <con2:service ref="OperacionPrendaria/Ofertas/Business Services/OBROfertasPrendarioV2BS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>generarOfertas</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">OBROfertasPrendarioRequest</con2:body>
+                            <con2:header>headerOBROfertasPrendarioRequest</con2:header>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">OBROfertasPrendarioResponse</con2:body>
+                            <con2:header>headerOBROfertasPrendarioResponse</con2:header>
+                        </con2:response>
+                        <con2:requestTransform>
+                            <con2:assign varName="headerOBROfertasPrendarioRequest">
+                                <con1:comment>Asignacion: del header a una variable temporal</con1:comment>
+                                <con1:id>_ActionId-af0049b.2f9dfd9e.0.15d5c0cbebd.N7f48</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText>$header</con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:assign varName="OBROfertasPrendarioRequest">
+                                <con1:comment>Asignacion del payload de OBR Request</con1:comment>
+                                <con1:id>_ActionId-af0049b.2f9dfd9e.0.15d5c0cbebd.N7f47</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText>$body/*</con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                        </con2:requestTransform>
+                        <con2:responseTransform>
+                            <con2:ifThenElse>
+                                <con1:comment>If-Then : ayuda a validar la invocación de la respuesta de OBR:
+*Exitoso (lista de ofertas) : se realiza un reemplazo de nodos tanto para el header como para el body y asigna un codigoRespuesta: 0 "Ejecucion satisfacoria" en el header,
+* Fallido (lista de ofertas = 0 ) : realiza un reemplazo de nodos para el header y el body , asignando un codigoError 801 "No existe una regla de negocio para los parametros entrantes"</con1:comment>
+                                <con1:id>_ActionId-af0049b.2f9dfd9e.0.15d5c0cbebd.N7f46</con1:id>
+                                <con2:case id="_BranchId-af0049b.2f9dfd9e.0.15d5c0cbebd.N7f45">
+                                    <con2:condition>
+                                        <con1:xqueryText>fn:count($OBROfertasPrendarioResponse//*:Oferta) = 0</con1:xqueryText>
+                                    </con2:condition>
+                                    <con2:actions>
+                                        <con2:replace varName="header" contents-only="true">
+                                            <con1:comment>Remplazo del header por default de SIVA3a travez de un XSLT en caso de ser fallida la generacion de Ofertas por OBR</con1:comment>
+                                            <con1:id>_ActionId-af0049b.2f9dfd9e.0.15d5c0cbebd.N7f44</con1:id>
+                                            <con2:location>
+                                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                            </con2:location>
+                                            <con2:expr>
+                                                <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                                    <con:resource ref="OperacionPrendaria/Ofertas/Resources/Transformations/TROfertasPrendarioSIVA3Header"/>
+                                                    <con:input>$header_tmp/*</con:input>
+                                                    <con:param name="codigoRespuesta">
+                                                        <con:path>801</con:path>
+                                                    </con:param>
+                                                </con:xsltTransform>
+                                            </con2:expr>
+                                        </con2:replace>
+                                        <con2:replace varName="body" contents-only="true">
+                                            <con1:comment>Remplazo de body de la operacion generarOfertasResponse poe medio de un XQueryExpresion en caso de ser fallida la generacion de Ofertas por OBR</con1:comment>
+                                            <con1:id>_ActionId-af0049b.2f9dfd9e.0.15d5c0cbebd.N7f43</con1:id>
+                                            <con2:location>
+                                                <con1:xpathText>.</con1:xpathText>
+                                            </con2:location>
+                                            <con2:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(fn:concat('&lt;ofer:GenerarOfertasResponse xmlns:ofer="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Ofertas">','&lt;ofer1:generarOfertasBase xmlns:ofer1="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/Ofertas">',xs:boolean(dvm:lookupValue("OperacionPrendaria/Ofertas/Resources/DVMs/GenerarOfertaBaseApp","Consumidor",$header_tmp/nmp:headerMessage/nmp:idConsumidor/text() ,"Flag2","true","")),'&lt;/ofer1:generarOfertasBase>&lt;/ofer:GenerarOfertasResponse>'))</con:xqueryText>
+                                            </con2:expr>
+                                        </con2:replace>
+                                    </con2:actions>
+                                </con2:case>
+                                <con2:default>
+                                    <con2:replace varName="header" contents-only="true">
+                                        <con1:comment>Remplazo del header por default de SIVA3a travez de un XSLT en caso de la generacion exitosa de ofertas por parte de OBR</con1:comment>
+                                        <con1:id>_ActionId-af0049b.2f9dfd9e.0.15d5c0cbebd.N7f42</con1:id>
+                                        <con2:location>
+                                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                        </con2:location>
+                                        <con2:expr>
+                                            <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                                <con:resource ref="OperacionPrendaria/Ofertas/Resources/Transformations/TROfertasPrendarioSIVA3Header"/>
+                                                <con:input>$header_tmp/*</con:input>
+                                                <con:param name="codigoRespuesta">
+                                                    <con:path>0</con:path>
+                                                </con:param>
+                                            </con:xsltTransform>
+                                        </con2:expr>
+                                    </con2:replace>
+                                    <con2:replace varName="body" contents-only="true">
+                                        <con1:id>_ActionId-af0049b.2f9dfd9e.0.15d5c0cbebd.N7ed9</con1:id>
+                                        <con2:expr>
+                                            <con1:xqueryText>$OBROfertasPrendarioResponse</con1:xqueryText>
+                                        </con2:expr>
+                                    </con2:replace>
+                                </con2:default>
+                            </con2:ifThenElse>
+                        </con2:responseTransform>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57a4ff.N4ba3c1e8.0.156474120f0.N7db1" name="StageInvocacionOperaracionGuardarOfertas" errorHandler="error-N3f57a4ff.cf13ef8.0.1564c073559.N7fcf">
+                <con:comment>Stage de invocacion a la operacion : GuardarOfertas del Pipeline OfertasPrendarioPL, por lo que la operacion se encarga de ir a guardar a CRM todas las ofertas generadas al cliente</con:comment>
+                <con:context>
+                    <con1:userNsDecl prefix="ofer" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Ofertas"/>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-N3f57b7ff.592c927a.0.157beba1ab4.N7e4d</con1:id>
+                        <con2:case id="_BranchId-N3f57b7ff.592c927a.0.157beba1ab4.N7e4c">
+                            <con2:condition>
+                                <con1:xqueryText>fn:count($OBROfertasPrendarioResponse//*:Oferta) > 0</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:wsCallout>
+                                    <con1:comment>Service Callout: que invoca a GuardarOfertas del Pipeline OfertasPrendarioPL</con1:comment>
+                                    <con1:id>_ActionId-N3f57a4ff.N4ba3c1e8.0.156474120f0.N7dae</con1:id>
+                                    <con2:service ref="OperacionPrendaria/Ofertas/Pipelines/NMPOfertasPrendarioPL" xsi:type="con:PipelineRef"/>
+                                    <con2:operation>guardarOfertas</con2:operation>
+                                    <con2:request>
+                                        <con2:body wrapped="false">body_guardarOfertasRequest</con2:body>
+                                        <con2:header>header_GuardarOfertasRequest</con2:header>
+                                    </con2:request>
+                                    <con2:response>
+                                        <con2:body wrapped="false">body_guardarOfertasResponse</con2:body>
+                                        <con2:header>header_GuardarOfertasResponse</con2:header>
+                                    </con2:response>
+                                    <con2:requestTransform>
+                                        <con2:assign varName="header_GuardarOfertasRequest">
+                                            <con1:comment>Asignacion de header de GuardarOfertasRequest</con1:comment>
+                                            <con1:id>_ActionId-N3f57a4ff.4df80aa.0.1564bc7008d.N7ffd</con1:id>
+                                            <con2:expr>
+                                                <con1:xqueryText>$header_tmp</con1:xqueryText>
+                                            </con2:expr>
+                                        </con2:assign>
+                                        <con2:replace varName="header_GuardarOfertasRequest" contents-only="true">
+                                            <con1:id>_ActionId-N3f57b7ff.N3a1ee41c.0.157de4f9a34.N7ffe</con1:id>
+                                            <con2:location>
+                                                <con1:xpathText>./nmp:headerMessage/nmp:idConsumidor</con1:xpathText>
+                                            </con2:location>
+                                            <con2:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">'OBR-SIVA3'</con:xqueryText>
+                                            </con2:expr>
+                                        </con2:replace>
+                                        <con2:assign varName="body_guardarOfertasRequest">
+                                            <con1:comment>Asignacion de body de GuardarOfertasRequest</con1:comment>
+                                            <con1:id>_ActionId-N3f57a4ff.4df80aa.0.1564bc7008d.N7ffa</con1:id>
+                                            <con2:expr>
+                                                <con1:xqueryTransform>
+                                                    <con1:resource ref="OperacionPrendaria/Ofertas/Resources/Transformations/TrBrmGenerarOfertasResToGuardarOfertaReq"/>
+                                                    <con1:param name="GenerarOfertasReq">
+                                                        <con1:path>$body_tmp/*</con1:path>
+                                                    </con1:param>
+                                                    <con1:param name="GenerarOfertaRes">
+                                                        <con1:path>$OBROfertasPrendarioResponse</con1:path>
+                                                    </con1:param>
+                                                </con1:xqueryTransform>
+                                            </con2:expr>
+                                        </con2:assign>
+                                    </con2:requestTransform>
+                                    <con2:responseTransform/>
+                                </con2:wsCallout>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default/>
+                    </con2:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57a4ff.N14b1f57d.0.155e4f77616.N7f7e"/>
+        <con:pipeline type="error" name="error-N3f57a4ff.2e94d058.0.1566feeba1a.N7f03">
+            <con:stage id="_StageId-N3f57a4ff.2e94d058.0.1566feeba1a.N7f02" name="StageManejadorErroresBpelPfertaPrendariaPublish">
+                <con:context>
+                    <con1:userNsDecl prefix="ofer" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Ofertas"/>
+                    <con1:userNsDecl prefix="ofer1" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/Ofertas"/>
+                    <con1:userNsDecl prefix="pren" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Oferta/Prendario"/>
+                </con:context>
+                <con:actions>
+                    <con2:replace varName="header" contents-only="true">
+                        <con1:id>_ActionId-N3f57a4ff.2e94d058.0.1566feeba1a.N7e05</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionPrendaria/Ofertas/Resources/Transformations/TROfertasPrendarioSIVA3Header"/>
+                                <con1:input>$header/*</con1:input>
+                                <con1:param name="codigoRespuesta">
+                                    <con1:path>804</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57a4ff.2e94d058.0.1566feeba1a.N7e38</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionPrendaria/Ofertas/Resources/Transformations/TROfertasPrendarioSIVA3FaultBody"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="app">
+                                    <con1:path>5</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con3:report>
+                        <con1:id>_ActionId-N3f57a4ff.2e94d058.0.1566feeba1a.N7e9c</con1:id>
+                        <con3:expr>
+                            <con1:xqueryText>$body</con1:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>guardarOferta_idCliente_errorHandler</con3:key>
+                            <con3:varName>body_tmp</con3:varName>
+                            <con3:value>
+                                <con1:xpathText>./ofer:GuardarOfertasRequest/ofer1:idCliente/text()</con1:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57a4ff.2e94d058.0.1566feeba1a.N7ecf</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57a4ff.129fb3f7.0.1562e4f9bf3.N8000">
+            <con:stage id="_StageId-N3f57a4ff.129fb3f7.0.1562e4f9bf3.N7fff" name="StageErrorHandlerOfertasPrendarioPL">
+                <con:comment>StageErrorHandler : maneja la excepcion, si ocurre algun problema al invocar  cualuqier operacion dentro del branch OfertasPrendarioPL</con:comment>
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:userNsDecl prefix="ofer" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Ofertas"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-N3f57a4ff.2e94d058.0.1566feeba1a.N7dca</con1:id>
+                        <con2:case id="_BranchId-N3f57a4ff.2e94d058.0.1566feeba1a.N7dc9">
+                            <con2:condition>
+                                <con1:xqueryText>$header/nmp:headerMessage</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace varName="header" contents-only="true">
+                                    <con1:id>_ActionId-N3f57a4ff.2e94d058.0.1566feeba1a.N7f35</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con1:xsltTransform>
+                                            <con1:resource ref="OperacionPrendaria/Ofertas/Resources/Transformations/TROfertasPrendarioSIVA3Header"/>
+                                            <con1:input>$header/*</con1:input>
+                                            <con1:param name="codigoRespuesta">
+                                                <con1:path>500</con1:path>
+                                            </con1:param>
+                                        </con1:xsltTransform>
+                                    </con2:expr>
+                                </con2:replace>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default/>
+                    </con2:ifThenElse>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57a4ff.2e94d058.0.1566feeba1a.N7d50</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionPrendaria/Ofertas/Resources/Transformations/TROfertasPrendarioSIVA3FaultBody"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="app">
+                                    <con1:path>4</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply isError="true">
+                        <con1:comment>Replica el remplazo de nodos en el payload</con1:comment>
+                        <con1:id>_ActionId-N3f57a4ff.129fb3f7.0.1562e4f9bf3.N7ff6</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57a4ff.129fb3f7.0.1562e4f9bf3.N7f8e"/>
+        <con:pipeline type="error" name="error-N3f57a4ff.666cf164.0.1560e2451ef.N7fcf">
+            <con:stage id="_StageId-N3f57a4ff.666cf164.0.1560e2451ef.N7fce" name="StageManejadorErrorOBROfertasPrendario">
+                <con:comment>StageErrorHandler : maneja la excepcion, si ocurre algun problema al invocar el OBS encargado de la generacion de las ofertas para un cliente</con:comment>
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCliente"/>
+                    <con1:userNsDecl prefix="ofer" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Ofertas"/>
+                    <con1:userNsDecl prefix="ofer1" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/Ofertas"/>
+                    <con1:userNsDecl prefix="cli" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Cliente"/>
+                    <con1:userNsDecl prefix="of" namespace="http://servicios.montedepiedad.com.mx/NMP/Services/Ofertas"/>
+                    <con1:userNsDecl prefix="shm" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-N3f57a4ff.N5ea5ab66.0.1567f567b02.N7fc9</con1:id>
+                        <con2:case id="_BranchId-N3f57a4ff.N5ea5ab66.0.1567f567b02.N7fc8">
+                            <con2:condition>
+                                <con1:xqueryText>contains($header//shm:idConsumidor/text(), 'MIDAS')</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:replace varName="header" contents-only="true">
+                                    <con1:id>_ActionId-N3f57a4ff.N5ea5ab66.0.1567f567b02.N7fbb</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con1:xsltTransform>
+                                            <con1:resource ref="OperacionPrendaria/Ofertas/Resources/Transformations/TROfertasPrendarioSIVA3Header"/>
+                                            <con1:input>$header/*</con1:input>
+                                            <con1:param name="codigoRespuesta">
+                                                <con1:path>802</con1:path>
+                                            </con1:param>
+                                        </con1:xsltTransform>
+                                    </con2:expr>
+                                </con2:replace>
+                                <con2:replace varName="body" contents-only="true">
+                                    <con1:id>_ActionId-N3f57a4ff.N5ea5ab66.0.1567f567b02.N7fc2</con1:id>
+                                    <con2:location>
+                                        <con1:xpathText>.</con1:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con1:xqueryTransform>
+                                            <con1:resource ref="OperacionPrendaria/Ofertas/Resources/Transformations/TRGenerarOfertaReqToGenerarOfertaRes"/>
+                                        </con1:xqueryTransform>
+                                    </con2:expr>
+                                </con2:replace>
+                                <con1:reply isError="false">
+                                    <con1:id>_ActionId-N3f57a4ff.N5ea5ab66.0.1567f567b02.N7fb5</con1:id>
+                                </con1:reply>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default>
+                            <con2:replace varName="header" contents-only="true">
+                                <con1:comment>Remplazo del header por default de SIVA3 a travez de un XSLT en caso de algun error inesperado 802 = Ocurrio un error al invocar OBROfertasPrendarioSIVA3</con1:comment>
+                                <con1:id>_ActionId-N3f57a4ff.N266f8d17.0.1560e96a57b.N7ffe</con1:id>
+                                <con2:location>
+                                    <con1:xpathText>.</con1:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con1:xsltTransform>
+                                        <con1:resource ref="OperacionPrendaria/Ofertas/Resources/Transformations/TROfertasPrendarioSIVA3Header"/>
+                                        <con1:input>$header/*</con1:input>
+                                        <con1:param name="codigoRespuesta">
+                                            <con1:path>802</con1:path>
+                                        </con1:param>
+                                    </con1:xsltTransform>
+                                </con2:expr>
+                            </con2:replace>
+                            <con2:replace varName="body" contents-only="true">
+                                <con1:comment>Remplazo del body por default de SIVA3 a travez de un XSLT en caso de algun error inesperado app = 1 Error de aplicación: OBROfertasPrendarioSIVA3 Generar Ofertas</con1:comment>
+                                <con1:id>_ActionId-N3f57a4ff.N266f8d17.0.1560e96a57b.N7ffb</con1:id>
+                                <con2:location>
+                                    <con1:xpathText>.</con1:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con1:xsltTransform>
+                                        <con1:resource ref="OperacionPrendaria/Ofertas/Resources/Transformations/TROfertasPrendarioSIVA3FaultBody"/>
+                                        <con1:input>$fault</con1:input>
+                                        <con1:param name="app">
+                                            <con1:path>1</con1:path>
+                                        </con1:param>
+                                    </con1:xsltTransform>
+                                </con2:expr>
+                            </con2:replace>
+                            <con3:report>
+                                <con1:comment>Reporteo de idCliente_errorHandler en caso de algun error inesperado</con1:comment>
+                                <con1:id>_ActionId-N3f57a4ff.N266f8d17.0.1560e96a57b.N7ff8</con1:id>
+                                <con3:expr>
+                                    <con1:xqueryText>$body</con1:xqueryText>
+                                </con3:expr>
+                                <con3:labels>
+                                    <con3:key>generarOferta_idCliente_errorHandler</con3:key>
+                                    <con3:varName>body_tmp</con3:varName>
+                                    <con3:value>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./ofer:GenerarOfertasRequest/ofer1:InformacionCliente/cli:idCliente/text()</con:xpathText>
+                                    </con3:value>
+                                </con3:labels>
+                            </con3:report>
+                            <con1:reply isError="true">
+                                <con1:comment>Replica el remplazo de nodos en el payload</con1:comment>
+                                <con1:id>_ActionId-N3f57a4ff.N266f8d17.0.1560e96a57b.N7ff5</con1:id>
+                            </con1:reply>
+                        </con2:default>
+                    </con2:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57a4ff.cf13ef8.0.1564c073559.N7fcf">
+            <con:stage id="_StageId-N3f57a4ff.cf13ef8.0.1564c073559.N7fce" name="StageManejadorErrorInvocacionOperaracionGuardarOfertas">
+                <con:comment>StageErrorHandler : maneja la excepcion, si ocurre algun problema al invocar el la operacion GuardarOfertas del Pipeline OfertasPrendarioPL</con:comment>
+                <con:context>
+                    <con1:userNsDecl prefix="ofer" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Ofertas"/>
+                    <con1:userNsDecl prefix="ofer1" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/Ofertas"/>
+                    <con1:userNsDecl prefix="cli" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Cliente"/>
+                    <con1:userNsDecl prefix="pren" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Oferta/Prendario"/>
+                </con:context>
+                <con:actions>
+                    <con2:replace varName="header" contents-only="true">
+                        <con1:comment>Remplazo del header por default de SIVA3 a travez de un XSLT en caso de algun error inesperado error = 804 Ocurrio un error al invocar BpelGuardarOfertas</con1:comment>
+                        <con1:id>_ActionId-N3f57a4ff.cf13ef8.0.1564c073559.N7f9b</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionPrendaria/Ofertas/Resources/Transformations/TROfertasPrendarioSIVA3Header"/>
+                                <con1:input>$header/*</con1:input>
+                                <con1:param name="codigoRespuesta">
+                                    <con1:path>804</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:comment>Remplazo del body por default de SIVA3 a travez de un XSLT en caso de algun error inesperado app = 2 Error de aplicación: CRM Guardar Ofertas</con1:comment>
+                        <con1:id>_ActionId-N3f57a4ff.cf13ef8.0.1564c073559.N7f68</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionPrendaria/Ofertas/Resources/Transformations/TROfertasPrendarioSIVA3FaultBody"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="app">
+                                    <con1:path>2</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con3:report>
+                        <con1:comment>Reporteo de idCliente_errorHandler en caso de algun error inesperado</con1:comment>
+                        <con1:id>_ActionId-N3f57a4ff.cf13ef8.0.1564c073559.N7f64</con1:id>
+                        <con3:expr>
+                            <con1:xqueryText>$body</con1:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>guardarOferta_idClientea_errorHandler</con3:key>
+                            <con3:varName>body_tmp</con3:varName>
+                            <con3:value>
+                                <con1:xpathText>./ofer:GenerarOfertasRequest/ofer1:InformacionCliente/cli:idCliente/text()</con1:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                    <con1:reply isError="true">
+                        <con1:comment>Replica el remplazo de nodos en el payload</con1:comment>
+                        <con1:id>_ActionId-N3f57a4ff.cf13ef8.0.1564c073559.N7f61</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57a4ff.N6b18b22e.0.156338d297b.N7ea3">
+            <con:stage id="_StageId-N3f57a4ff.N6b18b22e.0.156338d297b.N7ea1" name="StageValidacionActualizarOfertas">
+                <con:comment>StageValidacion: Actualizar Ofertas es el primer filtro de validación para el header, este se encarga de ver si la peticion invocada por un tercero tiene los datos requeridos en el encabezado</con:comment>
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:userNsDecl prefix="ofer" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Ofertas"/>
+                    <con1:userNsDecl prefix="ofer1" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/Ofertas"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:comment>If Then: componente que ayuda a validar el header comun para NMP : id, idConsumidor, idDestino</con1:comment>
+                        <con1:id>_ActionId-N3f57a4ff.N6b18b22e.0.156338d297b.N7e32</con1:id>
+                        <con2:case id="_BranchId-N3f57a4ff.N6b18b22e.0.156338d297b.N7e31">
+                            <con2:condition>
+                                <con1:xqueryText>$header/nmp:headerMessage</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:validate>
+                                    <con1:comment>valida el headerMessage de los XSD comunes de NMP</con1:comment>
+                                    <con1:id>_ActionId-N3f57a4ff.N6b18b22e.0.156338d297b.N7dcb</con1:id>
+                                    <con2:schema ref="Common/XSD/NMPStandardHeader"/>
+                                    <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con2:schemaElement>
+                                    <con2:varName>header</con2:varName>
+                                    <con2:location>
+                                        <con1:xpathText>./nmp:headerMessage</con1:xpathText>
+                                    </con2:location>
+                                </con2:validate>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default>
+                            <con2:Error>
+                                <con1:comment>Propaga un error NMP-008  = Hacen falta datos en el header</con1:comment>
+                                <con1:id>_ActionId-N3f57a4ff.N6b18b22e.0.156338d297b.N7dfe</con1:id>
+                                <con2:errCode>NMP-020</con2:errCode>
+                                <con2:message>Hacen falta datos en el header</con2:message>
+                            </con2:Error>
+                        </con2:default>
+                    </con2:ifThenElse>
+                    <con2:validate>
+                        <con1:comment>Validacion de body : de la operacion actualizarOfertasRequest</con1:comment>
+                        <con1:id>_ActionId-N3f57a4ff.N6b18b22e.0.156338d297b.N7dc8</con1:id>
+                        <con2:schema ref="OperacionPrendaria/Ofertas/Resources/Schemas/NMPOfertasSvcElementosXSD"/>
+                        <con2:schemaElement xmlns:ofer="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Ofertas">ofer:ActualizarOfertasRequest</con2:schemaElement>
+                        <con2:varName>body</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./ofer:ActualizarOfertasRequest</con1:xpathText>
+                        </con2:location>
+                    </con2:validate>
+                    <con2:assign varName="body_tmp">
+                        <con1:comment>Asignacion de $body a una variable temporal</con1:comment>
+                        <con1:id>_ActionId-N3f57a4ff.N6b18b22e.0.156338d297b.N7dc5</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$body</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:assign varName="id_mensaje">
+                        <con1:id>_ActionId-N3f57a4ff.N7f3328e.0.1567b70d889.N7ff8</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$messageID</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con3:report>
+                        <con1:id>_ActionId-N3f57b7ff.47b4ec0a.0.157dddc04da.N7ff8</con1:id>
+                        <con3:expr>
+                            <con1:xqueryText>$body</con1:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>actualizarOferta_idCliente</con3:key>
+                            <con3:varName>body</con3:varName>
+                            <con3:value>
+                                <con1:xpathText>./ofer:ActualizarOfertasRequest/ofer1:idCliente/text()</con1:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57a4ff.N6b18b22e.0.156338d297b.N7cca" name="StageInvocacionCRMActualizarOfertas" errorHandler="error-N3f57a4ff.f535dcf.0.15637fce510.N7fcf">
+                <con:comment>Stage: en el cual se implementa la invocacion al la operacion de CRM encargada de actualizar el estatus de la oferta</con:comment>
+                <con:context>
+                    <con1:userNsDecl prefix="ofer" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Ofertas"/>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:userNsDecl prefix="ofer1" namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/Ofertas"/>
+                    <con1:userNsDecl prefix="pren" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Oferta/Prendario"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-N3f57b7ff.592c927a.0.157beba1ab4.N7ef3</con1:id>
+                        <con2:case id="_BranchId-N3f57b7ff.592c927a.0.157beba1ab4.N7ef2">
+                            <con2:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:count($body/ofer:ActualizarOfertasRequest/ofer1:listaEstadoOfertas/ofer1:EstadoOferta) > 0</con:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:wsCallout>
+                                    <con1:comment>ServiceCallout: que invoca al Business Services CRMActualizarOfertasBS, el cual se encarga de ir a CRM a actualizar la oferta asignada</con1:comment>
+                                    <con1:id>_ActionId-N3f57a4ff.N13542ade.0.1563715f391.N7ffe</con1:id>
+                                    <con2:service ref="OperacionPrendaria/Ofertas/Business Services/CRMActulizarOfertasBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                    <con2:operation>CambiaEstado</con2:operation>
+                                    <con2:request>
+                                        <con2:body wrapped="false">CRMActualizarOfertasPrendarioRequest</con2:body>
+                                        <con2:header>headerCRMActualizarOfertasPrendarioRequest</con2:header>
+                                    </con2:request>
+                                    <con2:response>
+                                        <con2:body wrapped="false">CRMActualizarOfertasPrendarioResponse</con2:body>
+                                        <con2:header>headerCRMActualizarOfertasPrendarioResponse</con2:header>
+                                    </con2:response>
+                                    <con2:requestTransform>
+                                        <con2:assign varName="headerCRMActualizarOfertasPrendarioRequest">
+                                            <con1:comment>Asignacion: del header a una variable temporal</con1:comment>
+                                            <con1:id>_ActionId-N3f57a4ff.66d014.0.1563729dd59.N7f9c</con1:id>
+                                            <con2:expr>
+                                                <con1:xqueryText>$header</con1:xqueryText>
+                                            </con2:expr>
+                                        </con2:assign>
+                                        <con2:assign varName="CRMActualizarOfertasPrendarioRequest">
+                                            <con1:comment>Asignacion del payload de CRMActualizarOfertas Request</con1:comment>
+                                            <con1:id>_ActionId-N3f57a4ff.66d014.0.1563729dd59.N7f99</con1:id>
+                                            <con2:expr>
+                                                <con1:xqueryTransform>
+                                                    <con1:resource ref="OperacionPrendaria/Ofertas/Resources/Transformations/TRActualizarOfertasReqToCRMActualizarOfertasReq"/>
+                                                    <con1:param name="header">
+                                                        <con1:path>$header/*</con1:path>
+                                                    </con1:param>
+                                                    <con1:param name="ActualizarOfertasRequest">
+                                                        <con1:path>$body/ofer:ActualizarOfertasRequest</con1:path>
+                                                    </con1:param>
+                                                </con1:xqueryTransform>
+                                            </con2:expr>
+                                        </con2:assign>
+                                    </con2:requestTransform>
+                                    <con2:responseTransform>
+                                        <con2:ifThenElse>
+                                            <con1:id>_ActionId-N3f57a4ff.66d014.0.1563729dd59.N7f5b</con1:id>
+                                            <con2:case id="_BranchId-N3f57a4ff.66d014.0.1563729dd59.N7f5a">
+                                                <con2:condition>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:count($body/ofer:ActualizarOfertasRequest/ofer1:listaEstadoOfertas/ofer1:EstadoOferta) > 0</con:xqueryText>
+                                                </con2:condition>
+                                                <con2:actions>
+                                                    <con2:replace varName="header" contents-only="true">
+                                                        <con1:id>_ActionId-N3f57a4ff.66d014.0.1563729dd59.N7ef4</con1:id>
+                                                        <con2:location>
+                                                            <con1:xpathText>.</con1:xpathText>
+                                                        </con2:location>
+                                                        <con2:expr>
+                                                            <con1:xsltTransform>
+                                                                <con1:resource ref="OperacionPrendaria/Ofertas/Resources/Transformations/TROfertasPrendarioSIVA3Header"/>
+                                                                <con1:input>$header/*</con1:input>
+                                                                <con1:param name="codigoRespuesta">
+                                                                    <con1:path>0</con1:path>
+                                                                </con1:param>
+                                                            </con1:xsltTransform>
+                                                        </con2:expr>
+                                                    </con2:replace>
+                                                    <con2:replace varName="body" contents-only="true">
+                                                        <con1:id>_ActionId-N3f57a4ff.66d014.0.1563729dd59.N7ec1</con1:id>
+                                                        <con2:location>
+                                                            <con1:xpathText>.</con1:xpathText>
+                                                        </con2:location>
+                                                        <con2:expr>
+                                                            <con1:xqueryTransform>
+                                                                <con1:resource ref="OperacionPrendaria/Ofertas/Resources/Transformations/TRCRMActualizarOfertasResToActualizarOfertasRes"/>
+                                                                <con1:param name="CambiaEstadoResponse">
+                                                                    <con1:path>$CRMActualizarOfertasPrendarioResponse</con1:path>
+                                                                </con1:param>
+                                                            </con1:xqueryTransform>
+                                                        </con2:expr>
+                                                    </con2:replace>
+                                                </con2:actions>
+                                            </con2:case>
+                                            <con2:default>
+                                                <con2:replace varName="header" contents-only="true">
+                                                    <con1:id>_ActionId-N3f57a4ff.66d014.0.1563729dd59.N7e8e</con1:id>
+                                                    <con2:location>
+                                                        <con1:xpathText>.</con1:xpathText>
+                                                    </con2:location>
+                                                    <con2:expr>
+                                                        <con1:xsltTransform>
+                                                            <con1:resource ref="OperacionPrendaria/Ofertas/Resources/Transformations/TROfertasPrendarioSIVA3Header"/>
+                                                            <con1:input>$header/*</con1:input>
+                                                            <con1:param name="codigoRespuesta">
+                                                                <con1:path>803</con1:path>
+                                                            </con1:param>
+                                                        </con1:xsltTransform>
+                                                    </con2:expr>
+                                                </con2:replace>
+                                                <con2:replace varName="body" contents-only="true">
+                                                    <con1:id>_ActionId-N3f57b7ff.N1ec9152f.0.157bad88b7f.N7fe9</con1:id>
+                                                    <con2:location>
+                                                        <con1:xpathText>.</con1:xpathText>
+                                                    </con2:location>
+                                                    <con2:expr>
+                                                        <con1:xqueryTransform>
+                                                            <con1:resource ref="OperacionPrendaria/Ofertas/Resources/Transformations/TRFaulToFaulttBody"/>
+                                                            <con1:param name="FaultCode">
+                                                                <con1:path>'ofertasFault'</con1:path>
+                                                            </con1:param>
+                                                            <con1:param name="TipoError">
+                                                                <con1:path>'Error de aplicación'</con1:path>
+                                                            </con1:param>
+                                                            <con1:param name="CodigoError">
+                                                                <con1:path>$body/ofer:ActualizarOfertasResponse/ofer1:codigo</con1:path>
+                                                            </con1:param>
+                                                            <con1:param name="Severidad">
+                                                                <con1:path>$body/ofer:ActualizarOfertasResponse/ofer1:codigo</con1:path>
+                                                            </con1:param>
+                                                            <con1:param name="FaultString">
+                                                                <con1:path>$body/ofer:ActualizarOfertasResponse/ofer1:mensaje/text()</con1:path>
+                                                            </con1:param>
+                                                            <con1:param name="DescripcionError">
+                                                                <con1:path>$body/ofer:ActualizarOfertasResponse/ofer1:mensaje/text()</con1:path>
+                                                            </con1:param>
+                                                        </con1:xqueryTransform>
+                                                    </con2:expr>
+                                                </con2:replace>
+                                            </con2:default>
+                                        </con2:ifThenElse>
+                                    </con2:responseTransform>
+                                </con2:wsCallout>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default>
+                            <con2:Error>
+                                <con1:id>_ActionId-N3f57b7ff.592c927a.0.157beba1ab4.N7e0c</con1:id>
+                                <con2:errCode>NMP-022</con2:errCode>
+                                <con2:message>No hay Ofertas que actualizar</con2:message>
+                            </con2:Error>
+                        </con2:default>
+                    </con2:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57a4ff.N6b18b22e.0.156338d297b.N7ea2"/>
+        <con:flow>
+            <con:branch-node type="operation" id="_FlowId-N3f57a4ff.N14b1f57d.0.155e4f77616.N7fb3" name="BranchOfertasPrendario-CRM">
+                <con:comment>Branch principal de Ofertas Prendario, el cual implementa el uso de tres operaciones : 1.- GenerarOfertas 2.- Guardar Ofertas 3.- Actualizar Ofertas</con:comment>
+                <con:context/>
+                <con:branch-table>
+                    <con:branch name="generarOfertas">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineGenerarOfertas">
+                                <con:comment>Pipeline Generar Ofertas : es la operacion principal del proyecto SIVA3 ya que a partir de esta se generar "n" cantidad de ofertas par a un cliente que acude a una sucursal de NMP para realizar un empeño de prenda</con:comment>
+                                <con:request>request-N3f57a4ff.N14b1f57d.0.155e4f77616.N7f7f</con:request>
+                                <con:response>response-N3f57a4ff.N14b1f57d.0.155e4f77616.N7f7e</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="guardarOfertas">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineGuardarOfertas">
+                                <con:comment>Pipeline Guardar Ofertas : implementa la logica de negocio para guardar una lista de ofertas creadas por el componente de OBR</con:comment>
+                                <con:request>request-N3f57a4ff.N14b1f57d.0.155e4f77616.N7f7b</con:request>
+                                <con:response>response-N3f57a4ff.N14b1f57d.0.155e4f77616.N7f7a</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="actualizarOfertas">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineActualizarOfertas">
+                                <con:request>request-N3f57a4ff.N6b18b22e.0.156338d297b.N7ea3</con:request>
+                                <con:response>response-N3f57a4ff.N6b18b22e.0.156338d297b.N7ea2</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineDefault">
+                                <con:comment>Pipeline por default en OfertasPrendarioSIVA3</con:comment>
+                                <con:request>request-N3f57a4ff.129fb3f7.0.1562e4f9bf3.N7f8f</con:request>
+                                <con:response>response-N3f57a4ff.129fb3f7.0.1562e4f9bf3.N7f8e</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+    <aler:alertRules xsi:nil="true" xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert"/>
+</con:pipelineEntry>

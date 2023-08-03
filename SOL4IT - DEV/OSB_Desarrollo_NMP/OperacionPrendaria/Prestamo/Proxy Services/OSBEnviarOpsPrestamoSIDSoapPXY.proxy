@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ser:proxyServiceEntry xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:oper="http://xmlns.oracle.com/servicebus/proxy/operations" xmlns:oper1="http://xmlns.oracle.com/servicebus/operations" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ser:coreEntry isAutoPublish="false">
+        <ser:description>Interfaz del flujo de servicio que recibe un mensaje XML que contine un conjunto de operaciones prendarias a enviarse al aplicativo SID.
+
+Las operaciones que permite hacer llegar al aplicativo SID son:
+* RF - REFRENDO
+* DS - DESEMPEÑO
+* VB - VENTA CON BILLETE
+* VP - VENTA AL PÚBLICO
+* AO - EMPEÑO
+* CA - CARGO VALUADOR PRENDARIO
+* APL - ABONO  
+* IA - PASE ALMONEDA  
+* SE - SD-SEPARACION Y BAJA DEPOSITO
+* SE - SE-SEPARACION Y BAJA ALMONEDA
+* DN - DEVOLUCION</ser:description>
+        <ser:binding type="Mixed" xsi:type="con:MixedBindingType" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config" xmlns:jms="http://www.bea.com/wli/sb/transports/jms" xmlns:con1="http://www.bea.com/wli/sb/pipeline/config" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:env="http://www.bea.com/wli/config/env" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con2="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con3="http://www.bea.com/wli/sb/stages/config">
+            <con:request type="XML">
+                <con4:schema ref="OperacionPrendaria/Prestamo/Resources/Schemas/PrestamoSvcXSD" element="updatePrestamoRequest" xmlns:con4="http://www.bea.com/wli/sb/typesystem/config"/>
+            </con:request>
+        </ser:binding>
+        <oper:operations enabled="true">
+            <oper:messageTracing enabled="false">
+                <oper1:detailsLevel>full</oper1:detailsLevel>
+                <oper1:maxSize>8192</oper1:maxSize>
+            </oper:messageTracing>
+            <oper:monitoring enabled="true" aggregationInterval="1440"/>
+        </oper:operations>
+        <ser:invoke ref="OperacionPrendaria/Prestamo/Pipelines/OSBEnviarOpsPrestamoSIDPL" xsi:type="con:PipelineRef" xmlns:con="http://www.bea.com/wli/sb/pipeline/config"/>
+    </ser:coreEntry>
+    <ser:endpointConfig xmlns:jms="http://www.bea.com/wli/sb/transports/jms" xmlns:con1="http://www.bea.com/wli/sb/pipeline/config" xmlns:con="http://www.bea.com/wli/sb/typesystem/config" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:env="http://www.bea.com/wli/config/env" xmlns:con4="http://www.bea.com/wli/sb/stages/transform/config" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con2="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con3="http://www.bea.com/wli/sb/stages/config">
+        <tran:provider-id>jms</tran:provider-id>
+        <tran:inbound>true</tran:inbound>
+        <tran:URI>
+            <env:value>jms://10.30.3.15:8011/PrestamoCF/LoanStatusSIDQ</env:value>
+        </tran:URI>
+        <tran:inbound-properties/>
+        <tran:all-headers>true</tran:all-headers>
+        <tran:provider-specific xsi:type="jms:JmsEndPointConfiguration">
+            <jms:is-queue>true</jms:is-queue>
+            <jms:is-secure>false</jms:is-secure>
+            <jms:inbound-properties>
+                <jms:response-required>false</jms:response-required>
+                <jms:XA-required>false</jms:XA-required>
+                <jms:transaction-timeout>600</jms:transaction-timeout>
+            </jms:inbound-properties>
+            <jms:request-encoding>UTF-8</jms:request-encoding>
+            <jms:jndi-timeout>0</jms:jndi-timeout>
+        </tran:provider-specific>
+    </ser:endpointConfig>
+</ser:proxyServiceEntry>

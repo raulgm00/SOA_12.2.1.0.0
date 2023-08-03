@@ -1,0 +1,114 @@
+<wsdl:definitions name="NmpDSRFPagoLineaDB" targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Services/TransaccionPagoBitacora" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Services/TransaccionPagoBitacora" xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:uap="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:top="http://servicios.montedepiedad.com.mx/NMP/Schema/bitacoraDBTransacciones" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <plt:partnerLinkType name="TransaccionesPagoBitacora_plt">
+    <plt:role name="TransaccionesPagoBitacora_role">
+      <plt:portType name="tns:TransaccionesPagoBitacora_ptt"/>
+    </plt:role>
+  </plt:partnerLinkType>
+  <wsdl:types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">     
+      <import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos" schemaLocation="../Schemas/NMPUtileriaAdminPagosXSD.xsd"/>
+      <import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+      <import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+    </schema>
+  </wsdl:types>
+  <wsdl:message name="registrarTransaccionPagoRequest">
+    <wsdl:part name="req" element="uap:registrarTransaccionPagoBitRequest"/>
+  </wsdl:message>
+  <wsdl:message name="registrarTransaccionPagoResponse">
+    <wsdl:part name="res" element="uap:registrarTransaccionPagoBitResponse"/>
+  </wsdl:message>
+  <wsdl:message name="actualizarTransaccionPagoRequest">
+    <wsdl:part name="req" element="uap:actualizarTransaccionPagoRequest"/>
+  </wsdl:message>
+  <wsdl:message name="actualizarTransaccionPagoResponse">
+    <wsdl:part name="res" element="uap:actualizarTransaccionPagoResponse"/>
+  </wsdl:message>
+  <wsdl:message name="consultarTransaccionPagoRequest">
+    <wsdl:part name="req" element="uap:consultarTransaccionPagoRequest"/>
+  </wsdl:message>
+  <wsdl:message name="consultarTransaccionPagoResponse">
+    <wsdl:part name="res" element="uap:consultarTransaccionPagoResponse"/>
+  </wsdl:message>
+  <wsdl:message name="validarTransaccionPagoRequest">
+    <wsdl:part name="req" element="uap:validarTransaccionPagoRequest"/>
+  </wsdl:message>
+  <wsdl:message name="validarTransaccionPagoResponse">
+    <wsdl:part name="res" element="uap:validarTransaccionPagoResponse"/>
+  </wsdl:message>
+  <wsdl:message name="standardMessageFault">
+    <wsdl:part name="parameters" element="NMPsm:messageError"/>
+  </wsdl:message>  
+  <wsdl:portType name="TransaccionesPagoBitacora_ptt">
+    <wsdl:operation name="registrarTransaccionPago">
+      <wsdl:input message="tns:registrarTransaccionPagoRequest"/>
+      <wsdl:output message="tns:registrarTransaccionPagoResponse"/>
+      <wsdl:fault message="tns:standardMessageFault" name="transaccionPagoBitFault"/>
+    </wsdl:operation>
+    <wsdl:operation name="consultarTransaccionPago">
+      <wsdl:input message="tns:consultarTransaccionPagoRequest"/>
+      <wsdl:output message="tns:consultarTransaccionPagoResponse"/>
+      <wsdl:fault message="tns:standardMessageFault" name="transaccionPagoBitFault"/>
+    </wsdl:operation>
+    <wsdl:operation name="actualizarTransaccionPago">
+      <wsdl:input message="tns:actualizarTransaccionPagoRequest"/>
+      <wsdl:output message="tns:actualizarTransaccionPagoResponse"/>
+      <wsdl:fault message="tns:standardMessageFault" name="transaccionPagoBitFault"/>
+    </wsdl:operation>
+    <wsdl:operation name="validarTransaccionPago">
+      <wsdl:input message="tns:validarTransaccionPagoRequest"/>
+      <wsdl:output message="tns:validarTransaccionPagoResponse"/>
+      <wsdl:fault message="tns:standardMessageFault" name="transaccionPagoBitFault"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="TransaccionesPagoBitacoraSOAP11Binding" type="tns:TransaccionesPagoBitacora_ptt">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="registrarTransaccionPago">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/NmpDSRFPagoLineaDB/registrarTransaccionPago"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="req"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="res"/>
+      </wsdl:output>
+      <wsdl:fault name="transaccionPagoBitFault">
+        <soap:fault name="pagoLineaDBFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="consultarTransaccionPago">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/NmpDSRFPagoLineaDB/consultarTransaccionPago"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="req"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="res"/>
+      </wsdl:output>
+      <wsdl:fault name="transaccionPagoBitFault">
+        <soap:fault name="adminPagosBitFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="actualizarTransaccionPago">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/NmpDSRFPagoLineaDB/actualizarTransaccionPago"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="req"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="res"/>
+      </wsdl:output>
+      <wsdl:fault name="transaccionPagoBitFault">
+        <soap:fault name="adminPagosBitFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="validarTransaccionPago">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/NmpDSRFPagoLineaDB/validarTransaccionPago"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="req"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="res"/>
+      </wsdl:output>
+      <wsdl:fault name="transaccionPagoBitFault">
+        <soap:fault name="adminPagosBitFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+</wsdl:definitions>

@@ -1,0 +1,88 @@
+<wsdl:definitions xmlns:ns2="http://exception.midas.nmp.com.mx" xmlns:ns1="http://dto.model.midas.nmp.com.mx"
+                  xmlns:soapenc12="http://www.w3.org/2003/05/soap-encoding" xmlns:tns="urn:mx.com.nmp.midas"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:soap11="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:soapenc11="http://schemas.xmlsoap.org/soap/encoding/"
+                  xmlns:soap12="http://www.w3.org/2003/05/soap-envelope" targetNamespace="urn:mx.com.nmp.midas">
+  <wsdl:types>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="qualified"
+                elementFormDefault="qualified" targetNamespace="http://dto.model.midas.nmp.com.mx">
+      <xsd:complexType name="InformacionSucursalHelpDeskRequest">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="ramo" nillable="true" type="xsd:int"/>
+          <xsd:element minOccurs="0" name="subramo" nillable="true" type="xsd:int"/>
+          <xsd:element minOccurs="0" name="sucursales" nillable="true" type="tns:ArrayOfInt"/>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="qualified"
+                elementFormDefault="qualified" targetNamespace="urn:mx.com.nmp.midas">
+      <xsd:complexType name="ArrayOfInt">
+        <xsd:sequence>
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="int" nillable="true" type="xsd:int"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="getSucursales">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="1" name="sucursalRequest" nillable="true"
+                         type="ns1:InformacionSucursalHelpDeskRequest"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="getSucursalesResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="1" name="return" nillable="true" type="tns:ArrayOfInt"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="ServiceException" type="ns2:ServiceException"/>
+    </xsd:schema>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="qualified"
+                elementFormDefault="qualified" targetNamespace="http://exception.midas.nmp.com.mx">
+      <xsd:complexType abstract="true" name="ServiceException">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="codigoError" nillable="true" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="ServiceException">
+    <wsdl:part name="ServiceException" element="tns:ServiceException"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getSucursalesResponse">
+    <wsdl:part name="parameters" element="tns:getSucursalesResponse"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getSucursalesRequest">
+    <wsdl:part name="parameters" element="tns:getSucursales"></wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="informacionSucursalHelpDeskWSPortType">
+    <wsdl:operation name="getSucursales">
+      <wsdl:input name="getSucursalesRequest" message="tns:getSucursalesRequest"></wsdl:input>
+      <wsdl:output name="getSucursalesResponse" message="tns:getSucursalesResponse"></wsdl:output>
+      <wsdl:fault name="ServiceException" message="tns:ServiceException"></wsdl:fault>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="informacionSucursalHelpDeskWSHttpBinding" type="tns:informacionSucursalHelpDeskWSPortType">
+    <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getSucursales">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="getSucursalesRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getSucursalesResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ServiceException">
+        <wsdlsoap:fault name="ServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="informacionSucursalHelpDeskWS">
+    <wsdl:port name="informacionSucursalHelpDeskWSHttpPort" binding="tns:informacionSucursalHelpDeskWSHttpBinding">
+      <wsdlsoap:address location="http://10.30.3.55:9032/midas-web/services/informacionSucursalHelpDeskWS"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

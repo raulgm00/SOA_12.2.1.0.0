@@ -1,0 +1,78 @@
+<wsdl:definitions name="NMPConversionDivisasSvcWSDL" targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Utileria/ConversionDivisas" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:SvcNMPConversionDivisasE="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Divisas" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Servicios/Utileria/ConversionDivisas">
+  <wsdl:types>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Elementos/Divisas" schemaLocation="../Schemas/NMPConversionDivisasSvcElementosXSD.xsd"/>
+    </xsd:schema>  
+  </wsdl:types>
+  <wsdl:message name="NMPHeaderRequest">
+    <wsdl:part name="requestHeader" element="NMPsh:headerMessage"/>
+  </wsdl:message>
+  <wsdl:message name="NMPHeaderResponse">
+    <wsdl:part name="responseHeader" element="NMPsh:headerMessageResponse"/>
+  </wsdl:message>
+  <wsdl:message name="obtenerTipoCambioBanxicoFixRequestMessage">
+    <wsdl:part name="obtenerTipoCambioBanxicoFixRequest" element="SvcNMPConversionDivisasE:ObtenerTipoCambioBanxicoFixRequest"/>
+  </wsdl:message>
+  <wsdl:message name="obtenerTipoCambioBanxicoFixResponseMessage">
+    <wsdl:part name="obtenerTipoCambioBanxicoFixResponse" element="SvcNMPConversionDivisasE:ObtenerTipoCambioBanxicoFixResponse"/>
+  </wsdl:message>
+   <wsdl:message name="obtenerListaTipoCambioBanxicoRequestMessage">
+    <wsdl:part name="obtenerListaTipoCambioBanxicoRequest" element="SvcNMPConversionDivisasE:ObtenerListaTiposCambioBanxicoRequest"/>
+  </wsdl:message>
+  <wsdl:message name="obtenerListaTipoCambioBanxicoResponseMessage">
+    <wsdl:part name="obtenerListaTipoCambioBanxicoResponse" element="SvcNMPConversionDivisasE:ObtenerListaTiposCambioBanxicoResponse"/>
+  </wsdl:message>
+  <wsdl:message name="conversionDivisasFaultMessage">
+    <wsdl:part name="conversionDivisasFault" element="NMPsm:messageError"/>
+  </wsdl:message>
+  <wsdl:portType name="ConversionDivisas_ppt">
+    <wsdl:operation name="obtenerTipoCambioBanxicoFix">
+      <wsdl:input message="tns:obtenerTipoCambioBanxicoFixRequestMessage"/>
+      <wsdl:output message="tns:obtenerTipoCambioBanxicoFixResponseMessage"/>
+      <wsdl:fault message="tns:conversionDivisasFaultMessage" name="ConversionDivisasFault"/>
+    </wsdl:operation>
+    <wsdl:operation name="obtenerListaTiposCambioBanxico">
+      <wsdl:input message="tns:obtenerListaTipoCambioBanxicoRequestMessage"/>
+      <wsdl:output message="tns:obtenerListaTipoCambioBanxicoResponseMessage"/>
+      <wsdl:fault message="tns:conversionDivisasFaultMessage" name="ConversionDivisasFault"/>
+    </wsdl:operation>
+  </wsdl:portType>
+   <wsdl:binding name="ConversionDivisas_bind" type="tns:ConversionDivisas_ppt">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="obtenerTipoCambioBanxicoFix">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Servicios/Utileria/ConversionDivisas/GetTipoCambioBanxico"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="obtenerTipoCambioBanxicoFixRequest"/>
+        <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="obtenerTipoCambioBanxicoFixResponse"/>
+        <soap:header message="tns:NMPHeaderResponse" part="responseHeader" use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ConversionDivisasFault">
+        <soap:fault name="ConversionDivisasFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="obtenerListaTiposCambioBanxico">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Servicios/Utileria/ConversionDivisas/GetListaTiposCambioBanxico"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="obtenerListaTipoCambioBanxicoRequest"/>
+        <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="obtenerListaTipoCambioBanxicoResponse"/>
+        <soap:header message="tns:NMPHeaderResponse" part="responseHeader" use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ConversionDivisasFault">
+        <soap:fault name="ConversionDivisasFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ConversionDivisas">
+    <wsdl:port name="ConversionDivisasPort" binding="tns:ConversionDivisas_bind">
+      <soap:address location=""/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:wsdl ref="MasterData/Tarifas/Resources/TarifasViaticosSvcWSDL"/>
+            <con:binding>
+                <con:name>TarifasViaticosSvcPortBinding</con:name>
+                <con:namespace>http://master.mx.com.qualitas/</con:namespace>
+            </con:binding>
+        </con:binding>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:pipeline name="PipelinePairNode1_request" type="request">
+            <con:stage name="Consulta DVM">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="mas" namespace="http://master.mx.com.qualitas/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:log xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id>_ActionId-b320018.28f13ec9.6.15a66118c09.N7fff</con2:id>
+                        <con1:logLevel>warning</con1:logLevel>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con1:expr>
+                        <con1:message>>>>>>>>>>>>>>> TarifasViaticosSvcPxy Payload</con1:message>
+                    </con1:log>
+                    <con1:assign varName="DvmTatifasViaticos">
+                        <con2:id>_ActionId-N53efe1d2.216c23db.0.15b0bc81fb7.N7fce</con2:id>
+                        <con2:disabled>true</con2:disabled>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">dvm:lookupValue1M('MasterData/Tarifas/Resources/DVMs/TarifaViaticos','Codigo','HOS',('Codigo','Nombre','Descripcion','Valor','Activa'))</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con3:log>
+                        <con2:id>_ActionId-N53efe1d2.216c23db.0.15b0bc81fb7.N7f9b</con2:id>
+                        <con2:disabled>true</con2:disabled>
+                        <con3:logLevel>warning</con3:logLevel>
+                        <con3:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$DvmTatifasViaticos</con:xqueryText>
+                        </con3:expr>
+                        <con3:message>=======================> Contenido del DVM</con3:message>
+                    </con3:log>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode1_response" type="response">
+            <con:stage name="stage1">
+                <con:context>
+                    <con1:varNsDecl prefix="mas" namespace="http://master.mx.com.qualitas/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-b320018.28f13ec9.5.15a661171d2.N7fff</con2:id>
+                        <con2:disabled>true</con2:disabled>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat('
+      <mas:consultarResponse ','xmlns:mas="http://master.mx.com.qualitas/">
+         <response>
+            <categoriaTarifa>
+               <codigo>HOS</codigo>
+               <nombre>Hospedaje</nombre>
+               <descripcion>Gastos de Hotel  x Día</descripcion>
+               <tarifa>1300.00</tarifa>
+            </categoriaTarifa>
+            <categoriaTarifa>
+               <codigo>ALI</codigo>
+               <nombre>Alimentos</nombre>
+               <descripcion>Gastos de Alimentación x Día</descripcion>
+               <tarifa>450.00</tarifa>
+            </categoriaTarifa>
+            <categoriaTarifa>
+               <codigo>GEN</codigo>
+               <nombre>Gastos Generales</nombre>
+               <descripcion>Gastos Generales x Día</descripcion>
+               <tarifa>135.00</tarifa>
+            </categoriaTarifa>
+            <categoriaTarifa>
+               <codigo>KM</codigo>
+               <nombre>Kilometraje</nombre>
+               <descripcion>Kilometraje (x KMs)</descripcion>
+               <tarifa>2.5</tarifa>
+            </categoriaTarifa>
+
+         </response>
+      </mas:consultarResponse>
+'))]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-N53efe172.7af8cc9c.0.15b15f98c63.N7ffe</con2:id>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="MasterData/Tarifas/Resources/Transforms/DvmToResponse"/>
+                                <con2:input>$body</con2:input>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con3:log>
+                        <con2:id>_ActionId-N53efe172.4772ac79.0.15b1604d8b5.N7ffe</con2:id>
+                        <con3:logLevel>warning</con3:logLevel>
+                        <con3:expr>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con3:expr>
+                        <con3:message>&lt;===============TarifaViaticos_Output</con3:message>
+                    </con3:log>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="PipelinePairNode1">
+                <con:request>PipelinePairNode1_request</con:request>
+                <con:response>PipelinePairNode1_response</con:response>
+            </con:pipeline-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

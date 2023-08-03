@@ -1,0 +1,48 @@
+<xsd:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schemas/Cliente/Credito" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:NMPClienteCred="http://servicios.montedepiedad.com.mx/NMP/Schemas/Cliente/Credito" xmlns:NMPCliente="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Cliente">
+  <xsd:import schemaLocation="../../../../Common/XSD/Entidad/NMPClienteXSD.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Cliente"/>
+  <!--Califiacion cliente-->
+  <xsd:element name="calificacionSiva2" type="xsd:int"/>
+  <xsd:element name="probabilidadIncumplimiento" type="xsd:decimal"/>
+  <xsd:element name="capacidadPago" type="xsd:decimal"/>
+  <xsd:element name="prestamoPromedio" type="xsd:decimal"/>
+  <xsd:element name="prestamoPromedioValuacion" type="xsd:decimal"/>
+  <xsd:element name="prestamos" type="xsd:decimal"/>
+  <xsd:element name="pagos" type="xsd:decimal"/>
+  <xsd:element name="porcentajeDesempenio" type="xsd:decimal"/>
+  <xsd:element name="consultarClienteRequest">
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element ref="NMPCliente:idCliente"/>
+        <xsd:element ref="NMPCliente:numeroCredencial"/>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="consultarClienteResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="cliente" type="NMPClienteCred:ClienteCreditoTipo"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:complexType name="DatosCalificacion">
+    <xsd:sequence>
+      <xsd:element ref="NMPClienteCred:calificacionSiva2" minOccurs="0"/>
+<xsd:element ref="NMPClienteCred:probabilidadIncumplimiento" minOccurs="0"/>
+<xsd:element ref="NMPClienteCred:capacidadPago" minOccurs="0"/>
+<xsd:element ref="NMPClienteCred:prestamoPromedio" minOccurs="0"/>
+<xsd:element ref="NMPClienteCred:prestamoPromedioValuacion" minOccurs="0"/>
+<xsd:element ref="NMPClienteCred:prestamos" minOccurs="0"/>
+<xsd:element ref="NMPClienteCred:pagos" minOccurs="0"/>
+<xsd:element ref="NMPClienteCred:porcentajeDesempenio" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ClienteCreditoTipo">
+  <xsd:complexContent>
+  <xsd:extension base="NMPCliente:ClienteTipo">
+        <xsd:sequence>
+          <xsd:element name="calificacionCredito" type="NMPClienteCred:DatosCalificacion"/>
+        </xsd:sequence>
+      </xsd:extension>
+  </xsd:complexContent>
+  </xsd:complexType>
+</xsd:schema>

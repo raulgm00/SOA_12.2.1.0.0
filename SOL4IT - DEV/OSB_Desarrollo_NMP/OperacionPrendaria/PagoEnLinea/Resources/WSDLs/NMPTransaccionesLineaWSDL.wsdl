@@ -1,0 +1,138 @@
+<wsdl:definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Services/TransaccionesLinea" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Services/TransaccionesLinea" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:NMPDSRFPago="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPDSRFPagoLineaSvc" xmlns:tran="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPTransacciones" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage">
+  <wsdl:types>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema">  
+        <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPTransacciones" schemaLocation="../Schemas/NMPTransaccionesXSD.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+    </xsd:schema>
+  </wsdl:types>  
+  <wsdl:message name="generarTransaccionPagoRequest">
+    <wsdl:part name="req" element="tran:generarTransaccionPagoRequest"/>
+  </wsdl:message>
+  <wsdl:message name="generarTransaccionPagoResponse">
+    <wsdl:part name="res" element="tran:generarTransaccionPagoResponse"/>
+  </wsdl:message>
+  <wsdl:message name="registrarTransaccionPagoRequest">
+    <wsdl:part name="req" element="tran:registrarTransaccionPagoRequest"/>
+  </wsdl:message>
+  <wsdl:message name="registrarTransaccionPagoResponse">
+    <wsdl:part name="res" element="tran:registrarTransaccionPagoResponse"/>
+  </wsdl:message>
+  <wsdl:message name="consultarTransaccionesClienteRequest">
+    <wsdl:part name="req" element="tran:consultarTransaccionesClienteRequest"/>
+  </wsdl:message>
+  <wsdl:message name="consultarTransaccionesClienteResponse">
+    <wsdl:part name="res" element="tran:consultarTransaccionesClienteResponse"/>
+  </wsdl:message>
+  <wsdl:message name="consultarTransaccionBancoRequest">
+    <wsdl:part name="req" element="tran:consultarTransaccionBancoRequest"/>
+  </wsdl:message>
+  <wsdl:message name="consultarTransaccionBancoResponse">
+    <wsdl:part name="res" element="tran:consultarTransaccionBancoResponse"/>
+  </wsdl:message>
+   <wsdl:message name="consultarComprobanteTransaccionRequest">
+    <wsdl:part name="req" element="tran:consultarComprobanteTransaccionRequest"/>
+  </wsdl:message>
+  <wsdl:message name="consultarComprobanteTransaccionResponse">
+    <wsdl:part name="res" element="tran:consultarComprobanteTransaccionResponse"/>
+  </wsdl:message>
+   <wsdl:message name="NMPStandardFault">
+    <wsdl:part name="parameters" element="NMPsm:messageError"/>
+  </wsdl:message>
+  <wsdl:message name="NMPHeaderRequest">
+    <wsdl:part name="requestHeader" element="NMPsh:headerMessage"/>
+  </wsdl:message>
+  <wsdl:message name="NMPHeaderResponse">
+    <wsdl:part name="requestHeader" element="NMPsh:headerMessageResponse"/>
+  </wsdl:message>
+  <wsdl:portType name="TransaccionesLineaPT">
+    <wsdl:operation name="generarTransaccionPago">
+      <wsdl:input message="tns:generarTransaccionPagoRequest"/>
+      <wsdl:output message="tns:generarTransaccionPagoResponse"/>
+      <wsdl:fault message="tns:NMPStandardFault" name="TransaccionLineaFault"/>
+    </wsdl:operation>
+    <wsdl:operation name="registrarTransaccionPago">
+      <wsdl:input message="tns:registrarTransaccionPagoRequest"/>
+      <wsdl:output message="tns:registrarTransaccionPagoResponse"/>
+      <wsdl:fault message="tns:NMPStandardFault" name="TransaccionLineaFault"/>
+    </wsdl:operation>
+    <wsdl:operation name="consultarTransaccionesCliente">
+      <wsdl:input message="tns:consultarTransaccionesClienteRequest"/>
+      <wsdl:output message="tns:consultarTransaccionesClienteResponse"/>
+      <wsdl:fault message="tns:NMPStandardFault" name="TransaccionLineaFault"/>
+    </wsdl:operation>
+    <wsdl:operation name="consultarTransaccionBanco">
+      <wsdl:input message="tns:consultarTransaccionBancoRequest"/>
+      <wsdl:output message="tns:consultarTransaccionBancoResponse"/>
+      <wsdl:fault message="tns:NMPStandardFault" name="TransaccionLineaFault"/>
+    </wsdl:operation>
+    <wsdl:operation name="consultarComprobanteTransaccion">
+      <wsdl:input message="tns:consultarComprobanteTransaccionRequest"/>
+      <wsdl:output message="tns:consultarComprobanteTransaccionResponse"/>
+      <wsdl:fault message="tns:NMPStandardFault" name="TransaccionLineaFault"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="TransaccionesLineaPTSOAP12Binding" type="tns:TransaccionesLineaPT">
+    <soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="generarTransaccionPago">
+      <soap12:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/TransaccionesLinea/obtenerTransaccionPago"/>
+      <wsdl:input>
+        <soap12:body use="literal" parts="req"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" parts="res"/>
+      </wsdl:output>
+      <wsdl:fault name="TransaccionLineaFault">
+        <soap12:fault name="TransaccionLineaFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="registrarTransaccionPago">
+      <soap12:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/TransaccionesLinea/registrarTransaccionPago"/>
+      <wsdl:input>
+        <soap12:body use="literal" parts="req"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" parts="res"/>
+      </wsdl:output>
+      <wsdl:fault name="TransaccionLineaFault">
+        <soap12:fault name="TransaccionLineaFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="consultarTransaccionesCliente">
+      <soap12:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/TransaccionesLinea/consultarTransaccionesCliente"/>
+      <wsdl:input>
+        <soap12:body use="literal" parts="req"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" parts="res"/>
+      </wsdl:output>
+      <wsdl:fault name="TransaccionLineaFault">
+        <soap12:fault name="TransaccionLineaFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="consultarTransaccionBanco">
+      <soap12:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/TransaccionesLinea/consultarTransaccionBanco"/>
+      <wsdl:input>
+        <soap12:body use="literal" parts="req"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" parts="res"/>
+      </wsdl:output>
+      <wsdl:fault name="TransaccionLineaFault">
+        <soap12:fault name="TransaccionLineaFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="consultarComprobanteTransaccion">
+      <soap12:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/TransaccionesLinea/consultarComprobanteTransaccion"/>
+      <wsdl:input>
+        <soap12:body use="literal" parts="req"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" parts="res"/>
+      </wsdl:output>
+      <wsdl:fault name="TransaccionLineaFault">
+        <soap12:fault name="TransaccionLineaFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+</wsdl:definitions>

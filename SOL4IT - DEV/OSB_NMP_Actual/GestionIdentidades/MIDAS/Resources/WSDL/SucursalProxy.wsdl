@@ -1,0 +1,51 @@
+<definitions name="SucursalService" targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Services/Identidades/Midas/Sucursal" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Services/Identidades/Midas/Sucursal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:isxsd="http://servicios.montedepiedad.com.mx/NMP/Schema/Identidades/Midas/Sucursal" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+    <types>
+        <schema attributeFormDefault="qualified" elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Identidades/Midas/Sucursal" schemaLocation="../XSD/Sucursal.xsd"/>
+        </schema>
+    </types>
+	
+	<message name="ObtenerSucursalUsuarioRequestMessage">
+        <documentation>Obtener la Sucursal del Usuario Request</documentation>
+        <part name="payload" element="isxsd:obtenerSucursalUsuarioRequest"/>
+    </message>
+	<message name="ObtenerSucursalUsuarioResponseMessage">
+        <documentation>Obtener la Sucursal del Usuario Response</documentation>
+        <part name="payload" element="isxsd:obtenerSucursalUsuarioResponse"/>
+    </message>	
+	<message name="ObtenerSucursalUsuarioMessage">
+        <documentation>Obtener Sucursal Usuario Fault.</documentation>
+        <part name="faultInfo" element="isxsd:obtenerSucursalUsuarioError"/>
+    </message>
+	
+	<portType name="SucursalServicePortType">	
+        <operation name="obtenerSucursalUsuario">
+            <documentation>Obtener la Sucursal de un Usuario buscándolo por Id</documentation>
+            <input name="obtenerSucursalUsuarioInput" message="tns:ObtenerSucursalUsuarioRequestMessage"/>
+            <output name="obtenerSucursalUsuarioOutput" message="tns:ObtenerSucursalUsuarioResponseMessage"/>
+            <fault name="obtenerSucursalUsuarioFault" message="tns:ObtenerSucursalUsuarioMessage"/>
+        </operation>		
+	</portType>
+	
+	<binding name="SucursalServiceSOAPBinding" type="tns:SucursalServicePortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="obtenerSucursalUsuario">
+            <soap:operation style="document" soapAction=""/>
+            <input name="obtenerSucursalUsuarioInput">
+                <soap:body use="literal" parts="payload"/>
+            </input>
+            <output name="obtenerSucursalUsuarioOutput">
+                <soap:body use="literal" parts="payload"/>
+            </output>
+            <fault name="obtenerSucursalUsuarioFault">
+                <soap:fault name="obtenerSucursalUsuarioFault" use="literal"/>
+            </fault>
+        </operation>		
+    </binding>
+    
+    <service name="SucursalService">
+        <port name="SucursalServicePort" binding="tns:SucursalServiceSOAPBinding">
+            <soap:address location="http://10.30.3.15:8001/Services/Midas/Identidades/Sucursal"/>
+        </port>
+    </service>
+</definitions>

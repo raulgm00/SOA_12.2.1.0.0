@@ -1,0 +1,270 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Fri Jan 06 16:59:42 CST 2017
+  Author:  Ivan
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="GestionOrdenPagoBEPL"
+               targetNamespace="http://xmlns.oracle.com/Application1/GestionOrdenPago/GestionOrdenPagoBEPL"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/Application1/GestionOrdenPago/GestionOrdenPagoBEPL"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+               xmlns:ns1="http://qualitas.com.mx/Comunes/gestionOrdenPagoBPEL/v1/"
+               xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ui="http://xmlns.oracle.com/soa/designer" xmlns:ns2="http://service.pagos.qualitas.com.mx/"
+         xmlns:ns4="http://qualitas.com.mx/comunes/objetosComunes/v1/"
+         xmlns:ns3="http://qualitas.com.mx/Comunes/gestionOrdenPagoSchema/v1/"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ess="http://xmlns.oracle.com/scheduler" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:ns5="http://xmlns.oracle.com/pcbpel/adapter/db/Application1/GestionOrdenPago/DB_InsertOrdenPago"
+         xmlns:ns6="http://xmlns.oracle.com/pcbpel/adapter/db/top/DB_InsertOrdenPago"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns7="http://xmlns.oracle.com/pcbpel/adapter/db/Application1/GestionOrdenPago/DB_UpdateOrdenPago">
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <import namespace="http://qualitas.com.mx/Comunes/gestionOrdenPagoBPEL/v1/"
+          location="../WSDLs/GestionOrdenPagoBPELWrapper.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"
+          ui:processWSDL="true"/>
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="gestionordenpago_client" partnerLinkType="ns1:GestionOrdenPagoBEPL" myRole="gestionOrdenPagoBPELPortType"/>
+    <partnerLink name="PagosService" partnerLinkType="ns2:PagosService" partnerRole="PagosService"/>
+    <partnerLink name="DB_InsertOrdenPago" partnerLinkType="ns5:DB_InsertOrdenPago_plt"
+                 partnerRole="DB_InsertOrdenPago_role"/>
+    <partnerLink name="DB_UpdateOrdenPago" partnerLinkType="ns7:DB_UpdateOrdenPago_plt"
+                 partnerRole="DB_UpdateOrdenPago_role"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="ns1:consultarOrdenPagoBPELRequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="consultarOrdenPago_InputVariable" messageType="ns1:consultarOrdenPagoBPELRequestMessage"/>
+    <variable name="guardanOrdenPago_InputVariable" messageType="ns1:guardarOrdenPagoBPELRequestMessage"/>
+    <variable name="consultaOrdPagQualitas_InputVariable" messageType="ns2:consultaOrdenPago"/>
+    <variable name="consultaOrdPagQualitas_OutputVariable" messageType="ns2:consultaOrdenPagoResponse"/>
+    <variable name="generaOrdPagQualitas_InputVariable" messageType="ns2:generaOrden"/>
+    <variable name="generaOrdPagQualitas_OutputVariable" messageType="ns2:generaOrdenResponse"/>
+    <variable name="Reply_consultarOrdenPago_OutputVariable" messageType="ns1:consultarOrdenPagoBPELResponseMessage"/>
+    <variable name="Reply_guardaOrdenPago_OutputVariable" messageType="ns1:guardarOrdenPagoBPELResponseMessage"/>
+    <variable name="InvokeDB_insert_InputVariable" messageType="ns5:Gpa019PagosCollection_msg"/>
+    <variable name="InvokeDB_insert_OutputVariable" messageType="ns5:Gpa019PagosCollection_msg"/>
+    <variable name="Substring_variable" type="xsd:string"/>
+    <variable name="InvokeUpdate_InputVariable" messageType="ns7:Gpa019PagosCollection_msg"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in GestionOrdenPagoBEPL.wsdl) -->
+    <!-- Generate reply to synchronous request -->
+    <pick name="Pick1" createInstance="yes">
+      <onMessage partnerLink="gestionordenpago_client"
+                 variable="consultarOrdenPago_InputVariable" portType="ns1:gestionOrdenPagoBPELPortType"
+                 operation="consultarOrdenPago" bpelx:name="consultarOrdenPago">
+        <sequence name="Sequence1">
+          <assign name="AssignNumOp">
+            <copy>
+              <from>$consultarOrdenPago_InputVariable.consultarOrdenPagoReq/ns3:Input/ns3:numOrdenPago</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$consultaOrdPagQualitas_InputVariable.parameters/NumOP</to>
+            </copy>
+          </assign>
+          <invoke name="InvOrdenPagoConsulta" bpelx:invokeAsDetail="no" partnerLink="PagosService"
+                  portType="ns2:PagosService" operation="consultaOrdenPago"
+                  inputVariable="consultaOrdPagQualitas_InputVariable"
+                  outputVariable="consultaOrdPagQualitas_OutputVariable"/>
+          <if name="If2">
+            <condition>$consultaOrdPagQualitas_OutputVariable.parameters/RespuestaConsulta/codigo = 1</condition>
+            <sequence>
+              <if name="If1">
+                <condition>$consultaOrdPagQualitas_OutputVariable.parameters/RespuestaConsulta/mensaje = "PENDIENTE" or $consultaOrdPagQualitas_OutputVariable.parameters/RespuestaConsulta/mensaje = "CANCELADA"</condition>
+                <assign name="Assign5">
+                  <copy>
+                    <from>$consultaOrdPagQualitas_OutputVariable.parameters/RespuestaConsulta/mensaje</from>
+                    <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$Reply_consultarOrdenPago_OutputVariable.consultarOrdenPagoRes/ns3:OperationResponse/ns4:descripcionRespuesta</to>
+                  </copy>
+                </assign>
+                <else>
+                  <sequence>
+                    <assign name="Assign1">
+                      <copy>
+                        <from>substring-after($consultaOrdPagQualitas_OutputVariable.parameters/RespuestaConsulta/mensaje,':')</from>
+                        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$Substring_variable</to>
+                      </copy>
+                    </assign>
+                    <assign name="AssignReplayCon">
+                      <copy>
+                        <from>substring-after($Substring_variable,':')</from>
+                        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$Reply_consultarOrdenPago_OutputVariable.consultarOrdenPagoRes/ns3:OperationResponse/ns4:descripcionRespuesta</to>
+                      </copy>
+                      <copy>
+                        <from>0</from>
+                        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$Reply_consultarOrdenPago_OutputVariable.consultarOrdenPagoRes/ns3:OperationResponse/ns4:codigoRespuesta</to>
+                      </copy>
+                    </assign>
+                  </sequence>
+                </else>
+              </if>
+              <assign name="Transformation3">
+                <bpelx:annotation>
+                  <bpelx:pattern patternName="bpelx:transformation"></bpelx:pattern>
+                </bpelx:annotation>
+                <copy>
+                  <from>ora:doXSLTransformForDoc("../Transformations/Transformation3_4.xsl", $consultarOrdenPago_InputVariable.consultarOrdenPagoReq, "Reply_consultarOrdenPago_OutputVariable.consultarOrdenPagoRes", $Reply_consultarOrdenPago_OutputVariable.consultarOrdenPagoRes)</from>
+                  <to variable="InvokeUpdate_InputVariable" part="Gpa019PagosCollection"/>
+                </copy>
+              </assign>
+              <sequence>
+                <scope name="Scope1">
+                  <sequence>
+                    <invoke name="InvokeUpdate" partnerLink="DB_UpdateOrdenPago" portType="ns7:DB_UpdateOrdenPago_ptt"
+                            operation="update" inputVariable="InvokeUpdate_InputVariable" bpelx:invokeAsDetail="no"/>
+                    <assign name="TransRespConsulta">
+                      <bpelx:annotation>
+                        <bpelx:pattern patternName="bpelx:transformation"></bpelx:pattern>
+                      </bpelx:annotation>
+                      <copy>
+                        <from>ora:doXSLTransformForDoc("../Transformations/TransRespConsulta.xsl", $InvokeUpdate_InputVariable.Gpa019PagosCollection)</from>
+                        <to variable="Reply_consultarOrdenPago_OutputVariable" part="consultarOrdenPagoRes"/>
+                      </copy>
+                    </assign>
+                    <reply name="ReplyConsulta" partnerLink="gestionordenpago_client"
+                           variable="Reply_consultarOrdenPago_OutputVariable"
+                           portType="ns1:gestionOrdenPagoBPELPortType" operation="consultarOrdenPago"/>
+                  </sequence>
+                </scope>
+              </sequence>
+            </sequence>
+            <else>
+              <sequence name="Sequence8">
+                <assign name="Assign3">
+                  <copy>
+                    <from>1</from>
+                    <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$Reply_consultarOrdenPago_OutputVariable.consultarOrdenPagoRes/ns3:OperationResponse/ns4:codigoRespuesta</to>
+                  </copy>
+                  <copy>
+                    <from>$consultaOrdPagQualitas_OutputVariable.parameters/RespuestaConsulta/mensaje</from>
+                    <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$Reply_consultarOrdenPago_OutputVariable.consultarOrdenPagoRes/ns3:OperationResponse/ns4:descripcionRespuesta</to>
+                  </copy>
+                </assign>
+                <reply name="Reply1" partnerLink="gestionordenpago_client"
+                       variable="Reply_consultarOrdenPago_OutputVariable" portType="ns1:gestionOrdenPagoBPELPortType"
+                       operation="consultarOrdenPago"/>
+              </sequence>
+            </else>
+          </if>
+        </sequence>
+      </onMessage>
+      <onMessage bpelx:name="guardarOrdenPago" partnerLink="gestionordenpago_client"
+                 variable="guardanOrdenPago_InputVariable" portType="ns1:gestionOrdenPagoBPELPortType"
+                 operation="guardanOrdenPago">
+        <sequence name="Sequence2">
+          <assign name="Transformation1">
+            <bpelx:annotation>
+              <bpelx:pattern patternName="bpelx:transformation"></bpelx:pattern>
+            </bpelx:annotation>
+            <copy>
+              <from>ora:doXSLTransformForDoc("../Transformations/TransformOrdenPago.xsl", $guardanOrdenPago_InputVariable.guardarArchivoReq)</from>
+              <to variable="generaOrdPagQualitas_InputVariable" part="parameters"/>
+            </copy>
+          </assign>
+          <invoke name="InvOrdenPagoGuardar" bpelx:invokeAsDetail="no" partnerLink="PagosService"
+                  portType="ns2:PagosService" operation="generaOrden" inputVariable="generaOrdPagQualitas_InputVariable"
+                  outputVariable="generaOrdPagQualitas_OutputVariable"/>
+          <if name="If3">
+            <condition>$generaOrdPagQualitas_OutputVariable.parameters/RespuestaOrdenPago/codigo = 1</condition>
+            <sequence>
+              <if name="IfRespuestaQualitas">
+                <condition>$generaOrdPagQualitas_OutputVariable.parameters/RespuestaOrdenPago/codigo = 1</condition>
+                <sequence name="Sequence3">
+                  <assign name="Transformation2">
+                    <bpelx:annotation>
+                      <bpelx:pattern patternName="bpelx:transformation"></bpelx:pattern>
+                    </bpelx:annotation>
+                    <copy>
+                      <from>ora:doXSLTransformForDoc("../Transformations/Transformation2_1.xsl", $guardanOrdenPago_InputVariable.guardarArchivoReq, "generaOrdPagQualitas_OutputVariable.parameters", $generaOrdPagQualitas_OutputVariable.parameters)</from>
+                      <to variable="InvokeDB_insert_InputVariable" part="Gpa019PagosCollection"/>
+                    </copy>
+                  </assign>
+                  <invoke name="InvokeDB" partnerLink="DB_InsertOrdenPago" portType="ns5:DB_InsertOrdenPago_ptt"
+                          operation="insert" inputVariable="InvokeDB_insert_InputVariable"
+                          outputVariable="InvokeDB_insert_OutputVariable" bpelx:invokeAsDetail="no"/>
+                </sequence>
+                <else>
+                  <empty name="Empty1"/>
+                </else>
+              </if>
+              <assign name="AssignReplayGen">
+                <copy>
+                  <from>$generaOrdPagQualitas_OutputVariable.parameters/RespuestaOrdenPago/mensaje</from>
+                  <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$Reply_guardaOrdenPago_OutputVariable.guardarArchivoRes/ns3:OperationResponse/ns4:descripcionRespuesta</to>
+                </copy>
+                <copy>
+                  <from>0</from>
+                  <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$Reply_guardaOrdenPago_OutputVariable.guardarArchivoRes/ns3:OperationResponse/ns4:codigoRespuesta</to>
+                </copy>
+              </assign>
+              <scope name="Scope2">
+                <reply name="ReplyGuarda" partnerLink="gestionordenpago_client"
+                       variable="Reply_guardaOrdenPago_OutputVariable" portType="ns1:gestionOrdenPagoBPELPortType"
+                       operation="guardanOrdenPago"/>
+              </scope>
+            </sequence>
+            <else>
+              <sequence name="Sequence9">
+                <assign name="Assign4">
+                  <copy>
+                    <from>1</from>
+                    <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$Reply_guardaOrdenPago_OutputVariable.guardarArchivoRes/ns3:OperationResponse/ns4:codigoRespuesta</to>
+                  </copy>
+                  <copy>
+                    <from>$generaOrdPagQualitas_OutputVariable.parameters/RespuestaOrdenPago/mensaje</from>
+                    <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$Reply_guardaOrdenPago_OutputVariable.guardarArchivoRes/ns3:OperationResponse/ns4:descripcionRespuesta</to>
+                  </copy>
+                </assign>
+                <reply name="Reply2" partnerLink="gestionordenpago_client"
+                       variable="Reply_guardaOrdenPago_OutputVariable" portType="ns1:gestionOrdenPagoBPELPortType"
+                       operation="guardanOrdenPago"/>
+              </sequence>
+            </else>
+          </if>
+        </sequence>
+      </onMessage>
+    </pick>
+  </sequence>
+</process>

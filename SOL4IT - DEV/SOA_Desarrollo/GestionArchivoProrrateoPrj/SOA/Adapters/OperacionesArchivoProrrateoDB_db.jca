@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<adapter-config name="OperacionesArchivoProrrateoDB" adapter="db" wsdlLocation="../WSDLs/OperacionesArchivoProrrateoDB.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+   <connection-factory UIConnectionName="GPAConnDB" location="eis/DB/GPAConnDB"/>
+   <endpoint-interaction portType="OperacionesArchivoProrrateoDB_ptt" operation="guardarArchivoProrrateoDB">
+      <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+         <property name="SqlString" value="insert into GPA009_DOCUMENTO (ID_SOLICITUD, NOMBRE_DOCUMENTO, DOCUMENTO) values (#idSolicitud, #nombreDocumento, #documento)"/>
+         <property name="GetActiveUnitOfWork" value="false"/>
+      </interaction-spec>
+   </endpoint-interaction>
+   <endpoint-interaction portType="OperacionesArchivoProrrateoDB_ptt" operation="obtenerArchivoProrrateoDB">
+      <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+         <property name="SqlString" value="select NOMBRE_DOCUMENTO, DOCUMENTO from GPA009_DOCUMENTO where ID_SOLICITUD = #idSolicitud"/>
+         <property name="GetActiveUnitOfWork" value="false"/>
+      </interaction-spec>
+   </endpoint-interaction>
+   <endpoint-interaction portType="OperacionesArchivoProrrateoDB_ptt" operation="eliminarArchivoProrrateoDB">
+      <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+         <property name="SqlString" value="delete from GPA009_DOCUMENTO where ID_SOLICITUD = #idSolicitud"/>
+         <property name="GetActiveUnitOfWork" value="false"/>
+      </interaction-spec>
+   </endpoint-interaction>
+</adapter-config>

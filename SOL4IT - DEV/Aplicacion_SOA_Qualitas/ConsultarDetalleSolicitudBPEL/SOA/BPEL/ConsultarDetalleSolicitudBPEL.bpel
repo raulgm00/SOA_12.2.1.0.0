@@ -1,0 +1,166 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Sat Dec 10 14:19:56 EST 2016
+  Author:  jcprieto
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="ConsultarDetalleSolicitudBPEL"
+               targetNamespace="http://xmlns.oracle.com/ConsultarDetalleSolicitudApp/ConsultarDetalleSolicitudPrj/ConsultarDetalleSolicitudBPEL"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/ConsultarDetalleSolicitudApp/ConsultarDetalleSolicitudPrj/ConsultarDetalleSolicitudBPEL"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+               xmlns:ns1="http://qualitas.com.mx/Solicitud/ConsultarDetalleSolicitud/"
+               xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ui="http://xmlns.oracle.com/soa/designer"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:ess="http://xmlns.oracle.com/scheduler" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:ns2="http://xmlns.oracle.com/ObtenerPrestadorApp/ObtenerPrestadorPrj/ObtenerPrestadorBPEL"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/db/ConsultarDetalleSolicitudApp/ConsultarDetalleSolicitudPrj/SPObtenerSolicitudDB"
+         xmlns:ns4="http://xmlns.oracle.com/pcbpel/adapter/db/sp/SPObtenerSolicitudDB"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:ns5="http://qualitas.com.mx/ConsultarDetalleSolicitud/v1/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns6="http://qualitas.com.mx/comunes/objetosComunes/v1/"
+         xmlns:ns8="http://qualitas.com.mx/Comun/Servicio/ProyectoData/v1/"
+         xmlns:ns9="http://qualitas.com.mx/Importes/v1/" xmlns:ns7="http://qualitas.com.mx/Comun/Servicio/v1/"
+         xmlns:ns10="http://xmlns.oracle.com/pcbpel/adapter/db/ConsultarDetalleSolicitudApp/ConsultarDetalleSolicitudPrj/SelImportesCCDB"
+         xmlns:ns11="http://xmlns.oracle.com/pcbpel/adapter/db/SelImportesCCDB">
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <import namespace="http://qualitas.com.mx/Solicitud/ConsultarDetalleSolicitud/"
+          location="../WSDLs/consultarDetalleSolicitud.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"
+          ui:processWSDL="true"/>
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="consultardetallesolicitudbpel_client" partnerLinkType="ns1:consultarDetalleSolicitudBPEL" myRole="consultarDetalleSolicitudBPELProvider"/>
+    <partnerLink name="ObtenerPrestadorPL" partnerLinkType="ns2:ObtenerPrestadorBPEL"
+                 partnerRole="ObtenerPrestadorBPELProvider"/>
+    <partnerLink name="SPObtenerSolicitudDB" partnerLinkType="ns3:SPObtenerSolicitudDB_plt"
+                 partnerRole="SPObtenerSolicitudDB_role"/>
+    <partnerLink name="SelImportesCCDB" partnerLinkType="ns10:SelImportesCCDB_plt" partnerRole="SelImportesCCDB_role"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="ns1:consultarDetalleSolicitudBPELRequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="ns1:consultarDetalleSolicitudBPELResponseMessage"/>
+    <variable name="ObtenerSolicitudInvoke_InputVariable" messageType="ns3:args_in_msg"/>
+    <variable name="ObtenerSolicitudInvoke_OutputVariable" messageType="ns3:args_out_msg"/>
+    <variable name="ObtenerPrestadorInvoke_InputVariable" messageType="ns2:ObtenerPrestadorBPELRequestMessage"/>
+    <variable name="ObtenerPrestadorInvoke_OutputVariable" messageType="ns2:ObtenerPrestadorBPELResponseMessage"/>
+    <variable name="SelImportesCCInvoke_InputVariable" messageType="ns10:SelImportesCCDBInput_msg"/>
+    <variable name="SelImportesCCInvoke_OutputVariable" messageType="ns10:SelImportesCCDBOutputCollection_msg"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in ConsultarDetalleSolicitudBPEL.wsdl) -->
+    <receive name="receiveInput" partnerLink="consultardetallesolicitudbpel_client" portType="ns1:consultarDetalleSolicitudBPEL" operation="process" variable="inputVariable" createInstance="yes"/>
+    <if name="If">
+      <documentation>
+        <![CDATA[PAGOS DE SERVICIOS]]>
+      </documentation>
+      <condition>$inputVariable.consultarDetalleSolicitudRequest/tipoSolicitud = 1</condition>
+      <scope name="GetDataSolicitudScope">
+        <variables>
+          <variable name="numPrest" type="xsd:string"/>
+          <variable name="nomPrest" type="xsd:string"/>
+          <variable name="cveTipoPersona" type="xsd:string"/>
+          <variable name="tipoPersona" type="xsd:string"/>
+          <variable name="cveEntidad" type="xsd:string"/>
+          <variable name="cveNacionalidad" type="xsd:string"/>
+          <variable name="nacionalidad" type="xsd:string"/>
+        </variables>
+        <sequence name="GetDataSolicitudSequence">
+          <assign name="InputDataGetSolicitud">
+            <copy>
+              <from>$inputVariable.consultarDetalleSolicitudRequest/idSolicitud</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$ObtenerSolicitudInvoke_InputVariable.InputParameters/ns4:A_IDSOL</to>
+            </copy>
+          </assign>
+          <invoke name="ObtenerSolicitudInvoke" partnerLink="SPObtenerSolicitudDB"
+                  portType="ns3:SPObtenerSolicitudDB_ptt" operation="SPObtenerSolicitudDB"
+                  inputVariable="ObtenerSolicitudInvoke_InputVariable"
+                  outputVariable="ObtenerSolicitudInvoke_OutputVariable" bpelx:invokeAsDetail="no"/>
+          <assign name="InputGetPrestador">
+            <bpelx:annotation>
+              <bpelx:pattern patternName="bpelx:transformation"></bpelx:pattern>
+            </bpelx:annotation>
+            <copy>
+              <from>ora:doXSLTransformForDoc("../Transformations/GetPrestadorTransf.xsl", $ObtenerSolicitudInvoke_OutputVariable.OutputParameters)</from>
+              <to variable="ObtenerPrestadorInvoke_InputVariable" part="payload"/>
+            </copy>
+          </assign>
+          <invoke name="ObtenerPrestadorInvoke" partnerLink="ObtenerPrestadorPL"
+                  portType="ns2:ObtenerPrestadorBPEL" operation="processRequest"
+                  inputVariable="ObtenerPrestadorInvoke_InputVariable"
+                  outputVariable="ObtenerPrestadorInvoke_OutputVariable" bpelx:invokeAsDetail="no"/>
+          <assign name="InputGetImpCC">
+            <copy>
+              <from>$inputVariable.consultarDetalleSolicitudRequest/idSolicitud</from>
+              <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$SelImportesCCInvoke_InputVariable.SelImportesCCDBInput_msg/ns11:idSolicitud</to>
+            </copy>
+          </assign>
+          <invoke name="SelImportesCCInvoke" partnerLink="SelImportesCCDB"
+                  portType="ns10:SelImportesCCDB_ptt" operation="SelImportesCCDB"
+                  inputVariable="SelImportesCCInvoke_InputVariable"
+                  outputVariable="SelImportesCCInvoke_OutputVariable" bpelx:invokeAsDetail="no"/>
+          <assign name="OutputTransform">
+            <bpelx:annotation>
+              <bpelx:pattern patternName="bpelx:transformation"></bpelx:pattern>
+            </bpelx:annotation>
+            <copy>
+              <from>ora:doXSLTransformForDoc("../Transformations/OutPutDetailSolicitud.xsl", $ObtenerSolicitudInvoke_OutputVariable.OutputParameters, "ObtenerPrestadorInvoke_OutputVariable.payload", $ObtenerPrestadorInvoke_OutputVariable.payload, "SelImportesCCInvoke_OutputVariable.SelImportesCCDBOutputCollection", $SelImportesCCInvoke_OutputVariable.SelImportesCCDBOutputCollection)</from>
+              <to variable="outputVariable" part="consultarDetalleSolicitudResponse"/>
+            </copy>
+          </assign>
+        </sequence>
+      </scope>
+      <else>
+        <scope name="EmptyScope">
+          <sequence name="EmptySequence">
+            <empty name="EmptyData"/>
+          </sequence>
+        </scope>
+      </else>
+    </if>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="consultardetallesolicitudbpel_client" portType="ns1:consultarDetalleSolicitudBPEL" operation="process" variable="outputVariable"/>
+  </sequence>
+</process>

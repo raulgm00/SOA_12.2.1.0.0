@@ -1,0 +1,119 @@
+<xsd:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Cliente" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:NMPCliente="http://servicios.montedepiedad.com.mx/NMP/Schema/Entidad/Cliente" xmlns:NMPComun="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Comun">
+ <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Comun" schemaLocation="../NMPComun_TIPOS.xsd"/>
+ <xsd:complexType name="BeneficiarioTipo">
+  <xsd:sequence>
+   <xsd:element name="id" type="NMPComun:identificadorType" minOccurs="1"/>
+   <xsd:element ref="NMPCliente:nombre" minOccurs="0"/>
+   <xsd:element ref="NMPCliente:apellidoPaterno" minOccurs="0"/>
+   <xsd:element ref="NMPCliente:apellidoMaterno" minOccurs="0"/>
+   <xsd:element name="datosContacto" minOccurs="0">
+    <xsd:complexType>
+     <xsd:sequence>
+      <xsd:element name="telefonos" type="NMPComun:TelefonoListaType" minOccurs="0"/>
+     </xsd:sequence>
+    </xsd:complexType>
+   </xsd:element>
+   <xsd:element ref="NMPComun:fechaCreacion" minOccurs="0"/>
+  </xsd:sequence>
+ </xsd:complexType>
+ <xsd:complexType name="DatosContactoTipo">
+  <xsd:sequence>
+   <xsd:element name="direcciones" type="NMPComun:DireccionListaType" minOccurs="0"/>
+   <xsd:element name="correosElectronicos" minOccurs="0" type="NMPComun:EmailListaType"/>
+   <xsd:element name="telefonos" type="NMPComun:TelefonoListaType" minOccurs="0"/>
+  </xsd:sequence>
+ </xsd:complexType>
+ <xsd:complexType name="TipoPersonaTipo">
+  <xsd:sequence>
+   <xsd:element ref="NMPComun:clave" maxOccurs="unbounded"/>
+  </xsd:sequence>
+ </xsd:complexType>
+ <xsd:complexType name="GeneroTipo">
+  <xsd:sequence>
+   <xsd:element ref="NMPComun:clave" maxOccurs="unbounded"/>
+  </xsd:sequence>
+ </xsd:complexType>
+ <xsd:complexType name="NacionalidadTipo">
+  <xsd:sequence>
+   <xsd:element ref="NMPComun:clave" maxOccurs="unbounded"/>
+  </xsd:sequence>
+ </xsd:complexType>
+ <xsd:complexType name="IdentificacionTipo">
+  <xsd:sequence>
+    <xsd:element name="tipo" type="xsd:string"/>
+   <xsd:element name="numero" type="xsd:string"/>
+   <xsd:element name="fechaExpiracion" type="xsd:dateTime" minOccurs="0"/>
+  </xsd:sequence>
+ </xsd:complexType>
+ <xsd:complexType name="EscolaridadTipo">
+  <xsd:sequence>
+   <xsd:element ref="NMPComun:clave" maxOccurs="unbounded"/>
+  </xsd:sequence>
+ </xsd:complexType>
+ <xsd:complexType name="EstadoCivilTipo">
+  <xsd:sequence>
+   <xsd:element ref="NMPComun:clave" maxOccurs="unbounded"/>
+  </xsd:sequence>
+ </xsd:complexType>
+ <xsd:complexType name="GiroTipo">
+  <xsd:sequence>
+   <xsd:element ref="NMPComun:clave" maxOccurs="unbounded"/>
+  </xsd:sequence>
+ </xsd:complexType>
+ <xsd:complexType name="DatosPersonalesTipo">
+  <xsd:sequence>
+   <xsd:element name="tipoPersona" type="NMPCliente:TipoPersonaTipo"/>
+   <xsd:element name="genero" type="NMPCliente:GeneroTipo"/>
+   <xsd:element ref="NMPCliente:nombre"/>
+   <xsd:element ref="NMPCliente:apellidoPaterno"/>
+   <xsd:element ref="NMPCliente:apellidoMaterno"/>
+   <xsd:element name="fechaNacimiento" type="xsd:dateTime" minOccurs="0"/>
+   <xsd:element name="rfc" type="xsd:string" minOccurs="0"/>
+   <xsd:element name="nacionalidad" type="NMPCliente:NacionalidadTipo" minOccurs="0"/>
+   <xsd:element name="identificacion" type="NMPCliente:IdentificacionTipo" minOccurs="0"/>
+   <xsd:element name="escolaridad" type="NMPCliente:EscolaridadTipo" minOccurs="0"/>
+   <xsd:element name="paisResidencia" type="NMPComun:PaisType" minOccurs="0"/>
+   <xsd:element name="trabaja" type="xsd:boolean" minOccurs="0"/>
+   <xsd:element name="estadoCivil" type="NMPCliente:EstadoCivilTipo" minOccurs="0"/>
+   <xsd:element name="giro" type="NMPCliente:GiroTipo" minOccurs="0"/>
+   <xsd:element name="representanteLegal" type="xsd:boolean" minOccurs="0"/>
+   <xsd:element name="numeroDependientes" type="xsd:int" minOccurs="0"/>
+  </xsd:sequence>
+ </xsd:complexType>
+ <xsd:complexType name="DatosCuentaTipo">
+  <xsd:sequence>
+   <xsd:element ref="NMPCliente:idCliente"/>
+   <xsd:element ref="NMPCliente:numeroCredencial"/>
+   <xsd:element name="tipoCliente" type="xsd:int" minOccurs="0"/>
+   <xsd:element name="boletinado" type="xsd:boolean" minOccurs="0"/>
+   <xsd:element name="deseaSerContactado" type="xsd:boolean" minOccurs="0"/>
+   <xsd:element ref="NMPComun:fuenteDato" minOccurs="0"/>
+  </xsd:sequence>
+ </xsd:complexType>
+ <xsd:complexType name="OtrosDatosTipo">
+  <xsd:sequence>
+   <xsd:element name="urlVision360" type="xsd:string"/>
+  </xsd:sequence>
+ </xsd:complexType>
+ <xsd:complexType name="ClienteTipo">
+  <xsd:sequence>
+   <xsd:element name="datosCuenta" type="NMPCliente:DatosCuentaTipo"/>
+   <xsd:element name="datosPersonales" type="NMPCliente:DatosPersonalesTipo"/>
+   <xsd:element name="datosContacto" type="NMPCliente:DatosContactoTipo" minOccurs="0"/>
+   <xsd:element name="beneficiarios" minOccurs="0">
+    <xsd:complexType>
+     <xsd:sequence>
+      <xsd:element name="beneficiario" type="NMPCliente:BeneficiarioTipo" maxOccurs="unbounded"/>
+     </xsd:sequence>
+    </xsd:complexType>
+   </xsd:element>
+   <xsd:element name="informacionComplementaria" type="NMPCliente:OtrosDatosTipo" minOccurs="0"/>
+  </xsd:sequence>
+ </xsd:complexType>
+ <xsd:element name="nombre" type="xsd:string"/>
+ <xsd:element name="apellidoPaterno" type="xsd:string"/>
+ <xsd:element name="apellidoMaterno" type="xsd:string"/>
+ <xsd:element name="idCliente" type="NMPComun:identificadorType"/>
+ <xsd:element name="numeroCredencial" type="NMPComun:identificadorType"/>
+ 
+</xsd:schema>

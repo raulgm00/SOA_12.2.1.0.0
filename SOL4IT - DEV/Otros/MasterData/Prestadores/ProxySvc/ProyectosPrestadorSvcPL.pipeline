@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:wsdl ref="MasterData/Prestadores/Resources/ObtenerServiciosPrestadorWSDL"/>
+            <con:binding>
+                <con:name>ObtenerServiciosPorPrestadorBPELBinding</con:name>
+                <con:namespace>http://xmlns.oracle.com/ObtenerServicioPorPrestadorApp/ObtenerServicioPorPretstadorPrj/ObtenerServiciosPorPrestadorBPEL</con:namespace>
+            </con:binding>
+        </con:binding>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:flow>
+            <con:route-node name="RouteNode1">
+                <con:context>
+                    <con1:varNsDecl prefix="obt" namespace="http://xmlns.oracle.com/ObtenerServicioPorPrestadorApp/ObtenerServicioPorPretstadorPrj/ObtenerServiciosPorPrestadorBPEL" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.60.15a0280770a.N7ffe</con2:id>
+                        <con1:service ref="Finance/AP/GPA/Data/ProxySvc/ProyServPrestadorDataSvcPxy" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                        <con1:operation>ProyectosPrestadorDataSvc</con1:operation>
+                        <con1:outboundTransform>
+                            <con2:replace varName="body" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.4e.159f49c8485.N7ffa</con3:id>
+                                <con2:location>
+                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(
+fn:concat(
+      '<proy:ProyectosPrestadorDataSvcInput xmlns:proy="http://xmlns.oracle.com/pcbpel/adapter/db/ProyectosPrestadorDataSvc">',
+         '<proy:pIdPrestador1>',$body/obt:serviciosPrestadorRequest/obt:idPrestador,'</proy:pIdPrestador1>',
+         '<proy:pIdEmpleado>',$body/obt:serviciosPrestadorRequest/obt:numempleado,'</proy:pIdEmpleado>',
+         '<proy:pIdPrestador2>',$body/obt:serviciosPrestadorRequest/obt:idPrestador,'</proy:pIdPrestador2>',
+         '<proy:pIdPrestador3>',$body/obt:serviciosPrestadorRequest/obt:idPrestador,'</proy:pIdPrestador3>',
+         '<proy:pIdPrestador4>',$body/obt:serviciosPrestadorRequest/obt:idPrestador,'</proy:pIdPrestador4>',
+      '</proy:ProyectosPrestadorDataSvcInput>'
+)
+ )]]></con:xqueryText>
+                                </con2:expr>
+                            </con2:replace>
+                        </con1:outboundTransform>
+                        <con1:responseTransform>
+                            <con2:replace varName="body" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.52.159f4a1fdd3.N7ffc</con3:id>
+                                <con2:location>
+                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<serviciosPrestadorResponse xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/" xmlns:ns2="http://qualitas.com.mx/comunes/objetosComunes/v1/" xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/ObtenerServicioPorPrestadorApp/ObtenerServicioPorPretstadorPrj/SPObtenerServPrestador" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:tns="http://xmlns.oracle.com/ObtenerServicioPorPrestadorApp/ObtenerServicioPorPretstadorPrj/ObtenerServiciosPorPrestadorBPEL" xmlns="http://xmlns.oracle.com/ObtenerServicioPorPrestadorApp/ObtenerServicioPorPretstadorPrj/ObtenerServiciosPorPrestadorBPEL">
+
+{
+let $recordset := $body//*:ProyectosPrestadorDataSvcOutput
+return 
+for $record in ($recordset) return 
+<tns:servicioPrestadorOEN>
+            <tns:idProyecto>{$record/*:ID_PROYECTO/text()}</tns:idProyecto>
+            <tns:nombreProyecto>{$record/*:NOMBRE_PROYECTO/text()}</tns:nombreProyecto>
+            <tns:descProyecto>{$record/*:DESC_PROYECTO/text()}</tns:descProyecto>
+            <tns:estatus>{$record/*:ST_PROYECTO/text()}</tns:estatus>
+            <tns:presupuestoAprob>{$record/*:PRESUPUESTO_APROBADO/text()}</tns:presupuestoAprob>
+            <tns:totalParcialidades>{$record/*:PARCIALIDADES/text()}</tns:totalParcialidades>
+            <tns:numeroParcialidad>{$record/*:PARCIALIDAD_ACTUAL/text()}</tns:numeroParcialidad>
+            <tns:condicionPago>{$record/*:ID_CONDICIONES_PAGO/text()}</tns:condicionPago>
+            <tns:idsolicitud>{$record/*:ID_SOLICITUD/text()}</tns:idsolicitud>
+            <tns:idPrestador>{$record/*:ID_PRESTADOR/text()}</tns:idPrestador>
+            <tns:centroCosto>{$record/*:CENTRO_COSTO/text()}</tns:centroCosto>
+            <tns:claveOficina>{$record/*:CVE_OFICINA/text()}</tns:claveOficina>
+            <tns:descOficina>{$record/*:DESC_OFICINA/text()}</tns:descOficina>
+            <tns:descArea>{$record/*:DESC_AREA/text()}</tns:descArea>
+            <tns:responsableArea>{$record/*:RESPONSABLE_AREA/text()}</tns:responsableArea>
+            <tns:numEmpleado>0</tns:numEmpleado>
+            <tns:tipoMoneda>{$record/*:TIPO_MONEDA/text()}</tns:tipoMoneda>
+            <tns:presupuestoDisp>{$record/*:PRESUPUESTO_DISPONIBLE/text()}</tns:presupuestoDisp>
+            <tns:pagosProceso>{$record/*:PAGOS_PROCESO/text()}</tns:pagosProceso>
+            <tns:proyectoMarco>{$record/*:ID_PROYECTOMARCO/text()}</tns:proyectoMarco>
+</tns:servicioPrestadorOEN>
+}
+
+
+
+         <tns:OperationResponse>
+            <ns2:codigoRespuesta>0</ns2:codigoRespuesta>
+            <ns2:descripcionRespuesta>EJECUCION EXITOSA</ns2:descripcionRespuesta>
+            <ns2:tiempoRespuesta/>
+            <ns2:fecha>2017-02-01T17:02:52.175-06:00</ns2:fecha>
+         </tns:OperationResponse>
+      </serviciosPrestadorResponse>]]></con:xqueryText>
+                                </con2:expr>
+                            </con2:replace>
+                            <con2:log xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.50.159f4a0bdb1.N7ffa</con3:id>
+                                <con3:disabled xmlns:con3="http://www.bea.com/wli/sb/stages/config">true</con3:disabled>
+                                <con2:logLevel>warning</con2:logLevel>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                                </con2:expr>
+                                <con2:message>ProyectosServicioDataSvcOutput</con2:message>
+                            </con2:log>
+                        </con1:responseTransform>
+                    </con1:route>
+                </con:actions>
+            </con:route-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

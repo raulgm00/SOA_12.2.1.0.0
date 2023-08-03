@@ -1,0 +1,727 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con4="http://www.bea.com/wli/sb/stages/logging/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="true" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="OperacionCreditos/SolicitudesVSR/Resources/WSDLs/NMPSolicitudesVSRWSDL"/>
+            <con:binding>
+                <con:name>NMPSolicitudesVSRDBSOAP12Binding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Service/SolicitudesVSR</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:tracingEnabled>true</oper:tracingEnabled>
+            <oper:monitoring enabled="true" level="service" aggregationInterval="10"/>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router errorHandler="error-af10c6f.N7a0cb88d.0.15a8be3f77b.N7f9b">
+        <con:pipeline type="error" name="error-af10c6f.N7a0cb88d.0.15a8be3f77b.N7f9b">
+            <con:stage id="_StageId-af10c6f.N7a0cb88d.0.15a8be3f77b.N7f9a" name="StageFault">
+                <con:context/>
+                <con:actions>
+                    <con3:assign varName="body">
+                        <con2:id>_ActionId-af10c6f.N7a0cb88d.0.15a8be3f77b.N7f5f</con2:id>
+                        <con3:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="OperacionCreditos/SolicitudesVSR/Resources/Transformations/TrFaultsSolicitudesVSR"/>
+                                <con2:input>$fault</con2:input>
+                            </con2:xsltTransform>
+                        </con3:expr>
+                    </con3:assign>
+                    <con2:reply isError="true">
+                        <con2:id>_ActionId-af10c6f.N7a0cb88d.0.15a8be3f77b.N7f5c</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af10c6f.N7a0cb88d.0.15a8be3f77b.N7e64">
+            <con:stage id="_StageId-af10c6f.N10d11484.0.15aa4ab617a.N7f87" name="StageValidacion">
+                <con:context>
+                    <con2:userNsDecl prefix="sol" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/SolicitudesVSR"/>
+                    <con2:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con4:report>
+                        <con2:id>_ActionId-af10c6f.N10d11484.0.15aa4ab617a.N7ce6</con2:id>
+                        <con4:expr>
+                            <con2:xqueryText>$header</con2:xqueryText>
+                        </con4:expr>
+                        <con4:labels>
+                            <con4:key>idConsumidor</con4:key>
+                            <con4:varName>header</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./nmph:headerMessage</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                    </con4:report>
+                    <con4:report>
+                        <con2:id>_ActionId-af10c6f.N10d11484.0.15aa4ab617a.N7ce3</con2:id>
+                        <con4:expr>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con4:expr>
+                        <con4:labels>
+                            <con4:key>idFolio</con4:key>
+                            <con4:varName>body</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./sol:guardarSolicitudRequest/sol:NmpSolicitudesClientesInfo/sol:folioTramite</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                    </con4:report>
+                    <con3:validate>
+                        <con2:id>_ActionId-af10c6f.N10d11484.0.15aa4ab617a.N7f84</con2:id>
+                        <con3:schema ref="OperacionCreditos/SolicitudesVSR/Resources/Schemas/NMPSolicitudesVSRXSD"/>
+                        <con3:schemaElement xmlns:sol="http://servicios.montedepiedad.com.mx/NMP/Schema/SolicitudesVSR">sol:guardarSolicitudRequest</con3:schemaElement>
+                        <con3:varName>body</con3:varName>
+                        <con3:location>
+                            <con2:xpathText>./sol:guardarSolicitudRequest</con2:xpathText>
+                        </con3:location>
+                    </con3:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-af10c6f.N7a0cb88d.0.15a8be3f77b.N7e62" name="StageGuardarSolicitud">
+                <con:context/>
+                <con:actions>
+                    <con3:wsCallout>
+                        <con2:id>_ActionId-af10c6f.N7a0cb88d.0.15a8be3f77b.N7e56</con2:id>
+                        <con3:service ref="OperacionCreditos/SolicitudesVSR/BusinessServices/NMPSolicitudesClienteDbBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con3:operation>guardarSolicitud</con3:operation>
+                        <con3:request>
+                            <con3:body wrapped="true">body</con3:body>
+                        </con3:request>
+                        <con3:response>
+                            <con3:body wrapped="true">body</con3:body>
+                        </con3:response>
+                        <con3:requestTransform/>
+                        <con3:responseTransform/>
+                    </con3:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af10c6f.N7a0cb88d.0.15a8be3f77b.N7e63">
+            <con:stage id="_StageId-af10c6f.N7a0cb88d.0.15a8be3f77b.N7e61" name="StageResponse">
+                <con:context>
+                    <con2:userNsDecl prefix="sol" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/SolicitudesVSR"/>
+                </con:context>
+                <con:actions>
+                    <con3:assign varName="body">
+                        <con2:id>_ActionId-af10c6f.N7a0cb88d.0.15a8be3f77b.N7cba</con2:id>
+                        <con3:expr>
+                            <con2:xqueryText><![CDATA[<soap:Body xmlns:soap="http://www.w3.org/2003/05/soap-envelope">
+        <sol:guardarSolicitudResponse xmlns:sol="http://servicios.montedepiedad.com.mx/NMP/Schema/SolicitudesVSR">
+            <sol:respuesta>
+                <sol:resultado>OK</sol:resultado>
+                <sol:descripcion>Registro guardado exitosamente</sol:descripcion>
+            </sol:respuesta>
+        </sol:guardarSolicitudResponse>
+    </soap:Body>]]></con2:xqueryText>
+                        </con3:expr>
+                    </con3:assign>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af10c6f.N7a0cb88d.0.15a8be3f77b.N7e60">
+            <con:stage id="_StageId-af10c6f.N10d11484.0.15aa4ab617a.N7f1e" name="StageValidacion">
+                <con:context>
+                    <con2:userNsDecl prefix="sol" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/SolicitudesVSR"/>
+                </con:context>
+                <con:actions>
+                    <con3:validate>
+                        <con2:id>_ActionId-af10c6f.N10d11484.0.15aa4ab617a.N7f1d</con2:id>
+                        <con3:schema ref="OperacionCreditos/SolicitudesVSR/Resources/Schemas/NMPSolicitudesVSRXSD"/>
+                        <con3:schemaElement xmlns:sol="http://servicios.montedepiedad.com.mx/NMP/Schema/SolicitudesVSR">sol:actualizarSolicitudRequest</con3:schemaElement>
+                        <con3:varName>body</con3:varName>
+                        <con3:location>
+                            <con2:xpathText>./sol:actualizarSolicitudRequest</con2:xpathText>
+                        </con3:location>
+                    </con3:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-af10c6f.N10d11484.0.15aa4ab617a.N7d33" name="StageDocumentos">
+                <con:context>
+                    <con2:userNsDecl prefix="sol" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/SolicitudesVSR"/>
+                </con:context>
+                <con:disabled>true</con:disabled>
+                <con:actions>
+                    <con3:foreach>
+                        <con2:id>_ActionId-af10c6f.N10d11484.0.15aa4ab617a.N7cf7</con2:id>
+                        <con3:variable>body</con3:variable>
+                        <con3:expression>
+                            <con2:xpathText>./sol:actualizarSolicitudRequest/sol:NmpSolicitudesClientesInfo</con2:xpathText>
+                        </con3:expression>
+                        <con3:value-variable>solicitud</con3:value-variable>
+                        <con3:index-variable>indice</con3:index-variable>
+                        <con3:total-variable>contador</con3:total-variable>
+                        <con3:actions>
+                            <con3:ifThenElse>
+                                <con2:id>_ActionId-af10c6f.N10d11484.0.15aa4ab617a.N7d32</con2:id>
+                                <con3:case id="_BranchId-af10c6f.N10d11484.0.15aa4ab617a.N7d31">
+                                    <con3:condition>
+                                        <con2:xqueryText>fn:count($solicitud/sol:nmpDocumentosSolicitudInfoCollection/sol:NmpDocumentosSolicitudInfo)>0</con2:xqueryText>
+                                    </con3:condition>
+                                    <con3:actions>
+                                        <con3:wsCallout>
+                                            <con2:id>_ActionId-af10c6f.N10d11484.0.15aa4ab617a.N7cfd</con2:id>
+                                            <con3:service ref="OperacionCreditos/SolicitudesVSR/BusinessServices/NMPSolicitudesClienteDbBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                            <con3:operation>consultarSolicitud</con3:operation>
+                                            <con3:request>
+                                                <con3:body wrapped="false">consultarSolReq</con3:body>
+                                            </con3:request>
+                                            <con3:response>
+                                                <con3:body wrapped="false">consultarSolRes</con3:body>
+                                            </con3:response>
+                                            <con3:requestTransform>
+                                                <con3:assign varName="consultarSolReq">
+                                                    <con2:id>_ActionId-af10c6f.N10d11484.0.15aa4ab617a.N7cfa</con2:id>
+                                                    <con3:expr>
+                                                        <con2:xqueryText><![CDATA[<sol:consultarSolicitudRequest xmlns:sol="http://servicios.montedepiedad.com.mx/NMP/Schema/SolicitudesVSR">
+    <sol:folioTramite>{$solicitud/sol:folioTramite/text()}</sol:folioTramite>
+    <sol:numCredencial>{$solicitud/sol:numCredencial/text()}</sol:numCredencial>
+</sol:consultarSolicitudRequest>]]></con2:xqueryText>
+                                                    </con3:expr>
+                                                </con3:assign>
+                                            </con3:requestTransform>
+                                            <con3:responseTransform>
+                                                <con3:assign varName="consultarSolRes">
+                                                    <con2:id>_ActionId-af10c6f.N10d11484.0.15aa4ab617a.N7cea</con2:id>
+                                                    <con3:expr>
+                                                        <con2:xsltTransform>
+                                                            <con2:resource ref="OperacionCreditos/SolicitudesVSR/Resources/Transformations/TrAgregarNamespacerSolicitudRespuesta"/>
+                                                            <con2:input>$consultarSolRes</con2:input>
+                                                        </con2:xsltTransform>
+                                                    </con3:expr>
+                                                </con3:assign>
+                                                <con3:assign varName="documentos">
+                                                    <con2:id>_ActionId-af10c6f.N10d11484.0.15aa4ab617a.N7cf0</con2:id>
+                                                    <con3:expr>
+                                                        <con2:xsltTransform>
+                                                            <con2:resource ref="OperacionCreditos/SolicitudesVSR/Resources/Transformations/TrActualizarDocumentos"/>
+                                                            <con2:input>$consultarSolRes/sol:NmpSolicitudesClientesInfo/sol:nmpDocumentosSolicitudInfoCollection</con2:input>
+                                                            <con2:param name="doctosActualizar">
+                                                                <con2:path>$solicitud</con2:path>
+                                                            </con2:param>
+                                                        </con2:xsltTransform>
+                                                    </con3:expr>
+                                                </con3:assign>
+                                                <con3:replace varName="body">
+                                                    <con2:id>_ActionId-af10c6f.N10d11484.0.15aa4ab617a.N7ced</con2:id>
+                                                    <con3:location>
+                                                        <con2:xpathText>./sol:actualizarSolicitudRequest/sol:NmpSolicitudesClientesInfo[$indice]/sol:nmpDocumentosSolicitudInfoCollection</con2:xpathText>
+                                                    </con3:location>
+                                                    <con3:expr>
+                                                        <con2:xqueryText>$documentos</con2:xqueryText>
+                                                    </con3:expr>
+                                                </con3:replace>
+                                            </con3:responseTransform>
+                                        </con3:wsCallout>
+                                    </con3:actions>
+                                </con3:case>
+                            </con3:ifThenElse>
+                        </con3:actions>
+                    </con3:foreach>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-af10c6f.7e93100c.0.15af1d88811.N7f3c" name="StageFormasPago">
+                <con:context>
+                    <con2:userNsDecl prefix="sol" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/SolicitudesVSR"/>
+                </con:context>
+                <con:actions>
+                    <con3:foreach>
+                        <con2:id>_ActionId-af10c6f.7e93100c.0.15af1d88811.N7f3b</con2:id>
+                        <con3:variable>body</con3:variable>
+                        <con3:expression>
+                            <con2:xpathText>./sol:actualizarSolicitudRequest/sol:NmpSolicitudesClientesInfo</con2:xpathText>
+                        </con3:expression>
+                        <con3:value-variable>solicitud</con3:value-variable>
+                        <con3:index-variable>indice</con3:index-variable>
+                        <con3:total-variable>contador</con3:total-variable>
+                        <con3:actions>
+                            <con3:ifThenElse>
+                                <con2:id>_ActionId-af10c6f.7e93100c.0.15af1d88811.N7f3a</con2:id>
+                                <con3:case id="_BranchId-af10c6f.7e93100c.0.15af1d88811.N7f39">
+                                    <con3:condition>
+                                        <con2:xqueryText>fn:count($solicitud/sol:nmpFormasPagoCollection/sol:NmpFormasPago)>0</con2:xqueryText>
+                                    </con3:condition>
+                                    <con3:actions>
+                                        <con3:wsCallout>
+                                            <con2:id>_ActionId-af10c6f.7e93100c.0.15af1d88811.N7f38</con2:id>
+                                            <con3:service ref="OperacionCreditos/SolicitudesVSR/BusinessServices/NMPSolicitudesClienteDbBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                            <con3:operation>consultarSolicitud</con3:operation>
+                                            <con3:request>
+                                                <con3:body wrapped="false">consultarSolReq</con3:body>
+                                            </con3:request>
+                                            <con3:response>
+                                                <con3:body wrapped="false">consultarSolRes</con3:body>
+                                            </con3:response>
+                                            <con3:requestTransform>
+                                                <con3:assign varName="consultarSolReq">
+                                                    <con2:id>_ActionId-af10c6f.7e93100c.0.15af1d88811.N7f37</con2:id>
+                                                    <con3:expr>
+                                                        <con2:xqueryText><![CDATA[<sol:consultarSolicitudRequest xmlns:sol="http://servicios.montedepiedad.com.mx/NMP/Schema/SolicitudesVSR">
+    <sol:folioTramite>{$solicitud/sol:folioTramite/text()}</sol:folioTramite>
+    <sol:numCredencial>{$solicitud/sol:numCredencial/text()}</sol:numCredencial>
+</sol:consultarSolicitudRequest>]]></con2:xqueryText>
+                                                    </con3:expr>
+                                                </con3:assign>
+                                            </con3:requestTransform>
+                                            <con3:responseTransform>
+                                                <con3:assign varName="consultarSolRes">
+                                                    <con2:id>_ActionId-af10c6f.7e93100c.0.15af1d88811.N7f36</con2:id>
+                                                    <con3:expr>
+                                                        <con2:xsltTransform>
+                                                            <con2:resource ref="OperacionCreditos/SolicitudesVSR/Resources/Transformations/TrAgregarNamespacerSolicitudRespuesta"/>
+                                                            <con2:input>$consultarSolRes</con2:input>
+                                                        </con2:xsltTransform>
+                                                    </con3:expr>
+                                                </con3:assign>
+                                                <con3:assign varName="datos">
+                                                    <con2:id>_ActionId-af10c6f.7e93100c.0.15af1d88811.N7f35</con2:id>
+                                                    <con3:expr>
+                                                        <con2:xsltTransform>
+                                                            <con2:resource ref="OperacionCreditos/SolicitudesVSR/Resources/Transformations/TrActualizarFormasPago"/>
+                                                            <con2:input>$consultarSolRes/sol:NmpSolicitudesClientesInfo/sol:nmpFormasPagoCollection</con2:input>
+                                                            <con2:param name="datosActualizar">
+                                                                <con2:path>$solicitud</con2:path>
+                                                            </con2:param>
+                                                        </con2:xsltTransform>
+                                                    </con3:expr>
+                                                </con3:assign>
+                                                <con3:replace varName="body">
+                                                    <con2:id>_ActionId-af10c6f.7e93100c.0.15af1d88811.N7f34</con2:id>
+                                                    <con3:location>
+                                                        <con2:xpathText>./sol:actualizarSolicitudRequest/sol:NmpSolicitudesClientesInfo[$indice]/sol:nmpFormasPagoCollection</con2:xpathText>
+                                                    </con3:location>
+                                                    <con3:expr>
+                                                        <con2:xqueryText>$datos</con2:xqueryText>
+                                                    </con3:expr>
+                                                </con3:replace>
+                                            </con3:responseTransform>
+                                        </con3:wsCallout>
+                                    </con3:actions>
+                                </con3:case>
+                            </con3:ifThenElse>
+                        </con3:actions>
+                    </con3:foreach>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-af10c6f.N7a0cb88d.0.15a8be3f77b.N7e5e" name="StageActualizarSolicitud">
+                <con:context/>
+                <con:actions>
+                    <con3:wsCallout>
+                        <con2:id>_ActionId-af10c6f.N7a0cb88d.0.15a8be3f77b.N7df1</con2:id>
+                        <con3:service ref="OperacionCreditos/SolicitudesVSR/BusinessServices/NMPSolicitudesClienteDbBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con3:operation>actualizarSolicitud</con3:operation>
+                        <con3:request>
+                            <con3:body wrapped="true">body</con3:body>
+                        </con3:request>
+                        <con3:response>
+                            <con3:body wrapped="true">body</con3:body>
+                        </con3:response>
+                        <con3:requestTransform/>
+                        <con3:responseTransform/>
+                    </con3:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af10c6f.N7a0cb88d.0.15a8be3f77b.N7e5f">
+            <con:stage id="_StageId-af10c6f.N7a0cb88d.0.15a8be3f77b.N7e5d" name="StageResponse">
+                <con:context/>
+                <con:actions>
+                    <con3:assign varName="body">
+                        <con2:id>_ActionId-af10c6f.N7a0cb88d.0.15a8be3f77b.N7c55</con2:id>
+                        <con3:expr>
+                            <con2:xqueryText><![CDATA[<soap:Body xmlns:soap="http://www.w3.org/2003/05/soap-envelope">
+        <sol:actualizarSolicitudResponse
+            xmlns:sol="http://servicios.montedepiedad.com.mx/NMP/Schema/SolicitudesVSR">
+            <sol:respuesta>
+                <sol:resultado>OK</sol:resultado>
+                <sol:descripcion>Registro actualizado exitosamente</sol:descripcion>
+            </sol:respuesta>
+        </sol:actualizarSolicitudResponse>
+    </soap:Body>]]></con2:xqueryText>
+                        </con3:expr>
+                    </con3:assign>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af10c6f.N7a0cb88d.0.15a8be3f77b.N7e5c">
+            <con:stage id="_StageId-af10c6f.N10d11484.0.15aa4ab617a.N7ee9" name="StageValidacion">
+                <con:context>
+                    <con2:userNsDecl prefix="sol" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/SolicitudesVSR"/>
+                </con:context>
+                <con:actions>
+                    <con3:validate>
+                        <con2:id>_ActionId-af10c6f.N10d11484.0.15aa4ab617a.N7ee8</con2:id>
+                        <con3:schema ref="OperacionCreditos/SolicitudesVSR/Resources/Schemas/NMPSolicitudesVSRXSD"/>
+                        <con3:schemaElement xmlns:sol="http://servicios.montedepiedad.com.mx/NMP/Schema/SolicitudesVSR">sol:consultarSolicitudRequest</con3:schemaElement>
+                        <con3:varName>body</con3:varName>
+                        <con3:location>
+                            <con2:xpathText>./sol:consultarSolicitudRequest</con2:xpathText>
+                        </con3:location>
+                    </con3:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-af10c6f.N7a0cb88d.0.15a8be3f77b.N7e5a" name="StageConsultarSolicitud">
+                <con:context/>
+                <con:actions>
+                    <con3:wsCallout>
+                        <con2:id>_ActionId-af10c6f.N7a0cb88d.0.15a8be3f77b.N7d8d</con2:id>
+                        <con3:service ref="OperacionCreditos/SolicitudesVSR/BusinessServices/NMPSolicitudesClienteDbBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con3:operation>consultarSolicitud</con3:operation>
+                        <con3:request>
+                            <con3:body wrapped="true">body</con3:body>
+                            <con3:header/>
+                        </con3:request>
+                        <con3:response>
+                            <con3:body wrapped="true">body</con3:body>
+                        </con3:response>
+                        <con3:requestTransform/>
+                        <con3:responseTransform/>
+                    </con3:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af10c6f.N7a0cb88d.0.15a8be3f77b.N7e5b">
+            <con:stage id="_StageId-af10c6f.N7a0cb88d.0.15a8be3f77b.N7e59" name="StageResponse">
+                <con:context>
+                    <con2:userNsDecl prefix="sol" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/SolicitudesVSR"/>
+                </con:context>
+                <con:actions>
+                    <con3:assign varName="body">
+                        <con2:id>_ActionId-af10c6f.N7a0cb88d.0.15a8be3f77b.N7b38</con2:id>
+                        <con3:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="OperacionCreditos/SolicitudesVSR/Resources/Transformations/TrAgregarNamespacerSolicitudRespuesta"/>
+                                <con2:input>$body</con2:input>
+                            </con2:xsltTransform>
+                        </con3:expr>
+                    </con3:assign>
+                    <con3:rename varName="body">
+                        <con2:id>_ActionId-af10c6f.N10d11484.0.15aa4ab617a.N7fcb</con2:id>
+                        <con3:location>
+                            <con2:xpathText>./sol:NmpSolicitudesClientesInfoCollection</con2:xpathText>
+                        </con3:location>
+                        <con3:localname>consultarSolicitudResponse</con3:localname>
+                    </con3:rename>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af10c6f.N7a0cb88d.0.15a8be3f77b.N7cf3">
+            <con:stage id="_StageId-af10c6f.N10d11484.0.15aa4ab617a.N7eb4" name="StageValidacion">
+                <con:context>
+                    <con2:userNsDecl prefix="sol" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/SolicitudesVSR"/>
+                </con:context>
+                <con:actions>
+                    <con3:validate>
+                        <con2:id>_ActionId-af10c6f.N10d11484.0.15aa4ab617a.N7eb3</con2:id>
+                        <con3:schema ref="OperacionCreditos/SolicitudesVSR/Resources/Schemas/NMPSolicitudesVSRXSD"/>
+                        <con3:schemaElement xmlns:sol="http://servicios.montedepiedad.com.mx/NMP/Schema/SolicitudesVSR">sol:validarVehiculoRequest</con3:schemaElement>
+                        <con3:varName>body</con3:varName>
+                        <con3:location>
+                            <con2:xpathText>./sol:validarVehiculoRequest</con2:xpathText>
+                        </con3:location>
+                    </con3:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-af10c6f.N7a0cb88d.0.15a8be3f77b.N7cf1" name="StageValidarVehiculo">
+                <con:context>
+                    <con2:userNsDecl prefix="sol" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/SolicitudesVSR"/>
+                </con:context>
+                <con:actions>
+                    <con3:ifThenElse>
+                        <con2:id>_ActionId-af10c6f.N21fb3253.0.15af1b9af88.N7ffa</con2:id>
+                        <con3:case id="_BranchId-af10c6f.N21fb3253.0.15af1b9af88.N7ff9">
+                            <con3:condition>
+                                <con2:xqueryText>$body/sol:validarVehiculoRequest/sol:numCredencial and $body/sol:validarVehiculoRequest/sol:folioTramite</con2:xqueryText>
+                            </con3:condition>
+                            <con3:actions>
+                                <con3:wsCallout>
+                                    <con2:id>_ActionId-af10c6f.N21fb3253.0.15af1b9af88.N7f94</con2:id>
+                                    <con3:service ref="OperacionCreditos/SolicitudesVSR/BusinessServices/NMPSolicitudesClienteDbBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                    <con3:operation>validarVehiculoActualizar</con3:operation>
+                                    <con3:request>
+                                        <con3:body wrapped="true">body</con3:body>
+                                    </con3:request>
+                                    <con3:response>
+                                        <con3:body wrapped="true">body</con3:body>
+                                    </con3:response>
+                                    <con3:requestTransform/>
+                                    <con3:responseTransform/>
+                                </con3:wsCallout>
+                            </con3:actions>
+                        </con3:case>
+                        <con3:default>
+                            <con3:wsCallout>
+                                <con2:id>_ActionId-af10c6f.N7a0cb88d.0.15a8be3f77b.N7cbd</con2:id>
+                                <con3:service ref="OperacionCreditos/SolicitudesVSR/BusinessServices/NMPSolicitudesClienteDbBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                <con3:operation>validarVehiculo</con3:operation>
+                                <con3:request>
+                                    <con3:body wrapped="true">body</con3:body>
+                                </con3:request>
+                                <con3:response>
+                                    <con3:body wrapped="true">body</con3:body>
+                                </con3:response>
+                                <con3:requestTransform/>
+                                <con3:responseTransform/>
+                            </con3:wsCallout>
+                        </con3:default>
+                    </con3:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af10c6f.N7a0cb88d.0.15a8be3f77b.N7cf2">
+            <con:stage id="_StageId-af10c6f.N7a0cb88d.0.15a8be3f77b.N7cf0" name="StageResponse">
+                <con:context>
+                    <con2:userNsDecl prefix="sol" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/SolicitudesVSR"/>
+                </con:context>
+                <con:actions>
+                    <con3:insert varName="body">
+                        <con2:id>_ActionId-af10c6f.7e93100c.0.15af1d88811.N7ffe</con2:id>
+                        <con3:location>
+                            <con2:xpathText>./sol:validarVehiculoResponse</con2:xpathText>
+                        </con3:location>
+                        <con3:where>last-child</con3:where>
+                        <con3:expr>
+                            <con2:xqueryText>&lt;sol:resultado>{fn:count($body/sol:validarVehiculoResponse/sol:solicitud)}&lt;/sol:resultado></con2:xqueryText>
+                        </con3:expr>
+                    </con3:insert>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af10c6f.N7a0cb88d.0.15a8be3f77b.N7b7c">
+            <con:stage id="_StageId-af10c6f.N10d11484.0.15aa4ab617a.N7e4e" name="StageValidacion">
+                <con:context>
+                    <con2:userNsDecl prefix="sol" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/SolicitudesVSR"/>
+                </con:context>
+                <con:actions>
+                    <con3:validate>
+                        <con2:id>_ActionId-af10c6f.N10d11484.0.15aa4ab617a.N7e4d</con2:id>
+                        <con3:schema ref="OperacionCreditos/SolicitudesVSR/Resources/Schemas/NMPSolicitudesVSRXSD"/>
+                        <con3:schemaElement xmlns:sol="http://servicios.montedepiedad.com.mx/NMP/Schema/SolicitudesVSR">sol:consultarSolicitudesClienteRequest</con3:schemaElement>
+                        <con3:varName>body</con3:varName>
+                        <con3:location>
+                            <con2:xpathText>./sol:consultarSolicitudesClienteRequest</con2:xpathText>
+                        </con3:location>
+                    </con3:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-af10c6f.N7a0cb88d.0.15a8be3f77b.N7b7b" name="StageSolicitudesCliente">
+                <con:context/>
+                <con:actions>
+                    <con3:wsCallout>
+                        <con2:id>_ActionId-af10c6f.N7a0cb88d.0.15a8be3f77b.N7b7a</con2:id>
+                        <con3:service ref="OperacionCreditos/SolicitudesVSR/BusinessServices/NMPSolicitudesClienteDbBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con3:operation>consultarSolicitudesCliente</con3:operation>
+                        <con3:request>
+                            <con3:body wrapped="true">body</con3:body>
+                        </con3:request>
+                        <con3:response>
+                            <con3:body wrapped="true">body</con3:body>
+                        </con3:response>
+                        <con3:requestTransform>
+                            <con3:assign varName="body">
+                                <con2:id>_ActionId-af10c6f.N10d11484.0.15aa4ab617a.N7fce</con2:id>
+                                <con3:expr>
+                                    <con2:xsltTransform>
+                                        <con2:resource ref="OperacionCreditos/SolicitudesVSR/Resources/Transformations/TrConsultarSolicitudesToDBRequest"/>
+                                        <con2:input>$body</con2:input>
+                                    </con2:xsltTransform>
+                                </con3:expr>
+                            </con3:assign>
+                        </con3:requestTransform>
+                        <con3:responseTransform/>
+                    </con3:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af10c6f.N7a0cb88d.0.15a8be3f77b.N7b79">
+            <con:stage id="_StageId-af10c6f.N7a0cb88d.0.15a8be3f77b.N7b78" name="StageResponse">
+                <con:context>
+                    <con2:userNsDecl prefix="sol" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/SolicitudesVSR"/>
+                </con:context>
+                <con:actions>
+                    <con3:assign varName="body">
+                        <con2:id>_ActionId-af10c6f.N7a0cb88d.0.15a8be3f77b.N7b04</con2:id>
+                        <con3:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="OperacionCreditos/SolicitudesVSR/Resources/Transformations/TrAgregarNamespacerSolicitudRespuesta"/>
+                                <con2:input>$body</con2:input>
+                            </con2:xsltTransform>
+                        </con3:expr>
+                    </con3:assign>
+                    <con3:rename varName="body">
+                        <con2:id>_ActionId-af10c6f.N10d11484.0.15aa4ab617a.N7f91</con2:id>
+                        <con3:location>
+                            <con2:xpathText>./sol:NmpSolicitudesClientesInfoCollection</con2:xpathText>
+                        </con3:location>
+                        <con3:localname>consultarSolicitudesClienteResponse</con3:localname>
+                    </con3:rename>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af10c6f.N7a0cb88d.0.15a8be3f77b.N7a6a">
+            <con:stage id="_StageId-af10c6f.N10d11484.0.15aa4ab617a.N7e19" name="StageValidacion">
+                <con:context>
+                    <con2:userNsDecl prefix="sol" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/SolicitudesVSR"/>
+                </con:context>
+                <con:actions>
+                    <con3:validate>
+                        <con2:id>_ActionId-af10c6f.N10d11484.0.15aa4ab617a.N7e18</con2:id>
+                        <con3:schema ref="OperacionCreditos/SolicitudesVSR/Resources/Schemas/NMPSolicitudesVSRXSD"/>
+                        <con3:schemaElement xmlns:sol="http://servicios.montedepiedad.com.mx/NMP/Schema/SolicitudesVSR">sol:validaEstadoFlujoSolicitudRequest</con3:schemaElement>
+                        <con3:varName>body</con3:varName>
+                        <con3:location>
+                            <con2:xpathText>./sol:validaEstadoFlujoSolicitudRequest</con2:xpathText>
+                        </con3:location>
+                    </con3:validate>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-af10c6f.N7a0cb88d.0.15a8be3f77b.N7a69" name="StageValidarVehiculo">
+                <con:context/>
+                <con:actions>
+                    <con3:wsCallout>
+                        <con2:id>_ActionId-af10c6f.N7a0cb88d.0.15a8be3f77b.N7a68</con2:id>
+                        <con3:service ref="OperacionCreditos/SolicitudesVSR/BusinessServices/NMPSolicitudesClienteDbBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con3:operation>validaEstadoFlujoSolicitud</con3:operation>
+                        <con3:request>
+                            <con3:body wrapped="true">body</con3:body>
+                        </con3:request>
+                        <con3:response>
+                            <con3:body wrapped="true">body</con3:body>
+                        </con3:response>
+                        <con3:requestTransform/>
+                        <con3:responseTransform/>
+                    </con3:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af10c6f.N7a0cb88d.0.15a8be3f77b.N7a67">
+            <con:stage id="_StageId-af10c6f.N7a0cb88d.0.15a8be3f77b.N7a66" name="StageResponse">
+                <con:context/>
+                <con:actions/>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af10c6f.N10d11484.0.15aa4ab617a.N7f97">
+            <con:stage id="_StageId-af10c6f.N10d11484.0.15aa4ab617a.N7f95" name="StageRequest">
+                <con:context>
+                    <con2:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con4:report>
+                        <con2:id>_ActionId-af10c6f.7e93100c.0.15af1d88811.N7f00</con2:id>
+                        <con4:expr>
+                            <con2:xqueryText>$header</con2:xqueryText>
+                        </con4:expr>
+                        <con4:labels>
+                            <con4:key>idConsumidor</con4:key>
+                            <con4:varName>header</con4:varName>
+                            <con4:value>
+                                <con2:xpathText>./nmph:headerMessage</con2:xpathText>
+                            </con4:value>
+                        </con4:labels>
+                    </con4:report>
+                    <con3:validate>
+                        <con2:id>_ActionId-af10c6f.N10d11484.0.15aa4ab617a.N7f8b</con2:id>
+                        <con3:schema ref="Common/XSD/NMPStandardHeader"/>
+                        <con3:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con3:schemaElement>
+                        <con3:varName>header</con3:varName>
+                        <con3:location>
+                            <con2:xpathText>./nmph:headerMessage</con2:xpathText>
+                        </con3:location>
+                    </con3:validate>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af10c6f.N10d11484.0.15aa4ab617a.N7f96">
+            <con:stage id="_StageId-af10c6f.N10d11484.0.15aa4ab617a.N7f94" name="StageResponse">
+                <con:context>
+                    <con2:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con3:rename varName="header">
+                        <con2:id>_ActionId-af10c6f.N10d11484.0.15aa4ab617a.N7f88</con2:id>
+                        <con3:location>
+                            <con2:xpathText>./nmph:headerMessage</con2:xpathText>
+                        </con3:location>
+                        <con3:localname>headerMessageResponse</con3:localname>
+                    </con3:rename>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="PipelineValidacion">
+                <con:request>request-af10c6f.N10d11484.0.15aa4ab617a.N7f97</con:request>
+                <con:response>response-af10c6f.N10d11484.0.15aa4ab617a.N7f96</con:response>
+            </con:pipeline-node>
+            <con:branch-node type="operation" id="_FlowId-af10c6f.N7a0cb88d.0.15a8be3f77b.N7ec8" name="BranchNodeSolicitudesVSR">
+                <con:context/>
+                <con:branch-table>
+                    <con:branch name="guardarSolicitud">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairGuardarSolicitud">
+                                <con:request>request-af10c6f.N7a0cb88d.0.15a8be3f77b.N7e64</con:request>
+                                <con:response>response-af10c6f.N7a0cb88d.0.15a8be3f77b.N7e63</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="actualizarSolicitud">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairActualizarSolicitud">
+                                <con:request>request-af10c6f.N7a0cb88d.0.15a8be3f77b.N7e60</con:request>
+                                <con:response>response-af10c6f.N7a0cb88d.0.15a8be3f77b.N7e5f</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="consultarSolicitud">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairConsultaSolicitud">
+                                <con:request>request-af10c6f.N7a0cb88d.0.15a8be3f77b.N7e5c</con:request>
+                                <con:response>response-af10c6f.N7a0cb88d.0.15a8be3f77b.N7e5b</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="validarVehiculo">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairValidarVehiculo">
+                                <con:request>request-af10c6f.N7a0cb88d.0.15a8be3f77b.N7cf3</con:request>
+                                <con:response>response-af10c6f.N7a0cb88d.0.15a8be3f77b.N7cf2</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="consultarSolicitudesCliente">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairSolicitudCliente">
+                                <con:request>request-af10c6f.N7a0cb88d.0.15a8be3f77b.N7b7c</con:request>
+                                <con:response>response-af10c6f.N7a0cb88d.0.15a8be3f77b.N7b79</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="validaEstadoFlujoSolicitud">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineValidaEstadoFlujo">
+                                <con:request>request-af10c6f.N7a0cb88d.0.15a8be3f77b.N7a6a</con:request>
+                                <con:response>response-af10c6f.N7a0cb88d.0.15a8be3f77b.N7a67</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

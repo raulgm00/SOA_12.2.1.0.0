@@ -1,0 +1,35 @@
+<adapter-config name="NMPTransaccionesPagosBitacora" adapter="db" wsdlLocation="../WSDLs/NMPTransaccionesPagosBitacoraWSDL.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  <connection-factory UIConnectionName="CMPAGOS" location="eis/DB/CMPAGOS"/>  
+  <endpoint-interaction portType="TransaccionesPagoBitacora_ptt" operation="registrarTransaccionPago">
+   <interaction-spec className="oracle.tip.adapter.db.DBWriteInteractionSpec">
+      <property name="DescriptorName" value="TransaccionPagoDB.NmpTransaccionPago"/>
+      <property name="DmlType" value="insert"/>
+      <property name="MappingsMetaDataURL" value="NMPTransaccionesPagoMAP.xml"/>
+      <property name="DetectOmissions" value="true"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  <endpoint-interaction portType="TransaccionesPagoBitacora_ptt" operation="actualizarTransaccionPago">
+    <interaction-spec className="oracle.tip.adapter.db.DBWriteInteractionSpec">
+      <property name="DescriptorName" value="TransaccionPagoDB.NmpTransaccionPago"/>
+      <property name="DmlType" value="update"/>
+      <property name="MappingsMetaDataURL" value="NMPTransaccionesPagoMAP.xml"/>
+      <property name="DetectOmissions" value="true"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  <endpoint-interaction portType="TransaccionesPagoBitacora_ptt" operation="consultarTransaccionPago">
+     <interaction-spec className="oracle.tip.adapter.db.DBReadInteractionSpec">
+      <property name="DescriptorName" value="TransaccionPagoDB.NmpTransaccionPago"/>
+      <property name="QueryName" value="readObject"/>
+      <property name="MappingsMetaDataURL" value="NMPTransaccionesPagoMAP.xml"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+    </endpoint-interaction>
+     <endpoint-interaction portType="TransaccionesPagoBitacora_ptt" operation="validarTransaccionPago">
+    <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+      <property name="SqlString" value="select transaccion_bancaria,  estado_transaccion, fecha_creacion  from NMP_TRANSACCION_PAGO  where folio_partida = :folio_partida and ESTADO_TRANSACCION in (1,6,7)"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+</adapter-config>

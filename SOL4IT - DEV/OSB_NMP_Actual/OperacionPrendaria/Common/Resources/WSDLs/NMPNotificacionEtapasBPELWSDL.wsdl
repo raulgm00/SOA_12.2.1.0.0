@@ -1,0 +1,87 @@
+<wsdl:definitions name="BPELRespuestaMIDAS" targetNamespace="http://xmlns.oracle.com/ConcentradoraBPM/Resources/WSDL/BPELRespuestaMIDAS" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:client="http://xmlns.oracle.com/RespuestaMIDAS_BPM/RespuestaMIDAS/BPELRespuestaMIDAS" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:cor="http://xmlns.oracle.com/ConcentradoraBPM/Resources/WSDL/BPELRespuestaMIDAS/correlationset" xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:vprop="http://docs.oasis-open.org/wsbpel/2.0/varprop" xmlns:NMPSM="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:NMPSH="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:midas="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPNotificacionMidasBPM" xmlns:ns2="http://xmlns.oracle.com/ConcentradoraBPM/Resources/WSDL/BPELRespuestaMIDAS" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <plnk:partnerLinkType name="BPELRespuestaMIDAS">
+    <plnk:role name="BPELRespuestaMIDASProvider" portType="client:BPELRespuestaMIDAS"/>
+    <plnk:role name="BPELRespuestaMIDASRequester" portType="client:BPELRespuestaMIDASCallback"/>
+  </plnk:partnerLinkType>
+  <wsdl:types>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+    </xsd:schema>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+    </xsd:schema>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://xmlns.oracle.com/RespuestaMIDAS_BPM/RespuestaMIDAS/BPELRespuestaMIDAS" schemaLocation="../Schemas/NMPNotificacionEtapaXSD.xsd"/>
+    </schema>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPNotificacionMidasBPM" schemaLocation="../Schemas/NMPNotificacionEtapaCorrelacionXSD.xsd"/>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="NMPHeaderRequest">
+    <wsdl:part name="requestHeader" element="NMPSH:headerMessage"/>
+  </wsdl:message>
+  <wsdl:message name="NMPHeaderResponse">
+    <wsdl:part name="responseHeader" element="NMPSH:headerMessageResponse"/>
+  </wsdl:message>
+  <wsdl:message name="BPELRespuestaMIDASRequestMessage">
+    <wsdl:part name="payload" element="client:process"/>
+  </wsdl:message>
+  <wsdl:message name="MIDASRespuesta">
+    <wsdl:part name="payload" element="midas:NotificacionMidas"/>
+  </wsdl:message>
+  <wsdl:message name="BPELRespuestaMIDASResponseMessage">
+    <wsdl:part name="payload" element="client:processResponse"/>
+  </wsdl:message>
+  <wsdl:portType name="BPELRespuestaMIDAS">
+    <wsdl:operation name="process">
+      <wsdl:input message="ns2:BPELRespuestaMIDASRequestMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="respuestaMIDAS">
+      <wsdl:input message="ns2:MIDASRespuesta"/>
+      <wsdl:output message="ns2:BPELRespuestaMIDASResponseMessage"/>
+      <wsdl:fault name="Fault" message="ns2:standardMessageFault"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:message name="standardMessageFault">
+    <wsdl:part name="Fault" element="NMPSM:messageError"/>
+  </wsdl:message>
+  <wsdl:portType name="BPELRespuestaMIDASCallback">
+    <wsdl:operation name="processResponse">
+      <wsdl:input message="ns2:BPELRespuestaMIDASResponseMessage"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BPELRespuestaMIDASCallbackSOAP11Binding" type="ns2:BPELRespuestaMIDASCallback">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="processResponse">
+      <soap:operation style="document" soapAction="http://xmlns.oracle.com/ConcentradoraBPM/Resources/WSDL/BPELRespuestaMIDAS/processResponse"/>
+      <wsdl:input>
+        <soap:header message="ns2:NMPHeaderRequest" part="requestHeader" use="literal"/>
+        <soap:body use="literal" parts="payload"/>
+      </wsdl:input>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="BPELRespuestaMIDASSOAP11Binding" type="ns2:BPELRespuestaMIDAS">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="process">
+      <soap:operation style="document" soapAction="http://xmlns.oracle.com/ConcentradoraBPM/Resources/WSDL/BPELRespuestaMIDAS/process"/>
+      <wsdl:input>
+        <soap:header message="ns2:NMPHeaderRequest" part="requestHeader" use="literal"/>
+        <soap:body use="literal" parts="payload"/>
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="respuestaMIDAS">
+      <soap:operation style="document" soapAction="http://xmlns.oracle.com/ConcentradoraBPM/Resources/WSDL/BPELRespuestaMIDAS/respuestaMIDAS"/>
+      <wsdl:input>
+        <soap:header message="ns2:NMPHeaderRequest" part="requestHeader" use="literal"/>
+        <soap:body use="literal" parts="payload"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:header message="ns2:NMPHeaderResponse" part="responseHeader" use="literal"/>
+        <soap:body use="literal" parts="payload"/>
+      </wsdl:output>
+      <wsdl:fault name="Fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+</wsdl:definitions>

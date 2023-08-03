@@ -1,0 +1,35 @@
+<xs:schema elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/BusinessTypes.Request.Ofertas" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://schemas.datacontract.org/2004/07/BusinessTypes.Request.Ofertas">
+  <xs:import schemaLocation="CRMActualizarOfertasTipos3XSD.xsd" namespace="http://schemas.datacontract.org/2004/07/BusinessTypes.Modelos"/>
+  <xs:import schemaLocation="CRMActualizarOfertasTipos1XSD.xsd" namespace="http://schemas.datacontract.org/2004/07/BusinessTypes"/>
+  <xs:complexType name="CambiaEstadoRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension base="q1:Validador" xmlns:q1="http://schemas.datacontract.org/2004/07/BusinessTypes">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="FuenteDato" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="Partida" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="UsuarioValuador" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="DatosTransaccion" nillable="true" type="q2:Transaccion" xmlns:q2="http://schemas.datacontract.org/2004/07/BusinessTypes.Modelos"/>
+          <xs:element minOccurs="0" name="Ofertas" nillable="true" type="tns:ArrayOfEstadoOferta"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="CambiaEstadoRequest" nillable="true" type="tns:CambiaEstadoRequest"/>
+  <xs:complexType name="ArrayOfEstadoOferta">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="EstadoOferta" nillable="true" type="tns:EstadoOferta"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfEstadoOferta" nillable="true" type="tns:ArrayOfEstadoOferta"/>
+  <xs:complexType name="EstadoOferta">
+    <xs:complexContent mixed="false">
+      <xs:extension base="q3:Validador" xmlns:q3="http://schemas.datacontract.org/2004/07/BusinessTypes">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Identificador" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="EstadoAceptacion" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="EstadoOferta" nillable="true" type="tns:EstadoOferta"/>
+</xs:schema>

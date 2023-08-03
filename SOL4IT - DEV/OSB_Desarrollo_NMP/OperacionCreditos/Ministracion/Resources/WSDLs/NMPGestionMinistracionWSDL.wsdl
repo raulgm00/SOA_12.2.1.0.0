@@ -1,0 +1,54 @@
+<definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Service/SolicitudesMinistracion" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Service/SolicitudesMinistracion" xmlns:ns1="http://servicios.montedepiedad.com.mx/NMP/Schema/AE/Ministracion" xmlns:NMPSM="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:NMPSH="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <types>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/AE/Ministracion" schemaLocation="../Schemas/NMPMinistracionAEXSD.xsd"/>
+    </xsd:schema>
+    <xsd:schema>
+            <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+        </xsd:schema>
+        <xsd:schema>
+            <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+        </xsd:schema>
+  </types>
+  
+  <message name="inicioGestionSolMinRequest">
+    <part name="inicioGestionSolMinRequest" element="ns1:inicioGestionSolMinRequest"/>
+  </message>
+  
+  <message name="inicioGestionSolMinResponse">
+    <part name="inicioGestionSolMinResponse" element="ns1:inicioGestionSolMinResponse"/>
+  </message>
+  <portType name="inicioGestionSolMinPortType">
+    <operation name="inicioGestionSolMin">
+      <input message="tns:inicioGestionSolMinRequest"/>
+      <output message="tns:inicioGestionSolMinResponse"/>
+      <fault name="fault" message="tns:standardMessageFault"/>
+    </operation>
+  </portType>
+  <binding name="inicioGestionSolMinPortTypeSOAP11Binding" type="tns:inicioGestionSolMinPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="inicioGestionSolMin">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/SolicitudesMinistracion/inicioGestionSolMin"/>
+      <input>
+        <soap:body use="literal" parts="inicioGestionSolMinRequest"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="inicioGestionSolMinResponse"/>
+      </output>
+      <fault name="fault">
+        <soap:fault name="fault"/>
+      </fault>
+    </operation>
+  </binding>
+  <service name="InicioGestSolMinService">
+    <port name="inicioGestSolMinPort" binding="tns:inicioGestionSolMinPortTypeSOAP11Binding">
+      <soap:address location="http://www.example.com"/>
+    </port>
+  </service>
+  <message name="standardMessageFault">
+    <part name="faut" element="NMPSM:messageError"/>
+  </message>
+  <message name="standardMessageHeader">
+    <part name="header" element="NMPSH:headerMessage"/>
+  </message>
+</definitions>

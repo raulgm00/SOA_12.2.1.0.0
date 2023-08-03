@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://qualitas.com.mx/comunes/objetosComunes/v1/"
+     xmlns="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified"
+     targetNamespace="http://qualitas.com.mx/comunes/objetosComunes/v1/">
+    <complexType name="HeaderInformationRequest">
+        <sequence>
+            <element name="serviceOp" type="tns:ServiceOperation"/>
+            <element name="headerReq" type="tns:HeaderRequest"/>
+            <element name="headerNav" type="tns:HeaderNavgation"/>
+        </sequence>
+    </complexType>
+    <complexType name="ServiceOperation">
+        <sequence>
+            <element name="idServicio" type="string" minOccurs="0" maxOccurs="1"/>
+            <element name="codigoOperacion" type="string" minOccurs="0" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+    <complexType name="HeaderRequest">
+        <sequence>
+            <element name="transactionDate" type="string" minOccurs="0" maxOccurs="1"/>
+            <element name="userId" type="string" minOccurs="0" maxOccurs="1"/>
+            <element name="sourceIPAddress" type="string" minOccurs="0" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+    <complexType name="HeaderNavgation">
+        <sequence>
+            <element name="PageSize" type="string" minOccurs="0" maxOccurs="1"/>
+            <element name="PageNumber" type="string" minOccurs="0" maxOccurs="1"/>
+            <element name="SortIndex" type="string" minOccurs="0" maxOccurs="1"/>
+            <element name="SortType" type="string" minOccurs="0" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+    <complexType name="OperationResponse">
+        <sequence>
+            <element name="listaErrores" type="tns:ListaErrores" minOccurs="0"/>
+            <element name="codigoOperacionoper" type="string"/>
+            <element name="codigoRespuesta" type="string"/>
+            <element name="descripcionRespuesta" type="string"/>
+            <element name="tiempoRespuesta" type="string"/>
+            <element name="fecha" type="dateTime"/>
+        </sequence>
+    </complexType>
+    <complexType name="ListaErrores">
+        <sequence>
+            <element maxOccurs="unbounded" minOccurs="0" name="error" type="tns:Motivo"/>
+        </sequence>
+    </complexType>
+    <complexType name="Motivo">
+        <simpleContent>
+            <extension base="string">
+                <attribute name="idMotivo" type="string"/>
+                <attribute name="descripcion" type="string"/>
+            </extension>
+        </simpleContent>
+    </complexType>
+</schema>

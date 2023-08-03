@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+    <con:coreEntry>
+        <con:description>Enruta al BS NMPGestionClientesRtDBBS servicio usado para consultar, actualizar e insertar información en la tabla NMP_CLIENTES, la cual contiene información de los clientes.</con:description>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:wsdl ref="InteligenciaNegocio/RiesgoTransaccional/Resources/WSDLs/NMPGestionClientesRTWSDL"/>
+            <con:binding>
+                <con:name>RTClientesDBSOAP11Binding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Service/RTClientesDbPXY</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:logging enabled="false" level="debug"/>
+            <oper:monitoring enabled="true" level="service" aggregationInterval="5"/>
+            <oper:reporting>false</oper:reporting>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router errorHandler="_onErrorHandler-a1e030f.74dd334d.a.15149f07082.N8000">
+        <con:pipeline name="_onErrorHandler-a1e030f.74dd334d.a.15149f07082.N8000" type="error">
+            <con:stage name="stageFault">
+                <con:context>
+                    <con1:userNsDecl prefix="ries" namespace="http://servicios.montepiedad.com.mx/NMP/Schema/RiesgoTransaccional"/>
+                    <con1:userNsDecl prefix="config" namespace="http://www.bea.com/wli/sb/stages/transform/config"/>
+                    <con1:varNsDecl prefix="rtt" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/RTTransaccionesDbXSD"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-af10c6f.7e93100c.0.15af1d88811.N7e00</con1:id>
+                        <con2:case id="_BranchId-af10c6f.7e93100c.0.15af1d88811.N7dff">
+                            <con2:condition>
+                                <con1:xqueryText>$fault/ctx:details/config:ReceivedFaultDetail/config:detail/jca:jca-runtime-fault-detail/jca:eis-error-code='1' and $inbound/ctx:service/ctx:operation='ValidaCliente'</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:assign varName="body">
+                                    <con1:id>_ActionId-af10c6f.7e93100c.0.15af1d88811.N7df9</con1:id>
+                                    <con2:expr>
+                                        <con1:xqueryText><![CDATA[<soap:Body  	xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+    <NmpClientesCollection  	xmlns="http://servicios.montedepiedad.com.mx/NMP/Schema/RTTransaccionesDbXSD" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <NmpClientes>
+            <idCliente>{$body_temp/rtt:ValidaClienteDB/rtt:idCliente/text()}</idCliente>
+            <nombres  	xsi:nil="true"/>
+            <apellidos  	xsi:nil="true"/>
+            <fechaRegistro  	xsi:nil="true"/>
+        </NmpClientes>
+    </NmpClientesCollection>
+</soap:Body>]]></con1:xqueryText>
+                                    </con2:expr>
+                                </con2:assign>
+                                <con1:reply isError="false">
+                                    <con1:id>_ActionId-af10c6f.7e93100c.0.15af1d88811.N7df6</con1:id>
+                                </con1:reply>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default>
+                            <con2:assign varName="body">
+                                <con1:id>_ActionId-af10c6f.7e93100c.0.15af1d88811.N7e69</con1:id>
+                                <con2:expr>
+                                    <con1:xsltTransform>
+                                        <con1:resource ref="InteligenciaNegocio/RiesgoTransaccional/Resources/Transformations/TrNMPGestionClientesRTFaults"/>
+                                        <con1:input>$fault</con1:input>
+                                    </con1:xsltTransform>
+                                </con2:expr>
+                            </con2:assign>
+                            <con1:report xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N4c30c2c3.6e.15246f8cb06.N7ffa</con2:id>
+                                <con1:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$fault</con:xqueryText>
+                                </con1:expr>
+                                <con1:labels>
+                                    <con1:key>Reason:</con1:key>
+                                    <con1:varName>fault</con1:varName>
+                                    <con1:value>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./ctx:reason</con:xpathText>
+                                    </con1:value>
+                                </con1:labels>
+                            </con1:report>
+                            <con1:reply isError="true">
+                                <con1:id>_ActionId-a1e030f.74dd334d.a.15149f07082.N7ffe</con1:id>
+                            </con1:reply>
+                        </con2:default>
+                    </con2:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode1_response" type="response"/>
+        <con:pipeline name="PipelinePairNode1_request" type="request">
+            <con:stage name="stageValidacion">
+                <con:comment/>
+                <con:context>
+                    <con1:userNsDecl prefix="ries" namespace="http://servicios.montepiedad.com.mx/NMP/Schema/RiesgoTransaccional"/>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:userNsDecl prefix="oraext" namespace="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"/>
+                    <con1:userNsDecl prefix="rt" namespace="http://servicios.montepiedad.com.mx/NMP/Schema/commons/RT"/>
+                    <con1:userNsDecl prefix="scor" namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/ScoreMidas_db"/>
+                    <con1:userNsDecl prefix="NMPsh" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:varNsDecl prefix="rtt" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/RTTransaccionesDbXSD"/>
+                </con:context>
+                <con:actions>
+                    <con2:validate xmlns:con4="http://www.bea.com/wli/sb/stages/publish/config" xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <con1:comment>valida el headerMessage de los XSD comunes de NMP</con1:comment>
+                        <con1:id>_ActionId-a1e030f.N12cc666b.4.15b3f49a8df.N7ff6</con1:id>
+                        <con2:schema ref="Common/XSD/NMPStandardHeader"/>
+                        <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con2:schemaElement>
+                        <con2:varName>header</con2:varName>
+                        <con2:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./NMPsh:headerMessage</con:xpathText>
+                        </con2:location>
+                        <con2:resultVarName/>
+                    </con2:validate>
+                    <con1:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N31a57db3.38.1520e38eeee.N7fff</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$inbound/ctx:service/ctx:operation='InsertCliente'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con:validate xmlns:con="http://www.bea.com/wli/sb/stages/transform/config">
+                                    <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N31a57db3.38.1520e38eeee.N7ffe</con1:id>
+                                    <con:schema ref="InteligenciaNegocio/RiesgoTransaccional/Resources/Schemas/NMPRiesgoTransaccionalDBXSD"/>
+                                    <con:schemaElement xmlns:rtt="http://servicios.montedepiedad.com.mx/NMP/Schema/RTTransaccionesDbXSD">rtt:NmpClientesCollection</con:schemaElement>
+                                    <con:varName>body</con:varName>
+                                    <con:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./rtt:NmpClientesCollection</con:xpathText>
+                                    </con:location>
+                                    <con:resultVarName/>
+                                </con:validate>
+                                <con2:report xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config">
+                                    <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N4c30c2c3.1a.1521d3f5d12.N8000</con3:id>
+                                    <con2:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                                    </con2:expr>
+                                    <con2:labels>
+                                        <con2:key>idCliente</con2:key>
+                                        <con2:varName>body</con2:varName>
+                                        <con2:value>
+                                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./rtt:NmpClientesCollection/rtt:NmpClientes/rtt:idCliente</con:xpathText>
+                                        </con2:value>
+                                    </con2:labels>
+                                </con2:report>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$inbound/ctx:service/ctx:operation='ValidaCliente'</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con:validate xmlns:con="http://www.bea.com/wli/sb/stages/transform/config">
+                                    <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N31a57db3.3a.1520e429c55.N8000</con1:id>
+                                    <con:schema ref="InteligenciaNegocio/RiesgoTransaccional/Resources/Schemas/NMPRiesgoTransaccionalDBXSD"/>
+                                    <con:schemaElement xmlns:rtt="http://servicios.montedepiedad.com.mx/NMP/Schema/RTTransaccionesDbXSD">rtt:ValidaClienteDB</con:schemaElement>
+                                    <con:varName>body</con:varName>
+                                    <con:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./rtt:ValidaClienteDB</con:xpathText>
+                                    </con:location>
+                                    <con:resultVarName/>
+                                </con:validate>
+                                <con2:report xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config">
+                                    <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N4c30c2c3.1b.1521d40053d.N8000</con3:id>
+                                    <con2:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                                    </con2:expr>
+                                    <con2:labels>
+                                        <con2:key>idCliente</con2:key>
+                                        <con2:varName>body</con2:varName>
+                                        <con2:value>
+                                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./rtt:ValidaClienteDB/rtt:idCliente</con:xpathText>
+                                        </con2:value>
+                                    </con2:labels>
+                                </con2:report>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case id="_BranchId-N3f57c7ff.482bf732.0.152652196c2.N7fff">
+                            <con1:condition>
+                                <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config">$inbound/ctx:service/ctx:operation='updateCliente'</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con:validate xmlns:con="http://www.bea.com/wli/sb/stages/transform/config">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-N3f57c7ff.482bf732.0.152652196c2.N7fcb</con2:id>
+                                    <con:schema ref="InteligenciaNegocio/RiesgoTransaccional/Resources/Schemas/NMPRiesgoTransaccionalDBXSD"/>
+                                    <con:schemaElement xmlns:rtt="http://servicios.montedepiedad.com.mx/NMP/Schema/RTTransaccionesDbXSD">rtt:updateClientesRequest</con:schemaElement>
+                                    <con:varName>body</con:varName>
+                                    <con:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./rtt:updateClientesRequest</con:xpathText>
+                                    </con:location>
+                                    <con:resultVarName/>
+                                </con:validate>
+                                <con2:report xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config">
+                                    <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-N3f57c7ff.482bf732.0.152652196c2.N7fc8</con3:id>
+                                    <con2:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                                    </con2:expr>
+                                    <con2:labels>
+                                        <con2:key>idCliente</con2:key>
+                                        <con2:varName>body</con2:varName>
+                                        <con2:value>
+                                            <con3:xpathText xmlns:con3="http://www.bea.com/wli/sb/stages/config">./rtt:NmpClientesCollection/rtt:NmpClientes/rtt:idCliente</con3:xpathText>
+                                        </con2:value>
+                                    </con2:labels>
+                                </con2:report>
+                            </con1:actions>
+                        </con1:case>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="PipelinePairNode1">
+                <con:request>PipelinePairNode1_request</con:request>
+                <con:response>PipelinePairNode1_response</con:response>
+            </con:pipeline-node>
+            <con:route-node name="RouteNode1">
+                <con:context>
+                    <con1:varNsDecl prefix="rtt" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/RTTransaccionesDbXSD"/>
+                </con:context>
+                <con:actions>
+                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.74dd334d.0.15144b399ba.N8000</con2:id>
+                        <con1:service ref="InteligenciaNegocio/RiesgoTransaccional/BusinessServices/NMPGestionClientesRtDBBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                        <con1:operation passThrough="true"/>
+                        <con1:outboundTransform>
+                            <con2:assign varName="body_temp">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.4bae2a75.7.1518828ed07.N8000</con3:id>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                        </con1:outboundTransform>
+                        <con1:responseTransform>
+                            <con2:ifThenElse>
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.4bae2a75.a.15188331992.N8000</con3:id>
+                                <con2:case>
+                                    <con2:condition>
+                                        <con3:xqueryText xmlns:con3="http://www.bea.com/wli/sb/stages/config">$inbound/ctx:service/ctx:operation='InsertCliente' or $inbound/ctx:service/ctx:operation='updateCliente'</con3:xqueryText>
+                                    </con2:condition>
+                                    <con2:actions>
+                                        <con2:replace varName="body_temp" contents-only="true">
+                                            <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.4bae2a75.b.15188341ff2.N8000</con3:id>
+                                            <con2:location>
+                                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./*</con:xpathText>
+                                            </con2:location>
+                                            <con2:expr>
+                                                <con3:xqueryText xmlns:con3="http://www.bea.com/wli/sb/stages/config"><![CDATA[<rtt:NmpClientesCollectionResponse xmlns:rtt="http://servicios.montedepiedad.com.mx/NMP/Schema/RTTransaccionesDbXSD">
+<rtt:resultado>
+    <rtt:exitoso>true</rtt:exitoso >
+    <rtt:descripcion>OK</rtt:descripcion >
+</rtt:resultado>
+</rtt:NmpClientesCollectionResponse >]]></con3:xqueryText>
+                                            </con2:expr>
+                                        </con2:replace>
+                                        <con1:assign varName="body" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                                            <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.4bae2a75.c.15188345717.N8000</con2:id>
+                                            <con1:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body_temp</con:xqueryText>
+                                            </con1:expr>
+                                        </con1:assign>
+                                    </con2:actions>
+                                </con2:case>
+                                <con2:case>
+                                    <con2:condition>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$inbound/ctx:service/ctx:operation='ValidaCliente' and fn:normalize-space($body/rtt:NmpClientesCollection)=''</con:xqueryText>
+                                    </con2:condition>
+                                    <con2:actions>
+                                        <con2:assign varName="insertClienteRequest">
+                                            <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.34944d31.4.152b286ee8c.N8000</con3:id>
+                                            <con2:expr>
+                                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body_temp</con:xqueryText>
+                                            </con2:expr>
+                                        </con2:assign>
+                                        <con2:replace varName="insertClienteRequest" contents-only="true">
+                                            <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.34944d31.5.152b2877c2f.N8000</con3:id>
+                                            <con2:location>
+                                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                            </con2:location>
+                                            <con2:expr>
+                                                <con3:xqueryText xmlns:con3="http://www.bea.com/wli/sb/stages/config"><![CDATA[<rtt:NmpClientesCollection xmlns:rtt="http://servicios.montedepiedad.com.mx/NMP/Schema/RTTransaccionesDbXSD">    
+    <rtt:NmpClientes>
+        <rtt:idCliente>{$body_temp/rtt:ValidaClienteDB/rtt:idCliente/text()}</rtt:idCliente>
+    </rtt:NmpClientes>
+</rtt:NmpClientesCollection>]]></con3:xqueryText>
+                                            </con2:expr>
+                                        </con2:replace>
+                                        <con2:wsCallout>
+                                            <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.34944d31.2.152b277aa41.N8000</con3:id>
+                                            <con2:service ref="InteligenciaNegocio/RiesgoTransaccional/BusinessServices/NMPGestionClientesRtDBBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                            <con2:operation>InsertCliente</con2:operation>
+                                            <con2:request>
+                                                <con2:body wrapped="true">insertClienteRequest</con2:body>
+                                                <con2:header/>
+                                            </con2:request>
+                                            <con2:response>
+                                                <con2:body wrapped="true">insertClienteResponse</con2:body>
+                                                <con2:header/>
+                                            </con2:response>
+                                            <con2:requestTransform/>
+                                            <con2:responseTransform/>
+                                        </con2:wsCallout>
+                                    </con2:actions>
+                                </con2:case>
+                            </con2:ifThenElse>
+                            <con2:report xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.N4089bba8.67.156380e0a9d.N8000</con3:id>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$outbound</con:xqueryText>
+                                </con2:expr>
+                                <con2:labels>
+                                    <con2:key>respuesta</con2:key>
+                                    <con2:varName>body</con2:varName>
+                                    <con2:value>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">./rtt:NmpClientesCollectionResponse/rtt:codigoRespuesta</con:xpathText>
+                                    </con2:value>
+                                </con2:labels>
+                            </con2:report>
+                        </con1:responseTransform>
+                    </con1:route>
+                </con:actions>
+            </con:route-node>
+        </con:flow>
+    </con:router>
+    <aler:alertRules xsi:nil="true" xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+</con:pipelineEntry>

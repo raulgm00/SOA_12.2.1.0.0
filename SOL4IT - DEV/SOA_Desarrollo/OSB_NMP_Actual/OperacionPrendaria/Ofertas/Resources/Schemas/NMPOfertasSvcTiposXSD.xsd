@@ -1,0 +1,95 @@
+<xsd:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/Ofertas" elementFormDefault="qualified" version="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:SvcNMPOfertas="http://servicios.montedepiedad.com.mx/NMP/Servicios/Schema/Tipos/Ofertas" xmlns:NMPCliente="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Cliente" xmlns:NMPEmpenio="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Empenio" xmlns:NMPCampania="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Campania" xmlns:NMPOfertaP="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Oferta/Prendario" xmlns:NMPComun="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Comun">
+  <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Cliente" schemaLocation="../../../../Common/XSD/NMPCliente_TIPOS.xsd"/>
+  <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Empenio" schemaLocation="../../../../Common/XSD/NMPEmpenio_TIPOS.xsd"/>
+  <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Campania" schemaLocation="../../../../Common/XSD/NMPCampania_TIPOS.xsd"/>
+  <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Comun" schemaLocation="../../../../Common/XSD/NMPComun_TIPOS.xsd"/>
+  <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Oferta/Prendario" schemaLocation="../../../../Common/XSD/NMPOfertaPrendario_TIPOS.xsd"/>
+  <!--Example element-->
+  <!--Complex Type-->
+  <xsd:complexType name="GenerarOfertasRequestType">
+    <xsd:sequence>
+      <xsd:element name="InformacionCliente" type="NMPCliente:ClienteType" minOccurs="0"/>
+      <xsd:element name="InformacionEmpenio" type="NMPEmpenio:EmpenioType" minOccurs="0"/>
+      <xsd:element name="InformacionTransaccion" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="idTransaccion" minOccurs="0" type="xsd:string"/>
+            <xsd:element name="idSucursal" minOccurs="0" type="xsd:int"/>
+            <xsd:element name="idRegion" minOccurs="0" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="InformacionCampania" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="idCampaniaSeleccionada" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="listaCampaniasDisponibles" type="NMPCampania:CampaniaListType" minOccurs="0"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="GenerarOfertasReponseType">
+    <xsd:sequence>
+      <xsd:element name="generarOfertasBase" minOccurs="0" type="xsd:boolean"/>
+      <xsd:element name="listaOfertas" minOccurs="0" type="NMPOfertaP:OfertaListType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ActualizarOfertasRequestType">
+    <xsd:sequence>
+      <xsd:element name="idCliente" type="NMPComun:identificadorType" minOccurs="0"/>
+      <xsd:element name="InformacionTransaccion" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="idTransaccion" minOccurs="0" type="xsd:string"/>
+            <xsd:element name="idSucursal" minOccurs="0" type="xsd:int"/>
+            <xsd:element name="idRegion" minOccurs="0" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="InformacionEmpenio" type="NMPEmpenio:EmpenioType" minOccurs="0"/>
+      <xsd:element name="listaEstadoOfertas" type="SvcNMPOfertas:EstadoOfertaListType" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ActualizarOfertasResponseType">
+    <xsd:sequence>
+      <xsd:element name="codigo" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="mensaje" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="GuardarOfertasRequestType">
+    <xsd:sequence>
+      <xsd:element name="idCliente" type="NMPComun:identificadorType" minOccurs="1"/>
+      <xsd:element name="InformacionTransaccion" minOccurs="1">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="idTransaccion" minOccurs="0" type="xsd:string"/>
+            <xsd:element name="idSucursal" minOccurs="0" type="xsd:int"/>
+            <xsd:element name="idRegion" minOccurs="0" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="InformacionEmpenio" type="NMPEmpenio:EmpenioType" minOccurs="1"/>
+      <xsd:element name="listaOfertas" minOccurs="1" type="NMPOfertaP:OfertaListType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="GuardarOfertasResponseType">
+    <xsd:sequence>
+      <xsd:element name="codigo" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="mensaje" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="EstadoOfertaType">
+    <xsd:sequence>
+      <xsd:element name="idOferta" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="estado" type="NMPComun:ofertaEstadoType" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="EstadoOfertaListType">
+    <xsd:sequence>
+      <xsd:element name="EstadoOferta" maxOccurs="unbounded" minOccurs="0" type="SvcNMPOfertas:EstadoOfertaType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="GenerarOfertasRequest" type="SvcNMPOfertas:GenerarOfertasRequestType"/>
+  <xsd:element name="GenerarOfertasResponse" type="SvcNMPOfertas:GenerarOfertasReponseType"/>
+</xsd:schema>

@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/RTTransaccionesDbXSD" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://servicios.montedepiedad.com.mx/NMP/Schema/RTTransaccionesDbXSD">
+
+<xsd:element name="getCasosDiferenteAnalisisRequest" type="getCasosDiferenteAnalisisReqType"/>
+  <xsd:complexType name="getCasosDiferenteAnalisisReqType">
+    <xsd:sequence>
+      <xsd:element name="idCliente" type="xsd:int"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="getCasosDiferenteAnalisisResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="RtCasos" type="getCasosDiferenteAnalisisResType" maxOccurs="unbounded"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:complexType name="getCasosDiferenteAnalisisResType">
+    <xsd:sequence>
+      <xsd:element name="idCaso" type="xsd:int"/>
+      <xsd:element name="codigoEstado" type="string10" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="GetSumaCalificacionAlertasReq" type="GetSumaCalificacionAlertasReqType"/>
+  <xsd:complexType name="GetSumaCalificacionAlertasReqType">
+    <xsd:sequence>
+      <xsd:element name="idCaso" type="xsd:int"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="GetSumaCalificacionAlertasResp" type="GetSumaCalificacionAlertasResType"/>
+  <xsd:complexType name="GetSumaCalificacionAlertasResType">
+    <xsd:sequence>
+      <xsd:element name="idCaso" type="xsd:int"/>
+      <xsd:element name="suma" type="xsd:int"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="getHistoricoByClienteRequest" type="getHistoricoByClienteType"/>
+<xsd:element name="InsertCasoAlertaResponse" type="InsertCasoAlertaResType"/>
+  <xsd:complexType name="InsertCasoAlertaResType">
+    <xsd:sequence>
+      <xsd:element name="idCaso" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="idAlerta" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="codigoRespuesta" type="string30" minOccurs="0"/>
+      <xsd:element name="descripcion" type="string70" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+   <xsd:complexType name="getHistoricoByClienteType">
+      <xsd:sequence>
+         <xsd:element name="idCliente" type="xsd:int"/>
+      </xsd:sequence>
+   </xsd:complexType>
+  <xsd:element name="InsertCasoManualRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="RtCaso" type="RtCasosCollection"/>
+        <xsd:element name="RtComentarios" type="RtComentariosToBS"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="InsertCasoManualResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="idCaso" type="xsd:long" minOccurs="1"/>
+        <xsd:element name="idAlerta" type="xsd:long"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  
+  
+  <xsd:complexType name="RtComentariosToBS">
+    <xsd:sequence>
+      <xsd:element name="esPublico" type="string1" minOccurs="0"/>
+      <xsd:element name="idUsuario" type="string20" minOccurs="0"/>
+      <xsd:element name="comentarios" type="string4000" minOccurs="0" nillable="true"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:element name="TransaccionNoAplicadasRequest">
+    <xsd:complexType>
+      <xsd:sequence/>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="TransaccionNoAplicadasResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="consultaTransacciones" type="consultaInstanciasType" maxOccurs="unbounded" minOccurs="0"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="validaPeriodoReevaluacionReq"/>
+  <xsd:element name="validaPeriodoReevaluacionRes" type="validaPeriodoReevaluacionResType"/>
+  <xsd:complexType name="validaPeriodoReevaluacionResType">
+    <xsd:sequence>
+      <xsd:element name="validaPeriodoReevaluaCollection" type="validaPeriodoReevaluaCollection" minOccurs="0"
+                   maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="validaPeriodoReevaluaCollection">
+    <xsd:sequence>
+      <xsd:element name="idCaso" type="xsd:int"/>
+      <xsd:element name="idCliente" type="xsd:int"/>
+      <xsd:element name="modo" type="string10"/>
+      <xsd:element name="numCredencial" type="xsd:int"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="consultaInstanciasType">
+    <xsd:sequence>
+      <xsd:element name="idTransaccion" type="xsd:int"/>
+      <xsd:element name="idCliente" type="xsd:int"/>
+      <xsd:element name="esCancelacion" type="string10"/>
+      <xsd:element name="idSucursal" type="xsd:int"/>
+      <xsd:element name="fechaTx" type="xsd:dateTime"/>
+      <xsd:element name="monto" type="xsd:int"/>
+      <xsd:element name="esReempeno" type="xsd:int"/>
+      <xsd:element name="procesado" type="string10"/>
+      <xsd:element name="fechaProcesar" type="xsd:dateTime"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="CalculoCalificacionRequest" type="ValidaClienteDB"/>
+  <xsd:element name="CalculoCalificacionResponse" type="CalculoCalificacionType"/>
+  <xsd:element name="GetCasosPeriodoEvaRequest"/>
+  <xsd:element name="GetCasosPeriodoEvaResponse" type="validaPeriodoReevaluacionResType"/>
+  <xsd:complexType name="GetCasosPeriodoEvaType">
+    <xsd:sequence>
+      <xsd:element name="numVencimiento" type="xsd:int"/>
+      <xsd:element name="id_cliente" type="xsd:int"/>
+      <xsd:element name="id_caso" type="xsd:int"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="CalculoCalificacionType">
+    <xsd:sequence>
+      <xsd:element name="idCliente" type="xsd:int"/>
+      <xsd:element name="suma" type="xsd:int"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="RtAlertasCollection" type="RtAlertasCollection"/>
+  <xsd:element name="CasosAlertasDbSelect_idCliente_idAlertaInputParameters" type="CasosAlertasDbSelect_idCliente_idAlerta"/>
+  <xsd:element name="NmpClientesCollection" type="NmpClientesCollection"/>
+<xsd:element name="updateClientesRequest" type="NmpClientesCollection"/>
+  <xsd:element name="updateClientesResponse" type="resultadoType"/>
+  <xsd:element name="resultado" type="resultadoType"/>
+  <xsd:element name="NmpInstanciasProcesosCollection" type="NmpInstanciasProcesosCollection"/>
+  <xsd:element name="InstanciasProcesosDbSelect_idSolicitudInputParameters" type="InstanciasProcesosDbSelect_idSolicitud"/>
+  <xsd:element name="NmpClientesCollectionResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="codigoRespuesta" type="string30"/>
+        <xsd:element name="descripcion" type="string70"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="NmpTransaccionResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="codigoRespuesta" type="string30"/>
+        <xsd:element name="descripcion" type="string70"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="ValidaClienteDBResponse" type="ValidaClienteDB"/>
+  <xsd:element name="ValidaClienteDB" type="ValidaClienteDB"/>
+  <xsd:element name="NmpTransaccionesCollection" type="NmpTransaccionesCollection"/>
+  <xsd:element name="TransaccionesSelectByIdResponse" type="NmpTransaccionesCollection"/>
+  <xsd:element name="updateTransaccionesRequest" type="NmpTransaccionesCollection"/>
+  <!--Esquemas usados para tabla de transacciones y partidad-->
+  <xsd:element name="NmpTransaccionesSelect_Request" type="NmpTransaccionesSelect_Request"/>
+  <xsd:element name="TransaccionesSelectByIdRequest" type="TransaccionesByIdRequest"/>
+  <!--xsd:simpleType name="string10">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="10"/>
+    </xsd:restriction>
+  </xsd:simpleType-->
+  <xsd:element name="RtComentariosCollection" type="RtComentariosCollection"/>
+  <xsd:element name="validaCasosRequest" type="validaCasosRequest"/>
+  <xsd:element name="validaCasosResponse" type="validaCasosResponse"/>
+  <xsd:element name="RtCasosCollection" type="RtCasosCollection"/>
+  <xsd:element name="RtCasosCollectionUpdate" type="RtCasosCollection"/>
+  <xsd:element name="selectCasoAlertaClienteRequest" type="CasoAlertasCliente"/>
+  <xsd:complexType name="RtAlertasCollection">
+    <xsd:sequence>
+      <xsd:element name="RtAlertas" type="RtAlertas" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="resultadoType">
+    <xsd:sequence>
+      <xsd:element name="exitoso" type="xsd:boolean"/>
+      <xsd:element name="descripcion" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="CasosAlertasDbSelect_idCliente_idAlerta">
+    <xsd:sequence>
+      <xsd:element name="idCliente" type="xsd:long" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="idAlerta" type="xsd:long" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="NmpClientesCollection">
+    <xsd:sequence>
+      <xsd:element name="NmpClientes" type="NmpClientes" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="NmpInstanciasProcesosCollection">
+    <xsd:sequence>
+      <xsd:element name="NmpInstanciasProcesos" type="NmpInstanciasProcesos" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="NmpInstanciasProcesos">
+    <xsd:sequence>
+      <xsd:element name="id" type="xsd:long"/>
+      <xsd:element name="fecha" type="xsd:dateTime" minOccurs="0"/>
+      <xsd:element name="idSerial" type="string32" minOccurs="0" nillable="true"/>
+      <xsd:element name="estado" type="string3" minOccurs="0"/>
+      <xsd:element name="tipo" type="string3" minOccurs="0"/>
+      <xsd:element name="idSolicitud" type="xsd:long" minOccurs="0" nillable="true"/>
+      <xsd:element name="idUsuarioIniciador" type="xsd:long" minOccurs="0" nillable="true"/>
+      <xsd:element name="codigoTipoInstancia" type="string10" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="InstanciasProcesosDbSelect_idSolicitud">
+    <xsd:sequence>
+      <xsd:element name="idSolicitud" type="xsd:long" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="NmpClientes">
+    <xsd:sequence>
+      <xsd:element name="idCliente" type="xsd:long"/>
+      <xsd:element name="nombres" type="string30" minOccurs="0"/>
+      <xsd:element name="apellidos" type="string30" minOccurs="0" nillable="true"/>
+      <xsd:element name="fechaRegistro" type="xsd:dateTime" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ValidaClienteDB">
+    <xsd:sequence>
+      <xsd:element name="idCliente" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="idCaso" type="xsd:int" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="NmpTransaccionesCollection">
+    <xsd:sequence>
+      <xsd:element name="NmpTransacciones" type="NmpTransacciones" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="NmpTransacciones">
+    <xsd:sequence>
+      <xsd:element name="id" type="xsd:long"/>
+      <xsd:element name="idCliente" type="xsd:long" minOccurs="0"/>
+      <!--xsd:element name="codigoTipo" type="string10" minOccurs="0"/-->
+      <xsd:element name="esCancelacion" type="string5" minOccurs="0" nillable="true"/>
+      <xsd:element name="idSucursal" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="fechaTx" type="xsd:dateTime" minOccurs="0"/>
+      <xsd:element name="monto" type="xsd:decimal" minOccurs="0" nillable="true"/>
+      <xsd:element name="esReempeno" type="string5" minOccurs="0" nillable="true"/>
+      <xsd:element name="procesado" type="string1" minOccurs="0"/>
+      <xsd:element name="fechaProcesar" type="xsd:dateTime" minOccurs="0"/>
+      <xsd:element name="nmpPartidasCollection" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="NmpPartidas" type="NmpPartidas" minOccurs="0" maxOccurs="unbounded"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="NmpPartidas">
+    <xsd:sequence>
+      <xsd:element name="id" type="xsd:decimal"/>
+      <xsd:element name="nroPartida" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="monto" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="idTipoProducto" type="string20" minOccurs="0" nillable="true"/>
+      <xsd:element name="caracteristica1" type="string70" minOccurs="0" nillable="true"/>
+      <xsd:element name="caracteristica2" type="string70" minOccurs="0" nillable="true"/>
+      <xsd:element name="ramo" type="string30" minOccurs="0" nillable="true"/>
+      <xsd:element name="subramo" type="string30" minOccurs="0" nillable="true"/>
+      <xsd:element name="claveValuador" type="string15" minOccurs="0" nillable="true"/>
+      <xsd:element name="codigoTipoOperacion" type="string20" minOccurs="0" nillable="true"/>
+      <xsd:element name="fechaComercializacion" type="xsd:dateTime" minOccurs="0" nillable="true"/>
+      <xsd:element name="caracteristica3" type="string70" minOccurs="0" nillable="true"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="NmpTransaccionesSelect_Request">
+    <xsd:sequence>
+      <xsd:element name="idClienteVar" type="xsd:long" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="TransaccionesByIdRequest">
+    <xsd:sequence>
+      <xsd:element name="idTransaccion" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="RtComentariosCollection">
+    <xsd:sequence>
+      <xsd:element name="RtComentarios" type="RtComentarios" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="RtComentarios">
+    <xsd:sequence>
+      <xsd:element name="id" type="xsd:decimal"/>
+      <xsd:element name="fechaRegistro" type="xsd:dateTime" minOccurs="0"/>
+      <xsd:element name="esPublico" type="string1" minOccurs="0"/>
+      <xsd:element name="idUsuario" type="string20" minOccurs="0"/>
+      <xsd:element name="comentarios" type="string4000" minOccurs="0" nillable="true"/>
+      <xsd:element name="idCaso" type="xsd:long" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="validaCasosRequest">
+    <xsd:sequence>
+      <xsd:element name="idCliente" type="xsd:int" nillable="true"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="validaCasosResponse">
+    <xsd:sequence>
+      <xsd:element name="validaCasosList" maxOccurs="unbounded" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="idCaso" type="xsd:int"/>
+            <xsd:element name="fecha" type="xsd:dateTime"/>
+            <xsd:element name="numCasos" type="xsd:int" nillable="true"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="RtCasosCollection">
+      <xsd:sequence>
+         <xsd:element name="RtCasos" type="RtCasos" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="RtCasos">
+      <xsd:sequence>
+         <xsd:element name="id" type="xsd:long"/>
+         <xsd:element name="fechaRegistro" type="xsd:dateTime" minOccurs="0"/>
+         <xsd:element name="codigoEstado" type="string20" minOccurs="0"/>
+         <xsd:element name="idAnalista" type="string20" minOccurs="0" nillable="true"/>
+         <xsd:element name="calificacion" type="xsd:int" minOccurs="0" nillable="true"/>
+         <xsd:element name="fechaReevaluacion" type="xsd:dateTime" minOccurs="0" nillable="true"/>
+         <xsd:element name="sobreaforo" type="xsd:float" minOccurs="0" nillable="true"/>
+         <xsd:element name="idAlertaActual" type="xsd:long" minOccurs="0" nillable="true"/>
+         <xsd:element name="idCliente" type="xsd:decimal" minOccurs="0" nillable="true"/>
+         <xsd:element name="nroCredencial" type="string20" minOccurs="0" nillable="true"/>
+         <xsd:element name="idSucursal" minOccurs="0" type="string20"/>
+		  <xsd:element name="calificacionCaso" type="xsd:int" minOccurs="0" nillable="true"/>
+		   <xsd:element name="calificacionAjustada" type="xsd:int" minOccurs="0" nillable="true"/>
+         <xsd:element name="rtAlertasCollection" minOccurs="0">
+            <xsd:complexType>
+               <xsd:sequence>
+                  <xsd:element name="RtAlertas" type="RtAlertas" minOccurs="0" maxOccurs="unbounded"/>
+               </xsd:sequence>
+            </xsd:complexType>
+         </xsd:element>
+      </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="RtAlertas">
+      <xsd:sequence>
+         <xsd:element name="id" type="xsd:long"/>
+         <xsd:element name="codigoTipo" type="string10" minOccurs="0"/>
+         <xsd:element name="fechaRegistro" type="xsd:dateTime" minOccurs="0"/>
+         <xsd:element name="idTransaccion" type="xsd:long" minOccurs="0" nillable="true"/>
+         <xsd:element name="valida" type="string1" minOccurs="0" nillable="true"/>
+         <xsd:element name="idCaso" type="xsd:int" minOccurs="0"/>
+         <xsd:element name="calificacion" type="xsd:decimal" minOccurs="0"/>
+         <xsd:element name="esAutomatica" type="string1" minOccurs="0" nillable="true"/>
+         <xsd:element name="sobreaforo" type="xsd:int" minOccurs="0" nillable="true"/>
+         <xsd:element name="scoreSiva" type="xsd:int" minOccurs="0" nillable="true"/>
+         <xsd:element name="codigoRegla" type="string15" minOccurs="0" nillable="true"/>
+      <xsd:element name="idSucursal" type="xsd:long" minOccurs="0"/>
+      <xsd:element name="idCliente" type="xsd:long" minOccurs="0"/>
+      </xsd:sequence>
+   </xsd:complexType>
+  <xsd:complexType name="CasoAlertasCliente">
+    <xsd:sequence>
+      <xsd:element name="idCliente" type="xsd:long" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="string20">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="20"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="string10">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="10"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="string1">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="1"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="string15">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="15"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="string4000">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="4000"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="string32">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="32"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="string3">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="3"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+   <xsd:simpleType name="string5">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="5"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="string70">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="70"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="string30">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="30"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:element name="esCancelacion"/>
+  <xsd:element name="esReempeno"/>
+</xsd:schema>

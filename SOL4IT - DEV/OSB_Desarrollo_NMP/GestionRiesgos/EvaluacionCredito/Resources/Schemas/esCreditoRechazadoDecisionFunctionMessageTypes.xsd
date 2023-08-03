@@ -1,0 +1,46 @@
+<xsd:schema targetNamespace="http://xmlns.oracle.com/esCreditoRechazado/esCreditoRechazadoDecisionFunction" attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:tns="http://xmlns.oracle.com/esCreditoRechazado/esCreditoRechazadoDecisionFunction" xmlns:bpelpm="http://xmlns.oracle.com/bpel" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://servicios.montedepiedad.com.mx/NMP/Schema/ReglaRechazoCredito">
+  <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/ReglaRechazoCredito" schemaLocation="BRMReglasRechazoCreditoXSD.xsd"/>
+  <xsd:import namespace="http://xmlns.oracle.com/bpel/rules" schemaLocation="DecisionServicePrimitiveTypes.xsd"/>
+  <xsd:import namespace="http://xmlns.oracle.com/bpel" schemaLocation="BpelProcess.xsd"/>
+  <xsd:include schemaLocation="esCreditoRechazadoDecisionFunctionTypes.xsd"/>
+  <xsd:element name="callFunctionStateless" type="tns:callFunctionStatelessType"/>
+  <xsd:complexType name="callFunctionStatelessType">
+    <xsd:sequence>
+      <xsd:element name="configURL" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="bpelInstance" type="bpelpm:tBpelProcess" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="parameterList" minOccurs="1" maxOccurs="1" type="tns:parameterListType"/>
+    </xsd:sequence>
+    <xsd:attribute name="name" type="xsd:NCName" use="required"/>
+  </xsd:complexType>
+  <xsd:element name="callFunctionStatelessDecision" type="tns:callFunctionStatelessDecisionType"/>
+  <xsd:complexType name="callFunctionStatelessDecisionType">
+    <xsd:sequence>
+      <xsd:element name="resultList" minOccurs="1" maxOccurs="1" type="tns:resultListType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="callFunctionStateful" type="tns:callFunctionStatefulType"/>
+  <xsd:complexType name="callFunctionStatefulType">
+    <xsd:sequence>
+      <xsd:element name="configURL" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="bpelInstance" type="bpelpm:tBpelProcess" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="parameterList" minOccurs="1" maxOccurs="1" type="tns:parameterListType"/>
+    </xsd:sequence>
+    <xsd:attribute name="name" type="xsd:NCName" use="required"/>
+  </xsd:complexType>
+  <xsd:element name="callFunctionStatefulDecision" type="tns:callFunctionStatefulDecisionType"/>
+  <xsd:complexType name="callFunctionStatefulDecisionType">
+    <xsd:sequence>
+      <xsd:element name="resultList" minOccurs="1" maxOccurs="1" type="tns:resultListType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="parameterListType">
+    <xsd:sequence>
+      <xsd:element ref="ns1:aplicarReglasRechazoRequest"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="resultListType">
+    <xsd:sequence>
+      <xsd:element ref="ns1:aplicarReglasRechazoResponse"/>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>

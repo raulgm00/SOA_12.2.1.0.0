@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+    <con:coreEntry>
+        <con:description>Contiene el flujo de la llamada del servicio para asignar o eliminar roles, así como el manejo de excepciones.</con:description>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="GestionIdentidades/BAM/Resources/WSDL/BAMManageAppRolesWSDL"/>
+            <con:binding>
+                <con:name>manageAppRoles_Binding</con:name>
+                <con:namespace>http://www.montedepiedad.com.mx/Identity/WSDL/manageAppRoles</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations>
+            <oper:logging enabled="false" level="debug"/>
+            <oper:monitoring enabled="false" level="pipeline" aggregationInterval="10"/>
+            <oper:reporting>false</oper:reporting>
+        </oper:operations>
+    </con:coreEntry>
+    <con:router xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+        <con:pipeline name="_onErrorHandler-1728311715851259839--3d4c400c.14cdd3f79b9.-7f9b" type="error">
+            <con:stage name="revokeAppFault">
+                <con:context>
+                    <con1:varNsDecl prefix="util" namespace="http://types.montedepiedad.com.mx/Identity/Schemas/util_TYPES"/>
+                    <con1:varNsDecl prefix="man" namespace="http://types.montedepiedad.com.mx/Identity/Schemas/manageAppRoles_TYPES"/>
+                    <con1:varNsDecl prefix="man1" namespace="http://types.montedepiedad.com.mx/Identity/Schemas/manageAppRoles_ELEMENTS"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="nodoOperation">
+                        <con1:id>_ActionId-a1e030f.5a2ca2f3.50.15122472ade.N7fff</con1:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(fn:concat('&lt;operation>',fn:local-name($body/*),'&lt;/operation>'))</con:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con3:report xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con1:id>_ActionId-a1e030f.5a2ca2f3.5b.1512688c0d5.N8000</con1:id>
+                        <con3:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:substring(fn-bea:serialize($body), 0, 1000)</con:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>errorBAMManagedRol</con3:key>
+                            <con3:varName>body</con3:varName>
+                            <con3:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">//man:appRoleName/text()</con:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                        <con3:labels>
+                            <con3:key>operacion</con3:key>
+                            <con3:varName>nodoOperation</con3:varName>
+                            <con3:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">//operation/text()</con:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                    <con1:ifThenElse xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-1728311715851259839--3d4c400c.14cdd3f79b9.-7f9a</con2:id>
+                        <con1:case>
+                            <con1:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:not(fn:empty($fault/ctx:reason/text()))</con:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:assign varName="faultDetail">
+                                    <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-1728311715851259839--3d4c400c.14cdd3f79b9.-7f96</con2:id>
+                                    <con1:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:substring-before(fn:substring-after($fault/ctx:reason/text(),'MBeanException: '),'.')</con:xqueryText>
+                                    </con1:expr>
+                                </con1:assign>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.5a2ca2f3.4a.1512238350e.N7ffd</con3:id>
+                                    <con1:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                            <con:resource ref="GestionIdentidades/BAM/Resources/XSLT/TransformBAMManageRolesFault"/>
+                                            <con:input>$fault</con:input>
+                                            <con:param name="fault">
+                                                <con:path>$faultDetail</con:path>
+                                            </con:param>
+                                            <con:param name="operacion">
+                                                <con:path>$inbound/ctx:service/ctx:operation/text()</con:path>
+                                            </con:param>
+                                        </con:xsltTransform>
+                                    </con1:expr>
+                                </con1:replace>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:default>
+                            <con1:replace varName="body" contents-only="true">
+                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-a1e030f.5a2ca2f3.5c.151268dae90.N8000</con2:id>
+                                <con1:location>
+                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                </con1:location>
+                                <con1:expr>
+                                    <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                        <con:resource ref="GestionIdentidades/BAM/Resources/XSLT/TransformBAMManagedFault"/>
+                                        <con:input>$fault</con:input>
+                                        <con:param name="operacion">
+                                            <con:path>$inbound/ctx:service/ctx:operation/text()</con:path>
+                                        </con:param>
+                                    </con:xsltTransform>
+                                </con1:expr>
+                            </con1:replace>
+                        </con1:default>
+                    </con1:ifThenElse>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-1728311715851259839--3d4c400c.14cdd3f79b9.-7f97</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="grantAppRoles_pipe_response">
+            <con:stage name="grantAppRolesResp">
+                <con:context>
+                    <con1:varNsDecl prefix="util" namespace="http://types.montedepiedad.com.mx/Identity/Schemas/util_TYPES"/>
+                    <con1:varNsDecl prefix="man" namespace="http://types.montedepiedad.com.mx/Identity/Schemas/manageAppRoles_TYPES"/>
+                </con:context>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-2908162124373816785--62b38ebd.14cdda628b7.-7f46</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con:xqueryTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="GestionIdentidades/BAM/Resources/XQ/BAMTrGrantAppRolesRespXQ"/>
+                            </con:xqueryTransform>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="revokeAppRoles_pipe_request">
+            <con:stage name="revokeAppWLSTCall" errorHandler="_onErrorHandler-1728311715851259839--3d4c400c.14cdd3f79b9.-7f9b">
+                <con:context>
+                    <con1:varNsDecl namespace="http://types.montedepiedad.com.mx/Identity/Schemas/manageAppRoles_ELEMENTS" prefix="man"/>
+                    <con1:varNsDecl namespace="http://types.montedepiedad.com.mx/Identity/Schemas/manageAppRoles_TYPES" prefix="man1"/>
+                    <con1:varNsDecl prefix="util" namespace="http://types.montedepiedad.com.mx/Identity/Schemas/util_TYPES"/>
+                </con:context>
+                <con:actions>
+                    <con2:javaCallout varName="">
+                        <con1:id>_ActionId-6129248447877146717--3b440535.14ce81e184c.-7f6e</con1:id>
+                        <con2:archive ref="GestionIdentidades/BAM/Resources/JAR/BAMManageAppRolesJAR"/>
+                        <con2:className>ManageAppRoles</con2:className>
+                        <con2:method>public static void revokeAppRole(java.lang.String, java.lang.String, java.lang.String, java.lang.String)</con2:method>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/man:revokeAppRoleRequest/man1:appStripe/text()</con:xqueryText>
+                        </con2:expr>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/man:revokeAppRoleRequest/man1:appRoleName/text()</con:xqueryText>
+                        </con2:expr>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/man:revokeAppRoleRequest/man1:principalClass/text()</con:xqueryText>
+                        </con2:expr>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/man:revokeAppRoleRequest/man1:principalName/text()</con:xqueryText>
+                        </con2:expr>
+                        <con2:return-param-as-ref>false</con2:return-param-as-ref>
+                    </con2:javaCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="revokeAppRoles_pipe_response">
+            <con:stage name="revokeAppRolesResp">
+                <con:context>
+                    <con1:varNsDecl prefix="util" namespace="http://types.montedepiedad.com.mx/Identity/Schemas/util_TYPES"/>
+                    <con1:varNsDecl prefix="man" namespace="http://types.montedepiedad.com.mx/Identity/Schemas/manageAppRoles_TYPES"/>
+                </con:context>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-6129248447877146717--3b440535.14ce81e184c.-7f55</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con:xqueryTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="GestionIdentidades/BAM/Resources/XQ/BAMTrRevokeAppRolesRespXQ"/>
+                            </con:xqueryTransform>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="grantAppRoles_pipe_request">
+            <con:stage name="grantAppWLSTCall" errorHandler="_onErrorHandler-1728311715851259839--3d4c400c.14cdd3f79b9.-7fa3">
+                <con:context>
+                    <con1:varNsDecl namespace="http://types.montedepiedad.com.mx/Identity/Schemas/manageAppRoles_ELEMENTS" prefix="man"/>
+                    <con1:varNsDecl namespace="http://types.montedepiedad.com.mx/Identity/Schemas/manageAppRoles_TYPES" prefix="man1"/>
+                    <con1:varNsDecl prefix="util" namespace="http://types.montedepiedad.com.mx/Identity/Schemas/util_TYPES"/>
+                </con:context>
+                <con:actions>
+                    <con2:javaCallout varName="">
+                        <con1:id>_ActionId-2908162124373816785--62b38ebd.14cdda628b7.-7fc9</con1:id>
+                        <con2:archive ref="GestionIdentidades/BAM/Resources/JAR/BAMManageAppRolesJAR"/>
+                        <con2:className>ManageAppRoles</con2:className>
+                        <con2:method>public static void grantAppRole(java.lang.String, java.lang.String, java.lang.String, java.lang.String)</con2:method>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/man:grantAppRoleRequest/man1:appStripe/text()</con:xqueryText>
+                        </con2:expr>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/man:grantAppRoleRequest/man1:appRoleName/text()</con:xqueryText>
+                        </con2:expr>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/man:grantAppRoleRequest/man1:principalClass/text()</con:xqueryText>
+                        </con2:expr>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/man:grantAppRoleRequest/man1:principalName/text()</con:xqueryText>
+                        </con2:expr>
+                        <con2:return-param-as-ref>false</con2:return-param-as-ref>
+                    </con2:javaCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="_onErrorHandler-1728311715851259839--3d4c400c.14cdd3f79b9.-7fa3" type="error">
+            <con:stage name="grantAppFault">
+                <con:context>
+                    <con1:varNsDecl prefix="util" namespace="http://types.montedepiedad.com.mx/Identity/Schemas/util_TYPES"/>
+                    <con1:varNsDecl prefix="man" namespace="http://types.montedepiedad.com.mx/Identity/Schemas/manageAppRoles_TYPES"/>
+                    <con1:varNsDecl prefix="man1" namespace="http://types.montedepiedad.com.mx/Identity/Schemas/manageAppRoles_ELEMENTS"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="nodoOperation">
+                        <con1:id>_ActionId-a1e030f.5a2ca2f3.5f.1512740d163.N8000</con1:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn-bea:inlinedXML(fn:concat('&lt;operation>',fn:local-name($body/*),'&lt;/operation>'))</con:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con3:report xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con1:id>_ActionId-a1e030f.5a2ca2f3.4a.1512238350e.N7ffc</con1:id>
+                        <con3:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:substring(fn-bea:serialize($body), 0, 1000)</con:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>errorBAMManagedRol</con3:key>
+                            <con3:varName>body</con3:varName>
+                            <con3:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">//man:appRoleName/text()</con:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                        <con3:labels>
+                            <con3:key>operacion</con3:key>
+                            <con3:varName>nodoOperation</con3:varName>
+                            <con3:value>
+                                <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">//operation/text()</con:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-1728311715851259839--3d4c400c.14cdd3f79b9.-7fa0</con1:id>
+                        <con2:case>
+                            <con2:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:not(fn:empty($fault/ctx:reason/text()))</con:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:assign varName="faultDetail">
+                                    <con1:id>_ActionId-1728311715851259839--3d4c400c.14cdd3f79b9.-7f9e</con1:id>
+                                    <con2:expr>
+                                        <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">fn:substring-before(fn:substring-after($fault/ctx:reason/text(),'MBeanException: '),'.')</con:xqueryText>
+                                    </con2:expr>
+                                </con2:assign>
+                                <con2:replace varName="body" contents-only="true">
+                                    <con1:id>_ActionId-a1e030f.5a2ca2f3.57.15126463a5a.N8000</con1:id>
+                                    <con2:location>
+                                        <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                    </con2:location>
+                                    <con2:expr>
+                                        <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                            <con:resource ref="GestionIdentidades/BAM/Resources/XSLT/TransformBAMManageRolesFault"/>
+                                            <con:input>$fault</con:input>
+                                            <con:param name="fault">
+                                                <con:path>$faultDetail</con:path>
+                                            </con:param>
+                                            <con:param name="operacion">
+                                                <con:path>$inbound/ctx:service/ctx:operation/text()</con:path>
+                                            </con:param>
+                                        </con:xsltTransform>
+                                    </con2:expr>
+                                </con2:replace>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default>
+                            <con2:replace varName="body" contents-only="true">
+                                <con1:id>_ActionId-a1e030f.5a2ca2f3.5a.151265dc621.N8000</con1:id>
+                                <con2:location>
+                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                </con2:location>
+                                <con2:expr>
+                                    <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                        <con:resource ref="GestionIdentidades/BAM/Resources/XSLT/TransformBAMManagedFault"/>
+                                        <con:input>$fault</con:input>
+                                        <con:param name="operacion">
+                                            <con:path>$inbound/ctx:service/ctx:operation/text()</con:path>
+                                        </con:param>
+                                    </con:xsltTransform>
+                                </con2:expr>
+                            </con2:replace>
+                        </con2:default>
+                    </con2:ifThenElse>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-1728311715851259839--3d4c400c.14cdd3f79b9.-7f9c</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:branch-node type="operation" name="ManageAppRoles_operations">
+                <con:context/>
+                <con:branch-table>
+                    <con:branch name="grantAppRoles">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="grantAppRoles_pipe">
+                                <con:request>grantAppRoles_pipe_request</con:request>
+                                <con:response>grantAppRoles_pipe_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="revokeAppRoles">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="revokeAppRoles_pipe">
+                                <con:request>revokeAppRoles_pipe_request</con:request>
+                                <con:response>revokeAppRoles_pipe_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+    <aler:alertRules xsi:nil="true" xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert"/>
+</con:pipelineEntry>

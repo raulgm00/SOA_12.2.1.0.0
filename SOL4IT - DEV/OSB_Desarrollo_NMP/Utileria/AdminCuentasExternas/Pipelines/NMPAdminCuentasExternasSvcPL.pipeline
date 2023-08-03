@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+    <con:coreEntry>
+        <con:description>Pipeline de servicio de tarea para la administración de los usuarios externos para las aplicaciones de Nacional Monte de Piedad.
+
+Las capaciodades son las siguientes:
+* Creación y registro de cuenta.
+* Obtener URL de activación de cuenta.
+* Activar cuenta.
+* Reestablecimiento de contraseña de una cuenta.
+* Consultar información de cuenta.
+* Eliminar cuenta.</con:description>
+        <con:binding type="SOAP" isSoap12="true" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="Utileria/AdminCuentasExternas/Resoures/WSDLs/AdminCuentasExternasSvcWSDL"/>
+            <con:binding>
+                <con:name>adminCuentasExternas_bindingSoap12</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Service/NMPUsuariosExternos</con:namespace>
+            </con:binding>
+        </con:binding>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router errorHandler="error-N3f57c7ff.N7b1b3e62.0.15e295a5474.N73e2">
+        <con:pipeline type="request" name="request-N3f57c7ff.N7b1b3e62.0.15e295a5474.N747a">
+            <con:stage id="_StageId-N3f57c7ff.N7b1b3e62.0.15e295a5474.N736c" name="StageValidarCabecera" errorHandler="error-N3f57c7ff.N7b1b3e62.0.15e295a5474.N72d3">
+                <con:context>
+                    <con1:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:userNsDecl prefix="vsr" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculosSinResguardo"/>
+                    <con1:varNsDecl prefix="cot" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Cotizador"/>
+                    <con1:varNsDecl prefix="fluj" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/VehiculoSinResguardo/Flujo"/>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito"/>
+                </con:context>
+                <con:actions>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-N3f57c7ff.N7b1b3e62.0.15e295a5474.N736a</con1:id>
+                        <con2:case id="_BranchId-N3f57c7ff.N7b1b3e62.0.15e295a5474.N7369">
+                            <con2:condition>
+                                <con1:xqueryText>fn:empty(fn:local-name($header/*)) = fn:true()</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:assign varName="header">
+                                    <con1:id>_ActionId-N3f57c7ff.N7b1b3e62.0.15e295a5474.N7368</con1:id>
+                                    <con2:expr>
+                                        <con1:xsltTransform>
+                                            <con1:resource ref="Common/XSLT/TRInboundToHeaderSoap12NMP"/>
+                                            <con1:input>$inbound</con1:input>
+                                        </con1:xsltTransform>
+                                    </con2:expr>
+                                </con2:assign>
+                            </con2:actions>
+                        </con2:case>
+                    </con2:ifThenElse>
+                    <con2:validate>
+                        <con1:id>_ActionId-N3f57c7ff.N7b1b3e62.0.15e295a5474.N7367</con1:id>
+                        <con2:schema ref="Common/XSD/NMPStandardHeader"/>
+                        <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con2:schemaElement>
+                        <con2:varName>header</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./nmph:headerMessage</con1:xpathText>
+                        </con2:location>
+                        <con2:resultVarName/>
+                    </con2:validate>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.N7b1b3e62.0.15e295a5474.N7479"/>
+        <con:pipeline type="error" name="error-N3f57c7ff.N7b1b3e62.0.15e295a5474.N73e2">
+            <con:stage id="_StageId-N3f57c7ff.N7b1b3e62.0.15e295a5474.N73e1" name="StageErrorGeneral">
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57c7ff.N2ab0431c.0.15e2f16dba8.N7f51</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="Utileria/AdminCuentasExternas/Resoures/Transformations/TRAdminCuentasExternasFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="operacionServicio">
+                                    <con1:path>$operation</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57c7ff.N7b1b3e62.0.15e295a5474.N723b</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.N7b1b3e62.0.15e295a5474.N72d3">
+            <con:stage id="_StageId-N3f57c7ff.N7b1b3e62.0.15e295a5474.N72d2" name="StageErrorValidacionCabecera">
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57c7ff.N2ab0431c.0.15e2f16dba8.N7f1d</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="Utileria/AdminCuentasExternas/Resoures/Transformations/TRAdminCuentasExternasFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="operacionServicio">
+                                    <con1:path>$operation</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57c7ff.N7b1b3e62.0.15e295a5474.N726e</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.N7b1b3e62.0.15e295a5474.N7209">
+            <con:stage id="_StageId-N3f57c7ff.N7b1b3e62.0.15e295a5474.N7207" name="StageCrearCuentaCognito" errorHandler="error-N3f57c7ff.N7b1b3e62.0.15e295a5474.N710b">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPUsuariosExternos"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="body_tmp">
+                        <con1:id>_ActionId-N3f57c7ff.N30dde7d0.0.15e350826ff.N7fe7</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$body</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-N3f57c7ff.N7b1b3e62.0.15e295a5474.N6ea7</con1:id>
+                        <con2:service ref="GestionIdentidades/Cognito/Proxy Services/NMPAdministradorIdentidadesSoapPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>crearUsuario</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">crearCuentaCognitoRequest</con2:body>
+                            <con2:header>header</con2:header>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">crearCuentaCognitoResponde</con2:body>
+                        </con2:response>
+                        <con2:requestTransform>
+                            <con2:javaCallout varName="hashToken">
+                                <con1:id>_ActionId-N3f57c7ff.N2ab0431c.0.15e2f16dba8.N7ffb</con1:id>
+                                <con2:archive ref="Common/JAR/HashNumberJAR"/>
+                                <con2:className>servicios.montepiedad.com.mx.hashNumber</con2:className>
+                                <con2:method>public static java.lang.String generarHash(java.lang.String)</con2:method>
+                                <con2:expr>
+                                    <con1:xqueryText>fn:concat($body/nmp:registrarCuentaRequest/nmp:usuario/nmp:nombre, fn:current-dateTime())</con1:xqueryText>
+                                </con2:expr>
+                                <con2:return-param-as-ref>false</con2:return-param-as-ref>
+                            </con2:javaCallout>
+                            <con2:assign varName="contrasenaTemporal">
+                                <con1:id>_ActionId-N3f57c7ff.N2ab0431c.0.15e2f16dba8.N7ff5</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText>fn:concat('NMP$p',$hashToken)</con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                            <con2:assign varName="crearCuentaCognitoRequest">
+                                <con1:id>_ActionId-N3f57c7ff.N2ab0431c.0.15e2f16dba8.N7ff8</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryTransform>
+                                        <con1:resource ref="Utileria/AdminCuentasExternas/Resoures/Transformations/TROsbRegistrarUsuarioToCrearUsuarioCognitoReq"/>
+                                        <con1:param name="crearCuentaUsuarioDonatarioReq">
+                                            <con1:path>$body_tmp/nmp:registrarCuentaRequest</con1:path>
+                                        </con1:param>
+                                        <con1:param name="contrasenaTemporal">
+                                            <con1:path>$contrasenaTemporal</con1:path>
+                                        </con1:param>
+                                    </con1:xqueryTransform>
+                                </con2:expr>
+                            </con2:assign>
+                        </con2:requestTransform>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57c7ff.N7b1b3e62.0.15e295a5474.N7170" name="StageSolicitarSesionCognito" errorHandler="error-N3f57c7ff.N7b1b3e62.0.15e295a5474.N7073">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPUsuariosExternos"/>
+                </con:context>
+                <con:actions>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-N3f57c7ff.N7b1b3e62.0.15e295a5474.N6e11</con1:id>
+                        <con2:service ref="GestionIdentidades/Cognito/Proxy Services/NMPAdministradorIdentidadesSoapPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>autenticarUsuario</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">solicitarAutenticacionInicialCognitoRequest</con2:body>
+                            <con2:header>header</con2:header>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">solicitarAutenticacionInicialCognitoResponse</con2:body>
+                        </con2:response>
+                        <con2:requestTransform>
+                            <con2:assign varName="solicitarAutenticacionInicialCognitoRequest">
+                                <con1:id>_ActionId-N3f57c7ff.N2ab0431c.0.15e2f16dba8.N7ff2</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryTransform>
+                                        <con1:resource ref="Utileria/AdminCuentasExternas/Resoures/Transformations/TROsbAutenticarUsiarioToAutenticacionInicialUsuarioCognitoReq"/>
+                                        <con1:param name="crearCuentaUsuarioDonatarioReq">
+                                            <con1:path>$body_tmp/nmp:registrarCuentaRequest</con1:path>
+                                        </con1:param>
+                                        <con1:param name="contrasenaTemporal">
+                                            <con1:path>$contrasenaTemporal</con1:path>
+                                        </con1:param>
+                                    </con1:xqueryTransform>
+                                </con2:expr>
+                            </con2:assign>
+                        </con2:requestTransform>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57c7ff.N7b1b3e62.0.15e295a5474.N716f" name="StageAcualizarParamCuentaCognito" errorHandler="error-N3f57c7ff.N7b1b3e62.0.15e295a5474.N6fda">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPUsuariosExternos"/>
+                </con:context>
+                <con:actions>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-N3f57c7ff.N7b1b3e62.0.15e295a5474.N6d7b</con1:id>
+                        <con2:service ref="GestionIdentidades/Cognito/Proxy Services/NMPAdministradorIdentidadesSoapPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>actualizarParamAutenticacion</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">actualizarContrasenaUsuarioRequest</con2:body>
+                            <con2:header>header</con2:header>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">actualizarContrasenaUsuarioResponse</con2:body>
+                        </con2:response>
+                        <con2:requestTransform>
+                            <con2:assign varName="actualizarContrasenaUsuarioRequest">
+                                <con1:id>_ActionId-N3f57c7ff.N2ab0431c.0.15e2f16dba8.N7fef</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryTransform>
+                                        <con1:resource ref="Utileria/AdminCuentasExternas/Resoures/Transformations/TROsbActualizarParamUsuarioToActualizarParamUsuarioCognitoReq"/>
+                                        <con1:param name="aliasUsuario">
+                                            <con1:path>$body_tmp/nmp:registrarCuentaRequest/nmp:cuenta/nmp:alias/text()</con1:path>
+                                        </con1:param>
+                                        <con1:param name="autenticarUsuarioCognitoResponse">
+                                            <con1:path>$solicitarAutenticacionInicialCognitoResponse</con1:path>
+                                        </con1:param>
+                                        <con1:param name="contrasenaFinal">
+                                            <con1:path>$body_tmp/nmp:registrarCuentaRequest/nmp:cuenta/nmp:contrasena/text()</con1:path>
+                                        </con1:param>
+                                    </con1:xqueryTransform>
+                                </con2:expr>
+                            </con2:assign>
+                        </con2:requestTransform>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57c7ff.N7b1b3e62.0.15e295a5474.N713d" name="StageDesactivarCuentaCognito" errorHandler="error-N3f57c7ff.N7b1b3e62.0.15e295a5474.N6f41">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPUsuariosExternos"/>
+                </con:context>
+                <con:actions>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-N3f57c7ff.N7b1b3e62.0.15e295a5474.N6d16</con1:id>
+                        <con2:service ref="GestionIdentidades/Cognito/Proxy Services/NMPAdministradorIdentidadesSoapPXY" xsi:type="ref:ProxyRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>desactivarUsuario</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">desactivarUsuarioCognitoRequest</con2:body>
+                            <con2:header>header</con2:header>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">desactivarUsuarioCognitoResponse</con2:body>
+                        </con2:response>
+                        <con2:requestTransform>
+                            <con2:assign varName="desactivarUsuarioCognitoRequest">
+                                <con1:id>_ActionId-N3f57c7ff.N2ab0431c.0.15e2f16dba8.N7f5a</con1:id>
+                                <con2:expr>
+                                    <con1:xqueryText>&lt;nmpc:desactivarUsuarioRequest xmlns:nmpc="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPAdministradorIdentidades">
+    &lt;nmpc:Username>{$body_tmp/nmp:registrarCuentaRequest/nmp:cuenta/nmp:alias/text()}&lt;/nmpc:Username>
+&lt;/nmpc:desactivarUsuarioRequest></con1:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                        </con2:requestTransform>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.N7b1b3e62.0.15e295a5474.N7208">
+            <con:stage id="_StageId-N3f57c7ff.N7b1b3e62.0.15e295a5474.N7206" name="StageRegistrarCuentaResponse">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPUsuariosExternos"/>
+                </con:context>
+                <con:actions>
+                    <con2:replace contents-only="true" varName="body">
+                        <con1:id>_ActionId-N3f57c7ff.N2ab0431c.0.15e2f16dba8.N7f54</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xqueryText><![CDATA[<nmp:registrarCuentaResponse xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPUsuariosExternos">
+  <nmp:correo>{$body/nmp:registrarCuentaRequest/nmp:cuenta/nmp:correo}</nmp:correo>
+  <nmp:resultado>
+    <nmp:estadoRegistro>Pendiente</nmp:estadoRegistro>
+    <nmp:codigo>0</nmp:codigo>
+    <nmp:mensaje>Registro pendiente de validación</nmp:mensaje>
+  </nmp:resultado>
+</nmp:registrarCuentaResponse>]]></con1:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply>
+                        <con1:id>_ActionId-N3f57c7ff.N7b1b3e62.0.15e295a5474.N71d3</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.N7b1b3e62.0.15e295a5474.N710b">
+            <con:stage id="_StageId-N3f57c7ff.N7b1b3e62.0.15e295a5474.N710a" name="StageErrorCreacionCuentaCognito">
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57c7ff.N2ab0431c.0.15e2f16dba8.N7f1b</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="Utileria/AdminCuentasExternas/Resoures/Transformations/TRAdminCuentasExternasFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="operacionServicio">
+                                    <con1:path>$operation</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57c7ff.N7b1b3e62.0.15e295a5474.N70d7</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.N7b1b3e62.0.15e295a5474.N7073">
+            <con:stage id="_StageId-N3f57c7ff.N7b1b3e62.0.15e295a5474.N703e" name="StageErrorSolicitudSesionCognito">
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57c7ff.N2ab0431c.0.15e2f16dba8.N7ee8</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="Utileria/AdminCuentasExternas/Resoures/Transformations/TRAdminCuentasExternasFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="operacionServicio">
+                                    <con1:path>$operation</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57c7ff.N7b1b3e62.0.15e295a5474.N703d</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.N7b1b3e62.0.15e295a5474.N6fda">
+            <con:stage id="_StageId-N3f57c7ff.N7b1b3e62.0.15e295a5474.N6f74" name="StageErrorActualizacionCuentaCognito">
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57c7ff.N2ab0431c.0.15e2f16dba8.N7e84</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="Utileria/AdminCuentasExternas/Resoures/Transformations/TRAdminCuentasExternasFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="operacionServicio">
+                                    <con1:path>$operation</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57c7ff.N7b1b3e62.0.15e295a5474.N6f73</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57c7ff.N7b1b3e62.0.15e295a5474.N6f41">
+            <con:stage id="_StageId-N3f57c7ff.N7b1b3e62.0.15e295a5474.N6edb" name="StageErrorDesactivacionCuentaCognito">
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57c7ff.N2ab0431c.0.15e2f16dba8.N7e51</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="Utileria/AdminCuentasExternas/Resoures/Transformations/TRAdminCuentasExternasFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="operacionServicio">
+                                    <con1:path>$operation</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57c7ff.N7b1b3e62.0.15e295a5474.N6eda</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="PipelinePairCabecera">
+                <con:request>request-N3f57c7ff.N7b1b3e62.0.15e295a5474.N747a</con:request>
+                <con:response>response-N3f57c7ff.N7b1b3e62.0.15e295a5474.N7479</con:response>
+            </con:pipeline-node>
+            <con:branch-node type="operation" id="_FlowId-N3f57c7ff.N7b1b3e62.0.15e295a5474.N7414" name="BranchNodeOperaciones">
+                <con:context/>
+                <con:branch-table>
+                    <con:branch name="registrarCuenta">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairRegistrarCuenta">
+                                <con:request>request-N3f57c7ff.N7b1b3e62.0.15e295a5474.N7209</con:request>
+                                <con:response>response-N3f57c7ff.N7b1b3e62.0.15e295a5474.N7208</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="obtenerUrlActivacion">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow/>
+                    </con:branch>
+                    <con:branch name="activarCuenta">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow/>
+                    </con:branch>
+                    <con:branch name="reestablecerContrasena">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow/>
+                    </con:branch>
+                    <con:branch name="buscarCuenta">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow/>
+                    </con:branch>
+                    <con:branch name="eliminarCuenta">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow/>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

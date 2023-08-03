@@ -1,0 +1,202 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xsd:schema xmlns:ns0="http://service.gpa.mx.com.qualitas/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://service.gpa.mx.com.qualitas/">
+  <xsd:complexType name="consultarActivas">
+    <xsd:sequence>
+      <xsd:element name="request" type="ns0:consultaSolicitudViaticosRequest" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="consultarActivasResponse">
+    <xsd:sequence>
+      <xsd:element name="return" type="ns0:consultaSolicitudViaticosResponse" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="GPAException">
+    <xsd:sequence>
+      <xsd:element name="message" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="consultaSolicitudViaticosRequest">
+    <xsd:sequence>
+      <xsd:element name="loginEmpleado" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="numeroEmpleado" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="numeroSolicitud" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="consultaSolicitudViaticosResponse">
+    <xsd:sequence>
+      <xsd:element name="resultado" type="ns0:resultado" minOccurs="0"/>
+      <xsd:element name="solicitud" type="ns0:solicitudModel" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="resultado">
+    <xsd:sequence>
+      <xsd:element name="satisfactorio" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="codigo" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="nombre" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="solicitudModel">
+    <xsd:sequence>
+      <xsd:element name="tipo" type="ns0:tipoSolicitudModel" minOccurs="0"/>
+      <xsd:element name="estado" type="ns0:estadoModel" minOccurs="0"/>
+      <xsd:element name="proyecto" type="ns0:proyectoModel" minOccurs="0"/>
+      <xsd:element name="oficinaOrigen" type="ns0:oficinaModel" minOccurs="0"/>
+      <xsd:element name="oficinaDestino" type="ns0:oficinaModel" minOccurs="0"/>
+      <xsd:element name="tipoMoneda" type="ns0:tipoMonedaModel" minOccurs="0"/>
+      <xsd:element name="seguimiento" type="ns0:seguimientoSolicitudModel" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="importe" type="ns0:importeModel" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="servicio" type="ns0:servicioModel" minOccurs="0"/>
+      <xsd:element name="fechaCreacion" type="xsd:dateTime" minOccurs="0"/>
+      <xsd:element name="id" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="monto" type="xsd:decimal" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="tipoSolicitudModel">
+    <xsd:sequence>
+      <xsd:element name="id" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="estadoModel">
+    <xsd:sequence>
+      <xsd:element name="codigo" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="nombre" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="proyectoModel">
+    <xsd:sequence>
+      <xsd:element name="centroCosto" type="ns0:centroCostoModel" minOccurs="0"/>
+      <xsd:element name="oficinaOrigen" type="ns0:oficinaModel" minOccurs="0"/>
+      <xsd:element name="tipoMoneda" type="ns0:tipoMonedaModel" minOccurs="0"/>
+      <xsd:element name="prestador" type="ns0:prestadorModel" minOccurs="0"/>
+      <xsd:element name="estado" type="ns0:estadoModel" minOccurs="0"/>
+      <xsd:element name="proyectoMarco" type="ns0:proyectoModel" minOccurs="0"/>
+      <xsd:element name="anexo" type="ns0:proyectoModel" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="descripcion" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="id" type="xsd:long" minOccurs="0"/>
+      <xsd:element name="montoAprobado" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="montoDisponible" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="nombre" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="pagosProceso" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="parcialidadActual" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="totalParcialidades" type="xsd:int" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="centroCostoModel">
+    <xsd:complexContent>
+      <xsd:extension base="ns0:baseModel">
+        <xsd:sequence>
+          <xsd:element name="oficina" type="ns0:oficinaModel" minOccurs="0"/>
+          <xsd:element name="area" type="ns0:areaModel" minOccurs="0"/>
+          <xsd:element name="codigo" type="xsd:string" minOccurs="0"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="baseModel">
+    <xsd:sequence>
+      <xsd:element name="uid" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="oficinaModel">
+    <xsd:complexContent>
+      <xsd:extension base="ns0:baseModel">
+        <xsd:sequence>
+          <xsd:element name="codigo" type="xsd:string" minOccurs="0"/>
+          <xsd:element name="nombre" type="xsd:string" minOccurs="0"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="areaModel">
+    <xsd:complexContent>
+      <xsd:extension base="ns0:baseModel">
+        <xsd:sequence>
+          <xsd:element name="codigo" type="xsd:string" minOccurs="0"/>
+          <xsd:element name="nombre" type="xsd:string" minOccurs="0"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="tipoMonedaModel">
+    <xsd:sequence>
+      <xsd:element name="codigo" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="nombre" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="prestadorModel">
+    <xsd:sequence>
+      <xsd:element name="id" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="nacionalidad" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="nombre" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="rfc" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="seguimientoSolicitudModel">
+    <xsd:sequence>
+      <xsd:element name="accion" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="actividad" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="comentarios" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="fecha" type="xsd:dateTime" minOccurs="0"/>
+      <xsd:element name="id" type="xsd:long" minOccurs="0"/>
+      <xsd:element name="loginEmpleado" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="importeModel">
+    <xsd:sequence>
+      <xsd:element name="cuentaContable" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="id" type="xsd:long" minOccurs="0"/>
+      <xsd:element name="impuesto1" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="impuesto2" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="isr" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="iva" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="referencia" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="subtotal" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="tasa1" type="xsd:float" minOccurs="0"/>
+      <xsd:element name="tasa2" type="xsd:float" minOccurs="0"/>
+      <xsd:element name="tasaISR" type="xsd:float" minOccurs="0"/>
+      <xsd:element name="tasaIVA" type="xsd:float" minOccurs="0"/>
+      <xsd:element name="total" type="xsd:decimal" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="servicioModel">
+    <xsd:sequence>
+      <xsd:element name="viaticos" type="ns0:viaticosModel" minOccurs="0"/>
+      <xsd:element name="centroCosto" type="ns0:centroCostoModel" minOccurs="0"/>
+      <xsd:element name="oficinaOrigen" type="ns0:oficinaModel" minOccurs="0"/>
+      <xsd:element name="tipoMoneda" type="ns0:tipoMonedaModel" minOccurs="0"/>
+      <xsd:element name="prestador" type="ns0:prestadorModel" minOccurs="0"/>
+      <xsd:element name="estado" type="ns0:estadoModel" minOccurs="0"/>
+      <xsd:element name="descripcion" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="id" type="xsd:long" minOccurs="0"/>
+      <xsd:element name="nombre" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="requiereProrrateo" type="xsd:boolean" minOccurs="0"/>
+      <xsd:element name="subtipo" type="xsd:int" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="viaticosModel">
+    <xsd:sequence>
+      <xsd:element name="viaticoMarco" type="ns0:viaticosModel" minOccurs="0"/>
+      <xsd:element name="complemento" type="ns0:viaticosModel" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="categoriaTarifa" type="ns0:categoriaTarifaModel" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="fechaFin" type="xsd:dateTime" minOccurs="0"/>
+      <xsd:element name="fechaInicio" type="xsd:dateTime" minOccurs="0"/>
+      <xsd:element name="justificacion" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="kilometros" type="xsd:float" minOccurs="0"/>
+      <xsd:element name="loginAutorizador" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="maxComplementos" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="nroDiasViaje" type="xsd:int" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="categoriaTarifaModel">
+    <xsd:sequence>
+      <xsd:element name="codigo" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="descripcion" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="nombre" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="subtotal" type="xsd:float" minOccurs="0"/>
+      <xsd:element name="tarifa" type="xsd:float" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="consultarActivas" type="ns0:consultarActivas"/>
+  <xsd:element name="consultarActivasResponse" type="ns0:consultarActivasResponse"/>
+  <xsd:element name="GPAException" type="ns0:GPAException"/>
+</xsd:schema>

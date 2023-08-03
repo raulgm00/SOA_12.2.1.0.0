@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:businessServiceEntry xmlns:con="http://xmlns.oracle.com/servicebus/business/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oper="http://xmlns.oracle.com/servicebus/business/operations" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env" xmlns:http="http://www.bea.com/wli/sb/transports/http">
+    <con:coreEntry>
+        <con1:binding type="SOAP" xsi:type="con:SoapBindingType" isSoap12="false" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config" xmlns:con1="http://xmlns.oracle.com/servicebus/business/config">
+            <con:wsdl ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/WSDLs/CRMGestionesWSDL"/>
+            <con:port>
+                <con:name>BasicHttpBinding_ICRMService</con:name>
+                <con:namespace>http://tempuri.org/</con:namespace>
+            </con:port>
+            <con:WSI-compliant>false</con:WSI-compliant>
+        </con1:binding>
+        <oper:operations enabled="true" xmlns:cus="http://www.bea.com/wli/config/customizations" xmlns:xt="http://www.bea.com/wli/config/xmltypes" xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert">
+            <oper:messageTracing enabled="true">
+                <oper1:detailsLevel xmlns:oper1="http://xmlns.oracle.com/servicebus/operations">full</oper1:detailsLevel>
+                <oper1:maxSize xmlns:oper1="http://xmlns.oracle.com/servicebus/operations">8192</oper1:maxSize>
+            </oper:messageTracing>
+            <oper:throttling enabled="false"/>
+            <oper:monitoring enabled="false" aggregationInterval="5"/>
+            <oper:resultCachingEnabled>true</oper:resultCachingEnabled>
+        </oper:operations>
+        <con:ws-policy>
+            <ser:binding-mode>no-policies</ser:binding-mode>
+        </con:ws-policy>
+        <con:xqConfiguration>
+            <ser:snippetVersion>1.0</ser:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:endpointConfig>
+        <tran:provider-id>http</tran:provider-id>
+        <tran:inbound>false</tran:inbound>
+        <tran:URI weight="0">
+            <env:value>https://10.30.3.49/Nmp.Crm.HostService.CRMB2/CrmServiceB2.svc</env:value>
+        </tran:URI>
+        <tran:outbound-properties>
+            <tran:load-balancing-algorithm>round-robin</tran:load-balancing-algorithm>
+            <tran:retry-count>0</tran:retry-count>
+            <tran:retry-interval>30</tran:retry-interval>
+            <tran:retry-application-errors>false</tran:retry-application-errors>
+        </tran:outbound-properties>
+        <tran:provider-specific xsi:type="http:HttpEndPointConfiguration">
+            <http:outbound-properties>
+                <http:request-method>POST</http:request-method>
+                <http:timeout>5</http:timeout>
+                <http:connection-timeout>2</http:connection-timeout>
+                <http:follow-redirects>false</http:follow-redirects>
+                <http:chunked-streaming-mode>true</http:chunked-streaming-mode>
+                <http:session-sctikiness enabled="true" session-id-name="OSBSESSIONID"/>
+            </http:outbound-properties>
+            <http:dispatch-policy>SBDefaultResponseWorkManager</http:dispatch-policy>
+            <http:compression>
+                <http:compression-support>false</http:compression-support>
+            </http:compression>
+        </tran:provider-specific>
+    </con:endpointConfig>
+    <aler:alertRules xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert">
+        <aler:alertRule enabled="true" name="timeout_error_warning" xmlns:cus="http://www.bea.com/wli/config/customizations" xmlns:xt="http://www.bea.com/wli/config/xmltypes">
+            <aler:description>Advertencia. El tiempo de respuesta del servicio ha sido mayor a 3 segundos o ha tenido un numero de respuestas erróneas mayor a 15 en un periodo de 30 minutos.</aler:description>
+            <aler:frequency>once-until-conditions-clear</aler:frequency>
+            <aler:severity>warning</aler:severity>
+            <aler:stopProcessing>false</aler:stopProcessing>
+            <aler:condition aggregation-interval="30">
+                <con1:logicalExpr logical-operator="or" xmlns:con1="http://xmlns.oracle.com/servicebus/monitoring/alert/condition">
+                    <con1:logicalExpr logical-operator="and">
+                        <con1:monCondExpr>
+                            <con1:function>average</con1:function>
+                            <con1:lhs>Transport.response-time</con1:lhs>
+                            <con1:operator>></con1:operator>
+                            <con1:rhs>3000</con1:rhs>
+                        </con1:monCondExpr>
+                        <con1:monCondExpr>
+                            <con1:function>average</con1:function>
+                            <con1:lhs>Transport.response-time</con1:lhs>
+                            <con1:operator>&lt;</con1:operator>
+                            <con1:rhs>5000</con1:rhs>
+                        </con1:monCondExpr>
+                    </con1:logicalExpr>
+                    <con1:logicalExpr logical-operator="and">
+                        <con1:monCondExpr>
+                            <con1:function>count</con1:function>
+                            <con1:lhs>Transport.error-count</con1:lhs>
+                            <con1:operator>></con1:operator>
+                            <con1:rhs>15</con1:rhs>
+                        </con1:monCondExpr>
+                        <con1:monCondExpr>
+                            <con1:function>count</con1:function>
+                            <con1:lhs>Transport.error-count</con1:lhs>
+                            <con1:operator>&lt;</con1:operator>
+                            <con1:rhs>20</con1:rhs>
+                        </con1:monCondExpr>
+                    </con1:logicalExpr>
+                </con1:logicalExpr>
+            </aler:condition>
+            <aler:alertDestination ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/Alerts/NMPGestionMoviFormiikRestPXYAlert"/>
+            <aler:summary>Alerta de advertencia. Plataforma CRM</aler:summary>
+        </aler:alertRule>
+        <aler:alertRule enabled="true" name="timeout_error_major" xmlns:cus="http://www.bea.com/wli/config/customizations" xmlns:xt="http://www.bea.com/wli/config/xmltypes">
+            <aler:description>Mayor. El tiempo de respuesta del servicio ha sido mayor a 5 segundos o ha tenido un numero de respuestas erróneas mayor a 20 en un periodo de 30 minutos.</aler:description>
+            <aler:frequency>once-until-conditions-clear</aler:frequency>
+            <aler:severity>major</aler:severity>
+            <aler:stopProcessing>false</aler:stopProcessing>
+            <aler:condition aggregation-interval="30">
+                <con1:logicalExpr logical-operator="or" xmlns:con1="http://xmlns.oracle.com/servicebus/monitoring/alert/condition">
+                    <con1:logicalExpr logical-operator="and">
+                        <con1:monCondExpr>
+                            <con1:function>average</con1:function>
+                            <con1:lhs>Transport.response-time</con1:lhs>
+                            <con1:operator>></con1:operator>
+                            <con1:rhs>4999</con1:rhs>
+                        </con1:monCondExpr>
+                        <con1:monCondExpr>
+                            <con1:function>average</con1:function>
+                            <con1:lhs>Transport.response-time</con1:lhs>
+                            <con1:operator>&lt;</con1:operator>
+                            <con1:rhs>8000</con1:rhs>
+                        </con1:monCondExpr>
+                    </con1:logicalExpr>
+                    <con1:logicalExpr logical-operator="and">
+                        <con1:monCondExpr>
+                            <con1:function>count</con1:function>
+                            <con1:lhs>Transport.error-count</con1:lhs>
+                            <con1:operator>></con1:operator>
+                            <con1:rhs>19</con1:rhs>
+                        </con1:monCondExpr>
+                        <con1:monCondExpr>
+                            <con1:function>count</con1:function>
+                            <con1:lhs>Transport.error-count</con1:lhs>
+                            <con1:operator>&lt;</con1:operator>
+                            <con1:rhs>30</con1:rhs>
+                        </con1:monCondExpr>
+                    </con1:logicalExpr>
+                </con1:logicalExpr>
+            </aler:condition>
+            <aler:alertDestination ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/Alerts/NMPGestionMoviFormiikRestPXYAlert"/>
+            <aler:summary>Alerta mayor.Plataforma CRM</aler:summary>
+        </aler:alertRule>
+        <aler:alertRule enabled="true" name="timeout_error_critical" xmlns:cus="http://www.bea.com/wli/config/customizations" xmlns:xt="http://www.bea.com/wli/config/xmltypes">
+            <aler:description>Crítico. El tiempo de respuesta del servicio ha sido mayor a 8 segundos o ha tenido un numero de respuestas erróneas mayor a 30 en un periodo de 30 minutos.</aler:description>
+            <aler:frequency>once-until-conditions-clear</aler:frequency>
+            <aler:severity>critical</aler:severity>
+            <aler:stopProcessing>false</aler:stopProcessing>
+            <aler:condition aggregation-interval="30">
+                <con1:logicalExpr logical-operator="or" xmlns:con1="http://xmlns.oracle.com/servicebus/monitoring/alert/condition">
+                    <con1:monCondExpr>
+                        <con1:function>count</con1:function>
+                        <con1:lhs>Transport.error-count</con1:lhs>
+                        <con1:operator>></con1:operator>
+                        <con1:rhs>30</con1:rhs>
+                    </con1:monCondExpr>
+                    <con1:monCondExpr>
+                        <con1:function>average</con1:function>
+                        <con1:lhs>Transport.response-time</con1:lhs>
+                        <con1:operator>></con1:operator>
+                        <con1:rhs>7999</con1:rhs>
+                    </con1:monCondExpr>
+                </con1:logicalExpr>
+            </aler:condition>
+            <aler:alertDestination ref="FuerzaDeVentas/GestionOrdenesTrabajo/Resources/Alerts/NMPGestionMoviFormiikRestPXYAlert"/>
+            <aler:summary>Alerta crítica. Plataforma CRM</aler:summary>
+        </aler:alertRule>
+    </aler:alertRules>
+</con:businessServiceEntry>

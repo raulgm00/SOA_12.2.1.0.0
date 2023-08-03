@@ -1,0 +1,247 @@
+<wsdl:definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Services/NMPCredito" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Services/NMPCredito" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:NMPCred="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/">
+  <wsdl:types>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCredito" schemaLocation="../Schemas/NMPCreditoSvcElementosXSD.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+    </xsd:schema>
+  </wsdl:types>
+  <!-- Messages -->
+  <wsdl:message name="NMPHeaderRequest">
+    <wsdl:part name="requestHeader" element="NMPsh:headerMessage"/>
+  </wsdl:message>
+  <wsdl:message name="NMPHeaderResponse">
+    <wsdl:part name="responseHeader" element="NMPsh:headerMessageResponse"/>
+  </wsdl:message>
+  <wsdl:message name="getInfoCreditoRequestMessage">
+    <wsdl:part name="parameters" element="NMPCred:getInfoCreditoRequest"/>
+  </wsdl:message>
+  <wsdl:message name="getInfoCreditoResponseMessage">
+    <wsdl:part name="parameters" element="NMPCred:getInfoCreditoResponse"/>
+  </wsdl:message>
+  <wsdl:message name="getInfoCreditoFaultMessage">
+    <wsdl:part name="parameters" element="NMPsm:messageError"/>
+  </wsdl:message>
+  <wsdl:message name="getSaldosRequestMessage">
+    <wsdl:part name="parameters" element="NMPCred:getSaldosRequest"/>
+  </wsdl:message>
+  <wsdl:message name="getSaldosResponseMessage">
+    <wsdl:part name="parameters" element="NMPCred:getSaldosResponse"/>
+  </wsdl:message>
+  <wsdl:message name="getSaldosFaultMessage">
+    <wsdl:part name="parameters" element="NMPsm:messageError"/>
+  </wsdl:message>
+  <wsdl:message name="simularPagosRequestMessage">
+    <wsdl:part name="parameters" element="NMPCred:simularPagosRequest"/>
+  </wsdl:message>
+  <wsdl:message name="simularPagosResponseMessage">
+    <wsdl:part name="parameters" element="NMPCred:simularPagosResponse"/>
+  </wsdl:message>
+  <wsdl:message name="simularPagosFaultMessage">
+    <wsdl:part name="parameters" element="NMPsm:messageError"/>
+  </wsdl:message>
+  <wsdl:message name="getSaldosTARequestMessage">
+    <wsdl:part name="parameters" element="NMPCred:getSaldosTARequest"/>
+  </wsdl:message>
+  <wsdl:message name="getSaldosTAResponseMessage">
+    <wsdl:part name="parameters" element="NMPCred:getSaldosTAResponse"/>
+  </wsdl:message>
+  <wsdl:message name="getSaldosTAFaultMessage">
+    <wsdl:part name="parameters" element="NMPsm:messageError"/>
+  </wsdl:message>
+  <wsdl:message name="getEstadoCuentaRequestMessage">
+    <wsdl:part name="part" element="NMPCred:getEstadoCuentaRequest"/>
+  </wsdl:message>
+  <wsdl:message name="getEstadoCuentaResponseMessage">
+    <wsdl:part name="part" element="NMPCred:getEstadoCuentaResponse"/>
+  </wsdl:message>
+  <wsdl:message name="getEstadoCuentaFaultMessage">
+    <wsdl:part name="part" element="NMPsm:messageError"/>
+  </wsdl:message>
+  <wsdl:message name="getEstatusSolicitudRequestMessage">
+    <wsdl:part name="part" element="NMPCred:getEstatusSolicitudRequest"/>
+  </wsdl:message>
+  <wsdl:message name="getEstatusSolicitudResponseMessage">
+    <wsdl:part name="part" element="NMPCred:getEstatusSolicitudResponse"/>
+  </wsdl:message>
+  <wsdl:message name="getEstatusSolicitudFaultMessage">
+    <wsdl:part name="part" element="NMPsm:messageError"/>
+  </wsdl:message>
+  <!--Se agregan operaciones para VSR-->
+   <wsdl:message name="obtenerTablaAmortizacionRequestMessage">
+    <wsdl:part name="part" element="NMPCred:obtenerTablaAmortizacionRequest"/>
+  </wsdl:message>
+  <wsdl:message name="obtenerTablaAmortizacionResponseMessage">
+    <wsdl:part name="part" element="NMPCred:obtenerTablaAmortizacionResponse"/>
+  </wsdl:message>
+  <wsdl:message name="obtenerTablaAmortizacionFaultMessage">
+    <wsdl:part name="part" element="NMPsm:messageError"/>
+  </wsdl:message>
+  <wsdl:message name="generarContratoRequestMessage">
+    <wsdl:part name="part" element="NMPCred:generarContratoRequest"/>
+  </wsdl:message>
+  <wsdl:message name="generarContratoResponseMessage">
+    <wsdl:part name="part" element="NMPCred:generarContratoResponse"/>
+  </wsdl:message>
+  <wsdl:message name="generarContratoFaultMessage">
+    <wsdl:part name="part" element="NMPsm:messageError"/>
+  </wsdl:message>
+  <!-- Operations -->
+  <wsdl:portType name="Credito_ptt">
+    <wsdl:operation name="getInfoCredito">
+      <wsdl:input message="tns:getInfoCreditoRequestMessage"/>
+      <wsdl:output message="tns:getInfoCreditoResponseMessage"/>
+      <wsdl:fault name="getInfoCreditoFault" message="tns:getInfoCreditoFaultMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="getSaldos">
+      <wsdl:input message="tns:getSaldosRequestMessage"/>
+      <wsdl:output message="tns:getSaldosResponseMessage"/>
+      <wsdl:fault name="getSaldosFault" message="tns:getSaldosFaultMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="simularPagos">
+      <wsdl:input message="tns:simularPagosRequestMessage"/>
+      <wsdl:output message="tns:simularPagosResponseMessage"/>
+      <wsdl:fault name="simularPagosFault" message="tns:simularPagosFaultMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="getSaldosTA">
+      <wsdl:input message="tns:getSaldosTARequestMessage"/>
+      <wsdl:output message="tns:getSaldosTAResponseMessage"/>
+      <wsdl:fault name="getSaldosTAFault" message="tns:getSaldosTAFaultMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="getEstadoCuenta">
+      <wsdl:input message="tns:getEstadoCuentaRequestMessage"/>
+      <wsdl:output message="tns:getEstadoCuentaResponseMessage"/>
+      <wsdl:fault message="tns:getEstadoCuentaFaultMessage" name="getEstadoCuentaFault"/>
+    </wsdl:operation>
+    <wsdl:operation name="getEstatusSolicitud">
+      <wsdl:input message="tns:getEstatusSolicitudRequestMessage"/>
+      <wsdl:output message="tns:getEstatusSolicitudResponseMessage"/>
+      <wsdl:fault message="tns:getEstatusSolicitudFaultMessage" name="getEstatusSolicitudFault"/>
+    </wsdl:operation>
+    <!-- Se agregan operaciones para VSR-->
+     <wsdl:operation name="obtenerTablaAmortizacion">
+      <wsdl:input message="tns:obtenerTablaAmortizacionRequestMessage"/>
+      <wsdl:output message="tns:obtenerTablaAmortizacionResponseMessage"/>
+      <wsdl:fault message="tns:obtenerTablaAmortizacionFaultMessage" name="obtenerTablaAmortizacionFault"/>
+    </wsdl:operation>
+     <wsdl:operation name="generarContrato">
+      <wsdl:input message="tns:generarContratoRequestMessage"/>
+      <wsdl:output message="tns:generarContratoResponseMessage"/>
+      <wsdl:fault message="tns:generarContratoFaultMessage" name="generarContratoFault"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <!-- Binding -->
+  <wsdl:binding name="CreditoBinding" type="tns:Credito_ptt">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getInfoCredito">
+      <soap:operation soapAction="getInfoCredito" style="document"/>
+      <wsdl:input>
+        <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="getInfoCreditoFault">
+        <soap:fault name="getInfoCreditoFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getSaldos">
+      <soap:operation soapAction="getSaldos" style="document"/>
+      <wsdl:input>
+        <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="getSaldosFault">
+        <soap:fault name="getSaldosFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="simularPagos">
+      <soap:operation soapAction="simularPagos" style="document"/>
+      <wsdl:input>
+        <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="simularPagosFault">
+        <soap:fault name="simularPagosFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getSaldosTA">
+      <soap:operation soapAction="getSaldosTA" style="document"/>
+      <wsdl:input>
+        <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="getSaldosTAFault">
+        <soap:fault name="getSaldosTAFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getEstadoCuenta">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/NMPCredito/getEstadoCuenta"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="part"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="part"/>
+      </wsdl:output>
+      <wsdl:fault name="getEstadoCuentaFault">
+        <soap:fault name="getEstadoCuentaFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getEstatusSolicitud">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/NMPCredito/getEstatusSolicitud"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="part"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="part"/>
+      </wsdl:output>
+      <wsdl:fault name="getEstatusSolicitudFault">
+        <soap:fault name="getEstatusSolicitudFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+     <!-- Se agregan operaciones para VSR-->
+      <wsdl:operation name="obtenerTablaAmortizacion">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/NMPCredito/obtenerTablaAmortizacion"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="part"/>
+        <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="part"/>
+        <soap:header message="tns:NMPHeaderResponse" part="responseHeader" use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="obtenerTablaAmortizacionFault">
+        <soap:fault name="obtenerTablaAmortizacionFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="generarContrato">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/NMPCredito/generarContrato"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="part"/>
+        <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="part"/>
+        <soap:header message="tns:NMPHeaderResponse" part="responseHeader" use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="generarContratoFault">
+        <soap:fault name="generarContratoFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Credito">
+    <wsdl:port binding="tns:CreditoBinding" name="CreditoPort">
+      <soap:address location=""/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

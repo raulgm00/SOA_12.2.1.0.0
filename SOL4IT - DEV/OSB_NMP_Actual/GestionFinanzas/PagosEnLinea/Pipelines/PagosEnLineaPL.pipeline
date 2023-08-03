@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="GestionFinanzas/PagosEnLinea/Resources/WSDLs/PagosEnLinea"/>
+            <con:binding>
+                <con:name>pagosenlinea_bind</con:name>
+                <con:namespace>http://www.montepiedad.com.mx/OXXO/WSDLs/PagosEnLinea</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:tracingEnabled>true</oper:tracingEnabled>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:pipeline type="request" name="request-N3f57c7ff.N37509ad.0.15627dd5fd2.N7fc4">
+            <con:stage id="_StageId-N3f577cff.N190c2bd3.0.1567bd29409.N7fcf" name="StageConsultarCliente" errorHandler="error-N3f574cfe.1ec0f0d2.0.1567fa38922.N8000">
+                <con:context>
+                    <con2:userNsDecl prefix="con" namespace="http://www.montepiedad.com.mx/OXXO/Schemas/PagosEnLinea/ConsultarCliente"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="clientId">
+                        <con2:id>_ActionId-N3f57c7ff.N37509ad.0.15627dd5fd2.N7fbb</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$inbound/ctx:transport/ctx:request/http:query-parameters/http:parameter[@name='client']/@value</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="consultarClienteSAPReq">
+                        <con2:id>_ActionId-N3f577cff.N190c2bd3.0.1567bd29409.N7fcc</con2:id>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="GestionFinanzas/PagosEnLinea/Resources/Transformations/TrConsultarClienteSAPReq"/>
+                                <con2:input>$body/con:ConsultarClienteRequest</con2:input>
+                                <con2:param name="idCliente">
+                                    <con2:path>$clientId</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-N3f577cff.N190c2bd3.0.1567bd29409.N7fc9</con2:id>
+                        <con1:service ref="GestionFinanzas/PagosEnLinea/BusinessServices/SAPConsultaPagoBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>ZlmRfcConsultaOxxo</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">consultarClienteSAPReq</con1:body>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">consultarClienteSAPRes</con1:body>
+                        </con1:response>
+                        <con1:requestTransform/>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.N37509ad.0.15627dd5fd2.N7fc3">
+            <con:stage id="_StageId-N3f57c7ff.N37509ad.0.15627dd5fd2.N7fc1" name="StageConsultarClienteResponse">
+                <con:context/>
+                <con:actions>
+                    <con1:assign varName="consultarClienteRes">
+                        <con2:id>_ActionId-N3f577cff.N190c2bd3.0.1567bd29409.N7f93</con2:id>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="GestionFinanzas/PagosEnLinea/Resources/Transformations/TrConsultarClienteSAPRes"/>
+                                <con2:input>$consultarClienteSAPRes</con2:input>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="consultarClienteRes">
+                        <con2:id>_ActionId-N3f57c7ff.N4755eea0.0.15628f90ea1.N7ffb</con2:id>
+                        <con2:disabled>true</con2:disabled>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="GestionFinanzas/PagosEnLinea/Resources/Transformations/TrRemoveNamespaces"/>
+                                <con2:input>$consultarClienteNamespacesRes</con2:input>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-N3f57c7ff.N37509ad.0.15627dd5fd2.N7fb8</con2:id>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xqueryText>$consultarClienteRes</con2:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.1836c2ee.0.15629133ff2.N8000">
+            <con:stage id="_StageId-N3f577cff.N190c2bd3.0.1567bd29409.N7d88" name="StageRealizarPago" errorHandler="error-N3f574cfe.1ec0f0d2.0.1567fa38922.N7ffe">
+                <con:context>
+                    <con2:userNsDecl prefix="con" namespace="http://www.montepiedad.com.mx/OXXO/Schemas/PagosEnLinea/ConsultarCliente"/>
+                    <con2:userNsDecl prefix="real" namespace="http://www.montepiedad.com.mx/OXXO/Schemas/PagosEnLinea/RealizarPagoEntrada"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="realizarPagoSAPReq">
+                        <con2:id>_ActionId-N3f577cff.N190c2bd3.0.1567bd29409.N7d86</con2:id>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="GestionFinanzas/PagosEnLinea/Resources/Transformations/TrRealizarPagoSAPReq"/>
+                                <con2:input>$body/real:OLS</con2:input>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-N3f577cff.N190c2bd3.0.1567bd29409.N7d85</con2:id>
+                        <con1:service ref="GestionFinanzas/PagosEnLinea/BusinessServices/SAPRealizaPagoBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>ZlmRfcPagoOxxo</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">realizarPagoSAPReq</con1:body>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">realizarPagoSAPRes</con1:body>
+                        </con1:response>
+                        <con1:requestTransform/>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.1836c2ee.0.15629133ff2.N7fff">
+            <con:stage id="_StageId-N3f577cff.N190c2bd3.0.1567bd29409.N7e94" name="StageRealizarPagoResponse">
+                <con:context/>
+                <con:actions>
+                    <con1:assign varName="realizarPagoNamespacesRes">
+                        <con2:id>_ActionId-N3f577cff.N190c2bd3.0.1567bd29409.N7e93</con2:id>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="GestionFinanzas/PagosEnLinea/Resources/Transformations/TrRealizarPagoSAPRes"/>
+                                <con2:input>$realizarPagoSAPRes</con2:input>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="realizarPagoRes">
+                        <con2:id>_ActionId-N3f577cff.N190c2bd3.0.1567bd29409.N7e92</con2:id>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="GestionFinanzas/PagosEnLinea/Resources/Transformations/TrRemoveNamespaces"/>
+                                <con2:input>$realizarPagoNamespacesRes</con2:input>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-N3f577cff.N190c2bd3.0.1567bd29409.N7e91</con2:id>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xqueryText>$realizarPagoRes</con2:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57c7ff.1836c2ee.0.15629133ff2.N7ffc">
+            <con:stage id="_StageId-N3f577cff.N190c2bd3.0.1567bd29409.N7d4d" name="StageCancelarPago" errorHandler="error-N3f574cfe.1ec0f0d2.0.1567fa38922.N7ffc">
+                <con:context>
+                    <con2:userNsDecl prefix="rev" namespace="http://www.montepiedad.com.mx/OXXO/Schemas/PagosEnLinea/ReversarPagoEntrada"/>
+                    <con2:userNsDecl prefix="con" namespace="http://www.montepiedad.com.mx/OXXO/Schemas/PagosEnLinea/ConsultarCliente"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="cancelarPagoSAPReq">
+                        <con2:id>_ActionId-N3f577cff.N190c2bd3.0.1567bd29409.N7d4b</con2:id>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="GestionFinanzas/PagosEnLinea/Resources/Transformations/TrCancelarPagoSAPReq"/>
+                                <con2:input>$body/rev:OLS</con2:input>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:wsCallout>
+                        <con2:id>_ActionId-N3f577cff.N190c2bd3.0.1567bd29409.N7d4a</con2:id>
+                        <con1:service ref="GestionFinanzas/PagosEnLinea/BusinessServices/SAPAnulaPagoBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con1:operation>ZlmRfcAnulaOxxo</con1:operation>
+                        <con1:request>
+                            <con1:body wrapped="false">cancelarPagoSAPReq</con1:body>
+                        </con1:request>
+                        <con1:response>
+                            <con1:body wrapped="false">cancelarPagoSAPRes</con1:body>
+                        </con1:response>
+                        <con1:requestTransform/>
+                        <con1:responseTransform/>
+                    </con1:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57c7ff.1836c2ee.0.15629133ff2.N7ffb">
+            <con:stage id="_StageId-N3f577cff.N190c2bd3.0.1567bd29409.N7e59" name="StageCancelarPagoResponse">
+                <con:context/>
+                <con:actions>
+                    <con1:assign varName="cancelarPagoNamespacesRes">
+                        <con2:id>_ActionId-N3f577cff.N190c2bd3.0.1567bd29409.N7e58</con2:id>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="GestionFinanzas/PagosEnLinea/Resources/Transformations/TrCancelarPagoSAPRes"/>
+                                <con2:input>$cancelarPagoSAPRes</con2:input>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="cancelarPagoRes">
+                        <con2:id>_ActionId-N3f577cff.N190c2bd3.0.1567bd29409.N7e57</con2:id>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="GestionFinanzas/PagosEnLinea/Resources/Transformations/TrRemoveNamespaces"/>
+                                <con2:input>$cancelarPagoNamespacesRes</con2:input>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-N3f577cff.N190c2bd3.0.1567bd29409.N7e56</con2:id>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xqueryText>$cancelarPagoRes</con2:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f574cfe.1ec0f0d2.0.1567fa38922.N8000">
+            <con:stage id="_StageId-N3f574cfe.1ec0f0d2.0.1567fa38922.N7fff" name="StageConsultaCliente">
+                <con:context/>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-N3f574cfe.1ec0f0d2.0.1567fa38922.N7ff8</con2:id>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="GestionFinanzas/PagosEnLinea/Resources/Transformations/TrPagosEnLineaFaultBody"/>
+                                <con2:input>$fault</con2:input>
+                                <con2:param name="app">
+                                    <con2:path>1</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con2:reply isError="true">
+                        <con2:id>_ActionId-N3f574cfe.1ec0f0d2.0.1567fa38922.N7ff5</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f574cfe.1ec0f0d2.0.1567fa38922.N7ffe">
+            <con:stage id="_StageId-N3f574cfe.1ec0f0d2.0.1567fa38922.N7ffd" name="StageRealizarPago">
+                <con:context/>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-N3f574cfe.6a01351c.0.1567fd795db.N7ffe</con2:id>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="GestionFinanzas/PagosEnLinea/Resources/Transformations/TrPagosEnLineaFaultBody"/>
+                                <con2:input>$fault</con2:input>
+                                <con2:param name="app">
+                                    <con2:path>2</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con2:reply isError="true">
+                        <con2:id>_ActionId-N3f574cfe.6a01351c.0.1567fd795db.N7ffb</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f574cfe.1ec0f0d2.0.1567fa38922.N7ffc">
+            <con:stage id="_StageId-N3f574cfe.1ec0f0d2.0.1567fa38922.N7ffb" name="StageCancelarPago">
+                <con:context/>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-N3f574cfe.6a01351c.0.1567fd795db.N7ff8</con2:id>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xsltTransform>
+                                <con2:resource ref="GestionFinanzas/PagosEnLinea/Resources/Transformations/TrPagosEnLineaFaultBody"/>
+                                <con2:input>$fault</con2:input>
+                                <con2:param name="app">
+                                    <con2:path>3</con2:path>
+                                </con2:param>
+                            </con2:xsltTransform>
+                        </con1:expr>
+                    </con1:replace>
+                    <con2:reply isError="true">
+                        <con2:id>_ActionId-N3f574cfe.6a01351c.0.1567fd795db.N7ff5</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:branch-node type="operation" id="_FlowId-N3f57c7ff.N37509ad.0.15627dd5fd2.N7fc5" name="BranchNode1">
+                <con:context/>
+                <con:branch-table>
+                    <con:branch name="consultarCliente">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineConsultarCliente">
+                                <con:request>request-N3f57c7ff.N37509ad.0.15627dd5fd2.N7fc4</con:request>
+                                <con:response>response-N3f57c7ff.N37509ad.0.15627dd5fd2.N7fc3</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="realizarPago">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineRealizarPago">
+                                <con:request>request-N3f57c7ff.1836c2ee.0.15629133ff2.N8000</con:request>
+                                <con:response>response-N3f57c7ff.1836c2ee.0.15629133ff2.N7fff</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="cancelarPago">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineCancelarPago">
+                                <con:request>request-N3f57c7ff.1836c2ee.0.15629133ff2.N7ffc</con:request>
+                                <con:response>response-N3f57c7ff.1836c2ee.0.15629133ff2.N7ffb</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

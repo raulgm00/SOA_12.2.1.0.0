@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://qualitas.com.mx/comunes" targetNamespace="http://qualitas.com.mx/comunes/" xmlns:tns="http://qualitas.com.mx/comunes/" xmlns:tnsts="http://qualitas.com.mx/Comun/Servicio/v1/" xmlns:tnsi="http://qualitas.com.mx/Importes/v1/" xmlns:tnsc="http://qualitas.com.mx/Pagos/CuentasContables/v1/">
+   <xs:import namespace="http://qualitas.com.mx/Comun/Servicio/v1/" schemaLocation="ServicioOEN.xsd"/>
+   <xs:import namespace="http://qualitas.com.mx/Importes/v1/" schemaLocation="ImportesOEN.xsd"/>
+   <xs:import namespace="http://qualitas.com.mx/Pagos/CuentasContables/v1/" schemaLocation="cuentasContables.xsd"/>
+   <xs:complexType name="TipoSolicitudTipo">
+      <xs:sequence>
+         <xs:element name="codigo" type="xs:string" minOccurs="0"/>
+         <xs:element name="estatus" type="xs:string" minOccurs="0"/>
+         <xs:element name="nombre" type="xs:string" minOccurs="0"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="ReembolsoTipo">
+      <xs:sequence>
+         <xs:element name="Solicitud" type="tns:Solicitud" minOccurs="0"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="PagoViaticosCargoDeudorTipo">
+      <xs:sequence>
+         <xs:element name="cuentaDeudor" type="xs:int" minOccurs="0"/>
+         <xs:element name="fechaFinViaje" type="xs:date" minOccurs="0"/>
+         <xs:element name="fechaInicioViaje" type="xs:date" minOccurs="0"/>
+         <xs:element name="justificacionViaje" type="xs:string" minOccurs="0"/>
+         <xs:element name="detalleGastosViaticos" type="tns:TipoGastoViaticoTipo" minOccurs="0"/>
+         <xs:element name="oficinaOrigen" type="xs:string" minOccurs="0"/>
+         <xs:element name="oficinaDestino" type="xs:string" minOccurs="0"/>
+         <xs:element name="Solicitud" type="tns:Solicitud" minOccurs="0"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Moneda">
+      <xs:sequence>
+         <xs:element name="idMoneda" minOccurs="0"/>
+         <xs:element name="descMoneda" minOccurs="0"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="TipoGastoViaticoTipo">
+      <xs:sequence>
+         <xs:element name="tipoCategoria" type="xs:int" minOccurs="0"/>
+         <xs:element name="descCategoria" type="xs:string" minOccurs="0"/>
+         <xs:element name="tarifaPorDia" type="xs:decimal" minOccurs="0"/>
+         <xs:element name="subtotal" type="xs:decimal" minOccurs="0"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="PagoServiciosTipo">
+      <xs:sequence>
+         <xs:element name="servicio" type="tnsts:Servicio" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="Importes" type="tnsi:ImportesOEN" minOccurs="1" maxOccurs="unbounded"/>
+         <xs:element name="Prestador" type="tns:Prestador" minOccurs="0"/>
+         <xs:element name="ccontables" type="tnsc:Ccontables" minOccurs="0" maxOccurs="unbounded"/>
+         <xs:element name="Solicitud" type="tns:Solicitud" minOccurs="0"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Prestador">
+      <xs:sequence>
+         <xs:element name="numeroPrestador" type="xs:string" minOccurs="0"/>
+         <xs:element name="nombre" type="xs:string" minOccurs="0"/>
+         <xs:element name="tipoPersona" type="tns:TipoPersonaTipo" minOccurs="0"/>
+         <xs:element name="claveEntidad" type="xs:string" minOccurs="0"/>
+         <xs:element name="entidad" type="xs:string" minOccurs="0"/>
+         <xs:element name="nacionalidad" type="xs:string" minOccurs="0"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="TipoPersonaTipo">
+      <xs:sequence>
+         <xs:element name="codigo" type="xs:string" minOccurs="0"/>
+         <xs:element name="descripcion" type="xs:string" minOccurs="0"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Solicitud">
+      <xs:sequence>
+         <xs:element name="idSolicitud" type="xs:string" minOccurs="0" maxOccurs="1"/>
+         <xs:element name="totalPagar" type="xs:decimal" minOccurs="0" maxOccurs="1"/>
+         <xs:element name="idUsuario" type="xs:string" minOccurs="0" maxOccurs="1"/>
+         <xs:element name="estado" type="tns:EstadoSolicitud" minOccurs="0"/>
+         <xs:element name="numEmpleado" type="xs:string" minOccurs="0"/>
+         <xs:element name="nomEmpleado" type="xs:string" minOccurs="0"/>
+         <xs:element name="cveOfiDestino" type="xs:string" minOccurs="0"/>
+         <xs:element name="desOfDestino" type="xs:string" minOccurs="0"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="EstadoSolicitud">
+      <xs:sequence>
+         <xs:element name="codigo" type="xs:string" minOccurs="0"/>
+         <xs:element name="desEstado" type="xs:string" minOccurs="0"/>
+      </xs:sequence>
+   </xs:complexType>
+</xs:schema>

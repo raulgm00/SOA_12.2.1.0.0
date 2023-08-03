@@ -1,0 +1,71 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns="http://servicios.montedepiedad.com.mx/NMP/Schema/MotordePrecios/Tipos"
+           targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/MotordePrecios/Tipos"
+           elementFormDefault="qualified" version="1.0">
+  <xs:complexType name="Prenda">
+    <xs:sequence>
+      <xs:element name="id" nillable="true" type="xs:string"/>
+      <xs:element name="ramo" type="xs:string"/>
+      <xs:element name="subramo" type="xs:string"/>
+      <xs:element name="tipo" type="xs:string"/>
+      <xs:element name="avaluo" nillable="true" type="Avaluo"/>
+      <xs:element maxOccurs="unbounded" name="pieza" type="Pieza"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Avaluo">
+    <xs:sequence>
+      <xs:element default="0.0" name="valorMinimo" type="xs:decimal"/>
+      <xs:element default="0.0" name="valorPromedio" type="xs:decimal"/>
+      <xs:element default="0.0" name="valorMaximo" type="xs:decimal"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Pieza">
+    <xs:sequence>
+      <xs:element name="id" type="xs:string"/>
+      <xs:element default="1" name="cantidad" type="xs:int"/>
+      <xs:element name="avaluo" type="Avaluo"/>
+      <xs:element minOccurs="0" name="diamante" type="Diamante"/>
+      <xs:element minOccurs="0" name="alhaja" type="Alhaja"/>
+      <xs:element minOccurs="0" name="complemento" type="Complemento"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Diamante">
+    <xs:sequence>
+      <xs:element name="corte" type="xs:string"/>
+      <xs:element name="forma" type="xs:string"/>
+      <xs:element name="color" type="xs:string"/>
+      <xs:element name="claridad" type="xs:string"/>
+      <xs:element default="0.0" name="quilataje" type="xs:decimal"/>
+      <xs:element name="certificado" nillable="true" type="xs:string"/>
+      <xs:element name="valorExperto" type="ValorExperto"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ValorExperto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="unitario" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="total" type="xs:decimal"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Alhaja">
+    <xs:sequence>
+      <xs:element name="tipo" type="xs:string"/>
+      <xs:element name="forma" type="xs:string"/>
+      <xs:element name="metal" type="xs:string"/>
+      <xs:element name="color" nillable="true" type="xs:string"/>
+      <xs:element name="rango" nillable="true" type="xs:string"/>
+      <xs:element name="calidad" nillable="true" type="xs:string"/>
+      <xs:element default="0.0" name="peso" type="xs:decimal"/>
+      <xs:element name="condicion" type="xs:string"/>
+      <xs:element name="valorExperto" type="ValorExperto"/>
+      <xs:element default="0.0" name="incremento" type="xs:decimal"/>
+      <xs:element default="0.0" name="desplazamiento" type="xs:decimal"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Complemento">
+    <xs:sequence>
+      <xs:element name="tipo" type="xs:string"/>
+      <xs:element name="peso" type="xs:string"/>
+      <xs:element name="valorExperto" type="ValorExperto"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

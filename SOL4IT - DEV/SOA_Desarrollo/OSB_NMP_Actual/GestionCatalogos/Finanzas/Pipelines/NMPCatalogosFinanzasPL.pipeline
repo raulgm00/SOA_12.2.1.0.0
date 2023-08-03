@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con3="http://www.bea.com/wli/sb/stages/routing/config" xmlns:con4="http://www.bea.com/wli/sb/stages/logging/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="GestionCatalogos/Finanzas/Resources/WSDLs/NMPCatalogosFinanzasWSDL"/>
+            <con:binding>
+                <con:name>catalogosFinanzas_bind</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Services/Catalogos/Finanzas</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:tracingEnabled>true</oper:tracingEnabled>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router errorHandler="error-af0042b.79dfa67f.0.15a67697d9c.N7ed1">
+        <con:pipeline type="request" name="request-af0042b.79dfa67f.0.15a67697d9c.N7fb8">
+            <con:stage id="_StageId-af0042b.79dfa67f.0.15a67697d9c.N7f3d" name="StageValidate">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:userNsDecl prefix="cot" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Cotizador"/>
+                    <con1:userNsDecl prefix="fin" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Catalogos/Finanzas"/>
+                </con:context>
+                <con:actions>
+                    <con1:validate xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-af0042b.79dfa67f.0.15a67697d9c.N7f39</con3:id>
+                        <con1:schema ref="GestionCatalogos/Finanzas/Resources/Schemas/NMPCatalogosFinanzasXSD"/>
+                        <con1:schemaElement xmlns:fin="http://servicios.montedepiedad.com.mx/NMP/Schema/Catalogos/Finanzas">fin:obtenerTasaPlazoRequest</con1:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con3:xpathText xmlns:con3="http://www.bea.com/wli/sb/stages/config">./fin:obtenerTasaPlazoRequest</con3:xpathText>
+                        </con1:location>
+                    </con1:validate>
+                    <con1:assign varName="body_tmp" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-af0042b.79dfa67f.0.15a67697d9c.N7f38</con3:id>
+                        <con1:expr>
+                            <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config">$body</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af0042b.79dfa67f.0.15a67697d9c.N7fb7">
+            <con:stage id="_StageId-af0042b.79dfa67f.0.15a67697d9c.N7fb5" name="StageResponse">
+                <con:context>
+                    <con1:userNsDecl prefix="fin" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Catalogos/Finanzas"/>
+                </con:context>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-af00473.1c3e33d7.0.15a9559fa49.N7f96</con1:id>
+                        <con2:expr>
+                            <con1:xqueryTransform>
+                                <con1:resource ref="GestionCatalogos/Finanzas/Resources/Transformations/TrConsultarTasaResToObtenerTasaRes"/>
+                                <con1:param name="consultarTasaRes">
+                                    <con1:path>$body/*</con1:path>
+                                </con1:param>
+                            </con1:xqueryTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-af00473.1c3e33d7.0.15a9559fa49.N7d6a</con1:id>
+                        <con2:case id="_BranchId-af00473.1c3e33d7.0.15a9559fa49.N7d69">
+                            <con2:condition>
+                                <con1:xqueryText>count($body/fin:obtenerTasaPlazoResponse/fin:tasaPlazo) = 0</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:Error>
+                                    <con1:id>_ActionId-af00473.1c3e33d7.0.15a9559fa49.N7d66</con1:id>
+                                    <con2:errCode>NMP-CAF-001</con2:errCode>
+                                    <con2:message>No existen tasas y plazos con los parámetros enviados</con2:message>
+                                </con2:Error>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default/>
+                    </con2:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-af0042b.79dfa67f.0.15a67697d9c.N7ed1">
+            <con:stage id="_StageId-af0042b.79dfa67f.0.15a67697d9c.N7e64" name="StageServiceError">
+                <con:context/>
+                <con:actions>
+                    <con2:delete varName="header">
+                        <con1:id>_ActionId-af0042b.79dfa67f.0.15a67697d9c.N7e63</con1:id>
+                        <con2:location>
+                            <con1:xpathText>$header/*</con1:xpathText>
+                        </con2:location>
+                    </con2:delete>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-af0042b.79dfa67f.0.15a67697d9c.N7e62</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Finanzas/Resources/Transformations/TRCatalogosFinanzasFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="app">
+                                    <con1:path>1</con1:path>
+                                </con1:param>
+                                <con1:param name="serviceName">
+                                    <con1:path>'Catalogo Finanzas'</con1:path>
+                                </con1:param>
+                                <con1:param name="soapFault">
+                                    <con1:path>$body</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con4:report>
+                        <con1:id>_ActionId-af00473.1c3e33d7.0.15a9559fa49.N7dad</con1:id>
+                        <con4:expr>
+                            <con1:xqueryText>$body</con1:xqueryText>
+                        </con4:expr>
+                    </con4:report>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-af0042b.79dfa67f.0.15a67697d9c.N7e61</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-af00473.1c3e33d7.0.15a9559fa49.N7f5a">
+            <con:stage id="_StageId-af00473.1c3e33d7.0.15a9559fa49.N7ebc" name="StageServiceError">
+                <con:context/>
+                <con:actions>
+                    <con2:delete varName="header">
+                        <con1:id>_ActionId-af00473.1c3e33d7.0.15a9559fa49.N7ebb</con1:id>
+                        <con2:location>
+                            <con1:xpathText>$header/*</con1:xpathText>
+                        </con2:location>
+                    </con2:delete>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-af00473.1c3e33d7.0.15a9559fa49.N7eba</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Finanzas/Resources/Transformations/TRCatalogosFinanzasFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="app">
+                                    <con1:path>1</con1:path>
+                                </con1:param>
+                                <con1:param name="serviceName">
+                                    <con1:path>'Catalogo Finanzas'</con1:path>
+                                </con1:param>
+                                <con1:param name="soapFault">
+                                    <con1:path>$body</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con4:report>
+                        <con1:id>_ActionId-af00473.1c3e33d7.0.15a9559fa49.N7db0</con1:id>
+                        <con4:expr>
+                            <con1:xqueryText>$body</con1:xqueryText>
+                        </con4:expr>
+                    </con4:report>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-af00473.1c3e33d7.0.15a9559fa49.N7eb9</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af00473.1c3e33d7.0.15a9559fa49.N7eb8">
+            <con:stage id="_StageId-af00473.1c3e33d7.0.15a9559fa49.N7eb6" name="StageValidateHeader">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con2:replace varName="header" contents-only="true">
+                        <con1:id>_ActionId-af0042b.79dfa67f.0.15a67697d9c.N7f3c</con1:id>
+                        <con2:expr>
+                            <con1:xqueryTransform>
+                                <con1:resource ref="Common/XQ/TRHeadersRest"/>
+                                <con1:param name="inbound">
+                                    <con1:path>$inbound</con1:path>
+                                </con1:param>
+                                <con1:param name="requestHeader">
+                                    <con1:path>$header</con1:path>
+                                </con1:param>
+                            </con1:xqueryTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con2:assign varName="header">
+                        <con1:id>_ActionId-af0042b.79dfa67f.0.15a67697d9c.N7f3b</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$header</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:validate xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:con4="http://www.bea.com/wli/sb/stages/publish/config" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con1:comment>valida el headerMessage de los XSD comunes de NMP</con1:comment>
+                        <con1:id>_ActionId-af0042b.79dfa67f.0.15a67697d9c.N7f3a</con1:id>
+                        <con2:schema ref="Common/XSD/NMPStandardHeader"/>
+                        <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con2:schemaElement>
+                        <con2:varName>header</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./nmp:headerMessage</con1:xpathText>
+                        </con2:location>
+                        <con2:resultVarName/>
+                    </con2:validate>
+                    <con2:assign varName="header_tmp">
+                        <con1:id>_ActionId-af0042b.79dfa67f.0.15a67697d9c.N7f37</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$header</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af00473.1c3e33d7.0.15a9559fa49.N7eb7">
+            <con:stage id="_StageId-af00473.1c3e33d7.0.15a9559fa49.N7eb5" name="StageHeaderResponse">
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="header" contents-only="true">
+                        <con1:id>_ActionId-af00473.1c3e33d7.0.15a9559fa49.N7eaf</con1:id>
+                        <con2:expr>
+                            <con1:xqueryTransform>
+                                <con1:resource ref="Common/XQ/TRHeadersResponse"/>
+                                <con1:param name="requestHeader">
+                                    <con1:path>$header_tmp</con1:path>
+                                </con1:param>
+                            </con1:xqueryTransform>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="PipelinePairHeader">
+                <con:request>request-af00473.1c3e33d7.0.15a9559fa49.N7eb8</con:request>
+                <con:response>response-af00473.1c3e33d7.0.15a9559fa49.N7eb7</con:response>
+            </con:pipeline-node>
+            <con:branch-node type="operation" id="_FlowId-af0042b.79dfa67f.0.15a67697d9c.N7fb9" name="BranchNodeCatalogos">
+                <con:context/>
+                <con:branch-table>
+                    <con:branch name="obtenerTasaPlazo">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairObtenerTasaPlazo">
+                                <con:request>request-af0042b.79dfa67f.0.15a67697d9c.N7fb8</con:request>
+                                <con:response>response-af0042b.79dfa67f.0.15a67697d9c.N7fb7</con:response>
+                            </con:pipeline-node>
+                            <con:route-node name="RouteToSAP" error-handler="error-af00473.1c3e33d7.0.15a9559fa49.N7f5a">
+                                <con:context>
+                                    <con1:userNsDecl prefix="n0" namespace="urn:sap-com:document:sap:soap:functions:mc-style"/>
+                                </con:context>
+                                <con:actions>
+                                    <con3:route>
+                                        <con1:id>_ActionId-af00473.1c3e33d7.0.15a9559fa49.N7f9c</con1:id>
+                                        <con3:service ref="GestionCatalogos/Finanzas/Business Services/SAPConsultaTasas" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                        <con3:operation>ZlmfmRfcConsultaTasa</con3:operation>
+                                        <con3:outboundTransform>
+                                            <con2:replace varName="body" contents-only="true">
+                                                <con1:id>_ActionId-af00473.1c3e33d7.0.15a9559fa49.N7f99</con1:id>
+                                                <con2:expr>
+                                                    <con1:xqueryTransform>
+                                                        <con1:resource ref="GestionCatalogos/Finanzas/Resources/Transformations/TrObtenerTasaReqToConsultarTasaReq"/>
+                                                        <con1:param name="obtenerTasaReq">
+                                                            <con1:path>$body/*</con1:path>
+                                                        </con1:param>
+                                                    </con1:xqueryTransform>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con3:outboundTransform>
+                                        <con3:responseTransform>
+                                            <con2:replace varName="body" contents-only="true">
+                                                <con1:id>_ActionId-af00473.1c3e33d7.0.15a9559fa49.N7f8c</con1:id>
+                                                <con1:disabled>true</con1:disabled>
+                                                <con2:expr>
+                                                    <con1:xqueryText><![CDATA[<n0:ZlmfmRfcConsultaTasaResponse>
+         <Tasa>
+           
+            <item>
+               <Mandt>301</Mandt>
+               <Subprod>601</Subprod>
+               <Frecuencia>30</Frecuencia>
+               <Plazo>12</Plazo>
+               <ScoreMinBc>111</ScoreMinBc>
+               <ScoreMaxBc>500</ScoreMaxBc>
+               <ScoreMinPi>0.12</ScoreMinPi>
+               <ScoreMaxPi>0.20</ScoreMaxPi>
+               <Tasa>1.0</Tasa>
+               <TasaMin>0.5</TasaMin>
+               <TasaMax>2.0</TasaMax>
+               <Etiqueta>ALTO</Etiqueta>
+            </item>
+             <item>
+               <Mandt>301</Mandt>
+               <Subprod>601</Subprod>
+               <Frecuencia>30</Frecuencia>
+               <Plazo>18</Plazo>
+               <ScoreMinBc>111</ScoreMinBc>
+               <ScoreMaxBc>500</ScoreMaxBc>
+               <ScoreMinPi>0.12</ScoreMinPi>
+               <ScoreMaxPi>0.20</ScoreMaxPi>
+               <Tasa>1.0</Tasa>
+               <TasaMin>0.5</TasaMin>
+               <TasaMax>2.0</TasaMax>
+               <Etiqueta>BAJO</Etiqueta>
+            </item>
+             <item>
+               <Mandt>301</Mandt>
+               <Subprod>601</Subprod>
+               <Frecuencia>30</Frecuencia>
+               <Plazo>24</Plazo>
+               <ScoreMinBc>111</ScoreMinBc>
+               <ScoreMaxBc>500</ScoreMaxBc>
+               <ScoreMinPi>0.12</ScoreMinPi>
+               <ScoreMaxPi>0.20</ScoreMaxPi>
+               <Tasa>1.0</Tasa>
+               <TasaMin>0.5</TasaMin>
+               <TasaMax>2.0</TasaMax>
+               <Etiqueta>MEDIO</Etiqueta>
+            </item>
+         </Tasa>
+      </n0:ZlmfmRfcConsultaTasaResponse>]]></con1:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                        </con3:responseTransform>
+                                    </con3:route>
+                                </con:actions>
+                            </con:route-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

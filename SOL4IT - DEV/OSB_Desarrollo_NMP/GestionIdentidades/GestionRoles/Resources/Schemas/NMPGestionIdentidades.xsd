@@ -1,0 +1,74 @@
+<xsd:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPIdentidades"
+            elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:NMP="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPIdentidades">
+    <xsd:element name="ObtenerRolesAutorizadosRequest" type="NMP:RolesAutorizadosRequestType"/>
+    <xsd:element name="ObtenerRolesAutorizadosResponse" type="NMP:RolesAutorizadosResponseType"/>
+    <xsd:complexType name="RolesAutorizadosRequestType">
+        <xsd:sequence>
+            <xsd:element name="usuario" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="nombreAplicacion" type="xsd:string" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="RolesAutorizadosResponseType">
+        <xsd:sequence>
+            <xsd:element name="roles" type="NMP:RolesType"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="RolType">
+        <xsd:sequence>
+            <xsd:element name="nombre" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="descripcion" type="xsd:string" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="RolesType">
+        <xsd:sequence>
+            <xsd:element name="rol" type="NMP:RolType" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="ObtenerPerfilUsuarioRequest" type="NMP:RolesAutorizadosRequestType"/>
+    <xsd:element name="ObtenerPerfilUsuarioResponse" type="NMP:obtenerPerfilUsuarioResponseType"/>
+    <xsd:complexType name="obtenerPerfilUsuarioResponseType">
+        <xsd:sequence>
+            <xsd:element minOccurs="0" name="expendios" nillable="true" type="NMP:ArrayOfExpendioType"/>
+            <xsd:element minOccurs="0" name="perfiles" nillable="true" type="NMP:ArrayOfPerfilType"/>
+            <xsd:element minOccurs="0" name="sucursal" nillable="true" type="NMP:SucursalType"/>
+            <xsd:element minOccurs="0" name="usuario" nillable="true" type="NMP:UsuarioType"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="SucursalType">
+        <xsd:sequence>
+            <xsd:element minOccurs="0" name="description" nillable="true" type="xsd:string"/>
+            <xsd:element minOccurs="0" name="id" nillable="true" type="xsd:long"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="UsuarioType">
+        <xsd:sequence>
+            <xsd:element minOccurs="0" name="id" nillable="true" type="xsd:string"/>
+            <xsd:element minOccurs="0" name="name" nillable="true" type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="ArrayOfPerfilType">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="perfill" nillable="true" type="NMP:PerfilType"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="PerfilType">
+        <xsd:sequence>
+            <xsd:element minOccurs="0" name="description" nillable="true" type="xsd:string"/>
+            <xsd:element minOccurs="0" name="id" nillable="true" type="xsd:long"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="ArrayOfExpendioType">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="expendio" nillable="true"
+                         type="NMP:ExpendioType"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="ExpendioType">
+        <xsd:sequence>
+            <xsd:element minOccurs="0" name="description" nillable="true" type="xsd:string"/>
+            <xsd:element minOccurs="0" name="id" nillable="true" type="xsd:long"/>
+            <xsd:element minOccurs="0" name="numero" nillable="true" type="xsd:int"/>
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

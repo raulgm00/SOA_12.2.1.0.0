@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:wsdl ref="Content/Resources/ContentSvcWSDL"/>
+            <con:binding>
+                <con:name>ContentSvcPortBinding</con:name>
+                <con:namespace>http://service.ucm.soaint.com/</con:namespace>
+            </con:binding>
+        </con:binding>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:pipeline name="EliminarContent_request" type="request">
+            <con:stage name="Request">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="ser" namespace="http://service.ucm.soaint.com/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:log xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-N53efe15a.N5e3ea8e9.1.15b832fd109.N8000</con2:id>
+                        <con1:logLevel>warning</con1:logLevel>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con1:expr>
+                        <con1:message>InputPayload</con1:message>
+                    </con1:log>
+                    <con1:javaCallout varName="contentResponse" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-N53efe15a.N5e3ea8e9.0.15b8322d12c.N8000</con2:id>
+                        <con1:archive ref="Content/Resources/ContentProxy"/>
+                        <con1:className>com.soaint.qualitas.common.GPADocumentosQueryAction</con1:className>
+                        <con1:method>public static java.lang.String getDocumentos(java.lang.String)</con1:method>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body/*:delete//*:nroSolicitud/text()</con:xqueryText>
+                        </con1:expr>
+                        <con1:return-param-as-ref>false</con1:return-param-as-ref>
+                    </con1:javaCallout>
+                    <con1:log xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-N53efe15a.N5e3ea8e9.0.15b8322d12c.N7fff</con2:id>
+                        <con1:logLevel>warning</con1:logLevel>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$contentResponse</con:xqueryText>
+                        </con1:expr>
+                        <con1:message>Documentos Content</con1:message>
+                    </con1:log>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="EliminarContent_response" type="response">
+            <con:stage name="Response">
+                <con:comment/>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="EliminarContent">
+                <con:comment/>
+                <con:request>EliminarContent_request</con:request>
+                <con:response>EliminarContent_response</con:response>
+            </con:pipeline-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Mediator name="ReglasPagosAdministrativos" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" wsdlTargetNamespace="http://xmlns.oracle.com/BPM-QUALITAS-PAGOS_ADMINISTRATIVOS/ReglasPagosAdministrativos/ReglasPagosAdministrativos" xmlns="http://xmlns.oracle.com/sca/1.0/mediator">
+   <operation name="asignarUsuario" deliveryPolicy="AllOrNothing" priority="4" validateSchema="false">
+      <switch>
+         <case executionType="sequential" name="asignarUsuario.asignarUsuario_DecisionService_1.callFunctionStateful">
+            <action>
+               <assign>
+                  <copy expression="$in.request/inp1:AsignarUsuarioRequest/inp1:total" target="$out.payload/ns0:callFunctionStateful/ns0:parameterList/inp1:AsignarUsuarioRequest/inp1:total" xmlns:ns0="http://xmlns.oracle.com/asignarUsuario/asignarUsuario_DecisionService_1" xmlns:inp1="http://www.qualitas.com.mx/ReglasPagosAdministrativos/asignarUsuario"/>
+                  <copy expression="$in.request/inp1:AsignarUsuarioRequest/inp1:tipoMoneda" target="$out.payload/ns0:callFunctionStateful/ns0:parameterList/inp1:AsignarUsuarioRequest/inp1:tipoMoneda" xmlns:ns0="http://xmlns.oracle.com/asignarUsuario/asignarUsuario_DecisionService_1" xmlns:inp1="http://www.qualitas.com.mx/ReglasPagosAdministrativos/asignarUsuario"/>
+               </assign>
+               <invoke reference="asignarUsuario.asignarUsuario_DecisionService_1" operation="callFunctionStateful">
+                  <onReply>
+                     <assign>
+                        <copy expression="$in.payload/tns:callFunctionStatefulDecision/tns:resultList/ns2:AsignarUsuarioResponse/ns2:nivelAprobador" target="$out.reply/ns2:AsignarUsuarioResponse/ns2:nivelAprobador" xmlns:tns="http://xmlns.oracle.com/asignarUsuario/asignarUsuario_DecisionService_1" xmlns:ns2="http://www.qualitas.com.mx/ReglasPagosAdministrativos/asignarUsuario"/>
+                     </assign>
+                     <reply/>
+                  </onReply>
+                  <onFault type="operationErroredFault"/>
+               </invoke>
+            </action>
+         </case>
+      </switch>
+   </operation>
+   <operation name="validarNacionalidadPrestador" deliveryPolicy="AllOrNothing" priority="4" validateSchema="false">
+      <switch>
+         <case executionType="sequential" name="validarNacionalidadPrestador.validarNacionalidadPrestador_DecisionService_1.callFunctionStateful">
+            <action>
+               <assign>
+                  <copy expression="$in.request/inp2:ValidarNacionalidadPrestadorRequest/inp2:nacionalidad" target="$out.payload/ns0:callFunctionStateful/ns0:parameterList/inp2:ValidarNacionalidadPrestadorRequest/inp2:nacionalidad" xmlns:inp2="http://www.qualitas.com.mx/ReglasPagosAdministrativos/validarNacionalidadPrestador" xmlns:ns0="http://xmlns.oracle.com/validarNacionalidadPrestador/validarNacionalidadPrestador_DecisionService_1"/>
+                  <copy expression="$in.request/inp2:ValidarNacionalidadPrestadorRequest/inp2:tipoServicio" target="$out.payload/ns0:callFunctionStateful/ns0:parameterList/inp2:ValidarNacionalidadPrestadorRequest/inp2:tipoServicio" xmlns:inp2="http://www.qualitas.com.mx/ReglasPagosAdministrativos/validarNacionalidadPrestador" xmlns:ns0="http://xmlns.oracle.com/validarNacionalidadPrestador/validarNacionalidadPrestador_DecisionService_1"/>
+                  <copy expression="$in.request/inp2:ValidarNacionalidadPrestadorRequest/inp2:nuevo" target="$out.payload/ns0:callFunctionStateful/ns0:parameterList/inp2:ValidarNacionalidadPrestadorRequest/inp2:nuevo" xmlns:inp2="http://www.qualitas.com.mx/ReglasPagosAdministrativos/validarNacionalidadPrestador" xmlns:ns0="http://xmlns.oracle.com/validarNacionalidadPrestador/validarNacionalidadPrestador_DecisionService_1"/>
+                  <copy expression="$in.request/inp2:ValidarNacionalidadPrestadorRequest/inp2:estado" target="$out.payload/ns0:callFunctionStateful/ns0:parameterList/inp2:ValidarNacionalidadPrestadorRequest/inp2:estado" xmlns:inp2="http://www.qualitas.com.mx/ReglasPagosAdministrativos/validarNacionalidadPrestador" xmlns:ns0="http://xmlns.oracle.com/validarNacionalidadPrestador/validarNacionalidadPrestador_DecisionService_1"/>
+               </assign>
+               <invoke reference="validarNacionalidadPrestador.validarNacionalidadPrestador_DecisionService_1" operation="callFunctionStateful">
+                  <onReply>
+                     <assign>
+                        <copy expression="$in.payload/tns:callFunctionStatefulDecision/tns:resultList/ns2:ValidarNacionalidadPrestadorResponse/ns2:documentos" target="$out.reply/ns2:ValidarNacionalidadPrestadorResponse/ns2:documentos" xmlns:ns2="http://www.qualitas.com.mx/ReglasPagosAdministrativos/validarNacionalidadPrestador" xmlns:tns="http://xmlns.oracle.com/validarNacionalidadPrestador/validarNacionalidadPrestador_DecisionService_1"/>
+                     </assign>
+                     <reply/>
+                  </onReply>
+                  <onFault type="operationErroredFault"/>
+               </invoke>
+            </action>
+         </case>
+      </switch>
+   </operation>
+   <operation name="validarArchivoProrrateo" deliveryPolicy="AllOrNothing" priority="4" validateSchema="false">
+      <switch>
+         <case executionType="sequential" name="validarArchivoProrrateo.validarArchivoProrrateo_DecisionService_1.callFunctionStateful">
+            <action>
+               <assign>
+                  <copy expression="$in.request/inp3:ValidarArchivoProrrateoRequest/inp3:totalProrrateo" target="$out.payload/ns0:callFunctionStateful/ns0:parameterList/inp3:ValidarArchivoProrrateoRequest/inp3:totalProrrateo" xmlns:inp3="http://www.qualitas.com.mx/ReglasPagosAdministrativos/validarArchivoProrrateo" xmlns:ns0="http://xmlns.oracle.com/validarArchivoProrrateo/validarArchivoProrrateo_DecisionService_1"/>
+                  <copy expression="$in.request/inp3:ValidarArchivoProrrateoRequest/inp3:totalPagar" target="$out.payload/ns0:callFunctionStateful/ns0:parameterList/inp3:ValidarArchivoProrrateoRequest/inp3:totalPagar" xmlns:inp3="http://www.qualitas.com.mx/ReglasPagosAdministrativos/validarArchivoProrrateo" xmlns:ns0="http://xmlns.oracle.com/validarArchivoProrrateo/validarArchivoProrrateo_DecisionService_1"/>
+               </assign>
+               <invoke reference="validarArchivoProrrateo.validarArchivoProrrateo_DecisionService_1" operation="callFunctionStateful">
+                  <onReply>
+                     <assign>
+                        <copy expression="$in.payload/tns:callFunctionStatefulDecision/tns:resultList/ns2:ValidarArchivoProrrateoResponse/ns2:valido" target="$out.reply/ns2:ValidarArchivoProrrateoResponse/ns2:valido" xmlns:ns2="http://www.qualitas.com.mx/ReglasPagosAdministrativos/validarArchivoProrrateo" xmlns:tns="http://xmlns.oracle.com/validarArchivoProrrateo/validarArchivoProrrateo_DecisionService_1"/>
+                     </assign>
+                     <reply/>
+                  </onReply>
+                  <onFault type="operationErroredFault"/>
+               </invoke>
+            </action>
+         </case>
+      </switch>
+   </operation>
+   <operation name="validarImportesFactura" deliveryPolicy="AllOrNothing" priority="4" validateSchema="false">
+      <switch>
+         <case executionType="sequential" name="validarImportesFactura.validarImportesFactura_DecisionService_1.callFunctionStateful">
+            <action>
+               <assign>
+                  <copy expression="$in.request/inp4:ValidarImportesFacturaRequest/inp4:tipoMoneda" target="$out.payload/ns0:callFunctionStateful/ns0:parameterList/inp4:ValidarImportesFacturaRequest/inp4:tipoMoneda" xmlns:ns0="http://xmlns.oracle.com/validarImportesFactura/validarImportesFactura_DecisionService_1" xmlns:inp4="http://www.qualitas.com.mx/ReglasPagosAdministrativos/validarImportesFactura"/>
+                  <copy expression="$in.request/inp4:ValidarImportesFacturaRequest/inp4:subTotal" target="$out.payload/ns0:callFunctionStateful/ns0:parameterList/inp4:ValidarImportesFacturaRequest/inp4:subTotal" xmlns:ns0="http://xmlns.oracle.com/validarImportesFactura/validarImportesFactura_DecisionService_1" xmlns:inp4="http://www.qualitas.com.mx/ReglasPagosAdministrativos/validarImportesFactura"/>
+                  <copy expression="$in.request/inp4:ValidarImportesFacturaRequest/inp4:importes" target="$out.payload/ns0:callFunctionStateful/ns0:parameterList/inp4:ValidarImportesFacturaRequest/inp4:importes" xmlns:ns0="http://xmlns.oracle.com/validarImportesFactura/validarImportesFactura_DecisionService_1" xmlns:inp4="http://www.qualitas.com.mx/ReglasPagosAdministrativos/validarImportesFactura"/>
+               </assign>
+               <invoke reference="validarImportesFactura.validarImportesFactura_DecisionService_1" operation="callFunctionStateful">
+                  <onReply>
+                     <assign>
+                        <copy expression="$in.payload/tns:callFunctionStatefulDecision/tns:resultList/ns2:ValidarImportesFacturaResponse/ns2:valido" target="$out.reply/ns2:ValidarImportesFacturaResponse/ns2:valido" xmlns:tns="http://xmlns.oracle.com/validarImportesFactura/validarImportesFactura_DecisionService_1" xmlns:ns2="http://www.qualitas.com.mx/ReglasPagosAdministrativos/validarImportesFactura"/>
+                     </assign>
+                     <reply/>
+                  </onReply>
+                  <onFault type="operationErroredFault"/>
+               </invoke>
+            </action>
+         </case>
+      </switch>
+   </operation>
+</Mediator>

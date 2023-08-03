@@ -1,0 +1,53 @@
+<xsd:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Cotizacion" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://servicios.montedepiedad.com.mx/NMP/Schema/Cotizacion" xmlns:comm="http://servicios.montedepiedad.com.mx/NMP/Schema/commons/AutoSinResguardo">
+    <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/commons/AutoSinResguardo" schemaLocation="NmpASRCommonsXSD.xsd"/>
+    <xsd:complexType name="CotizacionType">
+        <xsd:sequence>
+            <xsd:element name="Sociedad" type="comm:char4"/>
+            <xsd:element name="Producto" type="comm:char3"/>
+            <xsd:element name="MontoSolicitado" type="comm:curr13.2"/>
+            <xsd:element name="Frecuencia" type="comm:numeric2"/>
+            <xsd:element name="Plazo" type="comm:numeric2"/>
+            <xsd:element name="TasaInteres" type="comm:decimal10.7"/>
+            <xsd:element name="FechaDesembolso" type="comm:date10"/>
+            <xsd:element name="FechaPrimerCobro" type="comm:date10"/>
+            <xsd:element name="MultMoratorio" type="comm:decimal10.7"/>
+            <xsd:element name="Origen" type="comm:char4"/>
+            <xsd:element name="Destino" type="comm:char2"/>
+            <xsd:element name="TipoDePago" type="comm:char6"/>
+            <xsd:element name="DiasGracia" type="comm:numeric6"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="AmortizacionType">
+        <xsd:sequence>
+            <xsd:element name="Nopago" type="comm:char2"/>
+            <xsd:element name="Fecha" type="comm:date10"/>
+            <xsd:element name="Capitalinit" type="comm:curr13.2"/>
+            <xsd:element name="Interes" type="comm:curr13.2"/>
+            <xsd:element name="Iva" type="comm:curr13.2"/>
+            <xsd:element name="Abonocapital" type="comm:curr13.2"/>
+            <xsd:element name="Abonototal" type="comm:curr13.2"/>
+            <xsd:element name="Capitalfinal" type="comm:curr13.2"/>
+            <xsd:element name="Saldopagare" type="comm:curr13.2"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="TablaAmortizacionType">
+        <xsd:sequence>
+            <xsd:element name="tabla" type="AmortizacionType" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="CotizacionRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="Cotizacion" type="CotizacionType"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="CotizacionResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="Cotizacion" type="CotizacionType"/>
+                <xsd:element name="TablaAmort" type="TablaAmortizacionType"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>

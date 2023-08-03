@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/routing/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="PoC/AutosSinResguardo/InfoClienteAuto/Resources/WSDL/AutosInfoWSDLv2"/>
+            <con:binding>
+                <con:name>ClientesAutosDB_pttSOAP11Binding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Service/ClientesAutosDB</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:logging enabled="false" level="debug"/>
+            <oper:monitoring enabled="true" level="service" aggregationInterval="10"/>
+            <oper:reporting>false</oper:reporting>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router errorHandler="error-af10c87.N29644ccd.0.156700003ec.N7e58">
+        <con:pipeline type="request" name="request-af10c87.N29644ccd.0.156700003ec.N7f19">
+            <con:stage id="_StageId-af10c87.N29644ccd.0.156700003ec.N7f17" name="StageRequest">
+                <con:context/>
+                <con:actions>
+                    <con1:assign varName="getInfo_body">
+                        <con2:id>_ActionId-af10c87.N29644ccd.0.156700003ec.N7ed7</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af10c87.N29644ccd.0.156700003ec.N7f15">
+            <con:stage id="_StageId-af10c87.N29644ccd.0.156700003ec.N7f13" name="Stage1">
+                <con:context/>
+                <con:actions>
+                    <con1:assign varName="getFolios_body">
+                        <con2:id>_ActionId-af10c87.N29644ccd.0.156700003ec.N7ed4</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af10c87.572b831e.0.156752ba316.N7fff"/>
+        <con:pipeline type="error" name="error-af10c87.N29644ccd.0.156700003ec.N7e58">
+            <con:stage id="_StageId-af10c87.N29644ccd.0.156700003ec.N7e57" name="Stage1">
+                <con:context>
+                    <con2:userNsDecl prefix="cli" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/ClientesAutoInfoDB"/>
+                </con:context>
+                <con:actions>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-af10c87.N29644ccd.0.156700003ec.N7e50</con2:id>
+                        <con1:case id="_BranchId-af10c87.N29644ccd.0.156700003ec.N7e4f">
+                            <con1:condition>
+                                <con2:xqueryText>fn:starts-with($operation,"getFolios")</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id>_ActionId-af10c87.N29644ccd.0.156700003ec.N7e46</con2:id>
+                                    <con1:location>
+                                        <con2:xpathText>.</con2:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con2:xqueryText><![CDATA[<getFoliosClienteResponse  	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://servicios.montedepiedad.com.mx/NMP/Schema/ClientesAutoInfoDB">
+<NmpClientesInfo>
+     <IdCliente>{$getFolios_body//cli:numCredencial/text()}</IdCliente>
+     <CodigoRespuesta>-1</CodigoRespuesta>
+    <mensaje>Error al recuperar la información</mensaje>
+</NmpClientesInfo>
+</getFoliosClienteResponse>]]></con2:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case id="_BranchId-af10c87.572b831e.0.156752ba316.N7f24">
+                            <con1:condition>
+                                <con2:xqueryText>fn:starts-with($operation,"getCliente")</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id>_ActionId-af10c87.N29644ccd.0.156700003ec.N7e40</con2:id>
+                                    <con1:location>
+                                        <con2:xpathText>.</con2:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con2:xqueryText><![CDATA[<NmpClientesInfoCollection  	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://servicios.montedepiedad.com.mx/NMP/Schema/ClientesAutoInfoDB">
+<NmpClientesInfo>
+    <IdCliente>{$getInfo_body//cli:numCredencial/text()}</IdCliente>
+     <CodigoRespuesta>-1</CodigoRespuesta>
+    <mensaje>Error al recuperar la información</mensaje>
+</NmpClientesInfo>
+</NmpClientesInfoCollection>]]></con2:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:case id="_BranchId-af10c87.572b831e.0.156752ba316.N7f1d">
+                            <con1:condition>
+                                <con2:xqueryText>fn:starts-with($operation,"update")</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id>_ActionId-af10c87.572b831e.0.156752ba316.N7f20</con2:id>
+                                    <con1:location>
+                                        <con2:xpathText>.</con2:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con2:xqueryText><![CDATA[<clientesAutosResponse  	xmlns="http://servicios.montedepiedad.com.mx/NMP/Schema/ClientesAutoInfoDB">
+<resultado>
+    <IdCliente>{$bodyUpdate//cli:numCredencial/text()}</IdCliente>
+     <CodigoRespuesta>-1</CodigoRespuesta>
+    <mensaje>Error al actualizar información</mensaje>
+</resultado>
+</clientesAutosResponse>]]></con2:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:default/>
+                    </con1:ifThenElse>
+                    <con2:reply>
+                        <con2:id>_ActionId-af10c87.N29644ccd.0.156700003ec.N7e07</con2:id>
+                    </con2:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af10c87.N29644ccd.0.156700003ec.N7f14">
+            <con:stage id="_StageId-af10c87.N29644ccd.0.156700003ec.N7f12" name="Stage1">
+                <con:context>
+                    <con2:userNsDecl prefix="cli" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/ClientesAutoInfoDB"/>
+                </con:context>
+                <con:actions>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-af10c87.N29644ccd.0.156700003ec.N7e8e</con2:id>
+                        <con1:case id="_BranchId-af10c87.N29644ccd.0.156700003ec.N7e8d">
+                            <con1:condition>
+                                <con2:xqueryText>fn:count($body/cli:getFoliosClienteResponse/cli:NmpClientesInfo) = 0</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id>_ActionId-af10c87.N29644ccd.0.156700003ec.N7e8a</con2:id>
+                                    <con1:location>
+                                        <con2:xpathText>.</con2:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con2:xqueryText><![CDATA[<getFoliosClienteResponse  	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://servicios.montedepiedad.com.mx/NMP/Schema/ClientesAutoInfoDB">
+<NmpClientesInfo>
+     <IdCliente>{$getFolios_body//cli:numCredencial/text()}</IdCliente>
+     <CodigoRespuesta>1</CodigoRespuesta>
+    <mensaje>La consula no arrojo resultados</mensaje>
+</NmpClientesInfo>
+</getFoliosClienteResponse>]]></con2:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:default/>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af10c87.572b831e.0.156752ba316.N8000">
+            <con:stage id="_StageId-af10c87.572b831e.0.156752ba316.N7ffe" name="Stage1">
+                <con:context>
+                    <con2:userNsDecl prefix="cli" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/ClientesAutoInfoDB"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="bodyUpdate">
+                        <con2:id>_ActionId-af10c87.572b831e.0.156752ba316.N7ff6</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="true">
+                        <con2:id>_ActionId-af10c87.572b831e.0.156752ba316.N7f13</con2:id>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[<cli:updateClientesInfoCollection xmlns:cli="http://servicios.montedepiedad.com.mx/NMP/Schema/ClientesAutoInfoDB">
+    <cli:NmpClientesInfo>
+        <cli:numCredencial>{$body/cli:updateClientesInfoCollection/cli:NmpClientesInfo/cli:numCredencial/text()}</cli:numCredencial>
+        <cli:folioTramite>{$body/cli:updateClientesInfoCollection/cli:NmpClientesInfo/cli:folioTramite/text()}</cli:folioTramite>
+        <cli:estado>{$body/cli:updateClientesInfoCollection/cli:NmpClientesInfo/cli:estado/text()}</cli:estado>
+    </cli:NmpClientesInfo>
+</cli:updateClientesInfoCollection>]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af10c87.N29644ccd.0.156700003ec.N7f18">
+            <con:stage id="_StageId-af10c87.N29644ccd.0.156700003ec.N7f16" name="StageResponse">
+                <con:context>
+                    <con2:userNsDecl prefix="cli" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/ClientesAutoInfoDB"/>
+                </con:context>
+                <con:actions>
+                    <con1:ifThenElse>
+                        <con2:id>_ActionId-af10c87.N29644ccd.0.156700003ec.N7e99</con2:id>
+                        <con1:case id="_BranchId-af10c87.N29644ccd.0.156700003ec.N7e98">
+                            <con1:condition>
+                                <con2:xqueryText>fn:count($body/cli:NmpClientesInfoCollection/cli:NmpClientesInfo)=0</con2:xqueryText>
+                            </con1:condition>
+                            <con1:actions>
+                                <con1:replace varName="body" contents-only="true">
+                                    <con2:id>_ActionId-af10c87.N29644ccd.0.156700003ec.N7e95</con2:id>
+                                    <con1:location>
+                                        <con2:xpathText>.</con2:xpathText>
+                                    </con1:location>
+                                    <con1:expr>
+                                        <con2:xqueryText><![CDATA[<NmpClientesInfoCollection  	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://servicios.montedepiedad.com.mx/NMP/Schema/ClientesAutoInfoDB">
+<NmpClientesInfo>
+    <IdCliente>{$getInfo_body//cli:numCredencial/text()}</IdCliente>
+     <CodigoRespuesta>1</CodigoRespuesta>
+    <mensaje>La consula no arrojo resultados</mensaje>
+</NmpClientesInfo>
+</NmpClientesInfoCollection>]]></con2:xqueryText>
+                                    </con1:expr>
+                                </con1:replace>
+                            </con1:actions>
+                        </con1:case>
+                        <con1:default/>
+                    </con1:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:branch-node type="operation" id="_FlowId-af10c87.N29644ccd.0.156700003ec.N7f81" name="BranchNode">
+                <con:context/>
+                <con:branch-table>
+                    <con:branch name="getClienteAutoInfo">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePair_GetInfo">
+                                <con:request>request-af10c87.N29644ccd.0.156700003ec.N7f19</con:request>
+                                <con:response>response-af10c87.N29644ccd.0.156700003ec.N7f18</con:response>
+                            </con:pipeline-node>
+                            <con:route-node name="RouteNode1">
+                                <con:context/>
+                                <con:actions>
+                                    <con3:route>
+                                        <con2:id>_ActionId-af10c87.N29644ccd.0.156700003ec.N7edd</con2:id>
+                                        <con3:service ref="PoC/AutosSinResguardo/InfoClienteAuto/Business Services/getInfoClienteBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                        <con3:operation>getClienteAutoInfo</con3:operation>
+                                        <con3:outboundTransform/>
+                                        <con3:responseTransform/>
+                                    </con3:route>
+                                </con:actions>
+                            </con:route-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="getFoliosCliente">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePair_GetFolios">
+                                <con:request>request-af10c87.N29644ccd.0.156700003ec.N7f15</con:request>
+                                <con:response>response-af10c87.N29644ccd.0.156700003ec.N7f14</con:response>
+                            </con:pipeline-node>
+                            <con:route-node name="RouteNode2">
+                                <con:context/>
+                                <con:actions>
+                                    <con3:route>
+                                        <con2:id>_ActionId-af10c87.N29644ccd.0.156700003ec.N7eda</con2:id>
+                                        <con3:service ref="PoC/AutosSinResguardo/InfoClienteAuto/Business Services/getInfoClienteBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                        <con3:operation>getFoliosCliente</con3:operation>
+                                        <con3:outboundTransform/>
+                                        <con3:responseTransform/>
+                                    </con3:route>
+                                </con:actions>
+                            </con:route-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="updateClienteAutoInfo">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePair_UpdateStatus">
+                                <con:request>request-af10c87.572b831e.0.156752ba316.N8000</con:request>
+                                <con:response>response-af10c87.572b831e.0.156752ba316.N7fff</con:response>
+                            </con:pipeline-node>
+                            <con:route-node name="RouteToUpdate">
+                                <con:context/>
+                                <con:actions>
+                                    <con3:route>
+                                        <con2:id>_ActionId-af10c87.572b831e.0.156752ba316.N7ff9</con2:id>
+                                        <con3:service ref="PoC/AutosSinResguardo/InfoClienteAuto/Business Services/getInfoClienteBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                        <con3:operation>updateClienteAutoInfo</con3:operation>
+                                        <con3:outboundTransform/>
+                                        <con3:responseTransform/>
+                                    </con3:route>
+                                </con:actions>
+                            </con:route-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

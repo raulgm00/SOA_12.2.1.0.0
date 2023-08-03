@@ -1,0 +1,11 @@
+<adapter-config name="ConsultaServiciosPrestadorDataSvc" adapter="db" wsdlLocation="ConsultaServiciosPrestadorDataSvc.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  
+  <connection-factory UIConnectionName="GPAConnDB" location="eis/DB/GPAConnDB"/>
+  <endpoint-interaction portType="ConsultaServiciosPrestadorDataSvc_ptt" operation="ConsultaServiciosPrestadorDataSvc">
+    <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+      <property name="SqlString" value=" SELECT A.ID_PROYECTO, A.NOMBRE_PROYECTO, A.DESC_PROYECTO,A.ST_PROYECTO,         A.PRESUPUESTO_APROBADO, A.PARCIALIDADES, A.ID_CONDICIONES_PAGO,          A.ID_SOLICITUD, A.ID_PRESTADOR, A.CENTRO_COSTO,          A.CVE_OFICINA, A.DESC_OFICINA, A.DESC_AREA, A.RESPONSABLE_AREA, A.TIPO_MONEDA, A.PRESUPUESTO_DISPONIBLE, A.PAGOS_PROCESO, A.ID_PROYECTOMARCO, A.PARCIALIDAD_ACTUAL, A.PROCESABLE   FROM  GPA013_PROYECTO A, GPA001_SOLICITUD B   WHERE A.ID_SOLICITUD = B.ID_SOLICITUD      AND A.ID_PRESTADOR= #pIdPrestador     AND B.NU_EMPLEADO = #pIdEmpleado     AND A.ID_PROYECTO IN (         SELECT DISTINCT (BASE.ID_PROYECTO)         FROM            (SELECT ID_PROYECTO           FROM  GPA013_PROYECTO            WHERE ID_PRESTADOR= #pIdPrestador AND ID_PROYECTO NOT IN           ( SELECT ID_PROYECTOMARCO FROM  GPA013_PROYECTO WHERE  ID_PRESTADOR= #pIdPrestador and ID_PROYECTOMARCO is not null )           AND ID_PROYECTOMARCO IS NULL                          UNION                      SELECT max (ID_PROYECTO) ID_PROYECTO             FROM  GPA013_PROYECTO WHERE ID_PROYECTOMARCO IS NOT NULL AND ID_PRESTADOR= #pIdPrestador              GROUP BY ID_PROYECTOMARCO) BASE                      )  AND A.ST_PROYECTO in (13,14,15)   ORDER BY A.FH_CREACION_PROY DESC"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+
+</adapter-config>

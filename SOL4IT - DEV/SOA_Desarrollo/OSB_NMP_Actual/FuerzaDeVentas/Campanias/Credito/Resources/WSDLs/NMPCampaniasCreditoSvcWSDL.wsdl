@@ -1,0 +1,79 @@
+<definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Services/Campanias/Credito" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:NMPCampC="http://servicios.montedepiedad.com.mx/NMP/Services/Campanias/Credito" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:cia="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCampaniasCredito" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:NPMsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <types>
+    <xsd:schema>
+      <xsd:import schemaLocation="../Schemas/NMPCampaniasCreditoSvcElementos.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPCampaniasCredito"/>
+      <xsd:import schemaLocation="../../../../../Common/XSD/NMPStandardHeader.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+      <xsd:import schemaLocation="../../../../../Common/XSD/NMPStandardMessage.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+    </xsd:schema>
+  </types>
+  <portType name="campaniasCreditoServicePortType">
+    <operation name="getCampaniasCliente">
+      <input message="NMPCampC:getCampaniasClienteRequest"/>
+      <output message="NMPCampC:getCampaniasClienteResponse"/>
+      <fault message="NMPCampC:campaniaClienteFaultMessage" name="campaniaClienteFaultMessage"/>
+    </operation>
+    <operation name="confirmarCampaniaCliente">
+      <input message="NMPCampC:confirmarCampaniaClienteRequest"/>
+      <output message="NMPCampC:confirmarCampaniaClienteResponse"/>
+      <fault message="NMPCampC:campaniaClienteFaultMessage" name="campaniaClienteFaultMessage"/>
+    </operation>
+  </portType>
+  <message name="getCampaniasClienteRequest">
+    <part name="part" element="cia:getCampaniasClienteRequest"/>
+  </message>
+  <message name="getCampaniasClienteResponse">
+    <part name="part" element="cia:getCampaniasClienteResponse"/>
+  </message>
+  <message name="confirmarCampaniaClienteRequest">
+    <part name="part" element="cia:confirmarCampaniaClienteRequest"/>
+  </message>
+  <message name="confirmarCampaniaClienteResponse">
+    <part name="part" element="cia:confirmarCampaniaClienteResponse"/>
+  </message>
+  <message name="campaniaClienteFaultMessage">
+    <part name="part" element="NPMsm:messageError"/>
+  </message>
+  <message name="campaniaClienteHeaderMessage">
+    <part name="part" element="NMPsh:headerMessage"/>
+  </message>
+  <message name="campaniaClienteHeaderMessageResponse">
+    <part name="part" element="NMPsh:headerMessageResponse"/>
+  </message>
+  <binding name="campaniasCreditoBinding" type="NMPCampC:campaniasCreditoServicePortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="getCampaniasCliente">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/Campanias/Credito/getCampaniasCliente"/>
+      <input>
+        <soap:header message="NMPCampC:campaniaClienteHeaderMessage" part="part" use="literal"/>
+        <soap:body use="literal" parts="part"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="part"/>
+        <soap:header message="NMPCampC:campaniaClienteHeaderMessageResponse" part="part" use="literal"/>
+      </output>
+      <fault name="campaniaClienteFaultMessage">
+        <soap:fault name="campaniaClienteFaultMessage" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="confirmarCampaniaCliente">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/Campanias/Credito/confirmarCampaniaCliente"/>
+      <input>
+        <soap:body use="literal" parts="part"/>
+        <soap:header message="NMPCampC:campaniaClienteHeaderMessage" part="part" use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="part"/>
+        <soap:header message="NMPCampC:campaniaClienteHeaderMessageResponse" part="part" use="literal"/>
+      </output>
+      <fault name="campaniaClienteFaultMessage">
+        <soap:fault name="campaniaClienteFaultMessage" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+  <service name="campaniasCredito">
+    <port name="campaniasCreditoPort" binding="NMPCampC:campaniasCreditoBinding">
+      <soap:address location=""/>
+      <!--soap:address location="http://dcpimsdcrmfe01.nmp.com.mx:90/Nmp.Crm.Servicios.Portal.svc?wsdl"/-->
+    </port>
+  </service>
+</definitions>

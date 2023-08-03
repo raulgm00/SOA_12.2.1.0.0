@@ -1,0 +1,44 @@
+<wsdl:definitions name="GetContent" targetNamespace="http://xmlns.oracle.com/OpenText/GeContentsOT/GetContent" xmlns:tns="http://xmlns.oracle.com/OpenText/GeContentsOT/GetContent" xmlns:inp1="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSrv" xmlns:inp2="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+    <plnk:partnerLinkType name="GetContent">
+        <plnk:role name="GetContentProvider" portType="tns:getContent_ptt"/>
+    </plnk:partnerLinkType>
+    <wsdl:types>
+        <xsd:schema>
+            <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSrv" schemaLocation="../XSD/GetVersionContentXSD.xsd"/>
+        </xsd:schema>
+        <xsd:schema>
+            <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../XSD/NMPStandardMessage.xsd"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="requestMessage">
+        <wsdl:part name="request" element="inp1:ContentRequest"/>
+    </wsdl:message>
+    <wsdl:message name="replyMessage">
+        <wsdl:part name="response" element="inp1:ContentResponse"/>
+    </wsdl:message>
+    <wsdl:message name="faultMessage">
+        <wsdl:part name="fault" element="inp2:messageError"/>
+    </wsdl:message>
+    <wsdl:portType name="getContent_ptt">
+        <wsdl:operation name="getContent">
+            <wsdl:input message="tns:requestMessage"/>
+            <wsdl:output message="tns:replyMessage"/>
+            <wsdl:fault name="getContentfault" message="tns:faultMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="getContent_bind" type="tns:getContent_ptt">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="getContent">
+            <soap:operation style="document" soapAction="getContent"/>
+            <wsdl:input>
+                <soap:body use="literal" namespace="http://xmlns.oracle.com/OpenText/GeContentsOT/GetContent"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" namespace="http://xmlns.oracle.com/OpenText/GeContentsOT/GetContent"/>
+            </wsdl:output>
+            <wsdl:fault name="getContentfault">
+                <soap:fault name="getContentfault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+</wsdl:definitions>

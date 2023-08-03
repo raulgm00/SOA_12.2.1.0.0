@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+      xmlns="http://servicios.montedepiedad.com.mx/NMP/Schema/SendEmail" 
+      targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/SendEmail" 
+      xmlns:con='http://www.bea.com/wli/sb/context'
+      elementFormDefault="qualified">
+  <xsd:element name="Email">
+    <xsd:annotation>
+      <xsd:documentation>A sample element</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="to" type="xsd:string"/>
+		<xsd:element name="from" type="xsd:string"/>
+        <xsd:element name="subject" type="xsd:string"/>
+        <xsd:element name="content" type="xsd:string" minOccurs="0"/>
+        <xsd:element name="attachments" type="attachments"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:complexType name="attachment">
+    <xsd:sequence>
+      <xsd:element name="filename" type="xsd:string"/>
+      <xsd:element name="contents" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="attachments">
+    <xsd:sequence>
+      <xsd:element name="attachment" type="attachment" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="Response">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="code" type="xsd:string"/>
+        <xsd:element name="error" type="xsd:string"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="attachments">
+    <xsd:annotation>
+      <xsd:documentation>A sample element</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="attachment" type="attachment_" maxOccurs="unbounded" minOccurs="0"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:complexType name="attachment_">
+    <xsd:sequence>
+      <xsd:element name="Content-Type" type="xsd:string"/>
+      <xsd:element name="Content-Transfer-Encoding" type="xsd:string"/>
+      <xsd:element name="Content-Disposition" type="xsd:string"/>
+      <xsd:element name="body" type="xsd:base64Binary"/>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>

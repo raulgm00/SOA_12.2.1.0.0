@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAConfigPlan xmlns:jca="http://platform.integration.oracle/blocks/adapter/fw/metadata"
+               xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
+               xmlns:orawsp="http://schemas.oracle.com/ws/2006/01/policy"
+               xmlns:edl="http://schemas.oracle.com/events/edl" xmlns="http://schemas.oracle.com/soa/configplan">
+  <composite name="ordenPagoProrrateoBPEL">
+    <!--Add search and replace rules for the import section of a composite
+	Example:
+	<searchReplace>
+		<search>http://my-dev-server</search>
+		<replace>http://my-test-server</replace>
+	<searchReplace>
+	<searchReplace>
+		<search>8888</search>
+		<replace>8889</replace>
+	<searchReplace>-->
+    <import>
+      <searchReplace>
+        <search>http://11.50.0.20</search>
+        <replace>http://35.163.153.196</replace>
+      </searchReplace>
+      <searchReplace>
+        <search>http://11.50.0.22</search>
+        <replace>http://35.163.153.196</replace>
+      </searchReplace>
+      <searchReplace>
+        <search>7007</search>
+        <replace>7003</replace>
+      </searchReplace>
+      <searchReplace>
+        <search>http://11.50.0.21</search>
+        <replace>http://35.163.153.196</replace>
+      </searchReplace>
+      <searchReplace>
+        <search>8001</search>
+        <replace>7001</replace>
+      </searchReplace>
+    </import>
+    <service name="ordenpagoprorrateo_client_ep">
+      <binding type="ws">
+        <attribute name="port">
+          <replace>http://xmlns.oracle.com/SOA_INT/ordenPagoProrrateoBPEL/OrdenPagoProrrateoBPEL#wsdl.endpoint(ordenpagoprorrateo_client_ep/OrdenPagoProrrateoBPEL_pt)</replace>
+        </attribute>
+      </binding>
+    </service>
+    <property name="compositeID">
+      <replace>fb6f49f5-03b5-48b0-a68b-6fd1b259d75a</replace>
+    </property>
+    <property name="productVersion">
+      <replace>12.2.1.0.0.151013</replace>
+    </property>
+    <!--Add search and replace rules for the component properties
+	For components and service/reference bindings, you can add policy references.
+	Example:
+	<component name="*">
+		<wsp:PolicyReference orawsp:category="management" orawsp:status="enabled" URI="oracle/log_policy"/>
+	</component>-->
+    <component name="OrdenPagoProrrateoBPEL">
+      <property name="bpel.config.transaction">
+        <replace>required</replace>
+      </property>
+    </component>
+    <reference name="consultaProrrateoService">
+      <!--Add search and replace rules for the binding properties-->
+      <binding type="ws">
+        <attribute name="port">
+          <replace>http://xmlns.oracle.com/GestionArchivoProrrateo/GestionArchivoProrrateoPrj/GestionArchivoProrrateoBPEL#wsdl.endpoint(gestionarchivoprorrateobpel_client_ep/gestionArchivoProrrateoBPEL_pt)</replace>
+        </attribute>
+        <attribute name="location">
+          <replace>http://11.50.0.20:7007/soa-infra/services/GPADomain/GestionArchivoProrrateoPrj/gestionarchivoprorrateobpel_client?wsdl</replace>
+        </attribute>
+        <property name="weblogic.wsee.wsat.transaction.flowOption">
+          <replace>WSDLDriven</replace>
+        </property>
+      </binding>
+    </reference>
+    <reference name="DBDocumento">
+      <property name="jca.retry.count">
+        <replace>4</replace>
+      </property>
+      <property name="jca.retry.interval">
+        <replace>1</replace>
+      </property>
+      <property name="jca.retry.backoff">
+        <replace>2</replace>
+      </property>
+      <property name="jca.retry.maxInterval">
+        <replace>120</replace>
+      </property>
+      <binding type="jca"/>
+    </reference>
+    <reference name="ParseoDocService">
+      <!--Add search and replace rules for the binding properties-->
+      <binding type="ws">
+        <attribute name="port">
+          <replace>http://ws.gpa.qualitas.mx/#wsdl.endpoint(ProrrateoSvc/ProrrateoSvcPort)</replace>
+        </attribute>
+        <attribute name="location">
+          <replace>http://11.50.0.21:8001/GPACommonsBasic/ProrrateoSvcPort?WSDL</replace>
+        </attribute>
+        <property name="weblogic.wsee.wsat.transaction.flowOption">
+          <replace>WSDLDriven</replace>
+        </property>
+      </binding>
+    </reference>
+    <reference name="GuardarOrdenService">
+      <!--Add search and replace rules for the binding properties-->
+      <binding type="ws">
+        <attribute name="port">
+          <replace>http://qualitas.com.mx/Comunes/gestionOrdenPagoBPEL/v1/#wsdl.endpoint(gestionordenpago_client_ep/gestionOrdenPagoBPELPort)</replace>
+        </attribute>
+        <attribute name="location">
+          <replace>http://11.50.0.22:7007/soa-infra/services/GPADomain/GestionOrdenPago/gestionordenpago_client_ep?wsdl</replace>
+        </attribute>
+        <property name="weblogic.wsee.wsat.transaction.flowOption">
+          <replace>WSDLDriven</replace>
+        </property>
+      </binding>
+    </reference>
+  </composite>
+  <!--To configure monitor.config: 
+	<property name="enabled"><replace>true</replace></property>
+	<property name="dataObjectsFolder"><searchReplace><search>mydev</search><replace>myproduction</replace></searchReplace></property>
+	
+	sample properties to configure for adapter: 
+	<jca:property name="QueueName"><replace>medmq1</replace></jca:property>
+	
+	To add search and replace rules for wsdls, xsd and jca files
+	Example:
+	<searchReplace>
+		<search>http://my-dev-server</search>
+		<replace>http://my-test-server</replace>
+	<searchReplace>
+	<searchReplace>
+		<search>8888</search>
+		<replace>8889</replace>
+	<searchReplace>
+	-->
+  <wsdlAndSchema name="Adapters/DBDocumento_db.jca|Schemas/DBDocumento.xsd|Schemas/objetosComunes.xsd|Schemas/ordenPagoProrrateo.xsd|WSDLs/DBDocumento.wsdl|WSDLs/OrdenPagoProrrateoBPEL.wsdl|WSDLs/ProrrateoSvcWrapper.wsdl">
+    <searchReplace>
+      <search>http://11.50.0.20</search>
+      <replace>http://35.163.153.196</replace>
+    </searchReplace>
+    <searchReplace>
+      <search>http://11.50.0.22</search>
+      <replace>http://35.163.153.196</replace>
+    </searchReplace>
+    <searchReplace>
+      <search>7007</search>
+      <replace>7003</replace>
+    </searchReplace>
+    <searchReplace>
+      <search>http://11.50.0.21</search>
+      <replace>http://35.163.153.196</replace>
+    </searchReplace>
+    <searchReplace>
+      <search>8001</search>
+      <replace>7001</replace>
+    </searchReplace>
+    <!--searchReplace>
+      <search>http://11.50.0.20:7007/soa-infra/services/GPADomain/GestionArchivoProrrateoPrj/gestionarchivoprorrateobpel_client?wsdl</search>
+      <replace>http://54.68.90.158:9003/soa-infra/services/GPADomain/GestionArchivoProrrateoPrj/gestionarchivoprorrateobpel_client?wsdl</replace>
+    </searchReplace>
+    <searchReplace>
+      <search>http://11.50.0.21:8001/GPACommonsBasic/ProrrateoSvcPort?WSDL</search>
+      <replace>http://54.68.90.158:9005/GPACommonsBasic/ProrrateoSvcPort?WSDL</replace>
+    </searchReplace>
+    <searchReplace>
+      <search>http://11.50.0.22:7007/soa-infra/services/GPADomain/GestionOrdenPago/gestionordenpago_client_ep?wsdl</search>
+      <replace>http://54.68.90.158:9003/soa-infra/services/GPADomain/GestionOrdenPago/gestionordenpago_client_ep?wsdl</replace>
+    </searchReplace-->
+  </wsdlAndSchema>
+</SOAConfigPlan>

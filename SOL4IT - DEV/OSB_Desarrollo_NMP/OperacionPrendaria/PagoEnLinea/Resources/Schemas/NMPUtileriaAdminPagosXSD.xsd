@@ -1,0 +1,228 @@
+<xs:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos" elementFormDefault="qualified" attributeFormDefault="qualified" xmlns:NMPAdminPago="http://servicios.montedepiedad.com.mx/NMP/Schema/UtileriaAdminPagos" xmlns:NMPPartidaSaldos="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidaSaldos" xmlns:NMPOperacionPago="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPOperacionPago" xmlns:NMPFile="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPFileType" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidaSaldos" schemaLocation="NMPPartidaSaldoTiposXSD.xsd"/>
+  <xs:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPOperacionPago" schemaLocation="NMPOperacionPagoTipoXSD.xsd"/>
+  <xs:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPFileType" schemaLocation="NMPFileTiposXSD.xsd"/>
+  <xs:element name="registrarTransaccionConsultaRequest" type="NMPAdminPago:NmpAdminPagosBitTCollection"/>
+  <xs:element name="registrarTransaccionConsultaResponse" type="NMPAdminPago:adminPagosResponseType"/>
+  <xs:element name="registrarTransaccionPagoBitRequest" type="NMPAdminPago:nmpTransaccionPagoCollection"/>
+  <xs:element name="registrarTransaccionPagoBitResponse" type="NMPAdminPago:adminPagosResponseType"/>
+  <xs:element name="actualizarTransaccionPagoRequest" type="NMPAdminPago:nmpTransaccionPagoCollection"/>
+  <xs:element name="actualizarTransaccionPagoResponse" type="NMPAdminPago:adminPagosResponseType"/>
+  <xs:element name="consultarTransaccionPagoRequest" type="NMPAdminPago:nmpTransaccionPagoPrimaryKey"/>
+  <xs:element name="consultarTransaccionPagoResponse" type="NMPAdminPago:nmpTransaccionPagoCollection"/>
+  <xs:element name="validarTransaccionPagoRequest" type="NMPAdminPago:nmpTransaccionPagoPrimaryKey"/>
+  <xs:element name="validarTransaccionPagoResponse" type="NMPAdminPago:validarTransaccionResponseType"/>
+  <xs:element name="validarTransaccionBancoRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="NMPAdminPago:transaccionBancaria"/>
+        <xs:element ref="NMPAdminPago:nombreBanco"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="validarTransaccionBancoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="transaccion">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="estado" type="xs:string"/>
+              <xs:element name="codigoAutorizacion" type="xs:string"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="registrarTransaccionPagoRequest" type="NMPAdminPago:setOperacionRequestType"/>
+  <xs:element name="registrarTransaccionPagoResponse">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="NMPAdminPago:adminPagosResponseType"/>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="consultarInformacionPartidaRequest" type="NMPAdminPago:getPartidaRequestType"/>
+  <xs:element name="consultarInformacionPartidaResponse" type="NMPAdminPago:getPartidaResponseType"/>
+  <xs:element name="rechazarOperacionRequest" type="NMPAdminPago:rejectOperacionRequestType"/>
+  <xs:element name="rechazarOperacionResponse" type="NMPAdminPago:adminPagosResponseType"/>
+  <xs:element name="obtenerComprobantesRequest" type="NMPAdminPago:getComprobantesRequestType"/>
+  <xs:element name="obtenerComprobantesResponse" type="NMPAdminPago:getComprobantesResponseType"/>
+  <xs:element name="transaccionBancaria" type="NMPAdminPago:string100"/>
+  <xs:element name="estadoTransaccion" type="NMPAdminPago:string30"/>
+  <xs:element name="nombreBanco" type="NMPAdminPago:nombreBancoType"/>
+  <xs:element name="fechaCreacion" type="xs:dateTime"/>
+  <!--Inicio Elementos para servicios de Monte de piedad-->
+  <xs:complexType name="setOperacionRequestType">
+    <xs:sequence>
+      <xs:element name="operacion">
+        <xs:complexType>
+          <xs:complexContent>
+            <xs:extension base="NMPOperacionPago:OperacionPagoType">
+              <xs:attribute name="registrarBitacora" default="false" type="xs:boolean"/>
+            </xs:extension>
+          </xs:complexContent>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="adminPagosResponseType">
+    <xs:sequence>
+      <xs:element name="respuesta">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="codigo" type="xs:string"/>
+            <xs:element name="mensaje" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getPartidaRequestType">
+    <xs:sequence>
+      <xs:element name="folio" type="xs:long"/>
+    </xs:sequence>
+    <xs:attribute name="registrarBitacora" type="xs:boolean" default="false"/>
+  </xs:complexType>
+  <xs:complexType name="getPartidaResponseType">
+    <xs:sequence>
+      <xs:element name="partidaSaldos" type="NMPPartidaSaldos:PartidaSaldosType"/>
+      <xs:element name="cliente">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="nombre" type="xs:string"/>
+            <xs:element name="apellidoPaterno" type="xs:string"/>
+            <xs:element name="apellidoMaterno" type="xs:string"/>
+            <xs:element name="correoElectronico" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="rejectOperacionRequestType">
+    <xs:sequence>
+      <xs:element name="operacion">
+        <xs:complexType>
+          <xs:complexContent>
+            <xs:extension base="NMPOperacionPago:OperacionPagoType">
+              <xs:attribute name="registrarBitacora" type="xs:boolean" default="false"/>
+            </xs:extension>
+          </xs:complexContent>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getComprobantesRequestType">
+    <xs:sequence>
+      <xs:element name="serieImporte" type="xs:long"/>
+    </xs:sequence>
+    <xs:attribute name="registrarBitacora" default="false" type="xs:string"/>
+  </xs:complexType>
+  <xs:complexType name="getComprobantesResponseType">
+    <xs:sequence>
+      <xs:element name="comprobantesList" type="NMPFile:FileList"/>
+    </xs:sequence>
+  </xs:complexType>
+  <!--Fin-->
+  <xs:complexType name="NmpAdminPagosBitTCollection">
+    <xs:sequence>
+      <xs:element name="NmpAdminPagosBitT" type="NMPAdminPago:NmpAdminPagosBitT" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="NmpAdminPagosBitT">
+    <xs:sequence>
+      <xs:element name="idSeq" type="xs:decimal" nillable="true"/>
+      <xs:element name="numContrato" type="xs:decimal"/>
+      <xs:element name="hrConsultaContrato" type="xs:dateTime" minOccurs="0" nillable="true"/>
+      <xs:element name="hrRegistroPago" type="xs:dateTime" minOccurs="0" nillable="true"/>
+      <xs:element name="tipoOperacion" type="xs:decimal"/>
+      <xs:element name="importe" type="xs:decimal" minOccurs="0" nillable="true"/>
+      <xs:element name="numTransaccion" type="xs:decimal"/>
+      <xs:element name="numAutorizacion" type="xs:string" minOccurs="0" nillable="true"/>
+      <xs:element name="numOperacion" type="NMPAdminPago:string13" minOccurs="0" nillable="true"/>
+      <xs:element name="operacionAutorizada" type="NMPAdminPago:string3" minOccurs="0" nillable="true"/>
+      <xs:element name="operacion" type="NMPAdminPago:string50" minOccurs="0" nillable="true"/>
+      <xs:element name="isCache" type="xs:string" minOccurs="0" nillable="true"/>
+      <xs:element name="numTarjeta" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="nmpTransaccionPagoCollection">
+    <xs:sequence>
+      <xs:element name="NmpTransaccionPago" type="NMPAdminPago:nmpTransaccionPago" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="preregistro" type="xs:boolean" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="nmpTransaccionPago">
+    <xs:sequence>
+      <xs:element ref="NMPAdminPago:transaccionBancaria"/>
+      <xs:element name="operacionServicio" type="NMPAdminPago:string30" minOccurs="0" nillable="true"/>
+      <xs:element name="numTransaccion" type="xs:decimal" minOccurs="0" nillable="true"/>
+      <xs:element name="importe" type="xs:decimal" minOccurs="0" nillable="true"/>
+      <xs:element name="numAutorizacion" type="xs:string" minOccurs="0" nillable="true"/>
+      <xs:element name="operacionAutorizada" type="xs:string" minOccurs="0" nillable="true"/>
+      <xs:element name="origen" type="xs:string" minOccurs="0" nillable="true"/>
+      <xs:element name="numTarjeta" type="NMPAdminPago:string30" minOccurs="0" nillable="true"/>
+      <xs:element name="folioPartida" minOccurs="0" type="xs:int"/>
+      <xs:element name="idOperacion" type="xs:int" minOccurs="0"/>
+      <xs:element minOccurs="0" ref="NMPAdminPago:estadoTransaccion"/>
+      <xs:element name="numReintentos" type="xs:decimal" minOccurs="0" nillable="true"/>
+      <xs:element name="correoElectronico" type="NMPAdminPago:string100" minOccurs="0" nillable="true"/>
+      <xs:element name="procesado" minOccurs="0" type="xs:int"/>
+      <xs:element name="estadoBanco" minOccurs="0" type="xs:string"/>
+      <xs:element name="descripcionError" type="xs:string" minOccurs="0"/>
+      <xs:element name="creadoPor" type="NMPAdminPago:string30" minOccurs="0" nillable="true"/>
+      <xs:element minOccurs="0" ref="NMPAdminPago:fechaCreacion"/>
+      <xs:element name="actualizadoPor" type="NMPAdminPago:string30" minOccurs="0" nillable="true"/>
+      <xs:element name="fechaActualizacion" type="xs:dateTime" minOccurs="0" nillable="true"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="nmpTransaccionPagoPrimaryKey">
+    <xs:sequence>
+      <xs:element name="folioPartida" type="xs:string" minOccurs="1" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="validarTransaccionResponseType">
+    <xs:sequence>
+      <xs:element name="transaccion" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="NMPAdminPago:transaccionBancaria"/>
+            <xs:element ref="NMPAdminPago:estadoTransaccion"/>
+            <xs:element ref="NMPAdminPago:fechaCreacion"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="resultado" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:simpleType name="string13">
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="13"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="string3">
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="3"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="string50">
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="50"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="string100">
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="100"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="string30">
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="30"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="nombreBancoType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="BANAMEX"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

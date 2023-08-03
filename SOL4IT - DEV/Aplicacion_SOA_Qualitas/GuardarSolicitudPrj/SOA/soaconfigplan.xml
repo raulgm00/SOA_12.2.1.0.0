@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SOAConfigPlan xmlns:jca="http://platform.integration.oracle/blocks/adapter/fw/metadata" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:orawsp="http://schemas.oracle.com/ws/2006/01/policy" xmlns:edl="http://schemas.oracle.com/events/edl" xmlns="http://schemas.oracle.com/soa/configplan">
+   <composite name="GuardarSolicitudPrj">
+      <import>
+         <searchReplace>
+            <search>http://localhost</search>
+            <replace>http://11.50.0.20</replace>
+         </searchReplace>
+         <searchReplace>
+            <search>7101</search>
+            <replace>7007</replace>
+         </searchReplace>
+      </import>
+      <service name="guardarsolicitudbpel_client_ep">
+         <binding type="ws">
+            <attribute name="port">
+               <replace>http://qualitas.com.mx/GuardarSolicitudApp/GuardarSolicitudPrj/GuardarSolicitudBPEL#wsdl.endpoint(guardarsolicitudbpel_client_ep/GuardarSolicitudBPEL_pt)</replace>
+            </attribute>
+         </binding>
+      </service>
+      <property name="productVersion">
+         <replace>12.2.1.1.0.160608</replace>
+      </property>
+      <property name="compositeID">
+         <replace>f7af171e-ad4b-42b9-8db2-dc73d719be69</replace>
+      </property>
+      <component name="GuardarSolicitudBPEL">
+         <property name="bpel.config.transaction">
+            <replace>required</replace>
+         </property>
+      </component>
+      <reference name="SPactualizarSolicitudDB">
+         <property name="jca.retry.count">
+            <replace>4</replace>
+         </property>
+         <property name="jca.retry.interval">
+            <replace>1</replace>
+         </property>
+         <property name="jca.retry.backoff">
+            <replace>2</replace>
+         </property>
+         <property name="jca.retry.maxInterval">
+            <replace>120</replace>
+         </property>
+         <binding type="jca"/>
+      </reference>
+      <reference name="SPGuardarImportesPL">
+         <binding type="ws">
+            <attribute name="port">
+               <replace>http://qualitas.com.mx/CrearServicioApp/CrearServicioPrj/CrearServicioBPEL#wsdl.endpoint(crearserviciobpel_client_ep/CrearServicioBPEL_pt)</replace>
+            </attribute>
+            <attribute name="location">
+               <replace>http://11.50.0.20:7007/soa-infra/services/GPADomain/CrearServicioPrj/crearserviciobpel_client_ep?WSDL</replace>
+            </attribute>
+         </binding>
+      </reference>
+      <reference name="SPGuardarImportesDB">
+         <property name="jca.retry.count">
+            <replace>4</replace>
+         </property>
+         <property name="jca.retry.interval">
+            <replace>1</replace>
+         </property>
+         <property name="jca.retry.backoff">
+            <replace>2</replace>
+         </property>
+         <property name="jca.retry.maxInterval">
+            <replace>120</replace>
+         </property>
+         <binding type="jca"/>
+      </reference>
+   </composite>
+   <wsdlAndSchema name="Adapters/SPactualizarSolicitudDB_db.jca|Adapters/SPGuardarImportesDB_db.jca|Schemas/GuardarSolicitud.xsd|Schemas/ImportesOEN.xsd|Schemas/objetosComunes.xsd|Schemas/SPactualizarSolicitudDB_sp.xsd|Schemas/TipoServicio.xsd|Schemas/TipoServicioData.xsd|Schemas/SPGuardarImportesDB_sp.xsd|WSDLs/GuardarSolicitudBPEL.wsdl|WSDLs/SPactualizarSolicitudDB.wsdl|WSDLs/SPGuardarImportesDB.wsdl">
+      <searchReplace>
+         <search/>
+         <replace/>
+      </searchReplace>
+   </wsdlAndSchema>
+</SOAConfigPlan>

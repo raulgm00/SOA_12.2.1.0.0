@@ -1,0 +1,132 @@
+<wsdl:definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Service/Utileria/OpenTextSvc" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Service/Utileria/OpenTextSvc" xmlns:op="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/OpenTextSvc" schemaLocation="../Schemas/NMPAdministraDocumentosXSD.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="almacenaDocumentoRequest">
+    <wsdl:part name="request" element="op:almacenaDocumentoRequest"/>
+  </wsdl:message>
+  <wsdl:message name="almacenaDocumentoResponse">
+    <wsdl:part name="response" element="op:almacenaDocumentoResponse"/>
+  </wsdl:message>
+  <wsdl:message name="autenticacionRequest">
+    <wsdl:part name="request" element="op:autenticacionRequest"/>
+  </wsdl:message>
+  <wsdl:message name="autenticacionResponse">
+    <wsdl:part name="response" element="op:autenticacionResponse"/>
+  </wsdl:message>
+  <wsdl:message name="getIdNodoRequest">
+    <wsdl:part name="request" element="op:getIdNodoRequest"/>
+  </wsdl:message>
+  <wsdl:message name="getIdNodoResponse">
+    <wsdl:part name="response" element="op:getIdNodoResponse"/>
+  </wsdl:message>
+  <wsdl:message name="uploadDocumentoRequest">
+    <wsdl:part name="request" element="op:uploadDocumentoRequest"/>
+  </wsdl:message>
+  <wsdl:message name="uploadDocumentoResponse">
+    <wsdl:part name="response" element="op:uploadDocumentoResponse"/>
+  </wsdl:message>
+  <wsdl:message name="NMPHeaderRequest">
+    <wsdl:part name="header" element="NMPsh:headerMessage"/>
+  </wsdl:message>
+  <wsdl:message name="NMPHeaderResponse">
+    <wsdl:part name="header" element="NMPsh:headerMessageResponse"/>
+  </wsdl:message>
+  <wsdl:message name="customHeaderRequest">
+    <wsdl:part name="header" element="op:customHeader"/>
+  </wsdl:message>
+  <wsdl:message name="NMPFaultMessage">
+    <wsdl:part name="error" element="NMPsm:messageError"/>
+  </wsdl:message>
+  <wsdl:message name="crearCarpetaRequest">
+    <wsdl:part name="req" element="op:crearCarpetaRequest"/>
+  </wsdl:message>
+  <wsdl:message name="crearCarpetaResponse">
+    <wsdl:part name="res" element="op:crearCarpetaResponse"/>
+  </wsdl:message>
+  <wsdl:portType name="OpenTextAdminDoctosPType">
+    <wsdl:operation name="autenticacionToken">
+      <wsdl:input message="tns:autenticacionRequest"/>
+      <wsdl:output message="tns:autenticacionResponse"/>
+      <wsdl:fault message="tns:NMPFaultMessage" name="Fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="getIdNodo">
+      <wsdl:input message="tns:getIdNodoRequest"/>
+      <wsdl:output message="tns:getIdNodoResponse"/>
+      <wsdl:fault message="tns:NMPFaultMessage" name="Fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="uploadDocumento">
+      <wsdl:input message="tns:uploadDocumentoRequest"/>
+      <wsdl:output message="tns:uploadDocumentoResponse"/>
+      <wsdl:fault message="tns:NMPFaultMessage" name="Fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="crearCarpeta">
+      <wsdl:input message="tns:crearCarpetaRequest"/>
+      <wsdl:output message="tns:crearCarpetaResponse"/>
+      <wsdl:fault message="tns:NMPFaultMessage" name="Fault"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="OpenTextAdminDoctosSOAP11Binding" type="tns:OpenTextAdminDoctosPType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="autenticacionToken">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/OpenTextSvc/autenticacionToken"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="request"/>
+        <soap:header message="tns:NMPHeaderRequest" part="header" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="response"/>
+      </wsdl:output>
+      <wsdl:fault name="Fault">
+        <soap:fault name="Fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getIdNodo">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/OpenTextSvc/getIdNodo"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="request"/>
+        <soap:header message="tns:NMPHeaderRequest" part="header" use="literal"/>
+        <soap:header message="tns:customHeaderRequest" part="header" use="literal" wsdl:required="true"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="response"/>
+      </wsdl:output>
+      <wsdl:fault name="Fault">
+        <soap:fault name="Fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="uploadDocumento">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/OpenTextSvc/uploadDocumento"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="request"/>
+        <soap:header message="tns:NMPHeaderRequest" part="header" use="literal"/>
+        <soap:header message="tns:customHeaderRequest" part="header" use="literal" wsdl:required="true"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="response"/>
+      </wsdl:output>
+      <wsdl:fault name="Fault">
+        <soap:fault name="Fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="crearCarpeta">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/OpenTextSvc/crearCarpeta"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="req"/>
+        <soap:header message="tns:NMPHeaderRequest" part="header" use="literal"/>
+        <soap:header message="tns:customHeaderRequest" part="header" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="res"/>
+        <soap:header message="tns:NMPHeaderResponse" part="header" use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="Fault">
+        <soap:fault name="Fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+</wsdl:definitions>

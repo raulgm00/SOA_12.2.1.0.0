@@ -1,0 +1,156 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wsdl:definitions name="PagosService" targetNamespace="http://service.pagos.qualitas.com.mx/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://service.pagos.qualitas.com.mx/">
+   <wsdl:types>
+      <xs:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://service.pagos.qualitas.com.mx/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://service.pagos.qualitas.com.mx/" attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://service.pagos.qualitas.com.mx/">
+         <xs:complexType name="ordenPago">
+            <xs:sequence>
+               <xs:element minOccurs="0" name="cheqCert" type="xs:string"/>
+               <xs:element minOccurs="0" name="ctaPagos" type="tns:ctaPagos"/>
+               <xs:element minOccurs="0" name="cveBen" type="xs:string"/>
+               <xs:element minOccurs="0" name="monePag" type="xs:string"/>
+               <xs:element minOccurs="0" name="observ" type="xs:string"/>
+               <xs:element minOccurs="0" name="ofnaPag" type="xs:string"/>
+               <xs:element minOccurs="0" name="tipBen" type="xs:string"/>
+               <xs:element minOccurs="0" name="usuario" type="xs:string"/>
+            </xs:sequence>
+         </xs:complexType>
+         <xs:complexType name="ctaPagos">
+            <xs:sequence>
+               <xs:element maxOccurs="unbounded" minOccurs="0" name="ctaPago" type="tns:ctaPago"/>
+            </xs:sequence>
+         </xs:complexType>
+         <xs:complexType name="ctaPago">
+            <xs:sequence>
+               <xs:element minOccurs="0" name="ctaPag" type="xs:string"/>
+               <xs:element minOccurs="0" name="cveOficinaMov" type="xs:string"/>
+               <xs:element minOccurs="0" name="descMov" type="xs:string"/>
+               <xs:element minOccurs="0" name="importe" type="xs:string"/>
+               <xs:element minOccurs="0" name="tipMov" type="xs:string"/>
+               <xs:element minOccurs="0" name="varCta" type="xs:string"/>
+            </xs:sequence>
+         </xs:complexType>
+         <xs:complexType name="respuestaOrdenPago">
+            <xs:sequence>
+               <xs:element minOccurs="0" name="codigo" type="xs:string"/>
+               <xs:element minOccurs="0" name="mensaje" type="xs:string"/>
+               <xs:element minOccurs="0" name="numOrdenPago" type="xs:string"/>
+            </xs:sequence>
+         </xs:complexType>
+         <xs:complexType name="cancelaOrden">
+            <xs:sequence>
+               <xs:element minOccurs="0" name="numOP" type="xs:string"/>
+               <xs:element minOccurs="0" name="usuario" type="xs:string"/>
+            </xs:sequence>
+         </xs:complexType>
+         <xs:complexType name="respuesta">
+            <xs:sequence>
+               <xs:element minOccurs="0" name="codigo" type="xs:string"/>
+               <xs:element minOccurs="0" name="mensaje" type="xs:string"/>
+            </xs:sequence>
+         </xs:complexType>
+         <xs:element name="generaOrden" type="tns:generaOrden"/>
+         <xs:complexType name="generaOrden">
+            <xs:sequence>
+               <xs:element minOccurs="0" name="OrdenPago" type="tns:ordenPago"/>
+            </xs:sequence>
+         </xs:complexType>
+         <xs:element name="generaOrdenResponse" type="tns:generaOrdenResponse"/>
+         <xs:complexType name="generaOrdenResponse">
+            <xs:sequence>
+               <xs:element minOccurs="0" name="RespuestaOrdenPago" type="tns:respuestaOrdenPago"/>
+            </xs:sequence>
+         </xs:complexType>
+         <xs:element name="cancelaOrdenPago" type="tns:cancelaOrdenPago"/>
+         <xs:complexType name="cancelaOrdenPago">
+            <xs:sequence>
+               <xs:element minOccurs="0" name="CancelaOrden" type="tns:cancelaOrden"/>
+            </xs:sequence>
+         </xs:complexType>
+         <xs:element name="cancelaOrdenPagoResponse" type="tns:cancelaOrdenPagoResponse"/>
+         <xs:complexType name="cancelaOrdenPagoResponse">
+            <xs:sequence>
+               <xs:element minOccurs="0" name="RespuestaCancelacion" type="tns:respuesta"/>
+            </xs:sequence>
+         </xs:complexType>
+         <xs:element name="consultaOrdenPago" type="tns:consultaOrdenPago"/>
+         <xs:complexType name="consultaOrdenPago">
+            <xs:sequence>
+               <xs:element minOccurs="0" name="NumOP" type="xs:string"/>
+            </xs:sequence>
+         </xs:complexType>
+         <xs:element name="consultaOrdenPagoResponse" type="tns:consultaOrdenPagoResponse"/>
+         <xs:complexType name="consultaOrdenPagoResponse">
+            <xs:sequence>
+               <xs:element minOccurs="0" name="RespuestaConsulta" type="tns:respuesta"/>
+            </xs:sequence>
+         </xs:complexType>
+      </xs:schema>
+   </wsdl:types>
+   <wsdl:message name="generaOrden">
+      <wsdl:part name="parameters" element="ns1:generaOrden"/>
+   </wsdl:message>
+   <wsdl:message name="generaOrdenResponse">
+      <wsdl:part name="parameters" element="ns1:generaOrdenResponse"/>
+   </wsdl:message>
+   <wsdl:message name="cancelaOrdenPago">
+      <wsdl:part name="parameters" element="ns1:cancelaOrdenPago"/>
+   </wsdl:message>
+   <wsdl:message name="cancelaOrdenPagoResponse">
+      <wsdl:part name="parameters" element="ns1:cancelaOrdenPagoResponse"/>
+   </wsdl:message>
+   <wsdl:message name="consultaOrdenPago">
+      <wsdl:part name="parameters" element="ns1:consultaOrdenPago"/>
+   </wsdl:message>
+   <wsdl:message name="consultaOrdenPagoResponse">
+      <wsdl:part name="parameters" element="ns1:consultaOrdenPagoResponse"/>
+   </wsdl:message>
+   <wsdl:portType name="PagosService">
+      <wsdl:operation name="generaOrden">
+         <wsdl:input name="generaOrden" message="ns1:generaOrden"/>
+         <wsdl:output name="generaOrdenResponse" message="ns1:generaOrdenResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="cancelaOrdenPago">
+         <wsdl:input name="cancelaOrdenPago" message="ns1:cancelaOrdenPago"/>
+         <wsdl:output name="cancelaOrdenPagoResponse" message="ns1:cancelaOrdenPagoResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="consultaOrdenPago">
+         <wsdl:input name="consultaOrdenPago" message="ns1:consultaOrdenPago"/>
+         <wsdl:output name="consultaOrdenPagoResponse" message="ns1:consultaOrdenPagoResponse"/>
+      </wsdl:operation>
+   </wsdl:portType>
+   <wsdl:binding name="PagosServiceSoapBinding" type="ns1:PagosService">
+      <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdl:operation name="generaOrden">
+         <soap:operation style="document" soapAction=""/>
+         <wsdl:input name="generaOrden">
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output name="generaOrdenResponse">
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="cancelaOrdenPago">
+         <soap:operation style="document" soapAction=""/>
+         <wsdl:input name="cancelaOrdenPago">
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output name="cancelaOrdenPagoResponse">
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="consultaOrdenPago">
+         <soap:operation style="document" soapAction=""/>
+         <wsdl:input name="consultaOrdenPago">
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output name="consultaOrdenPagoResponse">
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+   <wsdl:service name="PagosServiceService">
+      <wsdl:port name="PagosServicePort" binding="ns1:PagosServiceSoapBinding">
+         <soap:address location="http://11.50.0.73:9010/pagos-web/servicios/pagosService"/>
+      </wsdl:port>
+   </wsdl:service>
+</wsdl:definitions>

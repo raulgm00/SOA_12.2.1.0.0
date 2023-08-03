@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="OperacionPrendaria/Partidas/Resources/WSDLs/NMPPartidasQueueSvcWSDL"/>
+            <con:binding>
+                <con:name>PartidasQueueBinding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Servicios/NMPPartidasQueue</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:tracingEnabled>true</oper:tracingEnabled>
+            <oper:monitoring enabled="true" level="service" aggregationInterval="10"/>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router errorHandler="error-af10088.N6c7317d1.0.15d52d5bcf3.N7b18">
+        <con:pipeline type="request" name="request-af10c31.54e14b43.0.15d1db89a49.N7002">
+            <con:stage id="_StageId-af004e6.325dceeb.0.15d3db294c1.N7ffe" name="StageQueue">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+                    <con1:userNsDecl prefix="seg" namespace="http://www.bea.com/wli/sb/services/security/config"/>
+                    <con1:userNsDecl prefix="nmph" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="body_tmp">
+                        <con1:id>_ActionId-af10c31.46c01acf.0.15de1f090e5.N7ca8</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$body</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:assign varName="numPartidas">
+                        <con1:id>_ActionId-af10088.N6c7317d1.0.15d52d5bcf3.N7c2e</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>xs:int(fn:count($body/nmp:obtenerPartidasClienteResponse/nmp:partidas/nmp:partida))</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:assign varName="puerto">
+                        <con1:id>_ActionId-af10c31.N78b5a8b1.0.15d85190c0a.N7c03</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>dvm:lookupValue('OperacionPrendaria/Partidas/Resources/DVMs/ConfiguracionServicioPartidas', 'Llave','Puerto','Valor1', '16865',('Parametro','Queue'))</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:assign varName="servidor">
+                        <con1:id>_ActionId-af10c31.N78b5a8b1.0.15d85190c0a.N7c00</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>dvm:lookupValue('OperacionPrendaria/Partidas/Resources/DVMs/ConfiguracionServicioPartidas', 'Llave','Servidor','Valor1', 'sl-us-south-1-portal.0.dblayer.com',('Parametro','Queue'))</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:assign varName="contextoURL">
+                        <con1:id>_ActionId-af10c31.N78b5a8b1.0.15d85190c0a.N7bfd</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>dvm:lookupValue('OperacionPrendaria/Partidas/Resources/DVMs/ConfiguracionServicioPartidas', 'Llave','ContextoURL','Valor1', 'bmix-dal-yp-793e8944-9402-421f-a2f7-292e283c4412',('Parametro','Queue'))</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-af10088.N6c7317d1.0.15d52d5bcf3.N7c27</con1:id>
+                        <con2:case id="_BranchId-af10088.N6c7317d1.0.15d52d5bcf3.N7c26">
+                            <con2:condition>
+                                <con1:xqueryText>xs:int($numPartidas) > 0 and xs:int($numPartidas) &lt; 21</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:assign varName="nombreQueue">
+                                    <con1:id>_ActionId-af10088.N6c7317d1.0.15d52d5bcf3.N7c22</con1:id>
+                                    <con2:expr>
+                                        <con1:xqueryText>dvm:lookupValue('OperacionPrendaria/Partidas/Resources/DVMs/ConfiguracionServicioPartidas', 'Llave','1','Valor1', '0',('Parametro','Queue'))</con1:xqueryText>
+                                    </con2:expr>
+                                </con2:assign>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:case id="_BranchId-af10088.N6c7317d1.0.15d52d5bcf3.N7c20">
+                            <con2:condition>
+                                <con1:xqueryText>xs:int($numPartidas) > 20 and xs:int($numPartidas) &lt; 101</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:assign varName="nombreQueue">
+                                    <con1:id>_ActionId-af10088.N6c7317d1.0.15d52d5bcf3.N7bec</con1:id>
+                                    <con2:expr>
+                                        <con1:xqueryText>dvm:lookupValue('OperacionPrendaria/Partidas/Resources/DVMs/ConfiguracionServicioPartidas', 'Llave','2','Valor1', '0',('Parametro','Queue'))</con1:xqueryText>
+                                    </con2:expr>
+                                </con2:assign>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:case id="_BranchId-af10088.N6c7317d1.0.15d52d5bcf3.N7bea">
+                            <con2:condition>
+                                <con1:xqueryText>xs:int($numPartidas) > 100</con1:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:assign varName="nombreQueue">
+                                    <con1:id>_ActionId-af10088.N6c7317d1.0.15d52d5bcf3.N7bb6</con1:id>
+                                    <con2:expr>
+                                        <con1:xqueryText>dvm:lookupValue('OperacionPrendaria/Partidas/Resources/DVMs/ConfiguracionServicioPartidas', 'Llave','3','Valor1', '0',('Parametro','Queue'))</con1:xqueryText>
+                                    </con2:expr>
+                                </con2:assign>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default/>
+                    </con2:ifThenElse>
+                    <con6:assign varName="credenciales" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con4="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con5="http://www.bea.com/wli/sb/stages/publish/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/alert/config" xmlns:con6="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-af10088.N6c7317d1.0.15d52d5bcf3.N7b82</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>fn-bea:lookupBasicCredentials('OperacionPrendaria/Partidas/Resources/ServiceAccount/BMIXQueueSA')</con2:xqueryText>
+                        </con1:expr>
+                    </con6:assign>
+                    <con6:assign varName="username" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con4="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con5="http://www.bea.com/wli/sb/stages/publish/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/alert/config" xmlns:con6="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-af10088.N6c7317d1.0.15d52d5bcf3.N7b7f</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$credenciales/seg:username/text()</con2:xqueryText>
+                        </con1:expr>
+                    </con6:assign>
+                    <con6:assign varName="pass" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con4="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con5="http://www.bea.com/wli/sb/stages/publish/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/alert/config" xmlns:con6="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id>_ActionId-af10088.N6c7317d1.0.15d52d5bcf3.N7b7c</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$credenciales/seg:password/text()</con2:xqueryText>
+                        </con1:expr>
+                    </con6:assign>
+                    <con2:assign varName="guid">
+                        <con1:id>_ActionId-a1e030f.N4ad56736.2.15d3df65d04.N8000</con1:id>
+                        <con2:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$header/nmp:trazabilidad/nmp:GUID/text()</con:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:foreach>
+                        <con1:id>_ActionId-af004e6.325dceeb.0.15d3db294c1.N7f34</con1:id>
+                        <con2:variable>body</con2:variable>
+                        <con2:expression>
+                            <con1:xpathText>./nmp:obtenerPartidasClienteResponse/nmp:partidas/nmp:partida</con1:xpathText>
+                        </con2:expression>
+                        <con2:value-variable>partida</con2:value-variable>
+                        <con2:index-variable>indiceP</con2:index-variable>
+                        <con2:total-variable>contadorP</con2:total-variable>
+                        <con2:actions>
+                            <con2:wsCallout xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:con3="http://www.bea.com/wli/sb/stages/routing/config">
+                                <con1:id>_ActionId-af10c31.54e14b43.0.15d1db89a49.N6f71</con1:id>
+                                <con2:service ref="OperacionPrendaria/Partidas/Business Services/MIDASCalendarioSucursalBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                <con2:operation>obtenerDiasInhabilesSucursal</con2:operation>
+                                <con2:request>
+                                    <con2:body wrapped="false">diasInhabilesRequest</con2:body>
+                                    <con2:header/>
+                                </con2:request>
+                                <con2:response>
+                                    <con2:body wrapped="false">diasInhabilesResponse</con2:body>
+                                    <con2:header/>
+                                </con2:response>
+                                <con2:requestTransform>
+                                    <con2:assign varName="diasInhabilesRequest">
+                                        <con1:id>_ActionId-af10c31.54e14b43.0.15d1db89a49.N6f70</con1:id>
+                                        <con2:expr>
+                                            <con1:xqueryText><![CDATA[<urn:obtenerDiasInhabilesSucursal xmlns:urn="urn:mx.com.nmp.midas">
+    <urn:request xmlns:cal="http://nmpcalendariosucursal.schema.nmp.servicios.montedepiedad.com.mx" xmlns:nmp1="http://nmputil.schema.nmp.servicios.montedepiedad.com.mx">      
+        <cal:idSucursal>{$partida/nmp:prenda/nmp:sucursal/text()}</cal:idSucursal>       
+        <cal:rangoFecha>           
+            <nmp1:fechaFin>{$partida/nmp:condiciones/nmp:fechaComercializacion/text()}</nmp1:fechaFin>           
+            <nmp1:fechaInicio>{$partida/nmp:condiciones/nmp:fechaIngreso/text()}</nmp1:fechaInicio>
+        </cal:rangoFecha>
+    </urn:request>
+</urn:obtenerDiasInhabilesSucursal>]]></con1:xqueryText>
+                                        </con2:expr>
+                                    </con2:assign>
+                                </con2:requestTransform>
+                                <con2:responseTransform/>
+                            </con2:wsCallout>
+                            <con2:ifThenElse>
+                                <con1:id>_ActionId-af10c31.3de42731.0.15d9a4249c7.N760e</con1:id>
+                                <con2:case id="_BranchId-af10c31.3de42731.0.15d9a4249c7.N760d">
+                                    <con2:condition>
+                                        <con1:xqueryText>($partida/nmp:condiciones/nmp:numeroMaximoRefrendos - $partida/nmp:condiciones/nmp:numeroRefrendosRealizados) > 0</con1:xqueryText>
+                                    </con2:condition>
+                                    <con2:actions>
+                                        <con2:assign varName="operaciones" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:con3="http://www.bea.com/wli/sb/stages/routing/config">
+                                            <con1:id>_ActionId-af10c31.54e14b43.0.15d1db89a49.N6f03</con1:id>
+                                            <con2:expr>
+                                                <con1:xqueryText><![CDATA[<nmp:operaciones xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas">
+    <nmp:operacion>
+        <nmp:tipoOperacion>6</nmp:tipoOperacion>        
+    </nmp:operacion>
+    <nmp:operacion>
+        <nmp:tipoOperacion>8</nmp:tipoOperacion>        
+    </nmp:operacion>
+</nmp:operaciones>]]></con1:xqueryText>
+                                            </con2:expr>
+                                        </con2:assign>
+                                    </con2:actions>
+                                </con2:case>
+                                <con2:default>
+                                    <con2:assign varName="operaciones" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:con3="http://www.bea.com/wli/sb/stages/routing/config">
+                                        <con1:id>_ActionId-af10c31.3de42731.0.15d9a4249c7.N74f7</con1:id>
+                                        <con2:expr>
+                                            <con1:xqueryText><![CDATA[<nmp:operaciones xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas">
+    <nmp:operacion>
+        <nmp:tipoOperacion>6</nmp:tipoOperacion>        
+    </nmp:operacion>   
+</nmp:operaciones>]]></con1:xqueryText>
+                                        </con2:expr>
+                                    </con2:assign>
+                                </con2:default>
+                            </con2:ifThenElse>
+                            <con2:foreach>
+                                <con1:id>_ActionId-af004e6.325dceeb.0.15d3db294c1.N7f29</con1:id>
+                                <con2:variable>operaciones</con2:variable>
+                                <con2:expression>
+                                    <con1:xpathText>./nmp:operacion</con1:xpathText>
+                                </con2:expression>
+                                <con2:value-variable>operacion</con2:value-variable>
+                                <con2:index-variable>indiceO</con2:index-variable>
+                                <con2:total-variable>contadorO</con2:total-variable>
+                                <con2:actions>
+                                    <con2:assign varName="PartidaCliente" xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:con3="http://www.bea.com/wli/sb/stages/routing/config">
+                                        <con1:id>_ActionId-af10c31.54e14b43.0.15d1db89a49.N6e97</con1:id>
+                                        <con2:expr>
+                                            <con1:xsltTransform>
+                                                <con1:resource ref="OperacionPrendaria/Partidas/Resources/Transformations/TrPartidaClienteToMotorFormulasQueue"/>
+                                                <con1:input>$partida</con1:input>
+                                                <con1:param name="dias">
+                                                    <con1:path>$diasInhabilesResponse</con1:path>
+                                                </con1:param>
+                                                <con1:param name="operacion">
+                                                    <con1:path>$operacion/nmp:tipoOperacion</con1:path>
+                                                </con1:param>
+                                            </con1:xsltTransform>
+                                        </con2:expr>
+                                    </con2:assign>
+                                    <con2:nxsdTranslation>
+                                        <con1:id>_ActionId-af004e6.325dceeb.0.15d3db294c1.N7f24</con1:id>
+                                        <con2:type>XML-To-Native</con2:type>
+                                        <con2:sourceExpr>
+                                            <con1:xqueryText>$PartidaCliente</con1:xqueryText>
+                                        </con2:sourceExpr>
+                                        <con2:nxsd ref="OperacionPrendaria/Partidas/Resources/Schemas/NMPPartidaClienteQueueNXSD"/>
+                                        <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/SchemaNXSD/NMPPartidas">nmp:resolverFormulaAsincronoRequest</con2:schemaElement>
+                                        <con2:assign-variable>partidaClienteJSON</con2:assign-variable>
+                                        <con2:enforceSchemaOrder>false</con2:enforceSchemaOrder>
+                                    </con2:nxsdTranslation>
+                                    <con2:assign varName="partidaClienteQueue">
+                                        <con1:id>_ActionId-af004e6.325dceeb.0.15d3db294c1.N7f21</con1:id>
+                                        <con2:expr>
+                                            <con1:xqueryText>fn-bea:binary-to-text($partidaClienteJSON,'UTF-8')</con1:xqueryText>
+                                        </con2:expr>
+                                    </con2:assign>
+                                    <con2:javaCallout varName="">
+                                        <con1:id>_ActionId-a1e030f.N4ad56736.3.15d420b798b.N8000</con1:id>
+                                        <con2:archive ref="OperacionPrendaria/Partidas/Resources/JARs/publicarMensajesQueueCloud"/>
+                                        <con2:className>publicarmensajesqueuecloud.PublicarPartidasToQueue</con2:className>
+                                        <con2:method>public static void publicarPartidas(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)</con2:method>
+                                        <con2:expr>
+                                            <con1:xqueryText>$username</con1:xqueryText>
+                                        </con2:expr>
+                                        <con2:expr>
+                                            <con1:xqueryText>$pass</con1:xqueryText>
+                                        </con2:expr>
+                                        <con2:expr>
+                                            <con1:xqueryText>$servidor</con1:xqueryText>
+                                        </con2:expr>
+                                        <con2:expr>
+                                            <con1:xqueryText>$puerto</con1:xqueryText>
+                                        </con2:expr>
+                                        <con2:expr>
+                                            <con1:xqueryText>$contextoURL</con1:xqueryText>
+                                        </con2:expr>
+                                        <con2:expr>
+                                            <con1:xqueryText>$nombreQueue</con1:xqueryText>
+                                        </con2:expr>
+                                        <con2:expr>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$nombreQueue</con:xqueryText>
+                                        </con2:expr>
+                                        <con2:expr>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$nombreQueue</con:xqueryText>
+                                        </con2:expr>
+                                        <con2:expr>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$partidaClienteQueue</con:xqueryText>
+                                        </con2:expr>
+                                        <con2:expr>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$guid</con:xqueryText>
+                                        </con2:expr>
+                                        <con2:expr>
+                                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$header/nmp:trazabilidad/nmp:urlCallBack/text()</con:xqueryText>
+                                        </con2:expr>
+                                        <con2:return-param-as-ref>false</con2:return-param-as-ref>
+                                    </con2:javaCallout>
+                                </con2:actions>
+                            </con2:foreach>
+                        </con2:actions>
+                    </con2:foreach>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af10c31.54e14b43.0.15d1db89a49.N7001"/>
+        <con:pipeline type="error" name="error-af10088.N6c7317d1.0.15d52d5bcf3.N7b18">
+            <con:stage id="_StageId-af10088.N6c7317d1.0.15d52d5bcf3.N7b17" name="StageFallos">
+                <con:context>
+                    <con1:userNsDecl prefix="nmpp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPPartidas"/>
+                </con:context>
+                <con:actions>
+                    <con3:report>
+                        <con1:id>_ActionId-af10c31.46c01acf.0.15de1f090e5.N7cab</con1:id>
+                        <con3:expr>
+                            <con1:xqueryText>$body_tmp</con1:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>PublicarPartidaQueue Req GUID</con3:key>
+                            <con3:varName>header</con3:varName>
+                            <con3:value>
+                                <con1:xpathText>./nmpp:trazabilidad/nmpp:GUID</con1:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                        <con3:labels>
+                            <con3:key>Folio</con3:key>
+                            <con3:varName>body_tmp</con3:varName>
+                            <con3:value>
+                                <con1:xpathText>./nmpp:obtenerPartidasClienteResponse/nmpp:partidas/nmpp:partida/nmpp:prenda/nmpp:folio</con1:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                    <con3:report>
+                        <con1:id>_ActionId-af10c31.46c01acf.0.15de1f090e5.N7ca5</con1:id>
+                        <con3:expr>
+                            <con1:xqueryText>$fault</con1:xqueryText>
+                        </con3:expr>
+                        <con3:labels>
+                            <con3:key>PublicarPartidaQueue Fault GUID</con3:key>
+                            <con3:varName>header</con3:varName>
+                            <con3:value>
+                                <con1:xpathText>./nmpp:trazabilidad/nmpp:GUID</con1:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                        <con3:labels>
+                            <con3:key>Folio</con3:key>
+                            <con3:varName>body_tmp</con3:varName>
+                            <con3:value>
+                                <con1:xpathText>./nmpp:obtenerPartidasClienteResponse/nmpp:partidas/nmpp:partida/nmpp:prenda/nmpp:folio</con1:xpathText>
+                            </con3:value>
+                        </con3:labels>
+                    </con3:report>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-af10088.N6c7317d1.0.15d52d5bcf3.N7b14</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="PipelinePairNode1">
+                <con:request>request-af10c31.54e14b43.0.15d1db89a49.N7002</con:request>
+                <con:response>response-af10c31.54e14b43.0.15d1db89a49.N7001</con:response>
+            </con:pipeline-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

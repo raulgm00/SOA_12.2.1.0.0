@@ -1,0 +1,53 @@
+<wsdl:definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Service/Avaluo" xmlns:ca="http://servicios.montedepiedad.com.mx/NMP/Schema/Avaluo" xmlns:nmpsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:nmpsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:soapenc12="http://www.w3.org/2003/05/soap-encoding" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Service/Avaluo" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap11="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc11="http://schemas.xmlsoap.org/soap/encoding/" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">
+  <wsdl:types>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Avaluo" schemaLocation="../Schemas/NMPAvaluoXSD.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="obtenerAvaluoAutoRequest">
+    <wsdl:part name="parameters" element="ca:obtenerAvaluoAuto"/>
+  </wsdl:message>
+  <wsdl:message name="obtenerAvaluoAutoResponse">
+    <wsdl:part name="parameters" element="ca:obtenerAvaluoAutoResponse"/>
+  </wsdl:message>
+  <wsdl:message name="NMPHeaderRequest">
+    <wsdl:part name="headerReq" element="nmpsh:headerMessage"/>
+  </wsdl:message>
+  <wsdl:message name="NMPHeaderResponse">
+    <wsdl:part name="headerRes" element="nmpsh:headerMessageResponse"/>
+  </wsdl:message>
+  <wsdl:message name="NMPFaultMessage">
+    <wsdl:part name="fault" element="nmpsm:messageError"/>
+  </wsdl:message>
+  <wsdl:portType name="AvaluoAutoWSPortType">
+    <wsdl:operation name="obtenerAvaluoAuto">
+      <wsdl:input name="obtenerAvaluoAutoRequest" message="tns:obtenerAvaluoAutoRequest"/>
+      <wsdl:output name="obtenerAvaluoAutoResponse" message="tns:obtenerAvaluoAutoResponse"/>
+      <wsdl:fault name="AvaluoAutoFaultMessage" message="tns:NMPFaultMessage"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="AvaluoAutoWSHttpBinding" type="tns:AvaluoAutoWSPortType">
+    <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="obtenerAvaluoAuto">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="obtenerAvaluoAutoRequest">
+        <wsdlsoap:body use="literal"/>
+        <wsdlsoap:header message="tns:NMPHeaderRequest" part="headerReq" use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="obtenerAvaluoAutoResponse">
+        <wsdlsoap:body use="literal"/>
+        <wsdlsoap:header message="tns:NMPHeaderResponse" part="headerRes" use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="AvaluoAutoFaultMessage">
+        <wsdlsoap:fault name="AvaluoAutoFaultMessage" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="AvaluoAutoWS">
+    <wsdl:port name="AvaluoAutoWSHttpPort" binding="tns:AvaluoAutoWSHttpBinding">
+      <wsdlsoap:address location="http://www.montepiedad.com/AvaluoAuto"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

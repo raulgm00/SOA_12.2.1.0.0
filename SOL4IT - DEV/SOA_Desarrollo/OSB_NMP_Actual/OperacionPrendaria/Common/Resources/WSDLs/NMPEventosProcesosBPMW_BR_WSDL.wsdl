@@ -1,0 +1,49 @@
+<definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/EventProcessOperation" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:epo="http://servicios.montedepiedad.com.mx/NMP/Schema/EventProcessOperation" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Service/EventProcessOperation" xmlns:nmps="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:nmph="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <types>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/EventProcessOperation" schemaLocation="../Schemas/NMPEventosProcesosBRXSD.xsd"/>
+    </xsd:schema>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+    </xsd:schema>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+    </xsd:schema>
+  </types>
+  <message name="EventProcessRequest">
+    <part name="payload" element="epo:EventProcessRequest"/>
+  </message>
+  <message name="EventProcessResponse">
+    <part name="payload" element="epo:EventProcessResponse"/>
+  </message>
+  <message name="MessageFaultStandardNMP">
+    <part name="msg" element="nmps:messageError"/>
+  </message>
+  <message name="HeaderStandardNMP">
+    <part name="header" element="nmph:headerMessage"/>
+  </message>
+  <portType name="EventProcessOperation">
+    <operation name="GetAction">
+      <input message="epo:EventProcessRequest"/>
+      <output message="epo:EventProcessResponse"/>
+      <fault name="GetActionFault" message="epo:MessageFaultStandardNMP"/>
+    </operation>
+  </portType>
+  <binding name="EventProcessOperationSOAP11Binding" type="epo:EventProcessOperation">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="GetAction">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Schema/EventProcessOperation/GetAction"/>
+      <input>
+        <soap:body use="literal" parts="payload"/>
+        <soap:header message="epo:HeaderStandardNMP" part="header" use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="payload"/>
+        <soap:header message="epo:HeaderStandardNMP" part="header" use="literal"/>
+      </output>
+      <fault name="GetActionFault">
+        <soap:fault name="GetActionFault" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+</definitions>

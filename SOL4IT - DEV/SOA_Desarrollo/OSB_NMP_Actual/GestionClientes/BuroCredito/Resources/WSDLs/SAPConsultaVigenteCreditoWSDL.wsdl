@@ -1,0 +1,680 @@
+<wsdl:definitions targetNamespace="urn:sap-com:document:sap:soap:functions:mc-style"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+                  xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+                  xmlns:tns="urn:sap-com:document:sap:soap:functions:mc-style"
+                  xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
+                  xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+                  xmlns:n1="urn:sap-com:document:sap:rfc:functions">
+  <wsdl:documentation>
+<sidl:sidl xmlns:sidl="http://www.sap.com/2007/03/sidl"/>
+</wsdl:documentation>
+  <wsp:UsingPolicy wsdl:required="true"/>
+  <wsp:Policy wsu:Id="BN_ZLM_WS_DETALLE_VIGENTE">
+    <wsaw:UsingAddressing xmlns:wsaw="http://schemas.xmlsoap.org/ws/2004/08/addressing"/>
+    <saptrnbnd:OptimizedXMLTransfer uri="http://xml.sap.com/2006/11/esi/esp/binxml" wsp:Optional="true"
+                                    xmlns:saptrnbnd="http://www.sap.com/webas/710/soap/features/transportbinding/"/>
+    <sapattahnd:Enabled xmlns:sapattahnd="http://www.sap.com/710/features/attachment/">false</sapattahnd:Enabled>
+    <wsp:ExactlyOne xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
+                    xmlns:sapsp="http://www.sap.com/webas/630/soap/features/security/policy"
+                    xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702"
+                    xmlns:wsa="http://www.w3.org/2005/08/addressing"
+                    xmlns:wsu="http://schemas.xmlsoap.org/ws/2002/07/utility"/>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="IF_ZLM_WS_DETALLE_VIGENTE">
+    <sapsession:Session xmlns:sapsession="http://www.sap.com/webas/630/soap/features/session/">
+      <sapsession:enableSession>false</sapsession:enableSession>
+    </sapsession:Session>
+    <sapcentraladmin:CentralAdministration wsp:Optional="true"
+                                           xmlns:sapcentraladmin="http://www.sap.com/webas/700/soap/features/CentralAdministration/">
+      <sapcentraladmin:BusinessApplicationID>E3DA1948DDE97EF1BD4DF8DB880509E3</sapcentraladmin:BusinessApplicationID>
+    </sapcentraladmin:CentralAdministration>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="OP_ZlmfmRfcDetalleVigente">
+    <sapcomhnd:enableCommit xmlns:sapcomhnd="http://www.sap.com/NW05/soap/features/commit/">false</sapcomhnd:enableCommit>
+    <sapblock:enableBlocking xmlns:sapblock="http://www.sap.com/NW05/soap/features/blocking/">true</sapblock:enableBlocking>
+    <saptrhnw05:required xmlns:saptrhnw05="http://www.sap.com/NW05/soap/features/transaction/">no</saptrhnw05:required>
+    <saprmnw05:enableWSRM xmlns:saprmnw05="http://www.sap.com/NW05/soap/features/wsrm/">false</saprmnw05:enableWSRM>
+  </wsp:Policy>
+  <wsdl:types>
+    <xsd:schema attributeFormDefault="qualified" targetNamespace="urn:sap-com:document:sap:rfc:functions">
+      <xsd:simpleType name="char1">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="1"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char10">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="10"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char13">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="13"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char6">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="6"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char9">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="9"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char99">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="99"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="clnt3">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="3"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+    </xsd:schema>
+    <xsd:schema attributeFormDefault="qualified" targetNamespace="urn:sap-com:document:sap:soap:functions:mc-style"
+                xmlns:n0="urn:sap-com:document:sap:rfc:functions">
+      <xsd:import namespace="urn:sap-com:document:sap:rfc:functions"/>
+      <xsd:simpleType name="RfcException.Message.Number">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="3"/>
+          <xsd:pattern value="\d*"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char1">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="1"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char10">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="10"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char100">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="100"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char13">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="13"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char14">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="14"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char15">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="15"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char16">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="16"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char18">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="18"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char2">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="2"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char20">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="20"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char24">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="24"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char25">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="25"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char26">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="26"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char3">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="3"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char30">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="30"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char4">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="4"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char40">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="40"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char46">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="46"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char48">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="48"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char6">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="6"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char8">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="8"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char9">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="9"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char92">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="92"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="date10">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="10"/>
+          <xsd:pattern value="\d\d\d\d-\d\d-\d\d"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="numeric1">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="1"/>
+          <xsd:pattern value="\d*"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="numeric11">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="11"/>
+          <xsd:pattern value="\d*"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="numeric2">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="2"/>
+          <xsd:pattern value="\d*"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="numeric3">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="3"/>
+          <xsd:pattern value="\d*"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="numeric30">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="30"/>
+          <xsd:pattern value="\d*"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="numeric4">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="4"/>
+          <xsd:pattern value="\d*"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="numeric5">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="5"/>
+          <xsd:pattern value="\d*"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="numeric7">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="7"/>
+          <xsd:pattern value="\d*"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="numeric8">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="8"/>
+          <xsd:pattern value="\d*"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="numeric9">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="9"/>
+          <xsd:pattern value="\d*"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="string">
+        <xsd:restriction base="xsd:string"/>
+      </xsd:simpleType>
+      <xsd:complexType name="ZlmStrIntl">
+        <xsd:sequence>
+          <xsd:element name="Etiqueta" type="tns:char4"/>
+          <xsd:element name="Version" type="tns:numeric2"/>
+          <xsd:element name="RefOperador" type="tns:char25"/>
+          <xsd:element name="Producto" type="tns:numeric3"/>
+          <xsd:element name="Pais" type="tns:char2"/>
+          <xsd:element name="IdBuro" type="tns:numeric4"/>
+          <xsd:element name="ClaveUsuario" type="tns:char10"/>
+          <xsd:element name="PassUsuario" type="tns:char8"/>
+          <xsd:element name="TipoConsulta" type="tns:char1"/>
+          <xsd:element name="TipoContrato" type="tns:char2"/>
+          <xsd:element name="Moneda" type="tns:char2"/>
+          <xsd:element name="ImporteContrato" type="tns:numeric9"/>
+          <xsd:element name="Idioma" type="tns:char2"/>
+          <xsd:element name="TipoSalida" type="tns:numeric2"/>
+          <xsd:element name="BloqueRespuesta" type="tns:char1"/>
+          <xsd:element name="IdImpresora" type="tns:char4"/>
+          <xsd:element name="UsoFuturo" type="tns:numeric7"/>
+          <xsd:element name="Otorgante" type="tns:char10"/>
+          <xsd:element name="RcPrincipal" type="tns:char1"/>
+          <xsd:element name="RcSecundario" type="tns:char1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZlmStrHr">
+        <xsd:sequence>
+          <xsd:element name="Fecha" type="tns:date10"/>
+          <xsd:element name="Codigo" type="tns:numeric3"/>
+          <xsd:element name="Institucion" type="tns:char16"/>
+          <xsd:element name="Mensaje" type="tns:char48"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZlmStrIq">
+        <xsd:sequence>
+          <xsd:element name="FechaConsulta" type="tns:date10"/>
+          <xsd:element name="IdBuro" type="tns:numeric4"/>
+          <xsd:element name="Otorgante" type="tns:char10"/>
+          <xsd:element name="NombreOtorgante" type="tns:char16"/>
+          <xsd:element name="Telefono" type="tns:numeric11"/>
+          <xsd:element name="TipoContrato" type="tns:char2"/>
+          <xsd:element name="Moneda" type="tns:char2"/>
+          <xsd:element name="Importe" type="tns:numeric9"/>
+          <xsd:element name="TipoRespon" type="tns:char1"/>
+          <xsd:element name="ConsumidorNuevo" type="tns:char1"/>
+          <xsd:element name="Resultado" type="tns:char25"/>
+          <xsd:element name="Sic" type="tns:char25"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZlmStrPn">
+        <xsd:sequence>
+          <xsd:element name="ApePaterno" type="tns:char26"/>
+          <xsd:element name="ApeMaterno" type="tns:char26"/>
+          <xsd:element name="ApeAdicional" type="tns:char26"/>
+          <xsd:element name="PrimerNombre" type="tns:char26"/>
+          <xsd:element name="SegundoNombre" type="tns:char26"/>
+          <xsd:element name="FechaNacimiento" type="tns:date10"/>
+          <xsd:element name="Rfc" type="tns:char13"/>
+          <xsd:element name="Prefijo" type="tns:char4"/>
+          <xsd:element name="Sufijo" type="tns:char4"/>
+          <xsd:element name="Nacionalidad" type="tns:char2"/>
+          <xsd:element name="Residencia" type="tns:numeric1"/>
+          <xsd:element name="LicConducir" type="tns:char20"/>
+          <xsd:element name="EdoCivil" type="tns:char1"/>
+          <xsd:element name="Sexo" type="tns:char1"/>
+          <xsd:element name="CedulaProf" type="tns:char20"/>
+          <xsd:element name="RegElectoral" type="tns:char20"/>
+          <xsd:element name="ImpuestosExt" type="tns:char20"/>
+          <xsd:element name="PaisExt" type="tns:char2"/>
+          <xsd:element name="Dependientes" type="tns:numeric2"/>
+          <xsd:element name="EdadesDep" type="tns:numeric30"/>
+          <xsd:element name="FechaRecepcion" type="tns:date10"/>
+          <xsd:element name="FechaDefuncion" type="tns:date10"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZlmStrAr">
+        <xsd:sequence>
+          <xsd:element name="RefOperador" type="tns:char25"/>
+          <xsd:element name="NoAutenticado" type="tns:char14"/>
+          <xsd:element name="Clave" type="tns:char18"/>
+          <xsd:element name="ErrorBuro" type="tns:char1"/>
+          <xsd:element name="Segmento" type="tns:char2"/>
+          <xsd:element name="Requerido1" type="tns:char4"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="Z00BuroEs">
+        <xsd:sequence>
+          <xsd:element name="Mandt" type="n0:clnt3"/>
+          <xsd:element name="IdConsulta" type="n0:char13"/>
+          <xsd:element name="Longitud" type="n0:char9"/>
+          <xsd:element name="Control" type="n0:char99"/>
+          <xsd:element name="FinChar" type="n0:char6"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZlmStrRs">
+        <xsd:sequence>
+          <xsd:element name="FechaIngreso" type="tns:date10"/>
+          <xsd:element name="NumMop07" type="tns:numeric2"/>
+          <xsd:element name="NumMop06" type="tns:numeric2"/>
+          <xsd:element name="NumMop05" type="tns:numeric2"/>
+          <xsd:element name="NumMop04" type="tns:numeric2"/>
+          <xsd:element name="NumMop03" type="tns:numeric2"/>
+          <xsd:element name="NumMop02" type="tns:numeric2"/>
+          <xsd:element name="NumMop01" type="tns:numeric2"/>
+          <xsd:element name="NumMop00" type="tns:numeric2"/>
+          <xsd:element name="NumMopur" type="tns:numeric2"/>
+          <xsd:element name="NumCuentas" type="tns:numeric4"/>
+          <xsd:element name="CuentasFijos" type="tns:numeric4"/>
+          <xsd:element name="CuentasRevol" type="tns:numeric4"/>
+          <xsd:element name="CuentasCerradas" type="tns:numeric4"/>
+          <xsd:element name="CuentasNeg" type="tns:numeric4"/>
+          <xsd:element name="CuentasMop" type="tns:numeric4"/>
+          <xsd:element name="CuentasDisputa" type="tns:numeric2"/>
+          <xsd:element name="Solicitudes" type="tns:numeric2"/>
+          <xsd:element name="NuevaDireccion" type="tns:char1"/>
+          <xsd:element name="Alerta" type="tns:char8"/>
+          <xsd:element name="Declaraciones" type="tns:char1"/>
+          <xsd:element name="Moneda" type="tns:char2"/>
+          <xsd:element name="TotCreditosRev" type="tns:char9"/>
+          <xsd:element name="TotLimitesRev" type="tns:char9"/>
+          <xsd:element name="TotSaldosRev" type="tns:char10"/>
+          <xsd:element name="TotVenRev" type="tns:char9"/>
+          <xsd:element name="TotPagosRev" type="tns:char9"/>
+          <xsd:element name="PorLimRev" type="tns:char3"/>
+          <xsd:element name="TotCreditosHip" type="tns:char9"/>
+          <xsd:element name="TotSaldosHip" type="tns:char10"/>
+          <xsd:element name="TotVenHip" type="tns:char9"/>
+          <xsd:element name="TotPagosHip" type="tns:char9"/>
+          <xsd:element name="NumMop96" type="tns:numeric2"/>
+          <xsd:element name="NumMop97" type="tns:numeric2"/>
+          <xsd:element name="NumMop99" type="tns:numeric2"/>
+          <xsd:element name="FAntCuenta" type="tns:date10"/>
+          <xsd:element name="FRecCuenta" type="tns:date10"/>
+          <xsd:element name="TotSolicitudes" type="tns:numeric2"/>
+          <xsd:element name="FRecReporte" type="tns:date10"/>
+          <xsd:element name="NumCobranzas" type="tns:numeric2"/>
+          <xsd:element name="FechaCobranza" type="tns:date10"/>
+          <xsd:element name="TotSolicCobra" type="tns:numeric2"/>
+          <xsd:element name="FSolicCobra" type="tns:date10"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZlmStrCr">
+        <xsd:sequence>
+          <xsd:element name="Longitud" type="tns:char4"/>
+          <xsd:element name="Declaracion" type="tns:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZlmStrHi">
+        <xsd:sequence>
+          <xsd:element name="Fecha" type="tns:date10"/>
+          <xsd:element name="Codigo" type="tns:numeric3"/>
+          <xsd:element name="Institucion" type="tns:char16"/>
+          <xsd:element name="Mensaje" type="tns:char48"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZlmStrPe">
+        <xsd:sequence>
+          <xsd:element name="Razonsocial" type="tns:char40"/>
+          <xsd:element name="Direccion1" type="tns:char40"/>
+          <xsd:element name="Direccion2" type="tns:char40"/>
+          <xsd:element name="Colonia" type="tns:char40"/>
+          <xsd:element name="Municipio" type="tns:char40"/>
+          <xsd:element name="Ciudad" type="tns:char40"/>
+          <xsd:element name="Estado" type="tns:char4"/>
+          <xsd:element name="Cp" type="tns:numeric5"/>
+          <xsd:element name="Telefono" type="tns:numeric11"/>
+          <xsd:element name="ExtensionTel" type="tns:numeric8"/>
+          <xsd:element name="Fax" type="tns:numeric11"/>
+          <xsd:element name="Cargo" type="tns:char30"/>
+          <xsd:element name="FechaContrata" type="tns:date10"/>
+          <xsd:element name="Moneda" type="tns:char2"/>
+          <xsd:element name="Salario" type="tns:numeric9"/>
+          <xsd:element name="Base" type="tns:char1"/>
+          <xsd:element name="NumEmpleado" type="tns:char15"/>
+          <xsd:element name="FechaUltDia" type="tns:date10"/>
+          <xsd:element name="FechaRegistro" type="tns:date10"/>
+          <xsd:element name="FechaVerif" type="tns:date10"/>
+          <xsd:element name="ModoVerif" type="tns:char1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZlmStrPa">
+        <xsd:sequence>
+          <xsd:element name="Direccion1" type="tns:char40"/>
+          <xsd:element name="Direccion2" type="tns:char40"/>
+          <xsd:element name="Colonia" type="tns:char40"/>
+          <xsd:element name="Municipio" type="tns:char40"/>
+          <xsd:element name="Ciudad" type="tns:char40"/>
+          <xsd:element name="Estado" type="tns:char4"/>
+          <xsd:element name="Cp" type="tns:numeric5"/>
+          <xsd:element name="FechaResidencia" type="tns:date10"/>
+          <xsd:element name="Telefono" type="tns:numeric11"/>
+          <xsd:element name="ExtensionTel" type="tns:numeric8"/>
+          <xsd:element name="Fax" type="tns:numeric11"/>
+          <xsd:element name="TipoDomicilio" type="tns:char1"/>
+          <xsd:element name="IdEspDom" type="tns:char1"/>
+          <xsd:element name="FechaDir" type="tns:date10"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZlmStrSc">
+        <xsd:sequence>
+          <xsd:element name="Nombre" type="tns:char30"/>
+          <xsd:element name="Codigo" type="tns:numeric3"/>
+          <xsd:element name="Valor" type="tns:char4"/>
+          <xsd:element name="Razon1" type="tns:numeric3"/>
+          <xsd:element name="Razon2" type="tns:numeric3"/>
+          <xsd:element name="Razon3" type="tns:numeric3"/>
+          <xsd:element name="Error" type="tns:numeric2"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZlmStrTl">
+        <xsd:sequence>
+          <xsd:element name="FechaActualiza" type="tns:date10"/>
+          <xsd:element name="RegImpugnado" type="tns:numeric4"/>
+          <xsd:element name="Otorgante" type="tns:char10"/>
+          <xsd:element name="NombreOtorgante" type="tns:char16"/>
+          <xsd:element name="Telefono" type="tns:numeric11"/>
+          <xsd:element name="Sic" type="tns:numeric11"/>
+          <xsd:element name="Cuenta" type="tns:char25"/>
+          <xsd:element name="TipoRespon" type="tns:char1"/>
+          <xsd:element name="TipoCuenta" type="tns:char1"/>
+          <xsd:element name="TipoContrato" type="tns:char2"/>
+          <xsd:element name="Moneda" type="tns:char2"/>
+          <xsd:element name="ValorActivo" type="tns:numeric9"/>
+          <xsd:element name="NumPagos" type="tns:numeric4"/>
+          <xsd:element name="Frecuencia" type="tns:char1"/>
+          <xsd:element name="Monto" type="tns:numeric9"/>
+          <xsd:element name="FechaApertura" type="tns:date10"/>
+          <xsd:element name="FechaUltPago" type="tns:date10"/>
+          <xsd:element name="FechaUltCompra" type="tns:date10"/>
+          <xsd:element name="FechaCierre" type="tns:date10"/>
+          <xsd:element name="FechaReporte" type="tns:date10"/>
+          <xsd:element name="ModoReporte" type="tns:char1"/>
+          <xsd:element name="FechaCero" type="tns:date10"/>
+          <xsd:element name="Garantia" type="tns:char40"/>
+          <xsd:element name="CreditoMax" type="tns:numeric9"/>
+          <xsd:element name="SaldoActual" type="tns:char9"/>
+          <xsd:element name="LimiteCredito" type="tns:numeric9"/>
+          <xsd:element name="SaldoVencido" type="tns:char9"/>
+          <xsd:element name="PagosVencidos" type="tns:numeric4"/>
+          <xsd:element name="Mop" type="tns:char2"/>
+          <xsd:element name="HistoricoPagos" type="tns:char24"/>
+          <xsd:element name="FechaRecHist" type="tns:date10"/>
+          <xsd:element name="FechaAntHist" type="tns:date10"/>
+          <xsd:element name="Observacion" type="tns:char2"/>
+          <xsd:element name="TotalPagos" type="tns:numeric3"/>
+          <xsd:element name="CalifMop02" type="tns:numeric2"/>
+          <xsd:element name="CalifMop03" type="tns:numeric2"/>
+          <xsd:element name="CalifMop04" type="tns:numeric2"/>
+          <xsd:element name="CalifMop05" type="tns:numeric2"/>
+          <xsd:element name="HistMoraSaldo" type="tns:numeric9"/>
+          <xsd:element name="HistMoraFecha" type="tns:date10"/>
+          <xsd:element name="HistMoraMop02" type="tns:char2"/>
+          <xsd:element name="FechaInicio" type="tns:date10"/>
+          <xsd:element name="MontoUltimo" type="tns:char9"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZlmStrUr">
+        <xsd:sequence>
+          <xsd:element name="RefOperador" type="tns:char25"/>
+          <xsd:element name="Solicitud" type="tns:char4"/>
+          <xsd:element name="Version" type="tns:char2"/>
+          <xsd:element name="Producto" type="tns:char3"/>
+          <xsd:element name="Password" type="tns:char14"/>
+          <xsd:element name="Segmento" type="tns:char2"/>
+          <xsd:element name="UltInfoValida" type="tns:char6"/>
+          <xsd:element name="InfoErrConsul" type="tns:char46"/>
+          <xsd:element name="ValorErrRel" type="tns:char92"/>
+          <xsd:element name="ErrorBuro" type="tns:char100"/>
+          <xsd:element name="EtiquetaSeg" type="tns:char2"/>
+          <xsd:element name="OrdenErr" type="tns:char4"/>
+          <xsd:element name="NumErrSeg" type="tns:char2"/>
+          <xsd:element name="Requerido1" type="tns:char4"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="RfcException.Message">
+        <xsd:sequence>
+          <xsd:element name="ID" type="xsd:string"/>
+          <xsd:element name="Number" type="tns:RfcException.Message.Number"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZlmfmRfcDetalleVigente.RfcException">
+        <xsd:sequence>
+          <xsd:element name="Name" type="tns:ZlmfmRfcDetalleVigente.RfcExceptions"/>
+          <xsd:element name="Text" type="xsd:string" minOccurs="0"/>
+          <xsd:element name="Message" type="tns:RfcException.Message" minOccurs="0"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZlmTtHr">
+        <xsd:sequence>
+          <xsd:element name="item" type="tns:ZlmStrHr" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZlmTtIq">
+        <xsd:sequence>
+          <xsd:element name="item" type="tns:ZlmStrIq" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZlmttBuroEs">
+        <xsd:sequence>
+          <xsd:element name="item" type="tns:Z00BuroEs" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZlmTtRs">
+        <xsd:sequence>
+          <xsd:element name="item" type="tns:ZlmStrRs" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZlmTtHi">
+        <xsd:sequence>
+          <xsd:element name="item" type="tns:ZlmStrHi" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZlmTtPe">
+        <xsd:sequence>
+          <xsd:element name="item" type="tns:ZlmStrPe" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZlmTtPa">
+        <xsd:sequence>
+          <xsd:element name="item" type="tns:ZlmStrPa" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZlmTtTl">
+        <xsd:sequence>
+          <xsd:element name="item" type="tns:ZlmStrTl" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:simpleType name="ZlmfmRfcDetalleVigente.RfcExceptions">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="ExNoExisteBp"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:element name="ZlmfmRfcDetalleVigente.Exception" type="tns:ZlmfmRfcDetalleVigente.RfcException"/>
+      <xsd:element name="ZlmfmRfcDetalleVigente">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="IPartner" type="n0:char10"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="ZlmfmRfcDetalleVigenteResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="EConfirmacion" type="n0:char1"/>
+            <xsd:element name="EtAr" type="tns:ZlmStrAr"/>
+            <xsd:element name="EtCr" type="tns:ZlmStrCr"/>
+            <xsd:element name="EtEs" type="tns:ZlmttBuroEs"/>
+            <xsd:element name="EtHi" type="tns:ZlmTtHi"/>
+            <xsd:element name="EtHr" type="tns:ZlmTtHr"/>
+            <xsd:element name="EtIntl" type="tns:ZlmStrIntl"/>
+            <xsd:element name="EtIq" type="tns:ZlmTtIq"/>
+            <xsd:element name="EtPa" type="tns:ZlmTtPa"/>
+            <xsd:element name="EtPe" type="tns:ZlmTtPe"/>
+            <xsd:element name="EtPn" type="tns:ZlmStrPn"/>
+            <xsd:element name="EtRs" type="tns:ZlmTtRs"/>
+            <xsd:element name="EtSc" type="tns:ZlmStrSc"/>
+            <xsd:element name="EtTl" type="tns:ZlmTtTl"/>
+            <xsd:element name="EtUr" type="tns:ZlmStrUr"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="ZlmfmRfcDetalleVigente">
+    <wsdl:part name="parameters" element="tns:ZlmfmRfcDetalleVigente"/>
+  </wsdl:message>
+  <wsdl:message name="ZlmfmRfcDetalleVigenteResponse">
+    <wsdl:part name="parameter" element="tns:ZlmfmRfcDetalleVigenteResponse"/>
+  </wsdl:message>
+  <wsdl:message name="ZlmfmRfcDetalleVigente.Exception">
+    <wsdl:part name="ZlmfmRfcDetalleVigente.Exception" element="tns:ZlmfmRfcDetalleVigente.Exception"/>
+  </wsdl:message>
+  <wsdl:portType name="ZLM_WS_DETALLE_VIGENTE">
+    <wsp:Policy>
+      <wsp:PolicyReference URI="#IF_ZLM_WS_DETALLE_VIGENTE"/>
+    </wsp:Policy>
+    <wsdl:operation name="ZlmfmRfcDetalleVigente">
+      <wsp:Policy>
+        <wsp:PolicyReference URI="#OP_ZlmfmRfcDetalleVigente"/>
+      </wsp:Policy>
+      <wsdl:input message="tns:ZlmfmRfcDetalleVigente"/>
+      <wsdl:output message="tns:ZlmfmRfcDetalleVigenteResponse"/>
+      <wsdl:fault name="ZlmfmRfcDetalleVigente.Exception" message="tns:ZlmfmRfcDetalleVigente.Exception"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ZLM_WS_DETALLE_VIGENTE" type="tns:ZLM_WS_DETALLE_VIGENTE">
+    <wsp:Policy>
+      <wsp:PolicyReference URI="#BN_ZLM_WS_DETALLE_VIGENTE"/>
+    </wsp:Policy>
+    <wsa:EndpointReference xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing">
+      <wsa:ReferenceParameters/>
+    </wsa:EndpointReference>
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+    <wsdl:operation name="ZlmfmRfcDetalleVigente">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ZlmfmRfcDetalleVigente.Exception">
+        <soap:fault name="ZlmfmRfcDetalleVigente.Exception" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ZLM_WS_DETALLE_VIGENTE">
+    <wsdl:port name="ZLM_WS_DETALLE_VIGENTE" binding="tns:ZLM_WS_DETALLE_VIGENTE">
+      <soap:address location="http://dcpimsdsap01.nmp.com.mx:8000/sap/bc/srt/rfc/sap/zlm_ws_detalle_vigente/300/zlm_ws_detalle_vigente/zlm_ws_detalle_vigente"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

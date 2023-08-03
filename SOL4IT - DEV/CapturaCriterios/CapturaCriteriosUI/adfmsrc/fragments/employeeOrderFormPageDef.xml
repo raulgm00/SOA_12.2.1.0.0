@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pageDefinition xmlns="http://xmlns.oracle.com/adfm/uimodel" version="11.1.2.60.17" id="employeeOrderFormPageDef"
+                Package="fragments">
+    <parameters/>
+    <executables>
+        <iterator Binds="EmployeePurchaseOrderHeaderVO" RangeSize="25"
+                  DataControl="EmployeePurchaseManagementDataControl" id="EmployeePurchaseOrderHeaderVOIterator"/>
+        <iterator Binds="EmployeePurchaseOrderLinesVO" RangeSize="-1"
+                  DataControl="EmployeePurchaseManagementDataControl" id="EmployeePurchaseOrderLinesVOIterator"/>
+        <iterator id="RootProductCategoryTransientVO1Iterator" Binds="RootProductCategoryTransientVO1"
+                  DataControl="EmployeePurchaseManagementDataControl" RangeSize="25"/>
+        <iterator Binds="ProductPriceListSKUTransientVO1" RangeSize="25"
+                  DataControl="EmployeePurchaseManagementDataControl" id="ProductPriceListSKUTransientVO1Iterator"/>
+    </executables>
+    <bindings>
+        <attributeValues IterBinding="EmployeePurchaseOrderHeaderVOIterator" id="OrderNumber">
+            <AttrNames>
+                <Item Value="OrderNumber"/>
+            </AttrNames>
+        </attributeValues>
+        <attributeValues IterBinding="EmployeePurchaseOrderHeaderVOIterator" id="CustomerName">
+            <AttrNames>
+                <Item Value="CustomerName"/>
+            </AttrNames>
+        </attributeValues>
+        <attributeValues IterBinding="EmployeePurchaseOrderHeaderVOIterator" id="FileNumber">
+            <AttrNames>
+                <Item Value="FileNumber"/>
+            </AttrNames>
+        </attributeValues>
+        <attributeValues IterBinding="EmployeePurchaseOrderHeaderVOIterator" id="Extension">
+            <AttrNames>
+                <Item Value="Extension"/>
+            </AttrNames>
+        </attributeValues>
+        <attributeValues IterBinding="EmployeePurchaseOrderHeaderVOIterator" id="OrderedDate">
+            <AttrNames>
+                <Item Value="OrderedDate"/>
+            </AttrNames>
+        </attributeValues>
+        <list IterBinding="EmployeePurchaseOrderHeaderVOIterator" StaticList="false" Uses="LOV_ProcessingLocation"
+              id="ProcessingLocation" DTSupportsMRU="false" SelectItemValueMode="ListObject"/>
+        <attributeValues IterBinding="EmployeePurchaseOrderHeaderVOIterator" id="Address">
+            <AttrNames>
+                <Item Value="Address"/>
+            </AttrNames>
+        </attributeValues>
+        <attributeValues IterBinding="EmployeePurchaseOrderHeaderVOIterator" id="City">
+            <AttrNames>
+                <Item Value="City"/>
+            </AttrNames>
+        </attributeValues>
+        <attributeValues IterBinding="EmployeePurchaseOrderHeaderVOIterator" id="State">
+            <AttrNames>
+                <Item Value="State"/>
+            </AttrNames>
+        </attributeValues>
+        <attributeValues IterBinding="EmployeePurchaseOrderHeaderVOIterator" id="PostalCode">
+            <AttrNames>
+                <Item Value="PostalCode"/>
+            </AttrNames>
+        </attributeValues>
+        <attributeValues IterBinding="EmployeePurchaseOrderHeaderVOIterator" id="ContactNumber">
+            <AttrNames>
+                <Item Value="ContactNumber"/>
+            </AttrNames>
+        </attributeValues>
+        <attributeValues IterBinding="EmployeePurchaseOrderHeaderVOIterator" id="SubTotal">
+            <AttrNames>
+                <Item Value="SubTotal"/>
+            </AttrNames>
+        </attributeValues>
+        <attributeValues IterBinding="EmployeePurchaseOrderHeaderVOIterator" id="TaxAmount">
+            <AttrNames>
+                <Item Value="TaxAmount"/>
+            </AttrNames>
+        </attributeValues>
+        <attributeValues IterBinding="EmployeePurchaseOrderHeaderVOIterator" id="TotalPrice">
+            <AttrNames>
+                <Item Value="TotalPrice"/>
+            </AttrNames>
+        </attributeValues>
+        <attributeValues IterBinding="EmployeePurchaseOrderHeaderVOIterator" id="Signature">
+            <AttrNames>
+                <Item Value="Signature"/>
+            </AttrNames>
+        </attributeValues>
+        <action id="Commit" RequiresUpdateModel="true" Action="commitTransaction"
+                DataControl="EmployeePurchaseManagementDataControl"/>
+        <action IterBinding="EmployeePurchaseOrderHeaderVOIterator" id="CreateInsert" RequiresUpdateModel="true"
+                Action="createInsertRow"/>
+        <tree IterBinding="EmployeePurchaseOrderLinesVOIterator" id="EmployeePurchaseOrderLinesVO">
+            <nodeDefinition DefName="hl.ep.model.views.EmployeePurchaseOrderLinesVO"
+                            Name="EmployeePurchaseOrderLinesVO0">
+                <AttrNames>
+                    <Item Value="OrderLineId"/>
+                    <Item Value="OrderHeaderId"/>
+                    <Item Value="LineNumber"/>
+                    <Item Value="OrderNumber"/>
+                    <Item Value="Quantity"/>
+                    <Item Value="ItemType"/>
+                    <Item Value="ItemDescription"/>
+                    <Item Value="Uom"/>
+                    <Item Value="UnitPrice"/>
+                    <Item Value="TotalDiscountAmount"/>
+                    <Item Value="TotalDiscountPrice"/>
+                    <Item Value="Sku"/>
+                    <Item Value="InventoryItemId"/>
+                    <Item Value="UnitEarnBase"/>
+                    <Item Value="TotalItemPrice"/>
+                    <Item Value="Selected"/>
+                </AttrNames>
+            </nodeDefinition>
+        </tree>
+        <methodAction id="createEmployeePurchaseOrder" RequiresUpdateModel="true" Action="invokeMethod"
+                      MethodName="createEmployeePurchaseOrder" IsViewObjectMethod="false"
+                      DataControl="EmployeePurchaseManagementDataControl"
+                      InstanceName="data.EmployeePurchaseManagementDataControl.dataProvider"/>
+        <action id="Rollback" InstanceName="EmployeePurchaseManagementDataControl"
+                DataControl="EmployeePurchaseManagementDataControl" RequiresUpdateModel="false"
+                Action="rollbackTransaction"/>
+        <methodAction id="calculatePrice" InstanceName="data.EmployeePurchaseManagementDataControl.dataProvider"
+                      DataControl="EmployeePurchaseManagementDataControl" RequiresUpdateModel="true"
+                      Action="invokeMethod" MethodName="calculatePrice" IsViewObjectMethod="false"
+                      ReturnName="data.EmployeePurchaseManagementDataControl.methodResults.calculatePrice_EmployeePurchaseManagementDataControl_dataProvider_calculatePrice_result"/>
+        <attributeValues IterBinding="EmployeePurchaseOrderHeaderVOIterator" id="County">
+            <AttrNames>
+                <Item Value="County"/>
+            </AttrNames>
+        </attributeValues>
+        <attributeValues IterBinding="EmployeePurchaseOrderHeaderVOIterator" id="DefaultAddress">
+            <AttrNames>
+                <Item Value="DefaultAddress"/>
+            </AttrNames>
+        </attributeValues>
+<list IterBinding="EmployeePurchaseOrderHeaderVOIterator" StaticList="false" Uses="LOV_Country" id="Country"
+              DTSupportsMRU="true" SelectItemValueMode="ListObject"/>
+        <methodAction id="submitOrder" InstanceName="data.EmployeePurchaseManagementDataControl.dataProvider"
+                      DataControl="EmployeePurchaseManagementDataControl" RequiresUpdateModel="true"
+                      Action="invokeMethod" MethodName="submitOrder" IsViewObjectMethod="false"
+                      ReturnName="data.EmployeePurchaseManagementDataControl.methodResults.submitOrder_EmployeePurchaseManagementDataControl_dataProvider_submitOrder_result">
+            <NamedData NDName="processingCountry" NDType="java.lang.String"/>
+        </methodAction>
+        <methodAction id="removeSelectedLines" RequiresUpdateModel="true" Action="invokeMethod"
+                      MethodName="removeSelectedLines" IsViewObjectMethod="false"
+                      DataControl="EmployeePurchaseManagementDataControl"
+                      InstanceName="data.EmployeePurchaseManagementDataControl.dataProvider"/>
+        <methodAction id="addOrderLines" RequiresUpdateModel="true" Action="invokeMethod" MethodName="addOrderLines"
+                      IsViewObjectMethod="false" DataControl="EmployeePurchaseManagementDataControl"
+                      InstanceName="data.EmployeePurchaseManagementDataControl.dataProvider">
+            <NamedData NDName="lines" NDValue="5" NDType="int"/>
+        </methodAction>
+        <methodAction id="addOrderLines1" InstanceName="data.EmployeePurchaseManagementDataControl.dataProvider"
+                      DataControl="EmployeePurchaseManagementDataControl" RequiresUpdateModel="true"
+                      Action="invokeMethod" MethodName="addOrderLines" IsViewObjectMethod="false">
+            <NamedData NDName="lines" NDValue="1" NDType="int"/>
+        </methodAction>
+        <attributeValues IterBinding="EmployeePurchaseOrderHeaderVOIterator" id="PriceList">
+            <AttrNames>
+                <Item Value="PriceList"/>
+            </AttrNames>
+        </attributeValues>
+        <methodAction id="populateVOsForPlaceOrder"
+                      InstanceName="data.EmployeePurchaseManagementDataControl.dataProvider"
+                      DataControl="EmployeePurchaseManagementDataControl" RequiresUpdateModel="true"
+                      Action="invokeMethod" MethodName="populateVOsForPlaceOrder" IsViewObjectMethod="false">
+            <NamedData NDName="location" NDType="java.lang.String"/>
+        </methodAction>
+        <list ListOperMode="navigation" IterBinding="RootProductCategoryTransientVO1Iterator" id="DisplayName">
+            <AttrNames>
+                <Item Value="DisplayName"/>
+            </AttrNames>
+        </list>
+        <methodAction id="getAllSKUPriceListBasedOnRootCategoryId"
+                      InstanceName="data.EmployeePurchaseManagementDataControl.dataProvider"
+                      DataControl="EmployeePurchaseManagementDataControl" RequiresUpdateModel="true"
+                      Action="invokeMethod" MethodName="getAllSKUPriceListBasedOnRootCategoryId"
+                      IsViewObjectMethod="false">
+            <NamedData NDName="parentId" NDType="java.lang.Integer"/>
+            <NamedData NDName="productOrEvent" NDType="java.lang.String"/>
+        </methodAction>
+        <tree IterBinding="ProductPriceListSKUTransientVO1Iterator" id="ProductPriceListSKUTransientVO1">
+            <nodeDefinition DefName="hl.ep.model.views.priceList.SKUTransientVO"
+                            Name="ProductPriceListSKUTransientVO10">
+                <AttrNames>
+                    <Item Value="SKUId"/>
+                    <Item Value="SKUNumber"/>
+                    <Item Value="Quantity"/>
+                    <Item Value="ImagePath"/>
+                    <Item Value="Description"/>
+                    <Item Value="Type"/>
+                    <Item Value="ParentCategoryId"/>
+                    <Item Value="RootCategoryId"/>
+                    <Item Value="DisplayName"/>
+                    <Item Value="ProductId"/>
+                    <Item Value="VolumePoints"/>
+                    <Item Value="EarnBase"/>
+                    <Item Value="ListPrice"/>
+                    <Item Value="ValidSKUFlag"/>
+                    <Item Value="AvailableSKUFlag"/>
+                    <Item Value="AvailableQuantity"/>
+                    <Item Value="ErrorCode"/>
+                    <Item Value="ErrorMessage"/>
+                    <Item Value="TypeOfProduct"/>
+                    <Item Value="belowAllowedQuantity"/>
+                    <Item Value="TempQuantity"/>
+                    <Item Value="MaxAllowedQuantity"/>
+                </AttrNames>
+            </nodeDefinition>
+        </tree>
+        <methodAction id="addToLine" InstanceName="data.EmployeePurchaseManagementDataControl.dataProvider"
+                      DataControl="EmployeePurchaseManagementDataControl" RequiresUpdateModel="true"
+                      Action="invokeMethod" MethodName="addToLine" IsViewObjectMethod="false"/>
+    </bindings>
+</pageDefinition>

@@ -1,0 +1,125 @@
+<wsdl:definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Services/NMPAdminPagosSvc" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Services/NMPAdminPagosSvc" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:NMPAdminPago="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPAdminPagosSvc" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:NMPsh="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:NMPsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage">
+  <wsdl:types>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPAdminPagosSvc" schemaLocation="../Schemas/NMPAdminPagosXSD.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="NMPHeaderRequest">
+    <wsdl:part name="requestHeader" element="NMPsh:headerMessage"/>
+  </wsdl:message>
+  <wsdl:message name="NMPHeaderResponse">
+    <wsdl:part name="responseHeader" element="NMPsh:headerMessageResponse"/>
+  </wsdl:message>
+  <wsdl:message name="setOperacionRequest">
+    <wsdl:part name="parameters" element="NMPAdminPago:setOperacionRequest"/>
+  </wsdl:message>
+  <wsdl:message name="setOperacionResponse">
+    <wsdl:part name="parameters" element="NMPAdminPago:setOperacionResponse"/>
+  </wsdl:message>
+  <wsdl:message name="getPartidaRequest">
+    <wsdl:part name="parameters" element="NMPAdminPago:getPartidaRequest"/>
+  </wsdl:message>
+  <wsdl:message name="getPartidaResponse">
+    <wsdl:part name="parameters" element="NMPAdminPago:getPartidaResponse"/>
+  </wsdl:message>
+  <wsdl:message name="rejectOperacionRequest">
+    <wsdl:part name="parameters" element="NMPAdminPago:rejectOperacionRequest"/>
+  </wsdl:message>
+  <wsdl:message name="rejectOperacionResponse">
+    <wsdl:part name="parameters" element="NMPAdminPago:rejectOperacionResponse"/>
+  </wsdl:message>
+  <wsdl:message name="getComprobantesRequest">
+    <wsdl:part name="parameters" element="NMPAdminPago:getComprobantesRequest"/>
+  </wsdl:message>
+  <wsdl:message name="getComprobantesResponse">
+    <wsdl:part name="parameters" element="NMPAdminPago:getComprobantesResponse"/>
+  </wsdl:message>
+  <wsdl:message name="adminPagosFault">
+    <wsdl:part name="parameters" element="NMPsm:messageError"/>
+  </wsdl:message>
+  <wsdl:portType name="AdminPagos_ptt">
+    <wsdl:operation name="setOperacion">
+      <wsdl:input message="tns:setOperacionRequest"/>
+      <wsdl:output message="tns:setOperacionResponse"/>
+      <wsdl:fault name="setOperacionFault" message="tns:adminPagosFault"/>
+    </wsdl:operation>
+    <wsdl:operation name="getPartida">
+      <wsdl:input message="tns:getPartidaRequest"/>
+      <wsdl:output message="tns:getPartidaResponse"/>
+      <wsdl:fault name="getPartidaFault" message="tns:adminPagosFault"/>
+    </wsdl:operation>
+    <wsdl:operation name="rejectOperacion">
+      <wsdl:input message="tns:rejectOperacionRequest"/>
+      <wsdl:output message="tns:rejectOperacionResponse"/>
+      <wsdl:fault name="rejectOperacionFault" message="tns:adminPagosFault"/>
+    </wsdl:operation>
+    <wsdl:operation name="getComprobantes">
+      <wsdl:input message="tns:getComprobantesRequest"/>
+      <wsdl:output message="tns:getComprobantesResponse"/>
+      <wsdl:fault name="getComprobantesFault" message="tns:adminPagosFault"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="AdminPagosBinding" type="tns:AdminPagos_ptt">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="setOperacion">
+      <soap:operation soapAction="setOperacion" style="document"/>
+      <wsdl:input>
+        <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body parts="parameters" use="literal"/>
+        <soap:header message="tns:NMPHeaderResponse" use="literal" part="responseHeader"/>
+      </wsdl:output>
+      <wsdl:fault name="setOperacionFault">
+        <soap:fault name="setOperacionFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getPartida">
+      <soap:operation soapAction="getPartida" style="document"/>
+      <wsdl:input>
+        <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="getPartidaFault">
+        <soap:fault name="getPartidaFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="rejectOperacion">
+      <soap:operation soapAction="rejectOperacion" style="document"/>
+      <wsdl:input>
+        <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="rejectOperacionFault">
+        <soap:fault name="rejectOperacionFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getComprobantes">
+      <soap:operation soapAction="getComprobantes" style="document"/>
+      <wsdl:input>
+        <soap:header message="tns:NMPHeaderRequest" part="requestHeader" use="literal"/>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="getComprobantesFault">
+        <soap:fault name="getComprobantesFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="AdminPagos">
+    <wsdl:port binding="tns:AdminPagosBinding" name="AdminPagosPort">
+      <soap:address location=""/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

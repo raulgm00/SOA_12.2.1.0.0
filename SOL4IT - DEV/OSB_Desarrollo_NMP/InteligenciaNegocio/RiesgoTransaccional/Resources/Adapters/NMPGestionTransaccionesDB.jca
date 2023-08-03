@@ -1,0 +1,49 @@
+<adapter-config name="NmpTransacciones" adapter="db" wsdlLocation="../WSDLs/NMPGestionTransaccionesRTWSDL.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  <connection-factory UIConnectionName="RtUser_Dev" location="eis/DB/rtuser"/>
+  <endpoint-interaction portType="NmpTransacciones_ptt" operation="insertTransaccion">
+    <interaction-spec className="oracle.tip.adapter.db.DBWriteInteractionSpec">
+      <property name="DescriptorName" value="NmpTransacciones.NmpTransacciones"/>
+      <property name="DmlType" value="insert"/>
+      <property name="MappingsMetaDataURL" value="NMPGestionTransaccionesMAP.xml"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+      <property name="DetectOmissions" value="true"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  <endpoint-interaction portType="NmpTransacciones_ptt" operation="updateTransaccion">
+    <interaction-spec className="oracle.tip.adapter.db.DBWriteInteractionSpec">
+      <property name="DescriptorName" value="NmpTransacciones.NmpTransacciones"/>
+      <property name="DmlType" value="update"/>
+      <property name="MappingsMetaDataURL" value="NMPGestionTransaccionesMAP.xml"/>
+      <property name="DetectOmissions" value="true"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  <endpoint-interaction portType="NmpTransacciones_ptt" operation="getTransaccionesCliente">
+    <interaction-spec className="oracle.tip.adapter.db.DBReadInteractionSpec">
+      <property name="DescriptorName" value="NmpTransacciones.NmpTransacciones"/>
+      <property name="QueryName" value="NmpTransaccionesSelect"/>
+      <property name="MappingsMetaDataURL" value="NMPGestionTransaccionesMAP.xml"/>
+      <property name="ReturnSingleResultSet" value="false"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  
+  <endpoint-interaction portType="NmpTransacciones_ptt" operation="getTransaccionesById">
+    <interaction-spec className="oracle.tip.adapter.db.DBReadInteractionSpec">
+      <property name="DescriptorName" value="NmpTransacciones.NmpTransacciones"/>
+      <property name="QueryName" value="NmpTransaccionesSelectById"/>
+      <property name="MappingsMetaDataURL" value="NMPGestionTransaccionesMAP.xml"/>
+      <property name="ReturnSingleResultSet" value="false"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+
+ <endpoint-interaction portType="NmpTransacciones_ptt" operation="getTransaccionNoProcesadas">
+    <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+      <property name="SqlString" value="SELECT                          id id_transaccion,                          id_cliente,                          es_cancelacion,                          id_sucursal,                          fecha_tx,                          monto,                          es_reempeno,                          procesado,                           fecha_procesar                            FROM NMP_TRANSACCIONES                          WHERE PROCESADO = '1' or PROCESADO = '2' or procesado = '6'"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  
+  
+</adapter-config>

@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="OperacionCreditos/Cotizador/Resources/WSDLs/NMPCotizadorWSDL"/>
+            <con:binding>
+                <con:name>cotizador_pttSOAP11Binding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Servicios/Cotizador</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:tracingEnabled>true</oper:tracingEnabled>
+            <oper:monitoring enabled="true" level="service" aggregationInterval="10"/>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router errorHandler="error-af1004c.N62654904.0.15a494314d2.N7e7d">
+        <con:pipeline type="request" name="request-af1004c.N62654904.0.15a494314d2.N7fc5">
+            <con:stage id="_StageId-af1004c.N62654904.0.15a494314d2.N7fc3" name="StageValidate">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                    <con1:userNsDecl prefix="cot" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Cotizador"/>
+                </con:context>
+                <con:actions>
+                    <con1:validate xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-af1004c.N62654904.0.15a494314d2.N7eaf</con2:id>
+                        <con1:schema ref="OperacionCreditos/Cotizador/Resources/Schemas/NMPCotizadorSvcXSD"/>
+                        <con1:schemaElement xmlns:cot="http://servicios.montedepiedad.com.mx/NMP/Schema/Cotizador">cot:cotizarVehiculoRequest</con1:schemaElement>
+                        <con1:varName>body</con1:varName>
+                        <con1:location>
+                            <con3:xpathText xmlns:con3="http://www.bea.com/wli/sb/stages/config">./cot:cotizarVehiculoRequest</con3:xpathText>
+                        </con1:location>
+                    </con1:validate>
+                    <con1:assign varName="body_tmp" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-af1004c.N62654904.0.15a494314d2.N7e3f</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText xmlns:con2="http://www.bea.com/wli/sb/stages/config">$body</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-af1004c.N62654904.0.15a494314d2.N7e7d">
+            <con:stage id="_StageId-af1004c.N62654904.0.15a494314d2.N7e7c" name="StageServiceError">
+                <con:context/>
+                <con:actions>
+                    <con2:delete varName="header">
+                        <con1:id>_ActionId-af1004c.N62654904.0.15a494314d2.N7d70</con1:id>
+                        <con2:location>
+                            <con1:xpathText>$header/*</con1:xpathText>
+                        </con2:location>
+                    </con2:delete>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-af1004c.N62654904.0.15a494314d2.N7d76</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionCreditos/Cotizador/Resources/Transformations/TRCotizadorFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="app">
+                                    <con1:path>1</con1:path>
+                                </con1:param>
+                                <con1:param name="serviceName">
+                                    <con1:path>'NMP Cotizador Vehiculo'</con1:path>
+                                </con1:param>
+                                <con1:param name="soapFault">
+                                    <con1:path>$body</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con3:report>
+                        <con1:id>_ActionId-af00473.1c3e33d7.0.15a9559fa49.N7db3</con1:id>
+                        <con3:expr>
+                            <con1:xqueryText>$body</con1:xqueryText>
+                        </con3:expr>
+                    </con3:report>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-af1004c.N62654904.0.15a494314d2.N7e45</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af1004c.N62654904.0.15a494314d2.N7fc4">
+            <con:stage id="_StageId-af1004c.N62654904.0.15a494314d2.N7fc2" name="StageReponse">
+                <con:context>
+                    <con1:varNsDecl prefix="cot" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Cotizador"/>
+                </con:context>
+                <con:actions>
+                    <con2:replace varName="header" contents-only="true">
+                        <con1:id>_ActionId-af1004c.N62654904.0.15a494314d2.N7d02</con1:id>
+                        <con2:expr>
+                            <con:xsltTransform xmlns:con="http://www.bea.com/wli/sb/stages/config">
+                                <con:resource ref="OperacionCreditos/Cotizador/Resources/Transformations/TRCotizadorHeader"/>
+                                <con:input>$header_tmp/*</con:input>
+                                <con:param name="codigoRespuesta">
+                                    <con:path>0</con:path>
+                                </con:param>
+                            </con:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-af1004c.N62654904.0.15a494314d2.N7eb3">
+            <con:stage id="_StageId-af1004c.N62654904.0.15a494314d2.N7eb2" name="StageRouteError">
+                <con:context/>
+                <con:actions>
+                    <con2:delete varName="header">
+                        <con1:id>_ActionId-af1004c.N62654904.0.15a494314d2.N7d73</con1:id>
+                        <con2:location>
+                            <con1:xpathText>$header/*</con1:xpathText>
+                        </con2:location>
+                    </con2:delete>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-af1004c.N62654904.0.15a494314d2.N7daa</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="OperacionCreditos/Cotizador/Resources/Transformations/TRCotizadorFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="app">
+                                    <con1:path>1</con1:path>
+                                </con1:param>
+                                <con1:param name="serviceName">
+                                    <con1:path>'OBR Cotizador Vehiculo'</con1:path>
+                                </con1:param>
+                                <con1:param name="soapFault">
+                                    <con1:path>$body</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con3:report>
+                        <con1:id>_ActionId-af00473.1c3e33d7.0.15a9559fa49.N7df4</con1:id>
+                        <con3:expr>
+                            <con1:xqueryText>$body</con1:xqueryText>
+                        </con3:expr>
+                    </con3:report>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-af1004c.N62654904.0.15a494314d2.N7e42</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-af00473.1c3e33d7.0.15a9559fa49.N7df3">
+            <con:stage id="_StageId-af00473.1c3e33d7.0.15a9559fa49.N7df1" name="StageRequestHeader">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con2:replace varName="header" contents-only="true">
+                        <con1:id>_ActionId-af1004c.N62654904.0.15a494314d2.N7dad</con1:id>
+                        <con2:expr>
+                            <con1:xqueryTransform>
+                                <con1:resource ref="Common/XQ/TRHeadersRest"/>
+                                <con1:param name="inbound">
+                                    <con1:path>$inbound</con1:path>
+                                </con1:param>
+                                <con1:param name="requestHeader">
+                                    <con1:path>$header</con1:path>
+                                </con1:param>
+                            </con1:xqueryTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con2:assign varName="header">
+                        <con1:id>_ActionId-af1004c.N62654904.0.15a494314d2.N7d3a</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$header</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:validate xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations" xmlns:con4="http://www.bea.com/wli/sb/stages/publish/config" xmlns:tran="http://www.bea.com/wli/sb/transports">
+                        <con1:comment>valida el headerMessage de los XSD comunes de NMP</con1:comment>
+                        <con1:id>_ActionId-af1004c.N62654904.0.15a494314d2.N7dfa</con1:id>
+                        <con2:schema ref="Common/XSD/NMPStandardHeader"/>
+                        <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con2:schemaElement>
+                        <con2:varName>header</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./nmp:headerMessage</con1:xpathText>
+                        </con2:location>
+                        <con2:resultVarName/>
+                    </con2:validate>
+                    <con2:assign varName="header_tmp">
+                        <con1:id>_ActionId-af1004c.N62654904.0.15a494314d2.N7cff</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$header</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-af00473.1c3e33d7.0.15a9559fa49.N7df2">
+            <con:stage id="_StageId-af00473.1c3e33d7.0.15a9559fa49.N7df0" name="StageResponseHeader">
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="header" contents-only="true">
+                        <con1:id>_ActionId-af00473.1c3e33d7.0.15a9559fa49.N7db6</con1:id>
+                        <con2:expr>
+                            <con1:xqueryTransform>
+                                <con1:resource ref="Common/XQ/TRHeadersResponse"/>
+                                <con1:param name="requestHeader">
+                                    <con1:path>$header_tmp</con1:path>
+                                </con1:param>
+                            </con1:xqueryTransform>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="PipelinePairHeader">
+                <con:request>request-af00473.1c3e33d7.0.15a9559fa49.N7df3</con:request>
+                <con:response>response-af00473.1c3e33d7.0.15a9559fa49.N7df2</con:response>
+            </con:pipeline-node>
+            <con:branch-node type="operation" id="_FlowId-af1004c.N62654904.0.15a494314d2.N7fc6" name="BranchNodeCotizador">
+                <con:context/>
+                <con:branch-table>
+                    <con:branch name="cotizarVehiculo">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairNodeCotizarVehiculo">
+                                <con:request>request-af1004c.N62654904.0.15a494314d2.N7fc5</con:request>
+                                <con:response>response-af1004c.N62654904.0.15a494314d2.N7fc4</con:response>
+                            </con:pipeline-node>
+                            <con:route-node name="RouteToBRMCotizarVehiculo" error-handler="error-af1004c.N62654904.0.15a494314d2.N7eb3">
+                                <con:context>
+                                    <con1:userNsDecl prefix="obrA" namespace="http://xmlns.oracle.com/BRMCotizarAuto/BRMCotizarAuto_DecisionService"/>
+                                    <con1:userNsDecl prefix="cot" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Cotizador"/>
+                                </con:context>
+                                <con:actions>
+                                    <con1:routingTable xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-af1004c.N62654904.0.15a494314d2.N7fac</con2:id>
+                                        <con1:expression>
+                                            <con3:xqueryText xmlns:con3="http://www.bea.com/wli/sb/stages/config">$body/cot:cotizarVehiculoRequest/cot:datosCotizar/cot:tipoVehiculo/text()</con3:xqueryText>
+                                        </con1:expression>
+                                        <con1:case id="_BranchId-af1004c.N62654904.0.15a494314d2.N7fab">
+                                            <con1:operator>equals</con1:operator>
+                                            <con1:value>1</con1:value>
+                                            <con1:route>
+                                                <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-af1004c.N62654904.0.15a494314d2.N7faa</con2:id>
+                                                <con1:service ref="OperacionCreditos/Cotizador/Business Services/BRMCotizarAutoBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                                                <con1:operation>callFunctionStateless</con1:operation>
+                                                <con1:outboundTransform>
+                                                    <con2:replace varName="body" contents-only="true">
+                                                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-af1004c.N62654904.0.15a494314d2.N7dc2</con3:id>
+                                                        <con2:expr>
+                                                            <con3:xqueryTransform xmlns:con3="http://www.bea.com/wli/sb/stages/config">
+                                                                <con3:resource ref="OperacionCreditos/Cotizador/Resources/Transformations/TrNMPCotizarToBRMCotizarAuto"/>
+                                                                <con3:param name="nmpCotizador">
+                                                                    <con3:path>$body/*</con3:path>
+                                                                </con3:param>
+                                                            </con3:xqueryTransform>
+                                                        </con2:expr>
+                                                    </con2:replace>
+                                                </con1:outboundTransform>
+                                                <con1:responseTransform>
+                                                    <con2:replace varName="body" contents-only="true">
+                                                        <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-af1004c.N62654904.0.15a494314d2.N7dbf</con3:id>
+                                                        <con2:expr>
+                                                            <con3:xqueryTransform xmlns:con3="http://www.bea.com/wli/sb/stages/config">
+                                                                <con3:resource ref="OperacionCreditos/Cotizador/Resources/Transformations/TrBRMCotizarAutoToNMPCotizar"/>
+                                                                <con3:param name="brmCotizarAuto">
+                                                                    <con3:path>$body/*</con3:path>
+                                                                </con3:param>
+                                                            </con3:xqueryTransform>
+                                                        </con2:expr>
+                                                    </con2:replace>
+                                                </con1:responseTransform>
+                                            </con1:route>
+                                        </con1:case>
+                                    </con1:routingTable>
+                                </con:actions>
+                            </con:route-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

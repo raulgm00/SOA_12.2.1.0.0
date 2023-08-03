@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+    <con:coreEntry>
+        <con:description>Permite consultar autorizadores de cuentas deudoras y cuentas deudoras</con:description>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:wsdl ref="Finance/AP/GPA/Entity/Resources/CuentaDeudora/CuentaDeudoraSvcWSDL"/>
+            <con:binding>
+                <con:name>CuentaDeudoraSvcPortBinding</con:name>
+                <con:namespace>http://service.gpa.mx.com.qualitas/</con:namespace>
+            </con:binding>
+        </con:binding>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:pipeline name="ConsultasCtasDeudorasBranch_response" type="response">
+            <con:stage name="SetResponse">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="ser" namespace="http://service.gpa.mx.com.qualitas/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con:replace varName="body" contents-only="true" xmlns:con="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.18.15a84acb76f.N8000</con1:id>
+                        <con:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con:location>
+                        <con:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat('
+      <ser:consultarResponse ','xmlns:ser="http://service.gpa.mx.com.qualitas/">
+         <response>
+            <resultado>
+               <satisfactorio>true</satisfactorio>
+            </resultado>
+            <cuenta>
+               <autorizador login="administradorgpa">
+                   <nombre>Aprobador 1</nombre>
+                   <email>administradorgpa@qualitas.com.mx</email>
+               </autorizador>
+               <id>6</id>
+               <descripcion>AUDATEX S.A. DE C.V.</descripcion>
+               <numero>1630010020923</numero>
+            </cuenta>
+
+         </response>
+      </ser:consultarResponse>
+'))]]></con:xqueryText>
+                        </con:expr>
+                    </con:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="ConsultarAutorizadoresBranch_request" type="request">
+            <con:stage name="Consultar Lista de Autorizadores de CDs">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="ser" namespace="http://service.gpa.mx.com.qualitas/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:log xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.f.15a6c4c6472.N7fff</con2:id>
+                        <con1:logLevel>warning</con1:logLevel>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con1:expr>
+                        <con1:message>CuentaDeudoraSvc Payload</con1:message>
+                    </con1:log>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="ConsultasCtasDeudorasBranch_request" type="request">
+            <con:stage name="ConsultaCDs">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="ser" namespace="http://service.gpa.mx.com.qualitas/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:log xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.19.15a84ad179f.N8000</con2:id>
+                        <con1:logLevel>warning</con1:logLevel>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con1:expr>
+                        <con1:message>CuentasDeudorasSvc Payload</con1:message>
+                    </con1:log>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="ConsultarAutorizadoresBranch_response" type="response">
+            <con:stage name="SetResponse">
+                <con:comment/>
+                <con:context>
+                    <con1:varNsDecl prefix="ser" namespace="http://service.gpa.mx.com.qualitas/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con:replace varName="body" contents-only="true" xmlns:con="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con1:id xmlns:con1="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.28f13ec9.17.15a84a56a96.N8000</con1:id>
+                        <con:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con:location>
+                        <con:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat('
+      <ser:consultarAutorizadoresResponse ','xmlns:ser="http://service.gpa.mx.com.qualitas/">
+         <response>
+            <autorizador login="administradorgpa">
+               <nombre>Aprobador 1</nombre>
+               <email>administradorgpa@qualitas.com.mx</email>
+            </autorizador>
+            <autorizador login="administradorgpa">
+               <nombre>Aprobador 2</nombre>
+               <email>administradorgpa@qualitas.com.mx</email>
+            </autorizador>
+
+         </response>
+      </ser:consultarAutorizadoresResponse>
+'))]]></con:xqueryText>
+                        </con:expr>
+                    </con:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:branch-node type="operation" name="BranchNode1">
+                <con:branch-table>
+                    <con:branch name="consultar">
+                        <con:operator>equals</con:operator>
+                        <con:value>consultar</con:value>
+                        <con:flow>
+                            <con:pipeline-node name="ConsultasCtasDeudorasBranch">
+                                <con:comment/>
+                                <con:request>ConsultasCtasDeudorasBranch_request</con:request>
+                                <con:response>ConsultasCtasDeudorasBranch_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="consultarAutorizadores">
+                        <con:operator>equals</con:operator>
+                        <con:value>consultarAutorizadores</con:value>
+                        <con:flow>
+                            <con:pipeline-node name="ConsultarAutorizadoresBranch">
+                                <con:comment/>
+                                <con:request>ConsultarAutorizadoresBranch_request</con:request>
+                                <con:response>ConsultarAutorizadoresBranch_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch/>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

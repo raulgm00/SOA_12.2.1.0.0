@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:wsdl ref="MasterData/Oficinas/Resources/ObtenerOficinaWSDL"/>
+            <con:binding>
+                <con:name>ObtenerOficinaBPELBinding</con:name>
+                <con:namespace>http://qualitas.com.mx/ObtenerOficinaApp/ObtenerOficinaPrj/ObtenerOficinaBPEL</con:namespace>
+            </con:binding>
+        </con:binding>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:pipeline name="PipelinePairNode1_response" type="response">
+            <con:stage name="stage1" errorHandler="_onErrorHandler-N53efe10a.N502f5b7c.7.159e232fb58.N8000">
+                <con:context>
+                    <con1:userNsDecl prefix="v11" namespace="http://qualitas.com.mx/comunes/objetosComunes/v1/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                    <con1:varNsDecl prefix="v1" namespace="http://qualitas.com.mx/Comun/Oficina/obtenerOficinaPorClave/v1/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-N53efe10a.N502f5b7c.0.159e220bd17.N8000</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat('<v1:obtenerOficinaPorClaveResponse xmlns:v1="http://qualitas.com.mx/Comun/Oficina/obtenerOficinaPorClave/v1/">
+         <v1:claveOficina>',$respObtenerOficina//salida/llave/text(),'</v1:claveOficina>
+         <v1:descOficina>',$respObtenerOficina//atributos/valor/text(),'</v1:descOficina>
+         <v1:OperationResponse xmlns:v11="http://qualitas.com.mx/comunes/objetosComunes/v1/">
+            <v11:listaErrores>
+               <v11:error idMotivo="" descripcion=""></v11:error>
+            </v11:listaErrores>
+            <v11:codigoOperacionoper></v11:codigoOperacionoper>
+            <v11:codigoRespuesta>0</v11:codigoRespuesta>
+            <v11:descripcionRespuesta>EJECUCION EXITOSA</v11:descripcionRespuesta>
+            <v11:tiempoRespuesta></v11:tiempoRespuesta>
+            <v11:fecha></v11:fecha>
+         </v1:OperationResponse >
+      </v1:obtenerOficinaPorClaveResponse>'))]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="_onErrorHandler-N53efe10a.N502f5b7c.7.159e232fb58.N8000" type="error">
+            <con:stage name="stage1">
+                <con:context>
+                    <con1:varNsDecl prefix="v1" namespace="http://qualitas.com.mx/Comun/Oficina/obtenerOficinaPorClave/v1/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-N53efe10a.N502f5b7c.8.159e23328d2.N8000</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML('<v1:obtenerOficinaPorClaveResponse xmlns:v1="http://qualitas.com.mx/Comun/Oficina/obtenerOficinaPorClave/v1/">
+         <v1:claveOficina></v1:claveOficina>
+         <v1:descOficina></v1:descOficina>
+         <v1:OperationResponse xmlns:v11="http://qualitas.com.mx/comunes/objetosComunes/v1/">
+            <v11:listaErrores>
+               <v11:error idMotivo="" descripcion=""></v11:error>
+            </v11:listaErrores>
+            <v11:codigoOperacionoper></v11:codigoOperacionoper>
+            <v11:codigoRespuesta>1</v11:codigoRespuesta>
+            <v11:descripcionRespuesta>ERROR, NO SE ENCONTRÓ OFICINA</v11:descripcionRespuesta>
+            <v11:tiempoRespuesta></v11:tiempoRespuesta>
+            <v11:fecha></v11:fecha>
+         </v1:OperationResponse >
+      </v1:obtenerOficinaPorClaveResponse>')]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:reply isError="false" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+                        <con1:id>_ActionId-N53efe10a.N502f5b7c.9.159e233d855.N7fff</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="_onErrorHandler-N53efe10a.N502f5b7c.a.159e2341d4c.N8000" type="error">
+            <con:stage name="stage1">
+                <con:context>
+                    <con1:varNsDecl prefix="v1" namespace="http://qualitas.com.mx/Comun/Oficina/obtenerOficinaPorClave/v1/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:replace varName="body" contents-only="true" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-N53efe10a.N502f5b7c.b.159e2344bda.N8000</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML('<v1:obtenerOficinaPorClaveResponse xmlns:v1="http://qualitas.com.mx/Comun/Oficina/obtenerOficinaPorClave/v1/">
+         <v1:claveOficina></v1:claveOficina>
+         <v1:descOficina></v1:descOficina>
+         <v1:OperationResponse xmlns:v11="http://qualitas.com.mx/comunes/objetosComunes/v1/">
+            <v11:listaErrores>
+               <v11:error idMotivo="" descripcion=""></v11:error>
+            </v11:listaErrores>
+            <v11:codigoOperacionoper></v11:codigoOperacionoper>
+            <v11:codigoRespuesta>1</v11:codigoRespuesta>
+            <v11:descripcionRespuesta>ERROR, NO SE ENCONTRÓ OFICINA</v11:descripcionRespuesta>
+            <v11:tiempoRespuesta></v11:tiempoRespuesta>
+            <v11:fecha></v11:fecha>
+         </v1:OperationResponse >
+      </v1:obtenerOficinaPorClaveResponse>')]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                    <con1:reply isError="false" xmlns:con1="http://www.bea.com/wli/sb/stages/config">
+                        <con1:id>_ActionId-N53efe10a.N502f5b7c.c.159e2348125.N8000</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode1_request" type="request">
+            <con:stage name="stage1">
+                <con:context>
+                    <con1:varNsDecl prefix="v1" namespace="http://qualitas.com.mx/Comun/Oficina/obtenerOficinaPorClave/v1/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:assign varName="body_tmp" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-N53efe10a.N502f5b7c.1.159e2215d28.N8000</con2:id>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:replace varName="body" contents-only="true" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-N53efe10a.N502f5b7c.2.159e2219f72.N8000</con2:id>
+                        <con1:location>
+                            <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat('<ser:validaEntradas xmlns:ser="http://service.centroscosto.qualitas.com.mx/">
+         <entradas>
+            <entrada>
+               <archivo>TSUC</archivo>
+               <atributos>1</atributos>
+               <formato>U</formato>
+               <llave>',$body/v1:obtenerOficinaPorClaveRequest/v1:Input/v1:claveOficina,'</llave>
+            </entrada>
+         </entradas>
+      </ser:validaEntradas>'))]]></con:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="PipelinePairNode1">
+                <con:request>PipelinePairNode1_request</con:request>
+                <con:response>PipelinePairNode1_response</con:response>
+            </con:pipeline-node>
+            <con:route-node name="RouteNode1" error-handler="_onErrorHandler-N53efe10a.N502f5b7c.a.159e2341d4c.N8000">
+                <con:context>
+                    <con1:varNsDecl prefix="v1" namespace="http://qualitas.com.mx/Comun/Oficina/obtenerOficinaPorClave/v1/" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-N53efe10a.N502f5b7c.3.159e22331b9.N8000</con2:id>
+                        <con1:service ref="Operational/SISE/BusinessSvc/ConsultaInformacionBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                        <con1:operation>validaEntradas</con1:operation>
+                        <con1:outboundTransform/>
+                        <con1:responseTransform>
+                            <con2:assign varName="respObtenerOficina" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-N53efe10a.N502f5b7c.4.159e22435f9.N7fff</con3:id>
+                                <con2:expr>
+                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                                </con2:expr>
+                            </con2:assign>
+                        </con1:responseTransform>
+                    </con1:route>
+                </con:actions>
+            </con:route-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

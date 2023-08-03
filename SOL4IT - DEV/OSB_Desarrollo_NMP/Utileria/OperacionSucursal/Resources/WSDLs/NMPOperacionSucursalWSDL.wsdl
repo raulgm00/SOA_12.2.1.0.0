@@ -1,0 +1,57 @@
+<wsdl:definitions name="NMPSolicitudesClienteDB" targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Service/OperacionSucursal" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Service/OperacionSucursal" xmlns:nmph="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:nmpsm="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:os="http://servicios.montedepiedad.com.mx/NMP/Schema/OperacionSucursal" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+    <plt:partnerLinkType name="NMPOperacionSucursal_plt">
+        <plt:role name="NMPOperacionSucursal_Rol">
+            <plt:portType name="tns:NMPOperacionSucursal_PortType"/>
+        </plt:role>
+    </plt:partnerLinkType>
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/OperacionSucursal" schemaLocation="../Schemas/NMPOperacionSucursalXSD.xsd"/>
+        </schema>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+        </schema>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+        </schema>
+    </wsdl:types>
+    <wsdl:message name="obtenerDiasInhabilesRequest">
+        <wsdl:part name="req" element="os:obtenerDiasInhabilesRequest"/>
+    </wsdl:message>
+    <wsdl:message name="obtenerDiasInhabilesResponse">
+        <wsdl:part name="res" element="os:obtenerDiasInhabilesResponse"/>
+    </wsdl:message>
+    <wsdl:message name="NMPStandardFault">
+        <wsdl:part name="fault" element="nmpsm:messageError"/>
+    </wsdl:message>   
+    <wsdl:message name="NMPStandardHeaderReq">
+        <wsdl:part name="headerReq" element="nmph:headerMessage"/>
+    </wsdl:message>
+    <wsdl:message name="NMPStandardHeaderRes">
+        <wsdl:part name="headerRes" element="nmph:headerMessageResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="NMPOperacionSucursal_PortType">
+        <wsdl:operation name="obtenerDiasInhabiles">
+            <wsdl:input message="tns:obtenerDiasInhabilesRequest"/>
+            <wsdl:output message="tns:obtenerDiasInhabilesResponse"/>
+            <wsdl:fault message="tns:NMPStandardFault" name="operacionSucursalFault"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="NMPOperacionSucursal_PTSOAP12Binding" type="tns:NMPOperacionSucursal_PortType">
+        <soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="obtenerDiasInhabiles">
+            <soap12:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/OperacionSucursal/obtenerDiasInhabiles"/>
+            <wsdl:input>
+                <soap12:body use="literal" parts="req"/>
+                <soap12:header message="tns:NMPStandardHeaderReq" part="headerReq" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal" parts="res"/>
+                <soap12:header message="tns:NMPStandardHeaderRes" part="headerRes" use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="operacionSucursalFault">
+                <soap12:fault name="operacionSucursalFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+</wsdl:definitions>

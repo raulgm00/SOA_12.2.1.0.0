@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2015 (x64) (http://www.altova.com) by David Rzui (Television Internacional) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:Cdm="http://nmp.com/CommonDataModel/1.0/Common" targetNamespace="http://nmp.com/CommonDataModel/1.0/Common" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<!--=================================================================================-->
+	<!--                                                                        TYPES -->
+	<!--=================================================================================-->
+	<!-- -->
+		<!--========= Tipificacion de identificadores=========-->
+	<xs:complexType name="IdentifierType">
+		<xs:all>
+			<xs:element name="ID" type="xs:string" minOccurs="0"/>
+			<xs:element name="Name" type="xs:string" minOccurs="0"/>
+			<xs:element name="Description" type="xs:string" minOccurs="0"/>
+		</xs:all>
+	</xs:complexType>
+	
+	<!--========= Tipificacion de respuesta  =========-->
+	<xs:complexType name="ResultNotificationType">
+		<xs:all>
+			<xs:element name="Code" type="xs:string"/>
+			<xs:element name="Operation" type="xs:string" minOccurs="0"/>
+			<xs:element name="Description" type="xs:string" minOccurs="0"/>
+			<xs:element name="ErrorCode" type="xs:string" minOccurs="0"/>
+			<xs:element name="DetailDescription" type="xs:string" minOccurs="0"/>
+		</xs:all>
+	</xs:complexType>
+
+	<!--========= Tipificacion de cita  =========-->
+	<xs:complexType name="AppointmentType">
+		<xs:all>
+			<xs:element name="User" type="Cdm:IdentifierType"/>
+			<xs:element name="Center" type="Cdm:IdentifierType"/>
+			<xs:element name="Facilitator" type="Cdm:IdentifierType"/>
+			<xs:element name="AppointmentDate" type="xs:dateTime"/>
+		</xs:all>
+	</xs:complexType>
+	
+	<!-- -->
+	<!--=================================================================================-->
+	<!--                                                                   MESSAGES -->
+	<!--=================================================================================-->
+	<!-- -->
+	<!--========= Mensaje consulta de ventas diarias  =========-->
+	<xs:complexType name="GetDailySalesReportIMType">
+		<xs:all>
+			<xs:element name="Center" type="xs:string" minOccurs="0"/>
+			<xs:element name="InitDate" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="EndDate" type="xs:dateTime" minOccurs="0"/>
+		</xs:all>
+	</xs:complexType>
+	<xs:complexType name="GetDailySalesReportResponseIMType">
+		<xs:all>
+			<xs:element name="ResultNotification" type="Cdm:ResultNotificationType"/>
+			<xs:element name="ListOfSales">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Sale" minOccurs="0" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:all>
+									<xs:element name="Center" minOccurs="0">
+										<xs:complexType>
+											<xs:all>
+												<xs:element name="ID" type="xs:string" minOccurs="0"/>
+												<xs:element name="Name" type="xs:string" minOccurs="0"/>
+											</xs:all>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="Product" minOccurs="0">
+										<xs:complexType>
+											<xs:all>
+												<xs:element name="ID" type="xs:string" minOccurs="0"/>
+												<xs:element name="Name" type="xs:string" minOccurs="0"/>
+												<xs:element name="Category" type="xs:string" minOccurs="0"/>
+												<xs:element name="PriceList" type="xs:string" minOccurs="0"/>
+											</xs:all>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="FolioClient" type="xs:string" minOccurs="0"/>
+									<xs:element name="FolioSale" type="xs:string" minOccurs="0"/>
+									<xs:element name="Type" type="xs:string" minOccurs="0"/>
+									<xs:element name="Client" type="xs:string" minOccurs="0"/>
+									<xs:element name="Date" type="xs:string" minOccurs="0"/>
+									<xs:element name="Time" type="xs:string" minOccurs="0"/>
+									<xs:element name="TotalAmount" type="xs:string" minOccurs="0"/>
+									<xs:element name="Quantity" type="xs:string" minOccurs="0"/>
+									<xs:element name="Discount" type="xs:string" minOccurs="0"/>
+									<xs:element name="Promotion" type="xs:string" minOccurs="0"/>
+								</xs:all>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:all>
+	</xs:complexType>
+	<!-- -->
+	<!--========= Mensaje consulta de cursos  =========-->
+	<xs:complexType name="GetCoursesIMType">
+		<xs:all>
+			<xs:element name="Center" type="xs:string" minOccurs="0"/>
+			<xs:element name="InitDate" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="EndDate" type="xs:dateTime" minOccurs="0"/>
+		</xs:all>
+	</xs:complexType>
+	<xs:complexType name="GetCoursesResponseIMType">
+		<xs:all>
+			<xs:element name="ResultNotification" type="Cdm:ResultNotificationType"/>
+			<xs:element name="ListOfCourse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Course" minOccurs="0" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:all>
+									<xs:element name="Center" minOccurs="0">
+										<xs:complexType>
+											<xs:all>
+												<xs:element name="ID" type="xs:string" minOccurs="0"/>
+												<xs:element name="Name" type="xs:string" minOccurs="0"/>
+											</xs:all>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="Group" minOccurs="0">
+										<xs:complexType>
+											<xs:all>
+												<xs:element name="ID" type="xs:string" minOccurs="0"/>
+												<xs:element name="Code" type="xs:string" minOccurs="0"/>
+												<xs:element name="Name" type="xs:string" minOccurs="0"/>
+												<xs:element name="Category" type="xs:string" minOccurs="0"/>
+											</xs:all>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="Course">
+										<xs:complexType>
+											<xs:all>
+												<xs:element name="ID" type="xs:string" minOccurs="0"/>
+												<xs:element name="Code" type="xs:string" minOccurs="0"/>
+												<xs:element name="Category" type="xs:string" minOccurs="0"/>
+												<xs:element name="Name" type="xs:string" minOccurs="0"/>
+												<xs:element name="Description" type="xs:string" minOccurs="0"/>
+											</xs:all>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="Classroom" type="xs:string" minOccurs="0"/>
+									<xs:element name="MaxQuota" type="xs:string" minOccurs="0"/>
+									<xs:element name="ActualQuota" type="xs:string" minOccurs="0"/>
+									<xs:element name="TotalDuration" type="xs:string" minOccurs="0"/>
+									<xs:element name="EndDate" type="xs:string" minOccurs="0"/>
+									<xs:element name="EndDateSubscription" type="xs:string" minOccurs="0"/>
+									<xs:element name="StartDate" type="xs:string" minOccurs="0"/>
+									<xs:element name="StartDateSubscription" type="xs:string" minOccurs="0"/>
+									<xs:element name="CreatedBy" type="xs:string" minOccurs="0"/>
+									<xs:element name="Profile" type="xs:string" minOccurs="0"/>
+									<xs:element name="Serial" type="xs:string" minOccurs="0"/>
+								</xs:all>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:all>
+	</xs:complexType>
+	<!-- -->
+	<!--========= Mensaje request del servicio para sicronizacion de cursos desde RIA =========-->
+	<xs:complexType name="SyncCoursesFromRiaIMType">
+		<xs:all>
+			<xs:element name="Center" type="xs:string" minOccurs="1"/>
+			<xs:element name="InitDate" type="xs:dateTime" minOccurs="1"/>
+			<xs:element name="EndDate" type="xs:dateTime" minOccurs="1"/>
+		</xs:all>
+	</xs:complexType>
+	<!-- -->
+	<!--========= Mensaje request del servicio para sicronizacion de ventas diarias=========-->
+	<xs:complexType name="SyncDailySalesIMType">
+		<xs:all>
+			<xs:element name="Center" type="xs:string"/>
+			<xs:element name="InitDate" type="xs:dateTime"/>
+		</xs:all>
+	</xs:complexType>
+	<!-- -->
+	<!--========= Mensaje de registro de visitas=========-->
+	<xs:complexType name="RegisterAppointmentIMType">
+		<xs:all>
+			<xs:element name="Appointment" type="Cdm:AppointmentType"/>
+		</xs:all>
+	</xs:complexType>
+	<!-- -->
+	<!--========= Mensaje General de respuesta =========-->
+	<xs:complexType name="GeneralResponseIMType">
+		<xs:all>
+			<xs:element name="ResultNotification" type="Cdm:ResultNotificationType"/>
+		</xs:all>
+	</xs:complexType>
+	<!-- -->
+	
+	<!--=================================================================================-->
+	<!--                                                                        ELEMENTS -->
+	<!--=================================================================================-->
+	<!-- -->
+	<xs:element name="GetDailySalesReportIM" type="Cdm:GetDailySalesReportIMType"/>
+	<xs:element name="GetDailySalesReportResponseIM" type="Cdm:GetDailySalesReportResponseIMType"/>
+	<xs:element name="GetCoursesIM" type="Cdm:GetCoursesIMType"/>
+	<xs:element name="GetCoursesResponseIM" type="Cdm:GetCoursesResponseIMType"/>
+	<xs:element name="SyncCoursesFromRiaIM" type="Cdm:SyncCoursesFromRiaIMType"/>
+	<xs:element name="SyncDailySalesIM" type="Cdm:SyncDailySalesIMType"/>
+	<xs:element name="RegisterAppointmentIM" type="Cdm:RegisterAppointmentIMType"/>
+	<xs:element name="GeneralResponseIM" type="Cdm:GeneralResponseIMType"/>
+</xs:schema>

@@ -1,0 +1,34 @@
+<application xmlns:soa="http://www.oracle.com/soa/rest" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:inp1="http://servicios.montedepiedad.com.mx/NMP/Schema/Catalogos/Finanzas" xmlns="http://wadl.dev.java.net/2009/02">
+   <doc title="NMPCatalogosFinanzasRestPXY">Servicio que provee catalogos de finanzas</doc>
+   <grammars>
+      <xsd:schema xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Services/Catalogos/Finanzas" xmlns:inp2="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:inp3="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Catalogos/Finanzas" schemaLocation="../Schemas/NMPCatalogosFinanzasXSD.xsd"/>
+    </xsd:schema>
+      <xsd:schema xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Services/Catalogos/Finanzas" xmlns:inp2="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:inp3="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+    </xsd:schema>
+      <xsd:schema xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Services/Catalogos/Finanzas" xmlns:inp2="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:inp3="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+    </xsd:schema>
+   </grammars>
+   <resources>
+      <resource path="/TasaPlazo">
+         <method name="GET" soa:wsdlOperation="obtenerTasaPlazo">
+            <request soa:paramElement="pns:obtenerTasaPlazoRequest" xmlns:pns="http://servicios.montedepiedad.com.mx/NMP/Schema/Catalogos/Finanzas">
+               <param name="producto" style="query" soa:expression="$msg.request/inp1:producto" type="xsd:int"/>
+               <param name="subProducto" style="query" soa:expression="$msg.request/inp1:subProducto" type="xsd:string"/>
+               <param name="frecuencia" style="query" soa:expression="$msg.request/inp1:frecuencia" type="xsd:int"/>
+               <param name="plazo" style="query" soa:expression="$msg.request/inp1:plazo" type="xsd:int"/>
+               <param name="bc" style="query" soa:expression="$msg.request/inp1:calificacionBuro" type="xsd:int"/>
+               <param name="pi" style="query" soa:expression="$msg.request/inp1:probabilidadIncumplimiento" type="xsd:decimal"/>
+            </request>
+            <response status="200">
+               <representation mediaType="application/json" element="cns:obtenerTasaPlazoResponse" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/Catalogos/Finanzas"/>
+            </response>
+            <response status="500" soa:wsdlFaultName="catalogosFinanzasFault">
+               <representation mediaType="application/xml" element="cns:messageError" xmlns:cns="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage"/>
+            </response>
+         </method>
+      </resource>
+   </resources>
+</application>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ser:businessServiceEntry xmlns:ser="http://xmlns.oracle.com/servicebus/business/config" xmlns:svc="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env" xmlns:jca="http://www.bea.com/wli/sb/transports/jca" xmlns:ops="http://xmlns.oracle.com/servicebus/business/operations" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ser:coreEntry>
+        <ser:description>TODO: NO USAR. Eliminar, este proxy y su respectivo business service y resources se migraron a ProyServPrestador.</ser:description>
+        <ser:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config">
+            <con:wsdl ref="Finance/AP/GPA/Data/Resources/ProyectosPrestador/ConsultaServiciosPrestadorDataSvc-concrete"/>
+            <con:binding>
+                <con:name>ConsultaServiciosPrestadorDataSvc_ptt-binding</con:name>
+                <con:namespace>http://xmlns.oracle.com/pcbpel/adapter/db/QualitasGPABus/SolicitudesBDQry/ConsultaServiciosPrestadorDataSvc</con:namespace>
+            </con:binding>
+            <con:WSI-compliant>false</con:WSI-compliant>
+        </ser:binding>
+        <ops:operations enabled="true">
+            <ops:sla-alerting enabled="true"/>
+        </ops:operations>
+        <ser:ws-policy>
+            <svc:binding-mode>no-policies</svc:binding-mode>
+        </ser:ws-policy>
+        <ser:xqConfiguration>
+            <svc:snippetVersion>1.0</svc:snippetVersion>
+        </ser:xqConfiguration>
+    </ser:coreEntry>
+    <ser:endpointConfig>
+        <tran:provider-id>jca</tran:provider-id>
+        <tran:inbound>false</tran:inbound>
+        <tran:URI>
+            <env:value>jca://eis/DB/GPAConnDB</env:value>
+        </tran:URI>
+        <tran:outbound-properties>
+            <tran:load-balancing-algorithm>round-robin</tran:load-balancing-algorithm>
+            <tran:retry-count>0</tran:retry-count>
+            <tran:retry-interval>30</tran:retry-interval>
+            <tran:retry-application-errors>true</tran:retry-application-errors>
+        </tran:outbound-properties>
+        <tran:all-headers>false</tran:all-headers>
+        <tran:provider-specific xsi:type="jca:JCAEndPointConfiguration">
+            <jca:jca-file ref="Finance/AP/GPA/Data/Resources/ProyectosPrestador/ConsultaServiciosPrestadorDataSvc_db"/>
+            <jca:adapter-name>Database Adapter</jca:adapter-name>
+            <jca:adapter-type>db</jca:adapter-type>
+            <jca:dispatch-policy>SBDefaultResponseWorkManager</jca:dispatch-policy>
+            <jca:always-use-wsdl>true</jca:always-use-wsdl>
+            <jca:connection-mode>managed</jca:connection-mode>
+            <jca:outbound-properties>
+                <jca:operation-properties>
+                    <jca:operation-name>ConsultaServiciosPrestadorDataSvc</jca:operation-name>
+                    <jca:spec-properties>
+                        <jca:property>
+                            <jca:name>SqlString</jca:name>
+                            <jca:value>SELECT A.ID_PROYECTO, A.NOMBRE_PROYECTO, A.DESC_PROYECTO,A.ST_PROYECTO,         A.PRESUPUESTO_APROBADO, A.PARCIALIDADES, A.ID_CONDICIONES_PAGO,          A.ID_SOLICITUD, A.ID_PRESTADOR, A.CENTRO_COSTO,          A.CVE_OFICINA, A.DESC_OFICINA, A.DESC_AREA, A.RESPONSABLE_AREA, A.TIPO_MONEDA, A.PRESUPUESTO_DISPONIBLE, A.PAGOS_PROCESO, A.ID_PROYECTOMARCO, A.PARCIALIDAD_ACTUAL, A.PROCESABLE   FROM  GPA013_PROYECTO A, GPA001_SOLICITUD B   WHERE A.ID_SOLICITUD = B.ID_SOLICITUD      AND A.ID_PRESTADOR= #pIdPrestador     AND B.NU_EMPLEADO = #pIdEmpleado     AND A.ID_PROYECTO IN (         SELECT DISTINCT (BASE.ID_PROYECTO)         FROM            (SELECT ID_PROYECTO           FROM  GPA013_PROYECTO            WHERE ID_PRESTADOR= #pIdPrestador AND ID_PROYECTO NOT IN           ( SELECT ID_PROYECTOMARCO FROM  GPA013_PROYECTO WHERE  ID_PRESTADOR= #pIdPrestador and ID_PROYECTOMARCO is not null )           AND ID_PROYECTOMARCO IS NULL                          UNION                      SELECT max (ID_PROYECTO) ID_PROYECTO             FROM  GPA013_PROYECTO WHERE ID_PROYECTOMARCO IS NOT NULL AND ID_PRESTADOR= #pIdPrestador              GROUP BY ID_PROYECTOMARCO) BASE                      )  AND A.ST_PROYECTO in (13,14,15)   ORDER BY A.FH_CREACION_PROY DESC</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>GetActiveUnitOfWork</jca:name>
+                            <jca:value>false</jca:value>
+                        </jca:property>
+                    </jca:spec-properties>
+                </jca:operation-properties>
+            </jca:outbound-properties>
+            <jca:endpoint-properties>
+                <jca:endpoint-property>
+                    <jca:name>jca.retry.backoff</jca:name>
+                    <jca:value>2</jca:value>
+                </jca:endpoint-property>
+                <jca:endpoint-property>
+                    <jca:name>jca.retry.count</jca:name>
+                    <jca:value>4</jca:value>
+                </jca:endpoint-property>
+                <jca:endpoint-property>
+                    <jca:name>jca.retry.maxInterval</jca:name>
+                    <jca:value>120</jca:value>
+                </jca:endpoint-property>
+                <jca:endpoint-property>
+                    <jca:name>jca.retry.interval</jca:name>
+                    <jca:value>1</jca:value>
+                </jca:endpoint-property>
+            </jca:endpoint-properties>
+        </tran:provider-specific>
+    </ser:endpointConfig>
+</ser:businessServiceEntry>

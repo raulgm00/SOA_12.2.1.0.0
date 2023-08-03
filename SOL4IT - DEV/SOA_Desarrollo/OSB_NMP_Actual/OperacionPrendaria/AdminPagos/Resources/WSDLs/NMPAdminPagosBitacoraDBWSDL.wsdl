@@ -1,0 +1,56 @@
+<wsdl:definitions name="NmpDSRFPagoLineaDB" targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Services/NmpDSRFPagoLineaDB" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Services/NmpDSRFPagoLineaDB" xmlns:jca="http://xmlns.oracle.com/pcbpel/wsdl/jca/" xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:top="http://xmlns.oracle.com/pcbpel/adapter/db/top/NmpDSRFPagoLineaDB" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <plt:partnerLinkType name="NmpDSRFPagoLineaDB_plt">
+    <plt:role name="NmpDSRFPagoLineaDB_role">
+      <plt:portType name="tns:NmpDSRFPagoLineaDB_ptt"/>
+    </plt:role>
+  </plt:partnerLinkType>
+  <wsdl:types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/NmpDSRFPagoLineaDB" schemaLocation="../Schemas/NMPAdminPagosBitacoraDBXSD.xsd"/>
+    </schema>
+  </wsdl:types>
+  <wsdl:message name="NmpAdminPagosBitTCollection">
+    <wsdl:part name="Req" element="top:NmpAdminPagosBitTCollection"/>
+  </wsdl:message>
+   <wsdl:message name="existeTransaccionResponse_msg">
+    <wsdl:part name="res" element="top:existeTransaccionResponse"/>
+  </wsdl:message>
+  <wsdl:message name="existeTransaccionRequest">
+    <wsdl:part name="req" element="top:existeTransaccionRequest"/>
+  </wsdl:message>
+  
+ 
+  
+  <wsdl:portType name="NmpDSRFPagoLineaDB_ptt">
+    <wsdl:operation name="insert">
+      <wsdl:input message="tns:NmpAdminPagosBitTCollection"/>
+      <wsdl:output message="tns:NmpAdminPagosBitTCollection"/>
+    </wsdl:operation>
+    <wsdl:operation name="validaTransaccion">
+      <wsdl:input message="tns:existeTransaccionRequest"/>
+      <wsdl:output message="tns:existeTransaccionResponse_msg"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="DSRFPagoLineaDBSOAP11Binding" type="tns:NmpDSRFPagoLineaDB_ptt">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="insert">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/DB/NmpDSRFPagoLineaDB/insert"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="Req"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="Req"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="validaTransaccion">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Services/NmpDSRFPagoLineaDB/validaTransaccion"/>
+      <wsdl:input>
+        <soap:body use="literal" parts="req"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="res"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  
+</wsdl:definitions>

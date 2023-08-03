@@ -1,0 +1,41 @@
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns2="http://nmp.com.mx/ms/sivad/cambiario/ws/diamantes/datatypes/" xmlns:ns1="http://nmp.com.mx/ms/sivad/cambiario/ws/diamantes/" name="TipoCambiarioService" targetNamespace="http://nmp.com.mx/ms/sivad/cambiario/ws/diamantes/">
+<wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://nmp.com.mx/ms/sivad/cambiario/ws/diamantes/datatypes/" elementFormDefault="qualified" targetNamespace="http://nmp.com.mx/ms/sivad/cambiario/ws/diamantes/datatypes/" version="1.0">
+<xs:element name="actualizacionesResponse" type="tns:Void"/>
+<xs:element name="tipos" type="tns:tiposType"/>
+<xs:complexType name="tiposType">
+<xs:sequence>
+<xs:element name="fecha" type="xs:date"/>
+<xs:element name="actualizaciones" type="tns:actualizacionesType"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="actualizacionesType">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" name="tipocambio" type="tns:tipocambioType"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="tipocambioType">
+<xs:sequence>
+<xs:element name="origen" type="xs:string"/>
+<xs:element name="destino" type="xs:string"/>
+<xs:element name="valor" type="xs:decimal"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="Void">
+<xs:sequence/>
+</xs:complexType>
+</xs:schema>
+</wsdl:types>
+<wsdl:message name="actualizarResponse">
+<wsdl:part element="ns2:actualizacionesResponse" name="ActualizarResponse"></wsdl:part>
+</wsdl:message>
+<wsdl:message name="actualizar">
+<wsdl:part element="ns2:tipos" name="ActualizarRequest"></wsdl:part>
+</wsdl:message>
+<wsdl:portType name="TipoCambiarioService">
+<wsdl:operation name="actualizar">
+<wsdl:input message="ns1:actualizar" name="actualizar"></wsdl:input>
+<wsdl:output message="ns1:actualizarResponse" name="actualizarResponse"></wsdl:output>
+</wsdl:operation>
+</wsdl:portType>
+</wsdl:definitions>

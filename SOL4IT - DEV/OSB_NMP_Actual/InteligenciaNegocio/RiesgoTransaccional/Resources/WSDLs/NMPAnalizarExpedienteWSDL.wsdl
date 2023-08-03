@@ -1,0 +1,48 @@
+<definitions targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Service/RiesgoTransaccional" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://servicios.montedepiedad.com.mx/NMP/Service/RiesgoTransaccional" xmlns:ns1="http://servicios.montepiedad.com.mx/NMP/Schema/RiesgoTransaccional" xmlns:NMPSM="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" xmlns:NMPSH="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <plnk:partnerLinkType name="AnalizarExpedienteBPEL">
+    <plnk:role name="AnalizarExpedienteProvider" portType="tns:analizarExpedientePortType"/>
+  </plnk:partnerLinkType>
+  
+  <types>
+    <xsd:schema>
+      <xsd:import namespace="http://servicios.montepiedad.com.mx/NMP/Schema/RiesgoTransaccional" schemaLocation="../Schemas/NMPRiesgoTransaccionalMsgXSD.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardMessage" schemaLocation="../../../../Common/XSD/NMPStandardMessage.xsd"/>
+      <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader" schemaLocation="../../../../Common/XSD/NMPStandardHeader.xsd"/>
+    </xsd:schema>
+  </types>
+  <message name="analizarExpedienteRequest">
+    <part name="analizarExpedienteRequest" element="ns1:analizarExpedienteRequest"/>
+  </message>
+  <message name="analizarExpedienteResponse">
+    <part name="analizarExpedienteResponse" element="ns1:analizarExpedienteResponse"/>
+  </message>
+  <message name="standardMessageFault">
+    <part name="fault" element="NMPSM:messageError"/>
+  </message>
+  <message name="standardMessageHeader">
+    <part name="header" element="NMPSH:headerMessage"/>
+  </message>
+  <portType name="analizarExpedientePortType">
+    <operation name="analizarExpediente">
+      <input message="tns:analizarExpedienteRequest"/>
+      <output message="tns:analizarExpedienteResponse"/>
+      <fault name="fault" message="tns:standardMessageFault"/>
+    </operation>
+  </portType>
+  <binding name="analizarExpedientePortTypeSOAP11Binding" type="tns:analizarExpedientePortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="analizarExpediente">
+      <soap:operation style="document" soapAction="http://servicios.montedepiedad.com.mx/NMP/Service/RiesgoTransaccional/analizarExpediente"/>
+      <input>
+        <soap:body use="literal" parts="analizarExpedienteRequest"/>
+        <soap:header message="tns:standardMessageHeader" part="header" use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal" parts="analizarExpedienteResponse"/>
+      </output>
+      <fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+</definitions>

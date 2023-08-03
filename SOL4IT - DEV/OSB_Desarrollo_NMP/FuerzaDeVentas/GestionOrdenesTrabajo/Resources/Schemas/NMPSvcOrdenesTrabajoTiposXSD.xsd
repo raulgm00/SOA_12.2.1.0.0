@@ -1,0 +1,463 @@
+<xsd:schema targetNamespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/OrdenesTrabajo" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:OrdT="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/OrdenesTrabajo" xmlns:PersonaT="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Persona" xmlns:ClienteT="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Cliente">
+  <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Persona" schemaLocation="../../../../Common/XSD/NMPPersona_TIPOS.xsd"/>   
+   <xsd:import namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Tipos/Cliente" schemaLocation="../../../../Common/XSD/NMPCliente_TIPOS.xsd"/>   
+  <xsd:complexType name="AutoasignarOrdenTrabajoRequestType">
+    <xsd:sequence>
+      <xsd:element name="fechaInicial" type="xsd:date" minOccurs="0"/> 
+      <xsd:element name="horaVisita" type="xsd:int" minOccurs="0"/> 
+      <xsd:element name="idCliente" type="xsd:int" minOccurs="0"/> 
+      <xsd:element name="tipoActividad" type="xsd:int" minOccurs="0"/>      
+      <xsd:element name="DatosTransaccion" type="OrdT:DatosTransaccionType" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ConsularAgendaPromotorRequestType">
+    <xsd:sequence>
+      <xsd:element name="fechaInicial" type="xsd:date" minOccurs="0"/> 
+      <xsd:element name="fechaFin" type="xsd:date" minOccurs="0"/> 
+      <xsd:element name="idTipoOrdenTrabajo" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="idOrdenTrabajo" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="promotor" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="ActualizarOrdenTrabajoResponseType">
+    <xsd:sequence>
+      <xsd:element name="noPresolicitud" type="xsd:string"/>
+      <xsd:element name="presolicitud" type="xsd:string"/>
+      <xsd:element name="respuesta" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="StandardResponseType">
+    <xsd:sequence>
+      <xsd:element name="respuesta" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ConsultarAgendaResponseType">
+    <xsd:sequence>
+      <xsd:element name="Ordenes" type="OrdT:OrderListType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="OrderListType">
+    <xsd:sequence>
+      <xsd:element name="Orden" type="OrdT:OrdenType" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="OrdenType">
+    <xsd:sequence>
+      <xsd:element name="Cliente">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="idCliente" type="xsd:int"/>
+            <xsd:element name="nombreCliente" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="fechaInicio" type="xsd:string"/>
+      <xsd:element name="fechaFin" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ActualizarOrdenTrabajoRequestType">
+    <xsd:sequence>
+      <xsd:element name="ResultadoGestion" type="OrdT:GestionBPType" minOccurs="0"/>
+      <xsd:element name="DatosTransaccion" type="OrdT:DatosTransaccionType" minOccurs="0"/>
+    </xsd:sequence>       
+  </xsd:complexType>
+  <xsd:complexType name="InputFieldsType">
+    <xsd:sequence>
+      <xsd:element name="tipoBusqueda" type="xsd:string"/>
+      <xsd:element name="dia" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="fechaInicial" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="horaVisita" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="externalType" type="xsd:string"/>
+      <xsd:element name="tipoActividad" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="Num_Cliente" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="GestionVisitaType">
+    <xsd:sequence>
+      <xsd:element name="resultadoVisita" type="xsd:string"/>
+      <xsd:element name="gestion" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="VentasType">
+    <xsd:sequence/>
+  </xsd:complexType>
+  <xsd:complexType name="GestionBPType">
+    <xsd:sequence>
+      <xsd:element name="GestionVisita" type="OrdT:GestionVisitaType" minOccurs="0"/>
+      <xsd:element name="Cliente" type="OrdT:ClienteCT" minOccurs="1"/>
+      <xsd:element name="ContactoDomicilio" type="OrdT:ContactoDomicilioType" minOccurs="0"/>
+      <xsd:element name="InformacionPreSolicitud" type="OrdT:BPSeccionType" minOccurs="0"/>
+      <xsd:element name="DocumentacionCliente" type="OrdT:DocumentacionClienteCT" minOccurs="0"/>
+      <xsd:element name="GeolocalizacionCasaNegocio" type="OrdT:GeolocalizacionCasaNegCT" minOccurs="0"/>
+      <xsd:element name="OcupacionEconomica" type="OrdT:OcupacionEconCT" minOccurs="0"/>
+      <xsd:element name="Referencias" type="OrdT:ReferenciasListType" minOccurs="0"/>
+      <xsd:element name="DatosBancarios" type="OrdT:DatosBancariosCT" minOccurs="0"/>
+      <xsd:element name="InformacionFinanciera" type="OrdT:InfoFinancieraCT" minOccurs="0"/>
+      <xsd:element name="ConsultaBuroCredito" type="OrdT:ConsultaBCType" minOccurs="0"/>
+      <xsd:element name="InformacionSolicitud" type="OrdT:InfoSolicitudCT" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ConsultaBCType">
+    <xsd:sequence>      
+      <xsd:element name="folio" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="frecuencia" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="estatus" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="categoria" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="mensajeBuro" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="riesgo" type="xsd:string" minOccurs="0"/>      
+      <xsd:element name="estatus2" type="xsd:string" minOccurs="0"/>      
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ClienteCT">
+    <xsd:sequence>
+      <xsd:element name="idCliente" type="xsd:int" minOccurs="1"/>
+      <xsd:element name="primerNombre" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="segundoNombre" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="apellidoPaterno" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="apellidoMaterno" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="genero" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="fechaDeNacimiento" type="xsd:date" minOccurs="0"/>
+      <xsd:element name="edad" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="rfc" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="curp" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="estadoCivil" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="DatosConyuge" type="OrdT:DatosConyugeType" minOccurs="0"/>
+      <xsd:element name="escolaridad" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="nacionalidad" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="pais" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="email" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="dependienteEconomico" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ContactoDomicilioType">
+    <xsd:sequence>
+      <xsd:element name="Direccion" type="OrdT:DireccionCT" minOccurs="0"/>
+      <xsd:element name="Telefonos" type="OrdT:TelefonoListType" minOccurs="0"/>
+      <xsd:element name="fechaComienzoVivir" type="xsd:date" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="DireccionCT">
+    <xsd:sequence>
+      <xsd:element name="nombreDeLaCalle" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="numeroExterior" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="numeroInterior" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="entreCalle1" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="entreCalle2" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="estado" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="delegacionMunicipio" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="colonia" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="codigoPostal" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="tipoDomicilio" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="ciudadPoblacion" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="manzana" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="lote" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="localidad" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="latitud" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="longitud" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="gps" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="TelefonoCT">
+    <xsd:sequence>
+      <xsd:element name="codigoPais" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="codigoArea" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="numeroTelefonico" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="extension" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="tipoTelefono" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="TelefonoListType">
+    <xsd:sequence>
+      <xsd:element name="Telefono" type="OrdT:TelefonoCT" maxOccurs="unbounded" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="OcupacionEconCT">
+    <xsd:sequence>
+      <xsd:element name="nombreEmpleo" minOccurs="0" type="xsd:string"/>
+      <xsd:element name="fechaIngreso" minOccurs="0" type="xsd:date"/>
+      <xsd:element name="domicilioMismoEmpleo" minOccurs="0" type="xsd:string"/>
+      <xsd:element name="ocupacion" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="actividadEconomica" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="sector" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="ContactoDomicilioEmpleo" minOccurs="0" type="OrdT:ContactoDomicilioType"/>     
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ReferenciaCT">
+    <xsd:sequence>
+      <xsd:element name="primerNombre" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="segundoNombre" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="apellidoPaterno" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="apellidoMaterno" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="parentesco" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="ContactoDomicilioReferencia" type="OrdT:ContactoDomicilioType" minOccurs="0"/>
+      
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ReferenciasListType">
+    <xsd:sequence>
+      <xsd:element name="Referencia" type="OrdT:ReferenciaCT" maxOccurs="unbounded" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="DatosBancariosCT">
+    <xsd:sequence>
+      <xsd:element name="banco" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="numCuenta" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="tipoCuenta" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="InfoFinancieraCT">
+    <xsd:sequence>
+      <xsd:element name="actividadEconomica" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="ventasMensuales" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="compras" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="inventario" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="utilidadBruta" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="gastosOperativos" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="sueldos" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="deudasNegocio" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="serviciosPublicosNegocio" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="transporteNegocio" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="rentaNegocio" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="alimentacionNeg" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="otrosgastosNegocio" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="gastosFamiliares" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="deudasBuroNegocio" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="pagosRealNegocio" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="totalGastosNegocio" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="otrosIngresosNegocio" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="tipoOtrosIngresosNegocio" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="excedente" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="ingresoMensual" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="impuestosRetenidos" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="otrosIngresosDiferidosNegocio" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="tipoOtrosIngesosNegocio" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="totalIngresosNegocio" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="gastosFamDiferidosNegocio" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="alimentacionDiferidoNegocio" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="educacionDiferidaNegocio" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="serviciosPublicosDiferidosNegocio" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="transporteDiferidoNegocio" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="rentaDiferidoNegocio" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="vestidoDiferidoNegocio" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="otrosGastosDiferidosNegocio" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="deudasBuroDiferidoNegocio" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="pagosRealDiferidoNegocio" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="totalGastosDiferidosNegocio" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="excedenteDiferidoNegocio" type="xsd:decimal" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="FotoCT">
+    <xsd:sequence>
+      <xsd:element name="foto" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="FotoListType">
+    <xsd:sequence>
+      <xsd:element name="Fotos" type="OrdT:FotoCT" maxOccurs="unbounded" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="DocumentacionClienteCT">
+    <xsd:sequence>     
+      <xsd:element name="FotosCompDom" minOccurs="0">      
+        <xsd:complexType>
+          <xsd:complexContent>
+            <xsd:extension base="OrdT:FotoListType">
+              <xsd:sequence>
+                <xsd:element name="tipoComprobanteDom" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              </xsd:extension>
+          </xsd:complexContent>
+          </xsd:complexType>
+      </xsd:element>     
+      <xsd:element name="FotosIdOficial" minOccurs="0">
+       <xsd:complexType>
+          <xsd:complexContent>
+            <xsd:extension base="OrdT:FotoListType">
+              <xsd:sequence>
+                <xsd:element name="tipoIdOficial" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              </xsd:extension>
+          </xsd:complexContent>
+          </xsd:complexType>
+      </xsd:element>      
+      <xsd:element name="FotosCompViv" minOccurs="0">
+       <xsd:complexType>
+          <xsd:complexContent>
+            <xsd:extension base="OrdT:FotoListType">
+              <xsd:sequence>
+                <xsd:element name="tipoComprobanteViv" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              </xsd:extension>
+          </xsd:complexContent>
+          </xsd:complexType>
+      </xsd:element>      
+      
+      <xsd:element name="FotosCompIngEmp" minOccurs="0">      
+       <xsd:complexType>
+          <xsd:complexContent>
+            <xsd:extension base="OrdT:FotoListType">
+              <xsd:sequence>
+                <xsd:element name="comprobanteIngresosAct" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="tipoComprobanteIngEmp" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              </xsd:extension>
+          </xsd:complexContent>
+          </xsd:complexType>
+      </xsd:element>      
+      <xsd:element name="FotosCompIngNeg" minOccurs="0">
+      <xsd:complexType>
+          <xsd:complexContent>
+            <xsd:extension base="OrdT:FotoListType">
+              <xsd:sequence>
+                <xsd:element name="comprobanteIngresosAct" type="xsd:string" minOccurs="0"/>               
+              </xsd:sequence>
+              </xsd:extension>
+          </xsd:complexContent>
+          </xsd:complexType>
+      </xsd:element>      
+      <xsd:element name="FotosCompIngOtro" minOccurs="0">
+      <xsd:complexType>
+          <xsd:complexContent>
+            <xsd:extension base="OrdT:FotoListType">
+              <xsd:sequence>
+                <xsd:element name="comprobanteIngresosAct" type="xsd:string" minOccurs="0"/>                
+              </xsd:sequence>
+              </xsd:extension>
+          </xsd:complexContent>
+          </xsd:complexType>
+      </xsd:element>      
+      <xsd:element name="FotosCliente" type="OrdT:FotoListType" minOccurs="0"/>
+      <xsd:element name="FotosSC" type="OrdT:FotoListType" minOccurs="0"/>
+      <xsd:element name="FotosCB" type="OrdT:FotoListType" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="GeolocalizacionCasaNegCT">
+    <xsd:sequence>
+      <xsd:element name="gps" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="gpsNegocioEmpleo" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="cotejo" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="InfoSolicitudCT">
+    <xsd:sequence>
+      <xsd:element name="montoSolicitado" minOccurs="0" type="xsd:decimal"/>
+      <xsd:element name="periodicidad" minOccurs="0" type="xsd:string"/>
+      <xsd:element name="plazo" minOccurs="0" type="xsd:string"/>     
+      <xsd:element name="desembolso" minOccurs="0" type="xsd:decimal"/>
+      <xsd:element name="primaCobrable" minOccurs="0" type="xsd:string"/>
+      <xsd:element name="tablaAmortizacion" minOccurs="0" type="xsd:string"/>
+      <xsd:element name="checkSeguro" minOccurs="0" type="xsd:string"/>
+      <xsd:element name="checkComision" minOccurs="0" type="xsd:string"/>      
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- INICIO Se agrega operación pendiente 2-19-2016 -->
+  <xsd:complexType name="PendienteRequestType">
+    <xsd:sequence>
+      <xsd:element name="Pendiente" type="OrdT:PendienteCT"/>
+      <xsd:element name="DatosTransaccion" type="OrdT:DatosTransaccionType" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="PendienteCT">
+    <xsd:sequence>      
+      <xsd:element name="ContactoDomicilio" type="OrdT:ContactoDomicilioType" minOccurs="0"/>
+      <xsd:element name="DocumentacionCliente" type="OrdT:DocumentacionClienteCT" minOccurs="0"/>
+      <xsd:element name="InformacionFinanciera" type="OrdT:InfoFinancieraCT" minOccurs="0"/>
+      <xsd:element name="Referencias" type="OrdT:ReferenciasListType" minOccurs="0"/>
+      <xsd:element name="ListaReferenciasPreSolicitud" type="OrdT:ListaReferenciasPreSolicitudType" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!--Definición tomada del servicio de SAP Reinsercion -->
+  <xsd:complexType name="ListaReferenciasPreSolicitudType">
+    <xsd:sequence>
+      <xsd:element name="Referencia" minOccurs="1" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:sequence>
+          <xsd:element name="referencia" type="xsd:string"/>      
+          </xsd:sequence>
+          </xsd:complexType>
+          </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- FIN Se agrega operación pendiente 2-19-2016 -->
+  <!-- Se agrega sección BP para SAP-->
+  <xsd:complexType name="BPSeccionType">
+    <xsd:sequence>
+      <xsd:element name="primerNombre" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="segundoNombre" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="apellidoPaterno" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="apellidoMaterno" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="ContactoDomicilio" type="OrdT:ContactoDomicilioType" minOccurs="0"/> 
+      <xsd:element name="estadoCivil" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="escolaridad" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="fechaDeNacimiento" type="xsd:date" minOccurs="0"/>
+      <xsd:element name="nacionalidad" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="siva" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="probabilidadIncumplimiento" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="capacidadPago" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="montoPrestamo" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="montoPago" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="montoPrestamoProm" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="prestamoPromocionVal" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="numDesempenios" type="xsd:decimal" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- Se finaliza la sección de BP -->
+  <!--Se agrega sección reregistro -->
+  <xsd:complexType name="PreregistroType">
+    <xsd:sequence>
+      <xsd:element name="primerNombre" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="segundoNombre" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="apellidoPaterno" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="apellidoMaterno" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="ContactoDomicilio" type="OrdT:ContactoDomicilioType" minOccurs="0"/> 
+      <xsd:element name="email" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="descripcion" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="evento" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="fechaDeNacimiento" type="xsd:date" minOccurs="0"/>
+      <xsd:element name="genero" type="xsd:string" minOccurs="0"/>      
+      <xsd:element name="idOrigen" type="xsd:int" minOccurs="0"/>      
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="DatosGeoespacialesType">
+    <xsd:sequence>
+      <xsd:element name="latitudInicial" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="longitudInicial" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="latitudFinal" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="longitudFinal" type="xsd:string" minOccurs="0"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  <xsd:complexType name="PreregistroOrdenRequestType">
+    <xsd:sequence>
+      <xsd:element name="Preregistro" type="OrdT:PreregistroType"/>
+      <xsd:element name="DatosTransaccion" type="OrdT:DatosTransaccionType" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- finaliza sección preregistro-->
+  <xsd:complexType name="DatosTransaccionType">
+    <xsd:sequence>
+   <xsd:element name="idProducto" type="xsd:string" minOccurs="0"/>
+    <xsd:element name="idExterno" type="xsd:string" minOccurs="0"/>
+    <xsd:element name="tipoOrdenTrabajo" type="xsd:string" minOccurs="0"/>
+    <xsd:element name="tipoSubOrdenTrabajo" type="xsd:string" minOccurs="0"/>
+    <xsd:element name="idOrdenTrabajo" type="xsd:string" minOccurs="0"/>
+    <xsd:element name="idTipoOrdenTrabajo" type="xsd:string" minOccurs="0"/>
+    <xsd:element name="promotorAsignado" type="xsd:string" minOccurs="0"/>
+    <xsd:element name="fechaInicial" type="xsd:dateTime" minOccurs="0"/>
+    <xsd:element name="fechaFinal" type="xsd:dateTime" minOccurs="0"/>
+    <xsd:element name="fechaRespuesta" type="xsd:dateTime" minOccurs="0"/>
+    <xsd:element name="DatosGeoespaciales" type="OrdT:DatosGeoespacialesType" minOccurs="0"/>
+    <xsd:element name="origenRespuesta" type="xsd:string" minOccurs="0"/>    
+    </xsd:sequence>
+  </xsd:complexType> 
+   <xsd:complexType name="DatosConyugeType">
+    <xsd:sequence>
+      <xsd:element name="primerNombreConyuge" type="xsd:string" minOccurs="1"/>
+      <xsd:element name="segundoNombreConyuge" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="apellidoPaternoConyuge" type="xsd:string" minOccurs="1"/>
+      <xsd:element name="apellidoMaternoConyuge" type="xsd:string" minOccurs="1"/>
+      <xsd:element name="TelefonosConyuge" type="OrdT:TelefonoListType" minOccurs="0"/>
+      <xsd:element name="mailConyuge" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>

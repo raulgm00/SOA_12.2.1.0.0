@@ -1,0 +1,22 @@
+<adapter-config name="NMPCatalogoRechazosDB" adapter="db" wsdlLocation="../WSDLs/NMPCatalogosModeloVSRWSDL.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  <connection-factory UIConnectionName="CMSolicitudesDR" location="eis/DB/cmsolicitudesXA"/>
+  
+  <endpoint-interaction portType="NMPCatalogosModeloVSR_ptt" operation="obtenerMotivosRechazo">
+    <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+      <property name="SqlString" value="select  re.id_rechazo, re.descripcion, re.etapa, ep.DESCRIPCION descripcionEtapa, re.rol, rol.DESCRIPCION descripcionRol from  NMP_CATALOGOS_RECHAZO re, NMP_ROLES_PANTALLA rol, NMP_ETAPAS_PANTALLA ep where re.ETAPA = ep.ID_ETAPA and re.ROL = rol.ID_ROL"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+   <endpoint-interaction portType="NMPCatalogosModeloVSR_ptt" operation="obtenerEtapasFlujo">
+    <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+      <property name="SqlString" value="SELECT ID_ETAPA id, descripcion FROM NMP_ETAPAS_CATALOGO"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+  <endpoint-interaction portType="NMPCatalogosModeloVSR_ptt" operation="obtenerEstadosSolicitud">
+    <interaction-spec className="oracle.tip.adapter.db.DBPureSQLInteractionSpec">
+      <property name="SqlString" value="SELECT ID_ESTADO id, descripcion FROM NMP_ESTADO_CATALOGO"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+</adapter-config>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ser:proxyServiceEntry xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:con="http://www.bea.com/wli/sb/services/security/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oper="http://xmlns.oracle.com/servicebus/proxy/operations" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env">
+    <ser:coreEntry isAutoPublish="false">
+        <ser:description>Servicio que realiza el pool sobre la AQ de base de datos que contiene el mensaje de los registros de creditos prospectos a renovacion o topup.</ser:description>
+        <ser:security>
+            <con:inboundWss processWssHeader="true"/>
+        </ser:security>
+        <ser:binding type="SOAP" xsi:type="con:SoapBindingType" isSoap12="false" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config">
+            <con:wsdl ref="OperacionCreditos/RenovacionesIncrementos/Resources/WSDLs/OSBDesencolarCreditoAQConcreteWSDL"/>
+            <con:binding>
+                <con:name>Dequeue_ptt-binding</con:name>
+                <con:namespace>http://xmlns.oracle.com/pcbpel/adapter/aq/NMPRenovacionTopUp/OSBRenovacionQueue/RenovacionAQ</con:namespace>
+            </con:binding>
+            <con:selector type="SOAP body"/>
+        </ser:binding>
+        <oper:operations enabled="false">
+            <oper:messageTracing enabled="true">
+                <oper1:detailsLevel xmlns:oper1="http://xmlns.oracle.com/servicebus/operations">terse</oper1:detailsLevel>
+                <oper1:maxSize xmlns:oper1="http://xmlns.oracle.com/servicebus/operations">8192</oper1:maxSize>
+            </oper:messageTracing>
+            <oper:monitoring enabled="true" aggregationInterval="10"/>
+        </oper:operations>
+        <ser:ws-policy>
+            <ser:binding-mode>no-policies</ser:binding-mode>
+        </ser:ws-policy>
+        <ser:invoke ref="OperacionCreditos/RenovacionesIncrementos/Pipelines/OsbRenovacionAQPL" xsi:type="con1:PipelineRef" xmlns:con1="http://www.bea.com/wli/sb/pipeline/config"/>
+        <ser:xqConfiguration>
+            <ser:snippetVersion>1.0</ser:snippetVersion>
+        </ser:xqConfiguration>
+    </ser:coreEntry>
+    <ser:endpointConfig>
+        <tran:provider-id>jca</tran:provider-id>
+        <tran:inbound>true</tran:inbound>
+        <tran:URI>
+            <env:value>jca://eis/AQ/renovacion</env:value>
+        </tran:URI>
+        <tran:inbound-properties/>
+        <tran:provider-specific xsi:type="jca:JCAEndPointConfiguration" xmlns:jca="http://www.bea.com/wli/sb/transports/jca">
+            <jca:jca-file ref="OperacionCreditos/RenovacionesIncrementos/Resources/Adapters/OSBDesencolarCreditoAQ"/>
+            <jca:adapter-name>AQ Adapter</jca:adapter-name>
+            <jca:adapter-type>aq</jca:adapter-type>
+            <jca:dispatch-policy>default</jca:dispatch-policy>
+            <jca:always-use-wsdl>true</jca:always-use-wsdl>
+            <jca:connection-mode>managed</jca:connection-mode>
+            <jca:connection-property-username-password-overwrite>false</jca:connection-property-username-password-overwrite>
+            <jca:inbound-properties>
+                <jca:operation-properties>
+                    <jca:operation-name>Dequeue</jca:operation-name>
+                    <jca:spec-properties>
+                        <jca:property>
+                            <jca:name>QueueName</jca:name>
+                            <jca:value>NMP_RENOVACION_MSG_QUEUE</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>SchemaValidation</jca:name>
+                            <jca:value>false</jca:value>
+                        </jca:property>
+                        <jca:property>
+                            <jca:name>DatabaseSchema</jca:name>
+                            <jca:value>CMSOA</jca:value>
+                        </jca:property>
+                    </jca:spec-properties>
+                </jca:operation-properties>
+            </jca:inbound-properties>
+            <jca:dynamic-endpoint-properties>
+                <jca:endpoint-property>
+                    <jca:name>adapter.aq.dequeue.threads</jca:name>
+                    <jca:value>10</jca:value>
+                </jca:endpoint-property>
+                <jca:endpoint-property>
+                    <jca:name>oracle.adapter.aq.wait</jca:name>
+                    <jca:value>10</jca:value>
+                </jca:endpoint-property>
+                <jca:endpoint-property>
+                    <jca:name>jca.aq.ExceptionQueue</jca:name>
+                    <jca:value>AQ$_NMP_RENOVACION_MSG_QT_E</jca:value>
+                </jca:endpoint-property>
+            </jca:dynamic-endpoint-properties>
+        </tran:provider-specific>
+    </ser:endpointConfig>
+    <aler:alertRules xmlns:aler="http://xmlns.oracle.com/servicebus/monitoring/alert">
+        <aler:alertRule enabled="true" name="timeout_warning" xmlns:cus="http://www.bea.com/wli/config/customizations" xmlns:xt="http://www.bea.com/wli/config/xmltypes">
+            <aler:description>Alert for timeout warning. When the service timeout is more than 5 seconds.</aler:description>
+            <aler:frequency>once-until-conditions-clear</aler:frequency>
+            <aler:severity>warning</aler:severity>
+            <aler:stopProcessing>false</aler:stopProcessing>
+            <aler:condition aggregation-interval="10">
+                <con1:logicalExpr logical-operator="and" xmlns:con1="http://xmlns.oracle.com/servicebus/monitoring/alert/condition">
+                    <con1:monCondExpr>
+                        <con1:function>average</con1:function>
+                        <con1:lhs>Transport.response-time</con1:lhs>
+                        <con1:operator>></con1:operator>
+                        <con1:rhs>10000</con1:rhs>
+                    </con1:monCondExpr>
+                    <con1:monCondExpr>
+                        <con1:function>average</con1:function>
+                        <con1:lhs>Transport.response-time</con1:lhs>
+                        <con1:operator>&lt;</con1:operator>
+                        <con1:rhs>15000</con1:rhs>
+                    </con1:monCondExpr>
+                </con1:logicalExpr>
+            </aler:condition>
+            <aler:alertDestination ref="OperacionCreditos/RenovacionesIncrementos/Resources/Alerts/OsbRenovacionAlert"/>
+            <aler:summary>Alert for timeout warning</aler:summary>
+        </aler:alertRule>
+        <aler:alertRule enabled="true" name="timeout_critical" xmlns:cus="http://www.bea.com/wli/config/customizations" xmlns:xt="http://www.bea.com/wli/config/xmltypes">
+            <aler:description>Alert for timeout critical. When the service timeout is more than 15 seconds.</aler:description>
+            <aler:frequency>once-until-conditions-clear</aler:frequency>
+            <aler:severity>critical</aler:severity>
+            <aler:stopProcessing>false</aler:stopProcessing>
+            <aler:condition aggregation-interval="10">
+                <con1:logicalExpr logical-operator="or" xmlns:con1="http://xmlns.oracle.com/servicebus/monitoring/alert/condition">
+                    <con1:monCondExpr>
+                        <con1:function>average</con1:function>
+                        <con1:lhs>Transport.response-time</con1:lhs>
+                        <con1:operator>=</con1:operator>
+                        <con1:rhs>15000</con1:rhs>
+                    </con1:monCondExpr>
+                    <con1:logicalExpr logical-operator="and">
+                        <con1:monCondExpr>
+                            <con1:function>average</con1:function>
+                            <con1:lhs>Transport.response-time</con1:lhs>
+                            <con1:operator>></con1:operator>
+                            <con1:rhs>15000</con1:rhs>
+                        </con1:monCondExpr>
+                        <con1:monCondExpr>
+                            <con1:function>average</con1:function>
+                            <con1:lhs>Transport.response-time</con1:lhs>
+                            <con1:operator>&lt;</con1:operator>
+                            <con1:rhs>20000</con1:rhs>
+                        </con1:monCondExpr>
+                    </con1:logicalExpr>
+                </con1:logicalExpr>
+            </aler:condition>
+            <aler:alertDestination ref="OperacionCreditos/RenovacionesIncrementos/Resources/Alerts/OsbRenovacionAlert"/>
+            <aler:summary>Alert for timeout critical.</aler:summary>
+        </aler:alertRule>
+        <aler:alertRule enabled="true" name="timeout_fatal" xmlns:cus="http://www.bea.com/wli/config/customizations" xmlns:xt="http://www.bea.com/wli/config/xmltypes">
+            <aler:description>Alert for timeout fatal. When the service timeout is more than 20 seconds.</aler:description>
+            <aler:frequency>once-until-conditions-clear</aler:frequency>
+            <aler:severity>fatal</aler:severity>
+            <aler:stopProcessing>false</aler:stopProcessing>
+            <aler:condition aggregation-interval="10">
+                <con1:logicalExpr logical-operator="or" xmlns:con1="http://xmlns.oracle.com/servicebus/monitoring/alert/condition">
+                    <con1:monCondExpr>
+                        <con1:function>average</con1:function>
+                        <con1:lhs>Transport.response-time</con1:lhs>
+                        <con1:operator>></con1:operator>
+                        <con1:rhs>20000</con1:rhs>
+                    </con1:monCondExpr>
+                    <con1:monCondExpr>
+                        <con1:function>average</con1:function>
+                        <con1:lhs>Transport.response-time</con1:lhs>
+                        <con1:operator>=</con1:operator>
+                        <con1:rhs>20000</con1:rhs>
+                    </con1:monCondExpr>
+                </con1:logicalExpr>
+            </aler:condition>
+            <aler:alertDestination ref="OperacionCreditos/RenovacionesIncrementos/Resources/Alerts/OsbRenovacionAlert"/>
+            <aler:summary>Alert for timeout fatal</aler:summary>
+        </aler:alertRule>
+    </aler:alertRules>
+</ser:proxyServiceEntry>

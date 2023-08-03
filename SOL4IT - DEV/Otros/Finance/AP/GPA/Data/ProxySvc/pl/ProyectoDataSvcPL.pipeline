@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <con:wsdl ref="Finance/AP/GPA/Data/Resources/ProyectoDataSvc-concrete"/>
+            <con:binding>
+                <con:name>ProyectoDataSvc_ptt-binding</con:name>
+                <con:namespace>http://xmlns.oracle.com/pcbpel/adapter/db/QualitasGPABus/SolicitudesBDQry/ProyectoDataSvc</con:namespace>
+            </con:binding>
+        </con:binding>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router>
+        <con:pipeline name="PipelinePairNode1_request" type="request">
+            <con:stage name="stage1">
+                <con:context>
+                    <con1:varNsDecl prefix="proy" namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/ProyectoDataSvc" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                </con:context>
+                <con:actions>
+                    <con1:log xmlns:con1="http://www.bea.com/wli/sb/stages/logging/config">
+                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.N72.15a1abbeac2.N7ffb</con2:id>
+                        <con1:logLevel>error</con1:logLevel>
+                        <con1:expr>
+                            <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                        </con1:expr>
+                        <con1:message>PROYECTO DATA SVC NO SE RECONOCIO OPERATION</con1:message>
+                    </con1:log>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline name="PipelinePairNode1_response" type="response"/>
+        <con:flow>
+            <con:branch-node type="operation" name="BranchNode1">
+                <con:branch-table>
+                    <con:branch name="merge">
+                        <con:operator>equals</con:operator>
+                        <con:value>merge</con:value>
+                        <con:flow>
+                            <con:route-node name="RouteNode1">
+                                <con:context>
+                                    <con1:varNsDecl prefix="proy" namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/ProyectoDataSvc" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                                </con:context>
+                                <con:actions>
+                                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.62.15a09f20d17.N7ff6</con2:id>
+                                        <con1:service ref="Finance/AP/GPA/Data/BusinessSvc/ProyectoDataSvc" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                        <con1:operation>merge</con1:operation>
+                                        <con1:outboundTransform>
+                                            <con2:replace varName="body" contents-only="true" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+                                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.52.159f4a1fdd3.N7ff5</con3:id>
+                                                <con2:location>
+                                                    <con:xpathText xmlns:con="http://www.bea.com/wli/sb/stages/config">.</con:xpathText>
+                                                </con2:location>
+                                                <con2:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config"><![CDATA[fn-bea:inlinedXML(fn:concat(
+      '<proy:Gpa013ProyectoCollection xmlns:proy="http://xmlns.oracle.com/pcbpel/adapter/db/top/ProyectoDataSvc">',
+         '<proy:Gpa013Proyecto>',
+            '<proy:idProyecto>',$body/proy:Gpa013ProyectoCollection/proy:Gpa013Proyecto/proy:idProyecto,'</proy:idProyecto>',
+            '<proy:descProyecto>',$body/proy:Gpa013ProyectoCollection/proy:Gpa013Proyecto/proy:descProyecto,'</proy:descProyecto>',
+            '<proy:presupuestoAprobado>',$body/proy:Gpa013ProyectoCollection/proy:Gpa013Proyecto/proy:presupuestoAprobado,'</proy:presupuestoAprobado>',
+            '<proy:parcialidades>',$body/proy:Gpa013ProyectoCollection/proy:Gpa013Proyecto/proy:parcialidades,'</proy:parcialidades>',
+            '<proy:fhCreacionProy>',fn:current-dateTime(),'</proy:fhCreacionProy>',
+            '<proy:idCondicionesPago>',$body/proy:Gpa013ProyectoCollection/proy:Gpa013Proyecto/proy:idCondicionesPago,'</proy:idCondicionesPago>',
+            '<proy:idSolicitud>',$body/proy:Gpa013ProyectoCollection/proy:Gpa013Proyecto/proy:idSolicitud,'</proy:idSolicitud>',
+            '<proy:idPrestador>',$body/proy:Gpa013ProyectoCollection/proy:Gpa013Proyecto/proy:idPrestador,'</proy:idPrestador>',
+            '<proy:centroCosto>',$body/proy:Gpa013ProyectoCollection/proy:Gpa013Proyecto/proy:centroCosto,'</proy:centroCosto>',
+            '<proy:descOficina>',$body/proy:Gpa013ProyectoCollection/proy:Gpa013Proyecto/proy:descOficina,'</proy:descOficina>',
+            '<proy:descArea>',$body/proy:Gpa013ProyectoCollection/proy:Gpa013Proyecto/proy:descArea,'</proy:descArea>',
+            '<proy:responsableArea>',$body/proy:Gpa013ProyectoCollection/proy:Gpa013Proyecto/proy:responsableArea,'</proy:responsableArea>',
+            '<proy:nombreProyecto>',$body/proy:Gpa013ProyectoCollection/proy:Gpa013Proyecto/proy:nombreProyecto,'</proy:nombreProyecto>',
+            '<proy:cveOficina>',$body/proy:Gpa013ProyectoCollection/proy:Gpa013Proyecto/proy:cveOficina,'</proy:cveOficina>',
+            '<proy:procesable>0</proy:procesable>',
+            '<proy:presupuestoDisponible>',$body/proy:Gpa013ProyectoCollection/proy:Gpa013Proyecto/proy:presupuestoAprobado,'</proy:presupuestoDisponible>',
+            '<proy:pagosProceso>0</proy:pagosProceso>',
+            '<proy:idProyectomarco>',$body/proy:Gpa013ProyectoCollection/proy:Gpa013Proyecto/proy:idProyectomarco,'</proy:idProyectomarco>',
+            '<proy:parcialidadActual>0</proy:parcialidadActual>',
+            '<proy:tipoMoneda>',$body/proy:Gpa013ProyectoCollection/proy:Gpa013Proyecto/proy:tipoMoneda,'</proy:tipoMoneda>',
+
+            '<proy:estado><proy:idEstado>',$body/proy:Gpa013ProyectoCollection/proy:Gpa013Proyecto/proy:estado/proy:idEstado,'</proy:idEstado></proy:estado>',
+         '</proy:Gpa013Proyecto>',
+      '</proy:Gpa013ProyectoCollection>'
+
+))]]></con:xqueryText>
+                                                </con2:expr>
+                                            </con2:replace>
+                                            <con2:log xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config">
+                                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.69.15a0f0f8be9.N7ff7</con3:id>
+                                                <con2:logLevel>warning</con2:logLevel>
+                                                <con2:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                                                </con2:expr>
+                                                <con2:message>&lt;Merge> Proyecto Data Svc Input Formateado</con2:message>
+                                            </con2:log>
+                                        </con1:outboundTransform>
+                                        <con1:responseTransform>
+                                            <con2:log xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config">
+                                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.N5c.15a2a0adfac.N7ffc</con3:id>
+                                                <con2:logLevel>warning</con2:logLevel>
+                                                <con2:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                                                </con2:expr>
+                                                <con2:message>&lt;Merge> Proyecto Data Svc Output</con2:message>
+                                            </con2:log>
+                                        </con1:responseTransform>
+                                    </con1:route>
+                                </con:actions>
+                            </con:route-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="selectByPrimaryKey">
+                        <con:operator>equals</con:operator>
+                        <con:value>selectByPrimaryKey</con:value>
+                        <con:flow>
+                            <con:route-node name="RouteNode2">
+                                <con:context>
+                                    <con1:varNsDecl prefix="proy" namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/ProyectoDataSvc" xmlns:con1="http://www.bea.com/wli/sb/stages/config"/>
+                                </con:context>
+                                <con:actions>
+                                    <con1:route xmlns:con1="http://www.bea.com/wli/sb/stages/routing/config">
+                                        <con2:id xmlns:con2="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.6f.15a13f2db0d.N7ffd</con2:id>
+                                        <con1:service ref="Finance/AP/GPA/Data/BusinessSvc/ProyectoDataSvc" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                                        <con1:operation>selectByPrimaryKey</con1:operation>
+                                        <con1:outboundTransform>
+                                            <con2:log xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config">
+                                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.62.15a09f20d17.N7ff5</con3:id>
+                                                <con2:logLevel>warning</con2:logLevel>
+                                                <con2:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                                                </con2:expr>
+                                                <con2:message>Proyecto Data Svc Input PK Formateado Input</con2:message>
+                                            </con2:log>
+                                        </con1:outboundTransform>
+                                        <con1:responseTransform>
+                                            <con2:log xmlns:con2="http://www.bea.com/wli/sb/stages/logging/config">
+                                                <con3:id xmlns:con3="http://www.bea.com/wli/sb/stages/config">_ActionId-b320018.33d06e72.5a.159f5c7da00.N7ff7</con3:id>
+                                                <con2:logLevel>warning</con2:logLevel>
+                                                <con2:expr>
+                                                    <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">$body</con:xqueryText>
+                                                </con2:expr>
+                                                <con2:message>Proyecto Data Svc Input PK Formateado Output</con2:message>
+                                            </con2:log>
+                                        </con1:responseTransform>
+                                    </con1:route>
+                                </con:actions>
+                            </con:route-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow>
+                            <con:pipeline-node name="PipelinePairNode1">
+                                <con:request>PipelinePairNode1_request</con:request>
+                                <con:response>PipelinePairNode1_response</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

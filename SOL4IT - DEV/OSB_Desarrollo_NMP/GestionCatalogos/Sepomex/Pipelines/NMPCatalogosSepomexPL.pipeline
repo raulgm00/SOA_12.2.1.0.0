@@ -1,0 +1,982 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/config" xmlns:con2="http://www.bea.com/wli/sb/stages/transform/config">
+    <con:coreEntry>
+        <con:binding type="SOAP" isSoap12="false" xsi:type="con:SoapBindingType">
+            <con:wsdl ref="GestionCatalogos/Sepomex/Resources/WSDLs/NMPCatalogosSepomexWSDL"/>
+            <con:binding>
+                <con:name>catalogosSepomexBinding</con:name>
+                <con:namespace>http://servicios.montedepiedad.com.mx/NMP/Services/NMPCatalogosSepomex</con:namespace>
+            </con:binding>
+        </con:binding>
+        <oper:operations xmlns:oper="http://xmlns.oracle.com/servicebus/pipeline/operations">
+            <oper:logging enabled="false" level="debug"/>
+            <oper:reporting>false</oper:reporting>
+        </oper:operations>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router errorHandler="error-7f000001.49c54af4.0.15c0d26bd94.N75cb">
+        <con:pipeline type="request" name="request-7f000001.49c54af4.0.15c0d26bd94.N766a">
+            <con:stage id="_StageId-7f000001.49c54af4.0.15c0d26bd94.N7668" name="StageCatalogoGiroComercialRequest" errorHandler="error-N3f57fdfa.N616686d8.0.15c146d814e.N7835">
+                <con:context/>
+                <con:actions>
+                    <con2:assign varName="catalogoGiroComercialReq">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N7e5f</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>fn-bea:inlinedXML(fn:concat('&lt;urn:ZlmfmRfcCatalogos xmlns:urn="urn:sap-com:document:sap:soap:functions:mc-style">',
+    '&lt;NomCatalogo>Z_GIRO_COMERCIAL&lt;/NomCatalogo>',
+'&lt;/urn:ZlmfmRfcCatalogos>'))</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N7e2c</con1:id>
+                        <con2:service ref="GestionCatalogos/Sepomex/Business Services/SAPCatalogosSepomexBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>ZlmfmRfcCatalogos</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">catalogoGiroComercialReq</con2:body>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">catalogoGiroComercialRes</con2:body>
+                        </con2:response>
+                        <con2:requestTransform/>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-N3f57fdfa.N616686d8.0.15c146d814e.N720d">
+            <con:stage id="_StageId-N3f57fdfa.N616686d8.0.15c146d814e.N720b" name="StageValidate">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con2:replace varName="header" contents-only="true">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N71a4</con1:id>
+                        <con2:expr>
+                            <con1:xqueryTransform>
+                                <con1:resource ref="Common/XQ/TRHeadersRest"/>
+                                <con1:param name="inbound">
+                                    <con1:path>$inbound</con1:path>
+                                </con1:param>
+                                <con1:param name="requestHeader">
+                                    <con1:path>$header</con1:path>
+                                </con1:param>
+                            </con1:xqueryTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con2:assign varName="header">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N7171</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>$header</con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:validate>
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N713e</con1:id>
+                        <con2:schema ref="Common/XSD/NMPStandardHeader"/>
+                        <con2:schemaElement xmlns:nmp="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader">nmp:headerMessage</con2:schemaElement>
+                        <con2:varName>header</con2:varName>
+                        <con2:location>
+                            <con1:xpathText>./nmp:headerMessage</con1:xpathText>
+                        </con2:location>
+                    </con2:validate>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57fdfa.N616686d8.0.15c146d814e.N78ce">
+            <con:stage id="_StageId-N3f57fdfa.N616686d8.0.15c146d814e.N78cd" name="StageCatalogoEstadosError">
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N7867</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Sepomex/Resources/Transformations/TRCatalogosSepomexFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="app">
+                                    <con1:path>1</con1:path>
+                                </con1:param>
+                                <con1:param name="serviceName">
+                                    <con1:path>'Catalogo Sepomex'</con1:path>
+                                </con1:param>
+                                <con1:param name="soapFault">
+                                    <con1:path>$body</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N789a</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57fdfa.N616686d8.0.15c146d814e.N7835">
+            <con:stage id="_StageId-N3f57fdfa.N616686d8.0.15c146d814e.N7834" name="StageCatalogoGiroComercialError">
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N776a</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Sepomex/Resources/Transformations/TRCatalogosSepomexFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="app">
+                                    <con1:path>1</con1:path>
+                                </con1:param>
+                                <con1:param name="serviceName">
+                                    <con1:path>'Catalogo Sepomex'</con1:path>
+                                </con1:param>
+                                <con1:param name="soapFault">
+                                    <con1:path>$body</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N779d</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-7f000001.49c54af4.0.15c0d26bd94.N7634">
+            <con:stage id="_StageId-7f000001.49c54af4.0.15c0d26bd94.N7632" name="StageCatalogoColoniasResponse">
+                <con:context>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Elementos/NMPCatalogosSepomex"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="catalogoColoniasRes">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N7272</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Sepomex/Resources/Transformations/TrCatalogoColoniasSapResToCatalogoColoniasRes"/>
+                                <con1:input>$catalogoColoniasRes</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N72a5</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xqueryText>$catalogoColoniasRes</con1:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-a1e030f.1f4a70ff.10.15c30e1cfa8.N7ffe</con1:id>
+                        <con2:case>
+                            <con2:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">count($body/nmp:catalogoColoniasResponse/nmp:catalogo)=0</con:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:Error>
+                                    <con1:id>_ActionId-a1e030f.1f4a70ff.13.15c31656755.N8000</con1:id>
+                                    <con2:errCode>NMP-CAF-001</con2:errCode>
+                                    <con2:message>No existe un catálogo con los parámetros enviados</con2:message>
+                                </con2:Error>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default/>
+                    </con2:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57fdfa.N616686d8.0.15c146d814e.N7738">
+            <con:stage id="_StageId-N3f57fdfa.N616686d8.0.15c146d814e.N7737" name="StageCatalogoColoniasError">
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N76d1</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Sepomex/Resources/Transformations/TRCatalogosSepomexFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="app">
+                                    <con1:path>1</con1:path>
+                                </con1:param>
+                                <con1:param name="serviceName">
+                                    <con1:path>'Catalogo Sepomex'</con1:path>
+                                </con1:param>
+                                <con1:param name="soapFault">
+                                    <con1:path>$body</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N7704</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-7f000001.49c54af4.0.15c0d26bd94.N7772">
+            <con:stage id="_StageId-7f000001.49c54af4.0.15c0d26bd94.N7770" name="StageCatalogoLocalidadResponse">
+                <con:context>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Elementos/NMPCatalogosSepomex"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="catalogoLocalidadRes">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N746c</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Sepomex/Resources/Transformations/TrCatalogoLocalidadSapResToCatalogoLocalidadRes"/>
+                                <con1:input>$catalogoLocalidadRes</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N749f</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xqueryText>$catalogoLocalidadRes</con1:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-a1e030f.1f4a70ff.8.15c1e284335.N7ffe</con1:id>
+                        <con2:case>
+                            <con2:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">count($body/nmp:catalogoLocalidadResponse/nmp:catalogo)=0</con:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:Error>
+                                    <con1:id>_ActionId-a1e030f.1f4a70ff.12.15c315cc823.N8000</con1:id>
+                                    <con2:errCode>NMP-CAF-001</con2:errCode>
+                                    <con2:message>No existe un catálogo con los parámetros enviados</con2:message>
+                                </con2:Error>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default/>
+                    </con2:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57fdfa.N616686d8.0.15c146d814e.N7a00">
+            <con:stage id="_StageId-N3f57fdfa.N616686d8.0.15c146d814e.N79ff" name="StageCatalogoPaisesError">
+                <con:context/>
+                <con:actions>
+                    <con2:replace contents-only="true" varName="body">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N7999</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Sepomex/Resources/Transformations/TRCatalogosSepomexFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="app">
+                                    <con1:path>1</con1:path>
+                                </con1:param>
+                                <con1:param name="serviceName">
+                                    <con1:path>'Catalogo Sepomex'</con1:path>
+                                </con1:param>
+                                <con1:param name="soapFault">
+                                    <con1:path>$body</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N79cc</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-7f000001.49c54af4.0.15c0d26bd94.N7600">
+            <con:stage id="_StageId-7f000001.49c54af4.0.15c0d26bd94.N75fe" name="StageCatalogoSectorNMPRequest" errorHandler="error-N3f57fdfa.N616686d8.0.15c146d814e.N769f">
+                <con:context/>
+                <con:actions>
+                    <con2:assign varName="catalogoSectorNMPReq">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N7b65</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>&lt;urn:ZlmfmRfcCatalogos xmlns:urn="urn:sap-com:document:sap:soap:functions:mc-style">     
+    &lt;NomCatalogo>Z_SECTOR_NMP&lt;/NomCatalogo>
+&lt;/urn:ZlmfmRfcCatalogos></con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N7c97</con1:id>
+                        <con2:service ref="GestionCatalogos/Sepomex/Business Services/SAPCatalogosSepomexBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>ZlmfmRfcCatalogos</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">catalogoSectorNMPReq</con2:body>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">catalogoSectorNMPRes</con2:body>
+                        </con2:response>
+                        <con2:requestTransform/>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-7f000001.49c54af4.0.15c0d26bd94.N76d3">
+            <con:stage id="_StageId-7f000001.49c54af4.0.15c0d26bd94.N76d1" name="StageCatalogoCodigoPostalResponse">
+                <con:context>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Elementos/NMPCatalogosSepomex"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="catalogoCodigoPostalRes">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N733e</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Sepomex/Resources/Transformations/TrCatalogoCodigoPostalSapResToCatalogoCodigoPostalRes"/>
+                                <con1:input>$catalogoCodigoPostalRes</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N7371</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xqueryText>$catalogoCodigoPostalRes</con1:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-a1e030f.1f4a70ff.8.15c1e284335.N7fff</con1:id>
+                        <con2:case>
+                            <con2:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">count($body/nmp:catalogoCodigoPostalResponse/nmp:catalogo)=0</con:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:Error>
+                                    <con1:id>_ActionId-a1e030f.1f4a70ff.11.15c30e38070.N7fff</con1:id>
+                                    <con2:errCode>NMP-CAF-001</con2:errCode>
+                                    <con2:message>No existe un catálogo con los parámetros enviados</con2:message>
+                                </con2:Error>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default/>
+                    </con2:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-7f000001.49c54af4.0.15c0d26bd94.N769f">
+            <con:stage id="_StageId-7f000001.49c54af4.0.15c0d26bd94.N769d" name="StageCatalogoEstadosRequest" errorHandler="error-N3f57fdfa.N616686d8.0.15c146d814e.N78ce">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Elementos/NMPCatalogosSepomex"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="catalogoEstadosReq">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N7bcb</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Sepomex/Resources/Transformations/TrCatalogoEstadosReqToCatalogoEstadosSapReq"/>
+                                <con1:input>$body/nmp:catalogoEstadosRequest</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N7cfd</con1:id>
+                        <con2:service ref="GestionCatalogos/Sepomex/Business Services/SAPCatalogosSepomexBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>ZlmfmRfcCatalogos</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">catalogoEstadosReq</con2:body>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">catalogoEstadosRes</con2:body>
+                        </con2:response>
+                        <con2:requestTransform/>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-7f000001.49c54af4.0.15c0d26bd94.N75cb">
+            <con:stage id="_StageId-7f000001.49c54af4.0.15c0d26bd94.N75ca" name="StageCatalogoError">
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-7f000001.49c54af4.0.15c0d26bd94.N7533</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Sepomex/Resources/Transformations/TRCatalogosSepomexFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="app">
+                                    <con1:path>1</con1:path>
+                                </con1:param>
+                                <con1:param name="serviceName">
+                                    <con1:path>'Catalogo Sepomex'</con1:path>
+                                </con1:param>
+                                <con1:param name="soapFault">
+                                    <con1:path>$body</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-7f000001.49c54af4.0.15c0d26bd94.N7597</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-7f000001.49c54af4.0.15c0d26bd94.N7709">
+            <con:stage id="_StageId-7f000001.49c54af4.0.15c0d26bd94.N7707" name="StageCatalogoPaisesRequest" errorHandler="error-N3f57fdfa.N616686d8.0.15c146d814e.N7a00">
+                <con:context/>
+                <con:actions>
+                    <con2:assign varName="catalogoPaisesReq">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N7c31</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText>&lt;urn:ZlmfmRfcCatalogos xmlns:urn="urn:sap-com:document:sap:soap:functions:mc-style">   
+    &lt;NomCatalogo>LAND1&lt;/NomCatalogo>
+&lt;/urn:ZlmfmRfcCatalogos></con1:xqueryText>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N7d63</con1:id>
+                        <con2:service ref="GestionCatalogos/Sepomex/Business Services/SAPCatalogosSepomexBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>ZlmfmRfcCatalogos</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">catalogoPaisesReq</con2:body>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">catalogoPaisesRes</con2:body>
+                        </con2:response>
+                        <con2:requestTransform/>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-7f000001.49c54af4.0.15c0d26bd94.N773d">
+            <con:stage id="_StageId-7f000001.49c54af4.0.15c0d26bd94.N773b" name="StageCatalogoMunicipioResponse">
+                <con:context>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Elementos/NMPCatalogosSepomex"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="catalogoMunicipioRes">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N73d5</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Sepomex/Resources/Transformations/TrCatalogoMunicipioSapResToCatalogoMunicipioRes"/>
+                                <con1:input>$catalogoMunicipioRes</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N7408</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xqueryText>$catalogoMunicipioRes</con1:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-a1e030f.1f4a70ff.10.15c30e1cfa8.N7fff</con1:id>
+                        <con2:case>
+                            <con2:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">count($body/nmp:catalogoMunicipioResponse/nmp:catalogo)=0</con:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:Error>
+                                    <con1:id>_ActionId-a1e030f.1f4a70ff.e.15c23052f08.N7ffe</con1:id>
+                                    <con2:errCode>NMP-CAF-001</con2:errCode>
+                                    <con2:message>No existe un catálogo con los parámetros enviados</con2:message>
+                                </con2:Error>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default/>
+                    </con2:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-7f000001.49c54af4.0.15c0d26bd94.N773e">
+            <con:stage id="_StageId-7f000001.49c54af4.0.15c0d26bd94.N773c" name="StageCatalogoMunicipioRequest" errorHandler="error-N3f57fdfa.N616686d8.0.15c146d814e.N7a99">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Elementos/NMPCatalogosSepomex"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="catalogoMunicipioReq">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N7c64</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Sepomex/Resources/Transformations/TrCatalogoMunicipioReqToCatalogoMunicipioSapReq"/>
+                                <con1:input>$body/nmp:catalogoMunicipioRequest</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N7d96</con1:id>
+                        <con2:service ref="GestionCatalogos/Sepomex/Business Services/SAPCatalogosSepomexBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>ZlmfmRfcCatalogos</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">catalogoMunicipioReq</con2:body>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">catalogoMunicipioRes</con2:body>
+                        </con2:response>
+                        <con2:requestTransform/>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57fdfa.N616686d8.0.15c146d814e.N720c">
+            <con:stage id="_StageId-N3f57fdfa.N616686d8.0.15c146d814e.N720a" name="StageResponse">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader"/>
+                </con:context>
+                <con:actions>
+                    <con2:replace varName="header" contents-only="true">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N71d7</con1:id>
+                        <con2:expr>
+                            <con1:xqueryText><![CDATA[fn-bea:inlinedXML(concat("<nmp:headerMessageResponse xmlns:nmp='http://servicios.montedepiedad.com.mx/NMP/Schema/NMPStandardHeader'>
+         <nmp:usuario>",$header//nmp:usuario/text(),"</nmp:usuario>
+         <nmp:idConsumidor>",$header//nmp:idConsumidor/text(),"</nmp:idConsumidor>
+         <nmp:idDestino>",$header//nmp:idDestino/text(),"</nmp:idDestino>
+          <nmp:codigoRespuesta>0</nmp:codigoRespuesta>
+         <nmp:descripcionRespuesta>Ejecución satisfactoria</nmp:descripcionRespuesta>
+      </nmp:headerMessageResponse>"))]]></con1:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-7f000001.49c54af4.0.15c0d26bd94.N769e">
+            <con:stage id="_StageId-7f000001.49c54af4.0.15c0d26bd94.N769c" name="StageCatalogoEstadosResponse">
+                <con:context>
+                    <con1:varNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Elementos/NMPCatalogosSepomex"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="catalogoEstadosRes">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N72d8</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Sepomex/Resources/Transformations/TrCatalogoEstadosSapResToCatalogoEstadosRes"/>
+                                <con1:input>$catalogoEstadosRes</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N730b</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xqueryText>$catalogoEstadosRes</con1:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                    <con2:ifThenElse>
+                        <con1:id>_ActionId-a1e030f.1f4a70ff.b.15c22f45a0f.N7ffd</con1:id>
+                        <con2:case>
+                            <con2:condition>
+                                <con:xqueryText xmlns:con="http://www.bea.com/wli/sb/stages/config">count($body/nmp:catalogoEstadosResponse/nmp:catalogo)=0</con:xqueryText>
+                            </con2:condition>
+                            <con2:actions>
+                                <con2:Error>
+                                    <con1:id>_ActionId-a1e030f.1f4a70ff.b.15c22f45a0f.N7ffc</con1:id>
+                                    <con2:errCode>NMP-CAF-001</con2:errCode>
+                                    <con2:message>No existe un catálogo con los parámetros enviados</con2:message>
+                                </con2:Error>
+                            </con2:actions>
+                        </con2:case>
+                        <con2:default/>
+                    </con2:ifThenElse>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-7f000001.49c54af4.0.15c0d26bd94.N7708">
+            <con:stage id="_StageId-7f000001.49c54af4.0.15c0d26bd94.N7706" name="StageCatalogoPaisesResponse">
+                <con:context/>
+                <con:actions>
+                    <con2:assign varName="catalogoPaisesRes">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N756d</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Sepomex/Resources/Transformations/TrCatalogoPaisesSapResToCatalogoPaisesRes"/>
+                                <con1:input>$catalogoPaisesRes</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N753a</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xqueryText>$catalogoPaisesRes</con1:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-7f000001.49c54af4.0.15c0d26bd94.N76d4">
+            <con:stage id="_StageId-7f000001.49c54af4.0.15c0d26bd94.N76d2" name="StageCatalogoCodigoPostalRequest" errorHandler="error-N3f57fdfa.N616686d8.0.15c146d814e.N7967">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Elementos/NMPCatalogosSepomex"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="catalogoCodigoPostalReq">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N7bfe</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Sepomex/Resources/Transformations/TrCatalogoCodigoPostalReqToCatalogoCodigoPostalSapReq"/>
+                                <con1:input>$body/nmp:catalogoCodigoPostalRequest</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N7d30</con1:id>
+                        <con2:service ref="GestionCatalogos/Sepomex/Business Services/SAPCatalogosSepomexBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>ZlmfmRfcCatalogos</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">catalogoCodigoPostalReq</con2:body>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">catalogoCodigoPostalRes</con2:body>
+                        </con2:response>
+                        <con2:requestTransform/>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-7f000001.49c54af4.0.15c0d26bd94.N7773">
+            <con:stage id="_StageId-7f000001.49c54af4.0.15c0d26bd94.N7771" name="StageCatalogoLocalidadRequest" errorHandler="error-N3f57fdfa.N616686d8.0.15c146d814e.N7b33">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Elementos/NMPCatalogosSepomex"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="catalogoLocalidadReq">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N723f</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Sepomex/Resources/Transformations/TrCatalogoLocalidadReqToCatalogoLocalidadSapReq"/>
+                                <con1:input>$body/nmp:catalogoLocalidadRequest</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N7ec5</con1:id>
+                        <con2:service ref="GestionCatalogos/Sepomex/Business Services/SAPCatalogosSepomexBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>ZlmfmRfcCatalogos</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">catalogoLocalidadReq</con2:body>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">catalogoLocalidadRes</con2:body>
+                        </con2:response>
+                        <con2:requestTransform/>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-7f000001.49c54af4.0.15c0d26bd94.N75ff">
+            <con:stage id="_StageId-7f000001.49c54af4.0.15c0d26bd94.N75fd" name="StageCatalogoSectorNMPResponse">
+                <con:context/>
+                <con:actions>
+                    <con2:assign varName="catalogoSectorNMPRes">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N7605</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Sepomex/Resources/Transformations/TrCatalogoSectorNMPSapResToCatalogoSectorNMPRes"/>
+                                <con1:input>$catalogoSectorNMPRes</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N75d2</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xqueryText>$catalogoSectorNMPRes</con1:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-7f000001.49c54af4.0.15c0d26bd94.N7669">
+            <con:stage id="_StageId-7f000001.49c54af4.0.15c0d26bd94.N7667" name="StageCatalogoGiroComercialResponse">
+                <con:context/>
+                <con:actions>
+                    <con2:assign varName="catalogoGiroComercialRes">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N7506</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Sepomex/Resources/Transformations/TrCatalogoGiroComercialSapResToGiroComercialRes"/>
+                                <con1:input>$catalogoGiroComercialRes</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N74d3</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xqueryText>$catalogoGiroComercialRes</con1:xqueryText>
+                        </con2:expr>
+                    </con2:replace>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57fdfa.N616686d8.0.15c146d814e.N7967">
+            <con:stage id="_StageId-N3f57fdfa.N616686d8.0.15c146d814e.N7966" name="StageCatalogoCodigoPostalError">
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N7900</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Sepomex/Resources/Transformations/TRCatalogosSepomexFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="app">
+                                    <con1:path>1</con1:path>
+                                </con1:param>
+                                <con1:param name="serviceName">
+                                    <con1:path>'Catalogo Sepomex'</con1:path>
+                                </con1:param>
+                                <con1:param name="soapFault">
+                                    <con1:path>$body</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N7933</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57fdfa.N616686d8.0.15c146d814e.N7b33">
+            <con:stage id="_StageId-N3f57fdfa.N616686d8.0.15c146d814e.N7b32" name="StageCatalogoLocalidadError">
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N7aff</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Sepomex/Resources/Transformations/TRCatalogosSepomexFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="app">
+                                    <con1:path>1</con1:path>
+                                </con1:param>
+                                <con1:param name="serviceName">
+                                    <con1:path>'Catalogo Sepomex'</con1:path>
+                                </con1:param>
+                                <con1:param name="soapFault">
+                                    <con1:path>$body</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N7acc</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="request" name="request-7f000001.49c54af4.0.15c0d26bd94.N7635">
+            <con:stage id="_StageId-7f000001.49c54af4.0.15c0d26bd94.N7633" name="StageCatalogoColoniasRequest" errorHandler="error-N3f57fdfa.N616686d8.0.15c146d814e.N7738">
+                <con:context>
+                    <con1:userNsDecl prefix="nmp" namespace="http://servicios.montedepiedad.com.mx/NMP/Schema/Elementos/NMPCatalogosSepomex"/>
+                </con:context>
+                <con:actions>
+                    <con2:assign varName="catalogoColoniasReq">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N7b98</con1:id>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Sepomex/Resources/Transformations/TrCatalogoColoniasReqToCatalogoColoniasSapReq"/>
+                                <con1:input>$body/nmp:catalogoColoniasRequest</con1:input>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:assign>
+                    <con2:wsCallout>
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N7cca</con1:id>
+                        <con2:service ref="GestionCatalogos/Sepomex/Business Services/SAPCatalogosSepomexBS" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con2:operation>ZlmfmRfcCatalogos</con2:operation>
+                        <con2:request>
+                            <con2:body wrapped="false">catalogoColoniasReq</con2:body>
+                        </con2:request>
+                        <con2:response>
+                            <con2:body wrapped="false">catalogoColoniasRes</con2:body>
+                        </con2:response>
+                        <con2:requestTransform/>
+                        <con2:responseTransform/>
+                    </con2:wsCallout>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57fdfa.N616686d8.0.15c146d814e.N7a99">
+            <con:stage id="_StageId-N3f57fdfa.N616686d8.0.15c146d814e.N7a98" name="StageCatalogoMunicipioError">
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N7a32</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Sepomex/Resources/Transformations/TRCatalogosSepomexFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="app">
+                                    <con1:path>1</con1:path>
+                                </con1:param>
+                                <con1:param name="serviceName">
+                                    <con1:path>'Catalogo Sepomex'</con1:path>
+                                </con1:param>
+                                <con1:param name="soapFault">
+                                    <con1:path>$body</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N7a65</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57fdfa.N616686d8.0.15c146d814e.N769f">
+            <con:stage id="_StageId-N3f57fdfa.N616686d8.0.15c146d814e.N769e" name="StageCatalogoSectorNMPError">
+                <con:context/>
+                <con:actions>
+                    <con2:replace varName="body" contents-only="true">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N7638</con1:id>
+                        <con2:location>
+                            <con1:xpathText>.</con1:xpathText>
+                        </con2:location>
+                        <con2:expr>
+                            <con1:xsltTransform>
+                                <con1:resource ref="GestionCatalogos/Sepomex/Resources/Transformations/TRCatalogosSepomexFault"/>
+                                <con1:input>$fault</con1:input>
+                                <con1:param name="app">
+                                    <con1:path>1</con1:path>
+                                </con1:param>
+                                <con1:param name="serviceName">
+                                    <con1:path>'Catalogo Sepomex'</con1:path>
+                                </con1:param>
+                                <con1:param name="soapFault">
+                                    <con1:path>$body</con1:path>
+                                </con1:param>
+                            </con1:xsltTransform>
+                        </con2:expr>
+                    </con2:replace>
+                    <con1:reply isError="true">
+                        <con1:id>_ActionId-N3f57fdfa.N616686d8.0.15c146d814e.N766b</con1:id>
+                    </con1:reply>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="PipelinePairNode1">
+                <con:request>request-N3f57fdfa.N616686d8.0.15c146d814e.N720d</con:request>
+                <con:response>response-N3f57fdfa.N616686d8.0.15c146d814e.N720c</con:response>
+            </con:pipeline-node>
+            <con:branch-node type="operation" id="_FlowId-7f000001.49c54af4.0.15c0d26bd94.N7829" name="BranchNode1">
+                <con:context/>
+                <con:branch-table>
+                    <con:branch name="catalogoLocalidad">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineCatalogoLocalidad">
+                                <con:request>request-7f000001.49c54af4.0.15c0d26bd94.N7773</con:request>
+                                <con:response>response-7f000001.49c54af4.0.15c0d26bd94.N7772</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="catalogoMunicipio">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineCatalogoMunicipio">
+                                <con:request>request-7f000001.49c54af4.0.15c0d26bd94.N773e</con:request>
+                                <con:response>response-7f000001.49c54af4.0.15c0d26bd94.N773d</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="catalogoPaises">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineCatalogoPaises">
+                                <con:request>request-7f000001.49c54af4.0.15c0d26bd94.N7709</con:request>
+                                <con:response>response-7f000001.49c54af4.0.15c0d26bd94.N7708</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="catalogoCodigoPostal">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineCatalogoCodigoPostal">
+                                <con:request>request-7f000001.49c54af4.0.15c0d26bd94.N76d4</con:request>
+                                <con:response>response-7f000001.49c54af4.0.15c0d26bd94.N76d3</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="catalogoEstados">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineCatalogoEstados">
+                                <con:request>request-7f000001.49c54af4.0.15c0d26bd94.N769f</con:request>
+                                <con:response>response-7f000001.49c54af4.0.15c0d26bd94.N769e</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="catalogoGiroComercial">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineCatalogoGiroComercial">
+                                <con:request>request-7f000001.49c54af4.0.15c0d26bd94.N766a</con:request>
+                                <con:response>response-7f000001.49c54af4.0.15c0d26bd94.N7669</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="catalogoColonias">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineCatalogoColonias">
+                                <con:request>request-7f000001.49c54af4.0.15c0d26bd94.N7635</con:request>
+                                <con:response>response-7f000001.49c54af4.0.15c0d26bd94.N7634</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:branch name="catalogoSectorNMP">
+                        <con:operator>equals</con:operator>
+                        <con:value/>
+                        <con:flow>
+                            <con:pipeline-node name="PipelineCatalogoSectorNMP">
+                                <con:request>request-7f000001.49c54af4.0.15c0d26bd94.N7600</con:request>
+                                <con:response>response-7f000001.49c54af4.0.15c0d26bd94.N75ff</con:response>
+                            </con:pipeline-node>
+                        </con:flow>
+                    </con:branch>
+                    <con:default-branch>
+                        <con:flow/>
+                    </con:default-branch>
+                </con:branch-table>
+            </con:branch-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>
